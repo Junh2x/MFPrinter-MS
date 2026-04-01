@@ -50,6 +50,19 @@ def save_response(name, r):
     log(f"  저장: {meta_file.name}, {body_file.name}")
 
 
+def init_session(session):
+    """포털 페이지부터 순서대로 접근하여 세션 쿠키 확보"""
+    urls = [
+        f"http://{IP}:8000/",
+        f"http://{IP}:8000/rps/nativetop.cgi?CorePGTAG=PGTAG_ADR_USR",
+    ]
+    for url in urls:
+        r = session.get(url, timeout=TIMEOUT, allow_redirects=True)
+        log(f"[세션] GET {url} → {r.status_code}")
+        save_response("init_session", r)
+    log(f"[세션] 쿠키: {dict(session.cookies)}")
+
+
 def get_token(session):
     """주소록 페이지에서 Token 추출"""
     # 주소 리스트 원터치 페이지 접근
@@ -195,6 +208,10 @@ def main():
     print("=" * 50)
     print(f" 캐논 수신지 등록 테스트 (슬롯 {slot:03d})")
     print("=" * 50)
+
+    # 0. 세션 초기화
+    print("\n[0] 세션 초기화")
+    init_session(session)
 
     # 1. 현재 목록 조회
     print("\n[1] 현재 수신지 목록")
