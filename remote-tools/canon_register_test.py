@@ -106,45 +106,67 @@ def get_address_list(session):
 
 
 def register_smb(session, token_a, slot=5):
-    """SMB 수신지 등록: aprop.cgi(폼) → anewadrs.cgi(등록)"""
+    """SMB 수신지 등록: 브라우저 동일 3단계 흐름"""
 
-    # 1) 등록 폼 페이지 (Token A 사용 → Token B 획득)
-    form_url = (f"{BASE}/rps/aprop.cgi?AMOD=1&AID=11&AIDX={slot}&ACLS=7"
+    # 1) 이메일 폼으로 먼저 열기 (ACLS=2) → Token B1
+    form_url = (f"{BASE}/rps/aprop.cgi?AMOD=1&AID=11&AIDX={slot}&ACLS=2"
                 f"&AFION=1&AdrAction=.%2Falframe.cgi%3F"
                 f"&Dummy={int(time.time()*1000)}&Token={token_a}")
     r = session.get(form_url, timeout=TIMEOUT,
                     headers={"Referer": f"{BASE}/rps/asublist.cgi?CorePGTAG=24&AMOD=0"})
-    log(f"[등록] 폼 페이지 → {r.status_code}")
-    save_response("05_aprop_form", r)
+    log(f"[등록] 1단계 폼(이메일) → {r.status_code}")
+    save_response("05a_aprop_email", r)
 
-    token_b = extract_token(r.text)
-    log(f"[등록] Token B: {token_b[:20] if token_b else 'None'}...")
-
-    if not token_b:
-        log("[등록] Token B 추출 실패!")
+    token_b1 = extract_token(r.text)
+    log(f"[등록] Token B1: {token_b1[:20] if token_b1 else 'None'}...")
+    if not token_b1:
+        log("[등록] Token B1 추출 실패!")
         return False
 
-    # 2) 실제 등록 POST (Token B 사용)
-    body = (
-        f"AID=11&PageFlag=&AIDX={slot}"
-        f"&ANAME=JA_TEST_SMB&ANAMEONE=JA_TEST_SMB&AREAD=JA_TEST_SMB"
-        f"&APNO=0&AAD1=192.168.11.99&ACLS=7&APRTCL=7"
-        f"&APATH=scan_test&AUSER=testuser&INPUT_PSWD=0&APWORD=testpass"
-        f"&PASSCHK=1&PASSCHK=1"
-        f"&AdrAction=.%2Faprop.cgi%3F&AMOD=1"
-        f"&Dummy={int(time.time()*1000)}"
-        f"&AFCLS=&AFINT=&APNOL=&AFION=1&AUUID="
-        f"&Token={token_b}"
-    )
-    r2 = session.post(f"{BASE}/rps/anewadrs.cgi", data=body,
-                      headers={"Content-Type": "application/x-www-form-urlencoded",
-                               "Referer": form_url},
+    # 2) 파일 타입으로 변경 POST (ACLS=7) → Token B2
+    change_data = [
+        ("AID", "11"), ("PageFlag", ""), ("AIDX", str(slot)),
+        ("ANAME", "JA_TEST_SMB"), ("ANAMEONE", "JA_TEST_SMB"), ("AREAD", "JA_TEST_SMB"),
+        ("APNO", "0"), ("AAD1", ""), ("ACLS", "7"), ("APRTCL", "7"),
+        ("APATH", ""), ("AUSER", ""), ("INPUT_PSWD", "0"), ("APWORD", ""),
+        ("PASSCHK", "1"), ("PASSCHK", ""),
+        ("AdrAction", "./alframe.cgi?"), ("AMOD", "1"),
+        ("Dummy", str(int(time.time()*1000))),
+        ("AFCLS", ""), ("AFINT", ""), ("APNOL", ""),
+        ("AFION", "1"), ("AUUID", ""), ("Token", token_b1),
+    ]
+    r2 = session.post(f"{BASE}/rps/aprop.cgi", data=change_data,
+                      headers={"Referer": form_url}, timeout=TIMEOUT)
+    log(f"[등록] 2단계 타입변경(파일) → {r2.status_code}")
+    save_response("05b_aprop_file", r2)
+
+    token_b2 = extract_token(r2.text)
+    log(f"[등록] Token B2: {token_b2[:20] if token_b2 else 'None'}...")
+    if not token_b2:
+        log("[등록] Token B2 추출 실패!")
+        return False
+
+    # 3) 실제 등록 POST (Token B2 사용)
+    reg_data = [
+        ("AID", "11"), ("PageFlag", ""), ("AIDX", str(slot)),
+        ("ANAME", "JA_TEST_SMB"), ("ANAMEONE", "JA_TEST_SMB"), ("AREAD", "JA_TEST_SMB"),
+        ("APNO", "0"), ("AAD1", "192.168.11.99"), ("ACLS", "7"), ("APRTCL", "7"),
+        ("APATH", "scan_test"), ("AUSER", "testuser"),
+        ("INPUT_PSWD", "0"), ("APWORD", "testpass"),
+        ("PASSCHK", "1"), ("PASSCHK", "1"),
+        ("AdrAction", "./aprop.cgi?"), ("AMOD", "1"),
+        ("Dummy", str(int(time.time()*1000))),
+        ("AFCLS", ""), ("AFINT", ""), ("APNOL", ""),
+        ("AFION", "1"), ("AUUID", ""), ("Token", token_b2),
+    ]
+    r3 = session.post(f"{BASE}/rps/anewadrs.cgi", data=reg_data,
+                      headers={"Referer": f"{BASE}/rps/aprop.cgi"},
                       timeout=TIMEOUT)
-    log(f"[등록] POST → {r2.status_code} ({len(r2.content)}B)")
-    save_response("06_register", r2)
+    log(f"[등록] 3단계 등록POST → {r3.status_code} ({len(r3.content)}B)")
+    save_response("06_register", r3)
 
     # 성공/실패 확인
-    if "ERR_SUBMIT_FORM" in r2.text:
+    if "ERR_SUBMIT_FORM" in r3.text:
         log("[등록] 실패: ERR_SUBMIT_FORM 반환")
         return False
     else:
