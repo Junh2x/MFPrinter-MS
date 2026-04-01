@@ -1,0 +1,31 @@
+{
+  "name": "04_albody",
+  "url": "http://192.168.11.227:8000/rps/albody.cgi",
+  "method": "POST",
+  "status_code": 200,
+  "request_headers": {
+    "User-Agent": "python-requests/2.33.1",
+    "Accept-Encoding": "gzip, deflate, zstd",
+    "Accept": "*/*",
+    "Connection": "keep-alive",
+    "Referer": "http://192.168.11.227:8000/rps/asublist.cgi?CorePGTAG=24&AMOD=0&FromTopPage=1&Dummy=1775024761874",
+    "Cookie": "sessionid=c4451b8b838baa24f000934d94864462; portalLang=en; iR=1812527072",
+    "Content-Length": "38",
+    "Content-Type": "application/x-www-form-urlencoded"
+  },
+  "response_headers": {
+    "Date": "Wed, 01 Apr 2026 06:25:23 GMT",
+    "Server": "CANON HTTP Server",
+    "X-Frame-Options": "DENY",
+    "X-Content-Type-Options": "nosniff",
+    "X-XSS-Protection": "1; mode=block",
+    "Content-Type": "text/html;charset=UTF-8",
+    "Pragma": "no-cache",
+    "Cache-Control": "no-cache,no-store,max-age=0",
+    "Expires": "Thu, 01 Jan 1970 00:00:00 GMT",
+    "Transfer-Encoding": "chunked",
+    "Connection": "Keep-Alive",
+    "Keep-Alive": "timeout=30"
+  },
+  "request_body": "AID=11&FILTER_ID=0&Dummy=1775024762109"
+}
