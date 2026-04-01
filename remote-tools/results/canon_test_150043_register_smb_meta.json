@@ -1,0 +1,31 @@
+{
+  "name": "register_smb",
+  "url": "http://192.168.11.227:8000/rps/anewadrs.cgi",
+  "method": "POST",
+  "status_code": 200,
+  "request_headers": {
+    "User-Agent": "python-requests/2.33.1",
+    "Accept-Encoding": "gzip, deflate, zstd",
+    "Accept": "*/*",
+    "Connection": "keep-alive",
+    "Content-Type": "application/x-www-form-urlencoded",
+    "Cookie": "sessionid=32a34f8a698b321b1c33fedd16293ec9; portalLang=en; iR=201664299",
+    "Content-Length": "299"
+  },
+  "response_headers": {
+    "Date": "Wed, 01 Apr 2026 06:00:04 GMT",
+    "Server": "CANON HTTP Server",
+    "X-Frame-Options": "DENY",
+    "X-Content-Type-Options": "nosniff",
+    "X-XSS-Protection": "1; mode=block",
+    "Content-Type": "text/html;charset=UTF-8",
+    "Pragma": "no-cache",
+    "Cache-Control": "no-cache,no-store,max-age=0",
+    "Expires": "Thu, 01 Jan 1970 00:00:00 GMT",
+    "Transfer-Encoding": "chunked",
+    "Connection": "Keep-Alive",
+    "Keep-Alive": "timeout=30"
+  },
+  "request_body": "AID=11&PageFlag=&AIDX=5&ANAME=JA_TEST_SMB&ANAMEONE=JA_TEST_SMB&AREAD=JA_TEST_SMB&APNO=0&AAD1=192.168.11.99&ACLS=7&APRTCL=7&APATH=scan_test&AUSER=testuser&INPUT_PSWD=0&APWORD=testpass&PASSCHK=1&PASSCHK=1&AdrAction=.%2Faprop.cgi%3F&AMOD=1&Dummy=1775023243154&AFCLS=&AFINT=&APNOL=&AFION=1&AUUID=&Token=",
+  "timestamp": "2026-04-01T15:00:43.605096"
+}
