@@ -111,6 +111,7 @@ def main():
         return
 
     # 3. 등록 폼 1단계 - 이메일 타입으로 열기
+    time.sleep(2)
     log("\n[4] 등록 폼 (이메일)")
     form_url = f"{BASE}/rps/aprop.cgi?AMOD=1&AID=11&AIDX={slot}&ACLS=2&AFION=1&AdrAction=.%2Falframe.cgi%3F&Dummy={int(time.time()*1000)}&Token={token_a}"
     r = s.get(form_url, timeout=TIMEOUT, headers={"Referer": f"{BASE}/rps/albody.cgi"})
@@ -124,6 +125,7 @@ def main():
         return
 
     # 4. 타입 변경 - 파일(SMB)로 변경
+    time.sleep(2)
     log("\n[5] 타입 변경 (파일)")
     # 브라우저 Go_NextPage() 시뮬레이션:
     # form_clear → 비보호 필드 전부 비움(Token 포함), ACLS=7 설정
@@ -160,6 +162,7 @@ def main():
             log(f"    {n}={v[:50]}")
 
     # 5. 상세 설정 - 호스트명, 경로 등 입력
+    time.sleep(2)
     log("\n[6] 상세 설정")
     detail_fields = []
     for name, val in fields2:
@@ -201,6 +204,7 @@ def main():
             log(f"    {n}={v[:50]}")
 
     # 6. 실제 등록 - 브라우저 JS와 동일하게 AdrAction 변경 후 submit
+    time.sleep(2)
     log("\n[7] 등록 POST")
     reg_fields = []
     for name, val in fields3:
