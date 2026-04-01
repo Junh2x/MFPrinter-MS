@@ -1,0 +1,2404 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="ko" xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-script-type" content="text/javascript" />
+<meta http-equiv="content-style-type" content="text/css" />
+<meta http-equiv= "pragma" content="no-cache" />
+<meta http-equiv="cache-control" content="no-cache,no-store,max-age=0" />
+<meta http-equiv="expires" content="Thu, 01 Jan 1970 00:00:00 GMT" />
+<link rel="shortcut icon" type="image/x-icon" href="media/favicon.ico" />
+<link rel="stylesheet" type="text/css" media="all" href="css/common2.css" />
+<link rel="stylesheet" type="text/css" media="all" href="css/address.css" />
+<link rel="stylesheet" type="text/css" media="all" href="css/LanguageDependent/ko.css" />
+<link rel="stylesheet" type="text/css" media="all" href="css/empty.css" />
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+  CacheImage1 = new Image();
+  CacheImage2 = new Image();
+  CacheImage3 = new Image();
+  CacheImage4 = new Image();
+  CacheImage5 = new Image();
+  CacheImage6 = new Image();
+  CacheImage7 = new Image();
+  CacheImage8 = new Image();
+  CacheImage1.src = "media/navigation_bg_nu.gif";
+  CacheImage2.src = "media/navigation_bg_fc.png";
+  CacheImage3.src = "media/navigation_bg_su.png";
+  CacheImage4.src = "media/navigation_bg_selected.png";
+  CacheImage5.src = "media/listsubmenumark_ic2.gif";
+  CacheImage6.src = "media/command_bg_nu.gif";
+  CacheImage7.src = "media/command_bg_fc.gif";
+  CacheImage8.src = "media/command_bg_su.gif";
+//]]>
+</script>
+
+<title>
+리모트 UI : 폴더 경로 설정 : iR-ADV&nbsp;C3720 : iR-ADV&nbsp;C3720
+</title>
+</head>
+<body>
+<form name="SUBMIT_FORM" action="./aprop.cgi" method="post" target="_self">
+<input type="hidden" name="AID" value="11" />
+<input type="hidden" name="PageFlag" value="a_rfn_f.tpl" />
+<input type="hidden" name="AIDX" value="10" />
+<input type="hidden" name="ANAME" value="JA_V4" />
+<input type="hidden" name="ANAMEONE" value="JA_V4" />
+<input type="hidden" name="AREAD" value="JA_V4" />
+<input type="hidden" name="APNO" value="0" />
+<input type="hidden" name="AAD1" value="192.168.11.99" />
+<input type="hidden" name="ACLS" value="7" />
+<input type="hidden" name="APRTCL" value="7" />
+<input type="hidden" name="APATH" value="" />
+<input type="hidden" name="AUSER" value="" />
+<input type="hidden" name="INPUT_PSWD" value="0" />
+<input type="hidden" name="APWORD" value="" />
+<input type="hidden" name="PASSCHK" value="1" />
+<input type="hidden" name="PASSCHK" value="" />
+<input type="hidden" name="AdrAction" value="./alframe.cgi?" />
+<input type="hidden" name="AMOD" value="1" />
+<input type="hidden" name="Dummy" value="1775029209727" />
+<input type="hidden" name="AFCLS" value="" />
+<input type="hidden" name="AFINT" value="" />
+<input type="hidden" name="APNOL" value="" />
+<input type="hidden" name="AFION" value="1" />
+<input type="hidden" name="AUUID" value="" />
+<input type="hidden" name="Token" value="2918033733007090912" />
+
+</form>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function CheckBoxChk(form,value)
+{
+if( null == form )
+{
+return ;
+}
+if( 1 == value )
+{
+form.checked = true;
+}
+else
+{
+form.checked = false;
+}
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function RadioChk(form,Name,value){
+var doccnt = 0;
+var i;
+var elm_len = form.elements.length;
+for(i = 0; i < elm_len; i++)
+{
+var elm_ctrl = form.elements[i];
+if( elm_ctrl.value == value &&
+elm_ctrl.name == Name )
+{
+elm_ctrl.checked = true;
+}
+}
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function RadioSelect( Obj , Val )
+{
+if( "undefined" == typeof( Obj ) )
+{
+return;
+}
+if( "undefined" == typeof( Obj.length ) )
+{
+if( Obj.value == Val )
+{
+Obj.checked = true;
+}
+return;
+}
+for( var nCnt=0 ; nCnt<Obj.length ; nCnt++ )
+{
+if( Obj[ nCnt ].value == Val )
+{
+Obj[ nCnt ].checked = true;
+return;
+}
+}
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function DropDownListSelect(obj,value){
+if( null == obj )
+{
+return;
+}
+var i;
+var type = obj.type.toLowerCase();
+if( "hidden" == type )
+{
+return;
+}
+var elm_len = obj.options.length;
+for(i = 0; i < elm_len; i++)
+{
+var elm_ctrl = obj.options[i];
+if( elm_ctrl.value == value)
+{
+return obj.selectedIndex = i;
+}
+}
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function DropDownListSelectEx(obj,value)
+{
+if( null == obj )
+{
+return;
+}
+var i;
+var type = obj.type.toLowerCase();
+if( "hidden" == type )
+{
+return obj.value = value;
+}
+var elm_len = obj.options.length;
+for(i = 0; i < elm_len; i++)
+{
+var elm_ctrl = obj.options[i];
+if( elm_ctrl.value == value)
+{
+return obj.selectedIndex = i;
+}
+}
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function GetDropDownList( Element )
+{
+if( null == Element )
+{
+return null;
+}
+return Element.options[ Element.selectedIndex ].value;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function SetDropDownList( Element , value )
+{
+if( null == Element )
+{
+return null;
+}
+for( i=0 ; i<Element.options.length ; i++ )
+{
+if( Element.options[i].value == value )
+{
+Element.selectedIndex = i;
+return true;
+}
+}
+return false;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function CheckBox_value(obj){
+if( null == obj )
+{
+return;
+}
+if( true == obj.checked )
+{
+return 1;
+}
+else
+{
+return 0;
+}
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function GetCheckBoxStats( Element )
+{
+if( null == Element )
+{
+return null;
+}
+return Element.checked;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function somethingGet(form, Name, Type){
+var doccnt = 0;
+var i;
+var elm_len = form.elements.length;
+for(i = 0; i < elm_len; i++)
+{
+var elm_ctrl = form.elements[i];
+if( null == elm_ctrl.type )
+{
+continue;
+}
+if( elm_ctrl.type.toLowerCase() == Type &&
+elm_ctrl.checked == true &&
+elm_ctrl.name == Name )
+{
+return elm_ctrl.value;
+}
+}
+ return "0";
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function GetRadioVal( Obj )
+{
+if( "undefined" == typeof( Obj ) )
+{
+return null;
+}
+if( "undefined" == typeof( Obj.length ))
+{
+if( true == Obj.checked )
+{
+return Obj.value;
+}
+return null;
+}
+for( nCnt=0 ; nCnt<Obj.length ; nCnt++ )
+{
+if( Obj[ nCnt ].checked == true )
+{
+return Obj[ nCnt ].value
+}
+}
+return null;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function GetRadioVal2( Obj, Val )
+{
+if( "undefined" == typeof( Obj ) )
+{
+return Val;
+}
+if( "undefined" == typeof( Obj.length ))
+{
+if( true == Obj.checked )
+{
+return Obj.value;
+}
+return Val;
+}
+for( nCnt=0 ; nCnt<Obj.length ; nCnt++ )
+{
+if( Obj[ nCnt ].checked == true )
+{
+return Obj[ nCnt ].value
+}
+}
+return Val;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function DropDownList_value(obj){
+if( null == obj )
+{
+return;
+}
+var type = obj.type.toLowerCase();
+if( "hidden" == type )
+{
+return obj.value;
+}
+var cst_idx = obj.selectedIndex;
+return obj.options[cst_idx].value;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function DropDownList_text(obj){
+var type = obj.type.toLowerCase();
+if( null == obj )
+{
+return;
+}
+if( "hidden" == type )
+{
+return obj.value;
+}
+var cst_idx = obj.selectedIndex;
+return obj.options[cst_idx].text;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+function GetAnyValue( Element )
+{
+if( "undefined" == typeof( Element ) )
+{
+return false;
+}
+var getval;
+switch( Element.type )
+{
+case "checkbox" :
+getval = GetCheckBoxStats( Element );
+break;
+case "select-one" :
+getval = GetDropDownList( Element );
+break;
+case "text" : case "password" : case "textarea" : case "hidden" :
+getval = Element.value;
+break;
+default :
+getval = GetRadioVal( Element );
+break;
+}
+return getval;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+function SetAnyValue( Element , SetValue )
+{
+if( "undefined" == typeof( Element ) )
+{
+return;
+}
+switch( Element.type )
+{
+case "checkbox" :
+CheckBoxChk( Element , SetValue );
+break;
+case "select-one" :
+DropDownListSelect( Element , SetValue );
+break;
+case "text" : case "password" : case "textarea" : case "hidden" :
+Element.value = SetValue;
+break;
+default :
+RadioSelect( Element , SetValue );
+break;
+}
+return;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function SetDisabled( obj, val )
+{
+if( !obj )
+{
+return ;
+}
+obj.disabled = val;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function SetDisabledByCBox( cbox, val, disable_arr )
+{
+if( !cbox )
+{
+return;
+}
+for( var i = 0; i < disable_arr.length; i++ )
+{
+if( val == cbox.checked )
+{
+SetDisabled(disable_arr[i],true );
+}
+else
+{
+SetDisabled(disable_arr[i], false );
+}
+}
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function DisableInit_DataTbl( dis_elem, init_elem )
+{
+this.dis_elem = dis_elem;
+this.init_elem = init_elem;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function SetDisableInitByElem( Element, val, di_data )
+{
+if( !Element )
+{
+return;
+}
+for( var i = 0; i < di_data.tbl.length; i++ )
+{
+if( val == GetAnyValue( Element ) )
+{
+if( null != di_data.tbl[i].init_elem )
+{
+SetAnyValue( di_data.tbl[i].dis_elem, di_data.tbl[i].init_elem.value );
+}
+SetDisabled( di_data.tbl[i].dis_elem, true );
+}
+else
+{
+SetDisabled( di_data.tbl[i].dis_elem, false );
+}
+}
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function SetDisabledValue( obj, val, value )
+{
+if( !obj )
+{
+return ;
+}
+obj.disabled = val;
+obj.value = value;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function SetDisabledChecked( obj, val, checked )
+{
+if( !obj )
+{
+return ;
+}
+obj.disabled = val;
+obj.checked = checked;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function RuiArt(obj)
+{
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function Set_toSubmit( form )
+{
+var i, j;
+var elm_len = form.elements.length;
+for(i = 0; i < elm_len; i++)
+{
+var elm_reload = form.elements[i];
+if( -1 == elm_reload.name.indexOf("_Reload"))
+continue;
+for(j = 0; j < elm_len; j++)
+{
+var elm_ctrl = form.elements[j];
+if( elm_reload.name.substr( 0,elm_reload.name.length - "_Reload".length) != elm_ctrl.name )
+continue;
+elm_ctrl.value = elm_reload.value  ;
+break;
+}
+}
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function Set_toReaload( form )
+{
+var i, j;
+var elm_len = form.elements.length;
+for(i = 0; i < elm_len; i++)
+{
+var elm_reload = form.elements[i];
+if( -1 == elm_reload.name.indexOf("_Reload"))
+continue;
+for(j = 0; j < elm_len; j++)
+{
+var elm_ctrl = form.elements[j];
+if( elm_reload.name.substr( 0,elm_reload.name.length - "_Reload".length) != elm_ctrl.name )
+continue;
+elm_reload.value = elm_ctrl.value ;
+break;
+}
+}
+}
+//]]>
+</script>
+<form name="COM_CANCEL_FORM" action="" method="post" target="_self">
+<input type="hidden" name="AID" value="11" />
+<input type="hidden" name="PageFlag" value="a_rfn_f.tpl" />
+<input type="hidden" name="AIDX" value="10" />
+<input type="hidden" name="ANAME" value="JA_V4" />
+<input type="hidden" name="ANAMEONE" value="JA_V4" />
+<input type="hidden" name="AREAD" value="JA_V4" />
+<input type="hidden" name="APNO" value="0" />
+<input type="hidden" name="AAD1" value="192.168.11.99" />
+<input type="hidden" name="ACLS" value="7" />
+<input type="hidden" name="APRTCL" value="7" />
+<input type="hidden" name="APATH" value="" />
+<input type="hidden" name="AUSER" value="" />
+<input type="hidden" name="INPUT_PSWD" value="0" />
+<input type="hidden" name="APWORD" value="" />
+<input type="hidden" name="PASSCHK" value="1" />
+<input type="hidden" name="PASSCHK" value="" />
+<input type="hidden" name="AdrAction" value="./alframe.cgi?" />
+<input type="hidden" name="AMOD" value="1" />
+<input type="hidden" name="Dummy" value="1775029209727" />
+<input type="hidden" name="AFCLS" value="" />
+<input type="hidden" name="AFINT" value="" />
+<input type="hidden" name="APNOL" value="" />
+<input type="hidden" name="AFION" value="1" />
+<input type="hidden" name="AUUID" value="" />
+<input type="hidden" name="Token" value="2918033733007090912" />
+
+</form>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function Form_Update( form )
+{
+var i, j;
+var cancel_form   = document.COM_CANCEL_FORM ;
+var elm_len       = form.elements.length ;
+var cncl_elm_len  = cancel_form.elements.length ;
+for(i = 0; i < cncl_elm_len; i++)
+{
+var cncl_elm_ctrl = cancel_form.elements[i];
+var elm_ctrl      = form.elements[i];
+if(elm_ctrl.name == cncl_elm_ctrl.name )
+{
+elm_ctrl.value = cncl_elm_ctrl.value  ;
+continue;
+}
+for(j = 0; j < elm_len; j++)
+{
+elm_ctrl = form.elements[j];
+if(elm_ctrl.name != cncl_elm_ctrl.name )
+{
+continue;
+}
+elm_ctrl.value = cncl_elm_ctrl.value ;
+break ;
+}
+if( j >= elm_len )
+{
+alert("internal error! " + cncl_elm_ctrl.name);
+}
+}
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function MyIndexOf(
+sep,
+PgNum,
+start_idx,
+skip_num,
+retStr )
+{
+var nCnt;
+var cur_chk;
+var end_idx = 0;
+if( PgNum.length <= 0 )
+{
+return -1;
+}
+for( nCnt = 0 ; nCnt < skip_num ; nCnt++ )
+{
+if( 0 != nCnt )
+{
+start_idx = end_idx;
+}
+end_idx = PgNum.indexOf( sep, start_idx + 1 );
+if( start_idx < 0 || end_idx < 0 )
+{
+return -1;
+}
+cur_chk = PgNum.slice( start_idx, end_idx );
+retStr[nCnt] = parseInt( cur_chk, 10 );
+}
+return end_idx;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function ComFuncRemoveSpace( str )
+{
+return str.replace( / /g , '');
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function ComFuncMultiplication( a, b )
+{
+if( true == isNaN( a ) || true == isNaN( b ) )
+{
+return str;
+}
+var l_a = new String( a );
+var l_b = new String( b );
+var l_a_dgt_pos = l_a.indexOf( ".", 0 );
+var l_b_dgt_pos = l_b.indexOf( ".", 0 );
+var l_a_dgt = ( -1 != l_a_dgt_pos ) ? ( l_a.length - ( l_a_dgt_pos + 1 ) ) : 0;
+var l_b_dgt = ( -1 != l_b_dgt_pos ) ? ( l_b.length - ( l_b_dgt_pos + 1 ) ) : 0;
+l_a = ( -1 != l_a_dgt_pos ) ? ( l_a.substring( 0, l_a_dgt_pos ) + l_a.substring( l_a_dgt_pos + 1, l_a.length ) ) : l_a;
+l_b = ( -1 != l_b_dgt_pos ) ? ( l_b.substring( 0, l_b_dgt_pos ) + l_b.substring( l_b_dgt_pos + 1, l_b.length ) ) : l_b;
+var l_a_val = parseIntEx( l_a );
+var l_b_val = parseIntEx( l_b );
+var l_calc_val = l_a_val * l_b_val ;
+var l_dgt_val  = l_a_dgt + l_b_dgt;
+return l_calc_val / ( Math.pow( 10, l_dgt_val ) );
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function ComFuncMkPointVal( str, fmt )
+{
+if( true == isNaN( str ) || true == isNaN( fmt ) )
+{
+return str;
+}
+var l_str = new String( str );
+var l_fmt = parseIntEx( fmt );
+if( l_fmt <= 0 || -1 != l_str.indexOf( ".", 0 ) )
+{
+return l_str ;
+}
+var l_calc_str = new String( "0." );
+for( var i = 1 ; i < l_fmt ; i++ )
+{
+l_calc_str += "0";
+}
+l_calc_str += "1";
+l_str = ComFuncMultiplication( l_str, l_calc_str )
+l_str = ComFuncAddPointVal( l_str, l_fmt );
+return l_str;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function ComFuncAddPointVal( str, fmt )
+{
+if( true == isNaN( str ) || true == isNaN( fmt ) )
+{
+return str;
+}
+var l_str = new String( str );
+var l_fmt = parseIntEx( fmt );
+if( l_fmt <= 0 )
+{
+return l_str ;
+}
+if( -1 != l_str.indexOf( ".", 0 ) )
+{
+var l_len = l_str.length - ( l_str.indexOf( ".", 0 ) + 1 );
+if( l_len < l_fmt )
+{
+for( var i = l_len ; i < l_fmt ; i++ )
+{
+l_str += "0";
+}
+}
+else if( l_fmt < l_len )
+{
+l_str = l_str.substring( 0, ( l_str.length - ( l_len - l_fmt ) ) );
+}
+}
+else
+{
+l_str += ".";
+for( var i = 0 ; i < l_fmt ; i++ )
+{
+l_str = l_str + "0";
+}
+}
+return l_str;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function ComFuncDigitProcess( str, significantFigure )
+{
+if( str.length <= 0 )
+{
+return str;
+}
+if( true == isNaN(str) )
+{
+return str;
+}
+var tmpCode = ( null != str.match(/^[\+|\-]/) ) ?str.match(/^[\+|\-]/)[0] :"" ;
+str = str.replace( /^[\+|\-|0]/g, "" );
+var tmpInteger = ( null != str.match(/^[0-9]+/) )  ?str.match(/^[0-9]+/)[0] :"0" ;
+var tmpDecimal = ( null != str.match(/\.[0-9]+$/) )?str.match(/[0-9]+$/)[0] :"" ;
+if( significantFigure < tmpDecimal.length )
+{
+tmpDecimal = tmpDecimal.substring( 0 , significantFigure );
+}
+else
+{
+for( var i = tmpDecimal.length ; i < significantFigure ; i++ )
+{
+tmpDecimal += "0";
+}
+}
+return ( tmpCode + tmpInteger + tmpDecimal );
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function ComFuncMLibData
+(
+MediaType,
+Shape,
+Color,
+Surface,
+Weight
+)
+{
+this.MediaType = MediaType;
+this.Shape     = Shape;
+this.Color     = Color;
+this.Surface   = Surface;
+this.Weight    = Weight;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+var MediaLibTbl_a = new Array
+(
+new ComFuncMLibData
+(
+"27", // MediaType //
+"1", // Shape //
+"1", // Color //
+"8", // Surface //
+"200" // Weight //
+),
+new ComFuncMLibData
+(
+"30", // MediaType //
+"4", // Shape //
+"1", // Color //
+"1", // Surface //
+"90" // Weight //
+),
+new ComFuncMLibData
+(
+"164", // MediaType //
+"1", // Shape //
+"1", // Color //
+"3", // Surface //
+"280" // Weight //
+),
+new ComFuncMLibData
+(
+"163", // MediaType //
+"1", // Shape //
+"1", // Color //
+"3", // Surface //
+"240" // Weight //
+),
+new ComFuncMLibData
+(
+"162", // MediaType //
+"1", // Shape //
+"1", // Color //
+"3", // Surface //
+"200" // Weight //
+),
+new ComFuncMLibData
+(
+"161", // MediaType //
+"1", // Shape //
+"1", // Color //
+"3", // Surface //
+"150" // Weight //
+),
+new ComFuncMLibData
+(
+"160", // MediaType //
+"1", // Shape //
+"1", // Color //
+"3", // Surface //
+"110" // Weight //
+),
+new ComFuncMLibData
+(
+"154", // MediaType //
+"1", // Shape //
+"1", // Color //
+"2", // Surface //
+"280" // Weight //
+),
+new ComFuncMLibData
+(
+"153", // MediaType //
+"1", // Shape //
+"1", // Color //
+"2", // Surface //
+"240" // Weight //
+),
+new ComFuncMLibData
+(
+"152", // MediaType //
+"1", // Shape //
+"1", // Color //
+"2", // Surface //
+"200" // Weight //
+),
+new ComFuncMLibData
+(
+"151", // MediaType //
+"1", // Shape //
+"1", // Color //
+"2", // Surface //
+"150" // Weight //
+),
+new ComFuncMLibData
+(
+"150", // MediaType //
+"1", // Shape //
+"1", // Color //
+"2", // Surface //
+"110" // Weight //
+),
+new ComFuncMLibData
+(
+"17", // MediaType //
+"1", // Shape //
+"1", // Color //
+"9", // Surface //
+"80" // Weight //
+),
+new ComFuncMLibData
+(
+"32", // MediaType //
+"1", // Shape //
+"1", // Color //
+"10", // Surface //
+"90" // Weight //
+),
+new ComFuncMLibData
+(
+"5", // MediaType //
+"1", // Shape //
+"2", // Color //
+"1", // Surface //
+"80" // Weight //
+),
+new ComFuncMLibData
+(
+"20", // MediaType //
+"1", // Shape //
+"1", // Color //
+"7", // Surface //
+"160" // Weight //
+),
+new ComFuncMLibData
+(
+"240", // MediaType //
+"1", // Shape //
+"12", // Color //
+"13", // Surface //
+"170" // Weight //
+),
+new ComFuncMLibData
+(
+"130", // MediaType //
+"1", // Shape //
+"12", // Color //
+"6", // Surface //
+"170" // Weight //
+),
+new ComFuncMLibData
+(
+"140", // MediaType //
+"3", // Shape //
+"1", // Color //
+"1", // Surface //
+"70" // Weight //
+),
+new ComFuncMLibData
+(
+"101", // MediaType //
+"1", // Shape //
+"1", // Color //
+"4", // Surface //
+"100" // Weight //
+),
+new ComFuncMLibData
+(
+"100", // MediaType //
+"1", // Shape //
+"1", // Color //
+"4", // Surface //
+"80" // Weight //
+),
+new ComFuncMLibData
+(
+"4", // MediaType //
+"1", // Shape //
+"1", // Color //
+"4", // Surface //
+"70" // Weight //
+),
+new ComFuncMLibData
+(
+"54", // MediaType //
+"1", // Shape //
+"1", // Color //
+"1", // Surface //
+"280" // Weight //
+),
+new ComFuncMLibData
+(
+"53", // MediaType //
+"1", // Shape //
+"1", // Color //
+"1", // Surface //
+"240" // Weight //
+),
+new ComFuncMLibData
+(
+"52", // MediaType //
+"1", // Shape //
+"1", // Color //
+"1", // Surface //
+"200" // Weight //
+),
+new ComFuncMLibData
+(
+"51", // MediaType //
+"1", // Shape //
+"1", // Color //
+"1", // Surface //
+"170" // Weight //
+),
+new ComFuncMLibData
+(
+"50", // MediaType //
+"1", // Shape //
+"1", // Color //
+"1", // Surface //
+"155" // Weight //
+),
+new ComFuncMLibData
+(
+"39", // MediaType //
+"1", // Shape //
+"1", // Color //
+"1", // Surface //
+"140" // Weight //
+),
+new ComFuncMLibData
+(
+"2", // MediaType //
+"1", // Shape //
+"1", // Color //
+"1", // Surface //
+"110" // Weight //
+),
+new ComFuncMLibData
+(
+"45", // MediaType //
+"1", // Shape //
+"1", // Color //
+"1", // Surface //
+"100" // Weight //
+),
+new ComFuncMLibData
+(
+"33", // MediaType //
+"1", // Shape //
+"1", // Color //
+"1", // Surface //
+"80" // Weight //
+),
+new ComFuncMLibData
+(
+"1", // MediaType //
+"1", // Shape //
+"1", // Color //
+"1", // Surface //
+"70" // Weight //
+),
+new ComFuncMLibData
+(
+"3", // MediaType //
+"1", // Shape //
+"1", // Color //
+"1", // Surface //
+"60" // Weight //
+),
+new ComFuncMLibData
+(
+"44", // MediaType //
+"1", // Shape //
+"1", // Color //
+"1", // Surface //
+"55" // Weight //
+),
+
+new ComFuncMLibData
+(
+null,
+null,
+null,
+null,
+null
+)
+);
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function ComFuncGetMLibData( MediaType )
+{
+var  i = 0;
+for( i = 0 ; null != MediaLibTbl_a[i].MediaType ; i++ )
+{
+if( MediaLibTbl_a[i].MediaType == MediaType )
+{
+break;
+}
+}
+return MediaLibTbl_a[i];
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function ComFuncMLibSptSizeData
+(
+Code,
+Direction
+)
+{
+this.Code = Code;
+this.Direction= Direction;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+var SupportMediaSizeTbl_a = new Array
+(
+new ComFuncMLibSptSizeData
+(
+"1", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"6", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"2", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"2", // code //
+"0" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"7", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"7", // code //
+"0" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"3", // code //
+"0" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"3", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"4", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"11", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"12", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"13", // code //
+"0" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"13", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"60", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"60", // code //
+"0" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"74", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"102", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"10", // code //
+"0" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"62", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"203", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"204", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"210", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"205", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"206", // code //
+"0" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"206", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"208", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"208", // code //
+"0" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"209", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"202", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"61", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"211", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"212", // code //
+"0" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"212", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"214", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"215", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"78", // code //
+"2" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"78", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"14", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"15", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"55", // code //
+"0" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"22", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"23", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"21", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"24", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"193", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"194", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"220", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"213", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"27", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"22", // code //
+"0" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"23", // code //
+"0" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"21", // code //
+"0" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"24", // code //
+"0" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"193", // code //
+"0" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"213", // code //
+"0" // direction //
+),
+
+new ComFuncMLibSptSizeData
+(
+null,
+null
+)
+);
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function ComFuncCheckMLibSptSize( MediaSize )
+{
+var  i = 0;
+for( i = 0 ; null != SupportMediaSizeTbl_a[i].Code ; i++ )
+{
+if( SupportMediaSizeTbl_a[i].Code == MediaSize )
+{
+return true;
+}
+}
+return false;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function ComFuncCompMType( val, cmp )
+{
+if( "false" == "true" )
+{
+return ( eval( val ) == eval( cmp ) ) ? true : false ;
+}
+var MLibTbl_1 = ComFuncGetMLibData( val );
+if( null == MLibTbl_1.MediaType )
+{
+return false ;
+}
+var MLibTbl_2 = ComFuncGetMLibData( cmp );
+if( null == MLibTbl_2.MediaType )
+{
+return false ;
+}
+var l_ret = false;
+if( "1" == MLibTbl_2.Shape )
+{
+l_ret = ( MLibTbl_1.Surface == MLibTbl_2.Surface ) ? true : false ;
+}
+else
+{
+l_ret = ( MLibTbl_1.Shape   == MLibTbl_2.Shape )   ? true : false ;
+}
+return l_ret;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function ComFuncFaxLineDataCtrl()
+{
+function FLineData
+(
+dsp_sts,
+obj,
+type
+)
+{
+this.dsp_sts = dsp_sts;
+this.obj     = obj;
+this.type    = type;
+}
+var FaxLineTbl_a = new Array
+(
+new FLineData( false, null, null ),
+new FLineData( false, null, null ),
+new FLineData( false, null, null ),
+new FLineData( false, null, null ),
+new FLineData( false, null, null ),
+new FLineData( false, null, null ),
+new FLineData( false, null, null ),
+new FLineData( false, null, null )
+);
+this.GetDataSize      = function()
+{
+return FaxLineTbl_a.length;
+}
+this.GetDspLineCount  = _func_GetDspLineCount;
+this.GetDspSts        = _func_GetDspSts;
+this.SetObj           = _func_SetObj;
+this.GetObj           = _func_GetObj;
+this.GetTypeNum       = _func_GetTypeNum;
+this.IsPhycl          = _func_IsPhycl;
+this.IsLogcl          = _func_IsLogcl;
+function _func_GetDspLineCount()
+{
+var dsp_line_cnt = 0;
+for( var i = 0 ; i < FaxLineTbl_a.length ; i++ )
+{
+if( true == FaxLineTbl_a[i].dsp_sts )
+{
+dsp_line_cnt++;
+}
+}
+return dsp_line_cnt;
+}
+function _func_GetDspSts(
+pos 
+)
+{
+if(( pos < 0 ) || ( FaxLineTbl_a.length <= pos ))
+{
+return false;
+}
+return FaxLineTbl_a[pos].dsp_sts;
+}
+function _func_SetObj(
+pos, 
+obj  
+)
+{
+if(( pos < 0 ) || ( FaxLineTbl_a.length <= pos ))
+{
+return false;
+}
+FaxLineTbl_a[pos].obj = obj;
+return true;
+}
+function _func_GetObj(
+pos 
+)
+{
+if(( pos < 0 ) || ( FaxLineTbl_a.length <= pos ))
+{
+return null;
+}
+return FaxLineTbl_a[pos].obj;
+}
+function _func_GetTypeNum(
+pos 
+)
+{
+if(( pos < 0 ) || ( FaxLineTbl_a.length <= pos ))
+{
+return 0;
+}
+if( null == FaxLineTbl_a[pos].type )
+{
+return 0;
+}
+var split_pos = FaxLineTbl_a[pos].type.lastIndexOf( "_" );
+if( -1 == split_pos )
+{
+return 0;
+}
+var num = eval( FaxLineTbl_a[pos].type.substring( split_pos + 1, FaxLineTbl_a[pos].type.length ) );
+return num;
+}
+function _func_IsPhycl(
+pos 
+)
+{
+if(( pos < 0 ) || ( FaxLineTbl_a.length <= pos ))
+{
+return false;
+}
+if( null == FaxLineTbl_a[pos].type )
+{
+return false;
+}
+return ( -1 != FaxLineTbl_a[pos].type.indexOf( "Phycl_" ) ) ? true : false;
+}
+function _func_IsLogcl(
+pos 
+)
+{
+if(( pos < 0 ) || ( FaxLineTbl_a.length <= pos ))
+{
+return false;
+}
+if( null == FaxLineTbl_a[pos].type )
+{
+return false;
+}
+return ( -1 != FaxLineTbl_a[pos].type.indexOf( "Logcl_" ) ) ? true : false;
+}
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function ComFuncElementCtrlObj( propform )
+{
+this.propform = propform;
+this._func_GetCheckBoxFormat = _func_GetCheckBoxFormat;
+this._func_SetCheckBox       = _func_SetCheckBox;
+this._func_GetCheckBox       = _func_GetCheckBox;
+this._func_SetPullDownList   = _func_SetPullDownList;
+this._func_SetRadioButtons   = _func_SetRadioButtons;
+this._func_GetRadioButtons   = _func_GetRadioButtons;
+this.set       = set;
+this.get       = get;
+this.isExist   = isExist;
+this.isEnabled = isEnabled;
+function _func_GetCheckBoxFormat( Element )
+{
+var CheckBoxFormat = Element.value.split('/');
+if( "undefined" == typeof( CheckBoxFormat.length ) ||
+2 != CheckBoxFormat.length )
+{
+return false;
+}
+this.CheckBoxOffValue = CheckBoxFormat[0];
+this.CheckBoxOnValue  = CheckBoxFormat[1];
+return true;
+}
+function _func_SetCheckBox( Element , SetValue )
+{
+if( true == this._func_GetCheckBoxFormat( Element ) &&
+( this.CheckBoxOnValue == SetValue ))
+{
+Element.checked = true;
+return true;
+}
+return false;
+}
+function _func_GetCheckBox( Element )
+{
+if( true == this._func_GetCheckBoxFormat( Element ) )
+{
+return ( Element.checked == true )
+? this.CheckBoxOnValue : this.CheckBoxOffValue ;
+}
+return false;
+}
+function _func_SetPullDownList( Element , SetValue )
+{
+for( i=0 ; i<Element.options.length ; i++ )
+{
+if( Element.options[i].value == SetValue )
+{
+Element.selectedIndex = i;
+return true;
+}
+}
+return false;
+}
+function _func_SetRadioButtons( Element , SetValue )
+{
+if( "undefined" == typeof( Element.length ) )
+{
+if( Element.value == SetValue )
+{
+Element.checked = true;
+return true;
+}
+return false;
+}
+for( var nCnt=0 ; nCnt<Element.length ; nCnt++ )
+{
+if( Element[ nCnt ].value == SetValue )
+{
+Element[ nCnt ].checked = true;
+return true;
+}
+}
+return false;
+}
+function _func_GetRadioButtons( Element , DefaultValue )
+{
+if( "undefined" == typeof( Element.length ))
+{
+if( true == Element.checked )
+{
+return Element.value;
+}
+return DefaultValue;
+}
+for( nCnt=0 ; nCnt<Element.length ; nCnt++ )
+{
+if( Element[ nCnt ].checked == true )
+{
+return Element[ nCnt ].value
+}
+}
+return DefaultValue;
+}
+function set( ElementName , SetValue )
+{
+var Element = this.propform.elements[ ElementName ];
+if( "undefined" == typeof( Element ) )
+{
+return false;
+}
+switch( Element.type )
+{
+case "checkbox" :
+return this._func_SetCheckBox( Element , SetValue );
+case "select-one" :
+return _func_SetPullDownList( Element , SetValue );
+case "text" : case "password" : case "textarea" : case "hidden" :
+Element.value = SetValue;
+return true;
+default :
+return _func_SetRadioButtons( Element , SetValue );
+}
+}
+function get( ElementName , DefaultValue )
+{
+Element = this.propform.elements[ ElementName ];
+if( "undefined" == typeof( Element ) )
+{
+return DefaultValue;
+}
+switch( Element.type )
+{
+case "checkbox" :
+return this._func_GetCheckBox( Element );
+case "select-one" :
+return Element.options[ Element.selectedIndex ].value;
+case "text" : case "password" : case "textarea" : case "hidden" :
+return Element.value ;
+default : 
+return _func_GetRadioButtons( Element , DefaultValue );
+}
+}
+function isExist( ElementName )
+{
+Element = this.propform.elements[ ElementName ];
+if( "undefined" == typeof( Element ) )
+{
+return false;
+}
+return true;
+}
+function isEnabled( ElementName )
+{
+Element = this.propform.elements[ ElementName ];
+if( "undefined" == typeof( Element ) )
+{
+return false;
+}
+if( true == Element.disabled )
+{
+return false;
+}
+return true;
+}
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function ComFuncFormReloadCtrl(
+propform,
+subform,
+surfix)
+{
+var Object = new ComFuncFormMemberCtrl( propform , subform );
+Object.DataTbl = ( function( DataTbl ) 
+{ 
+for( var ObjCnt=0 ; ObjCnt<DataTbl.length ; ObjCnt++ )
+{ 
+var ElementName = DataTbl[ ObjCnt ].SformEle.name;
+if( "undefined" != typeof( subform.elements[ ElementName + surfix ] ) )
+{
+DataTbl[ ObjCnt ].PformEle = null;
+}
+if( -1 != ElementName.indexOf( surfix, 0 ) &&
+ "undefined" != typeof( subform.elements[ ElementName.replace( surfix , "" ) ] ) )
+{
+DataTbl[ ObjCnt ].PformEle = ( "undefined" == typeof( propform.elements[ ElementName.replace( surfix , "" ) ] ) )
+? null : propform.elements[ ElementName.replace( surfix , "" ) ];
+}
+}
+return DataTbl; 
+} )( Object.DataTbl );
+Object.Init_SetValAll = ( function( DataObj ) 
+{
+PformElementName = ( -1 != DataObj.SformEle.name.indexOf( surfix, 0 ) &&
+ "undefined" != typeof( subform.elements[ DataObj.SformEle.name.replace( surfix , "" ) ] ) )
+? DataObj.SformEle.name.replace( surfix , "" ) : DataObj.SformEle.name ;
+return Object.EleCtrl.set( PformElementName , DataObj.SformEle.value );
+} )
+Object.Exec_SetValAll = ( function( DataObj ) 
+{
+PformElementName = ( -1 != DataObj.SformEle.name.indexOf( surfix, 0 ) &&
+ "undefined" != typeof( subform.elements[ DataObj.SformEle.name.replace( surfix , "" ) ] ) )
+? DataObj.SformEle.name.replace( surfix , "" ) : DataObj.SformEle.name ;
+DataObj.SformEle.value =
+Object.EleCtrl.get( PformElementName , DataObj.SformEle.value );
+} )
+return Object;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function ComFuncFormMemberCtrl(
+propform,
+subform )
+{
+this.propform = propform;
+this.subform  = subform;
+this.INIT_FLAG  = "Init_";
+this.EXEC_FLAG  = "Exec_";
+this.CHECK_FLAG = "Check_";
+this.DataTbl = new Array();
+this.DataTbl = _func_MakeDataTbl( this.subform , this.propform );
+this.EleCtrl = new ComFuncElementCtrlObj( this.propform );
+this.MakeDataObj = _func_MakeDataObj;
+this.MakeDataTbl = _func_MakeDataTbl;
+this.UpDateAll= _func_UpDateAll;
+this.GetCmdFuncName= _func_GetCmdFuncName;
+this.GetCmdDrawStat= _func_GetCmdDrawStat;
+this.Init_SetValAll= _func_Init_SetValAll
+this.Exec_SetValAll= _func_Exec_SetValAll
+this.FuncSlctAndFocus = _func_FuncSlctAndFocus;
+this.SetValToPropForm= SetValToPropForm;
+this.SetValToSubForm= SetValToSubForm;
+this.CheckVal= CheckVal;
+function _func_MakeDataObj( SformEle , PformEle )
+{
+this.PformEle = PformEle;
+this.SformEle = SformEle;
+}
+function _func_MakeDataTbl( subform , propform )
+{
+var tmpDataTbl = new Array(); 
+for( subCnt=0 ; subCnt<subform.elements.length ; subCnt++ )
+{
+var ElementName = subform.elements[ subCnt ].name;
+tmpDataTbl[ subCnt ] = ( "undefined" == typeof( propform.elements[ ElementName ] ) )
+? new _func_MakeDataObj( subform.elements[ ElementName ] , null )
+: new _func_MakeDataObj( subform.elements[ ElementName ] , propform.elements[ ElementName ] );
+}
+return tmpDataTbl;
+}
+function _func_GetCmdFuncName( CmdFlag , val_num )
+{
+return ( CmdFlag + this.DataTbl[ val_num ].SformEle.name );
+}
+function _func_GetCmdDrawStat( CmdFlag , val_num )
+{
+if( null == this.DataTbl[ val_num ].PformEle )
+{
+if( this.CHECK_FLAG == CmdFlag )
+{
+return false;
+}
+if( "undefined" == typeof( window[ this.GetCmdFuncName( this.INIT_FLAG , val_num ) ] ) ||
+"undefined" == typeof( window[ this.GetCmdFuncName( this.EXEC_FLAG , val_num ) ] ) )
+{
+return false;
+}
+}
+else if( true == this.DataTbl[ val_num ].PformEle.disabled )
+{
+if( this.CHECK_FLAG == CmdFlag )
+{
+return false;
+}
+}
+return true;
+}
+function _func_UpDateAll( CmdFlag )
+{
+var val_num;
+var Func_name
+for( val_num in this.DataTbl )
+{
+Func_name = this.GetCmdFuncName( CmdFlag , val_num );
+if( false == this.GetCmdDrawStat( CmdFlag , val_num ) )
+{
+continue;
+}
+if( "undefined" != typeof( window[ Func_name ] ))
+{
+if( false == window[ Func_name ]( this.EleCtrl ) )
+{
+if( this.CHECK_FLAG == CmdFlag )
+{
+this.FuncSlctAndFocus( this.DataTbl[ val_num ] );
+return false;
+}
+}
+}
+else
+{
+if( this.INIT_FLAG == CmdFlag )
+{
+this.Init_SetValAll( this.DataTbl[ val_num ] );
+}
+else if( this.EXEC_FLAG == CmdFlag )
+{
+this.Exec_SetValAll( this.DataTbl[ val_num ] );
+}
+}
+}
+return true;
+}
+function _func_Init_SetValAll( DataObj )
+{
+return this.EleCtrl.set( DataObj.SformEle.name , DataObj.SformEle.value );
+}
+function _func_Exec_SetValAll( DataObj )
+{
+DataObj.SformEle.value =
+this.EleCtrl.get( DataObj.SformEle.name , DataObj.SformEle.value );
+}
+function _func_FuncSlctAndFocus( DataObj )
+{
+if( "undefined" != typeof( DataObj.PformEle.focus ) &&
+"undefined" != typeof( DataObj.PformEle.select ) )
+{
+DataObj.PformEle.focus();
+DataObj.PformEle.select();
+}
+}
+function SetValToPropForm()
+{
+return this.UpDateAll( this.INIT_FLAG );
+}
+function SetValToSubForm()
+{
+return this.UpDateAll( this.EXEC_FLAG );
+}
+function CheckVal()
+{
+return this.UpDateAll( this.CHECK_FLAG );
+}
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function MakeDataObj( PformEle , SformEle )
+{
+this.PformEle = PformEle;
+this.SformEle = SformEle;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function ComFuncCheckBoxCtrlObj()
+{
+this.GetCheckBoxFormat= _func_GetCheckBoxFormat;
+this.PformUpdate=PformUpdate;
+this.SformUpdate=SformUpdate;
+function _func_GetCheckBoxFormat( DataObj )
+{
+var CheckBoxFormat = DataObj.PformEle.value.split('/');
+if( "undefined" == typeof( CheckBoxFormat.length ) ||
+2 != CheckBoxFormat.length )
+{
+return false;
+}
+this.CheckBoxOffValue = CheckBoxFormat[0];
+this.CheckBoxOnValue  = CheckBoxFormat[1];
+return true;
+}
+function PformUpdate( DataObj )
+{
+if( true == this.GetCheckBoxFormat( DataObj )      &&
+( this.CheckBoxOnValue == DataObj.SformEle.value ))
+{
+DataObj.PformEle.checked = true;
+}
+}
+function SformUpdate( DataObj )
+{
+if( true == this.GetCheckBoxFormat( DataObj ) )
+{
+DataObj.SformEle.value = ( DataObj.PformEle.checked == true )
+? this.CheckBoxOnValue : this.CheckBoxOffValue ;
+}
+}
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function ComFuncFormDatCtrl(
+propform,
+subform )
+{
+this.DataTbl = new Array();
+this.DataTbl = _func_MakeDataTbl();
+this.CheckBoxCtrl = new ComFuncCheckBoxCtrlObj();
+var INIT_FLAG  = "Init_";
+var EXEC_FLAG  = "Exec_";
+var CHECK_FLAG = "Check_";
+this.MakeDataTbl = _func_MakeDataTbl;
+this.UpDateAll= _func_UpDateAll;
+this.Init_SetValAll= _func_Init_SetValAll
+this.Exec_SetValAll= _func_Exec_SetValAll
+this.FuncSlctAndFocus = _func_FuncSlctAndFocus;
+this.SetValToPropForm=SetValToPropForm;
+this.SetValToSubForm=SetValToSubForm;
+this.CheckVal=CheckVal;
+function _func_MakeDataTbl()
+{
+var tmpDataTbl = new Array(); 
+var objCnt=0;
+for( subCnt=0 ; subCnt<subform.elements.length ; subCnt++ )
+{
+for( prpCnt=0 ; prpCnt<propform.elements.length ; prpCnt++ )
+{
+if( propform.elements[ prpCnt ].name == subform.elements[ subCnt ].name )
+{
+tmpDataTbl[ objCnt ] = new MakeDataObj( propform.elements[ propform.elements[ prpCnt ].name ],
+subform.elements[ subform.elements[ subCnt ].name ] );
+objCnt++;
+break;
+}
+}
+}
+return tmpDataTbl;
+}
+function _func_UpDateAll( CmdFlag )
+{
+var val_num;
+var Func_name;
+for( val_num in this.DataTbl )
+{
+Func_name = CmdFlag + this.DataTbl[ val_num ].SformEle.name ;
+if( "undefined" != typeof( window[ Func_name ] ) )
+{
+if( false == window[ Func_name ]( this.DataTbl[ val_num ] ) &&
+CHECK_FLAG == CmdFlag )
+{
+this.FuncSlctAndFocus( this.DataTbl[ val_num ] );
+return false;
+}
+}
+else
+{
+if( INIT_FLAG == CmdFlag )
+{
+this.Init_SetValAll( this.DataTbl[ val_num ] );
+}
+else if( EXEC_FLAG == CmdFlag )
+{
+this.Exec_SetValAll( this.DataTbl[ val_num ] );
+}
+}
+}
+return true;
+}
+function _func_Init_SetValAll( DataObj )
+{
+switch( DataObj.PformEle.type )
+{
+case"checkbox":this.CheckBoxCtrl.PformUpdate( DataObj );
+break;
+case"select-one":DropDownListSelect( DataObj.PformEle , DataObj.SformEle.value );
+break;
+case"password":
+case"text":DataObj.PformEle.value = DataObj.SformEle.value ;
+break;
+default:RadioSelect( DataObj.PformEle , DataObj.SformEle.value );
+break;
+}
+}
+function _func_Exec_SetValAll( DataObj )
+{
+switch( DataObj.PformEle.type )
+{
+case"checkbox":this.CheckBoxCtrl.SformUpdate( DataObj );
+break;
+case"select-one":DataObj.SformEle.value = DropDownList_value( DataObj.PformEle );
+break;
+case"text":
+case"password":DataObj.SformEle.value = DataObj.PformEle.value ;
+break;
+default:DataObj.SformEle.value = GetRadioVal( DataObj.PformEle );
+break;
+}
+}
+function _func_FuncSlctAndFocus( DataObj )
+{
+if( "undefined" != typeof( DataObj.PformEle.focus ) )
+{
+DataObj.PformEle.focus();
+DataObj.PformEle.select();
+}
+}
+function SetValToPropForm()
+{
+return this.UpDateAll( INIT_FLAG );
+}
+function SetValToSubForm()
+{
+return this.UpDateAll( EXEC_FLAG );
+}
+function CheckVal()
+{
+return this.UpDateAll( CHECK_FLAG );
+}
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function ListenerCtrlObj( TargetElement , submitButton )
+{
+var self = this;
+var PropatyForm = TargetElement.form;
+var AlreadyChanged = false;
+var TargetDefaultValue = TargetElement.options[ TargetElement.selectedIndex ].value;
+var DefaultDisableElement = new Object();
+function addEventListener( Element , event , ListenerFunc )
+{
+if( TargetElement.attachEvent )
+{
+Element.attachEvent( "on" + event  , ListenerFunc );
+}
+else
+{
+Element.addEventListener( event  , ListenerFunc , false );
+}
+}
+function CheckNameAndTagName()
+{
+switch( PropatyForm.elements[i].tagName )
+{
+case "FIELDSET" :                     
+return false;
+}
+switch( PropatyForm.elements[i].name )
+{
+case TargetElement.name : 
+case submitButton.name  : 
+case "Cancel_Button" :    
+return false;
+}
+return true;
+}
+function MakeOthersToDisable()
+{
+for( i=0 ; i<PropatyForm.elements.length ; i++ )
+{
+if( false == CheckNameAndTagName( PropatyForm.elements[i] ) )
+{
+continue;
+}
+if( true == PropatyForm.elements[i].disabled )
+{
+DefaultDisableElement[ PropatyForm.elements[i].id ] = PropatyForm.elements[i];
+continue;
+}
+PropatyForm.elements[i].disabled = true;
+}
+submitButton.disabled = false;
+AlreadyChanged = true;
+}
+function MakeOthersToEnable()
+{
+for( i=0 ; i<PropatyForm.elements.length ; i++ )
+{
+if( false == CheckNameAndTagName( PropatyForm.elements[i] ) )
+{
+continue;
+}
+if( null != DefaultDisableElement[ PropatyForm.elements[i].id ] )
+{
+continue;
+}
+PropatyForm.elements[i].disabled = false;
+}
+submitButton.disabled = true;
+AlreadyChanged = false;
+}
+function makePulldownToDefault()
+{
+TargetElement.selectedIndex = TargetDefaultValue;
+}
+function pullDownListenerFunc()
+{
+if( TargetDefaultValue == TargetElement.options[ TargetElement.selectedIndex ].value )
+{
+if( true == AlreadyChanged )
+{
+MakeOthersToEnable();
+}
+}
+else
+{
+if( false == AlreadyChanged )
+{
+MakeOthersToDisable();
+}
+}
+}
+function addButtonListenerFunc()
+{
+var oldListenerFunc = submitButton.onclick;
+submitButton.onclick = MakeOthersToEnable;
+addEventListener( submitButton , "click" , oldListenerFunc );
+}
+self.MainFunction = function()
+{
+addEventListener( TargetElement , "change" , pullDownListenerFunc );
+addButtonListenerFunc();
+}
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function ComFunc_AddListener( TargetElement )
+{
+if( null == TargetElement )
+{
+return;
+}
+var submitButton = TargetElement.form.elements[ TargetElement.name + "_Button" ];
+submitButton.disabled = true;
+var ctrlObj = new ListenerCtrlObj( TargetElement , submitButton );
+ctrlObj.MainFunction();
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function ComFunc_UnEscapeHTML( string )
+{
+return string.replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"');
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function SetDefaultValue( obj, val )
+{
+if( !obj )
+{
+return ;
+}
+obj.value = val;
+}
+//]]>
+</script>
+
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+var NaviGlobal = {
+HasMeapLogin       : "false",
+HasAuth_Device     : "true",
+HasAuth_Network    : "true",
+HasAuth_System     : "true",
+AuthKind           : "1",
+UserType           : "2",
+AirAuthGenericFlg  : "4",
+AirAuthDeviceFlg   : "8",
+AirAuthNetwkFlg    : "16",
+AirAuthSystemFlg   : "32",
+AuthKindNone       : "1",
+AuthKindCpca       : "2",
+UserTypeAdmin      : "2"
+}
+function Go_NextPage( cgi_str )
+{
+var now_time = new Date();
+cgi_str += "&Dummy=" + now_time.getTime();
+document.location.href = cgi_str;
+}
+function Draw_UserModeMenu( TBL )
+{
+document.write('<div class="ContentModuleListUp">');
+document.write('<div class="ListUpModuleElement">');
+Draw_MainItems( TBL );
+document.write('<\/div>');
+document.write('<\/div>');
+}
+function Auth_Check( auth_flg )
+{
+if( NaviGlobal.AirAuthGenericFlg & auth_flg ) {
+return true;
+}
+if( "false" == NaviGlobal.HasMeapLogin             ||
+NaviGlobal.AuthKindNone == NaviGlobal.AuthKind ||
+NaviGlobal.AuthKindCpca == NaviGlobal.AuthKind ) {
+return true;
+}
+else if( NaviGlobal.UserTypeAdmin != NaviGlobal.UserType ) {
+return false;
+}
+var AuthJsonAry = [
+{ "chkflg" : NaviGlobal.AirAuthDeviceFlg, "auth" : NaviGlobal.HasAuth_Device },
+{ "chkflg" : NaviGlobal.AirAuthNetwkFlg,  "auth" : NaviGlobal.HasAuth_Network },
+{ "chkflg" : NaviGlobal.AirAuthSystemFlg, "auth" : NaviGlobal.HasAuth_System }
+];
+for( property in AuthJsonAry ) {
+if( !( AuthJsonAry[property].chkflg & auth_flg ) ) {
+continue;
+}
+if( "true" == AuthJsonAry[property].auth ) {
+return true;
+}
+}
+return false;
+}
+function Draw_MainItems( TBL )
+{
+document.write('<ul>');
+for( var i=0 ; i<TBL.length ; i++ )
+{
+document.write('<li>');
+if( null != TBL[i].cgi_str )
+{
+if( "function" == typeof( UmdMenuTbl[ TBL[i].cgi_str ] ) )
+{
+document.write('<a href=JavaScript:UmdMenuTbl.' );
+document.write( TBL[i].cgi_str );
+document.write('()>' );
+document.write( TBL[i].title_str );
+document.write('<\/a>');
+}
+else
+{
+document.write('<a href=\'JavaScript:Go_NextPage(' );
+document.write( '"' + TBL[i].cgi_str + '"' );
+document.write(')\'>' );
+document.write( TBL[i].title_str );
+document.write('<\/a>');
+}
+}
+else
+{
+document.write('<span class="GroupTitle">')
+document.write( TBL[i].title_str );
+document.write('<\/span>')
+}
+if( null != TBL[i].tbl )
+{
+Draw_MainItems( TBL[i].tbl );
+}
+document.write('<\/li>');
+}
+document.write('<\/ul>');
+}
+function menu_obj(
+title_str,  
+cgi_str, 
+c_func,   
+auth_flg, 
+tbl)  
+{
+this.title_str  = title_str;
+this.cgi_str = cgi_str;
+this.c_func   = c_func;
+this.auth_flg = auth_flg;
+this.tbl  = tbl;
+}
+//]]>
+</script>
+
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+var UmdMenuTbl = new function()
+{
+var umdtblGlobal =
+{
+has_cl4          : "false",           
+has_cb2          : "true",
+has_cbul3        : "false",
+has_send         : "true",           
+has_sendpkg      : "true",
+has_fax          : "false",            
+has_ipfax        : "false",            
+has_ifax_cash    : "true",
+has_ldap         : "true",
+has_clrprt       : "true",     
+has_clr_bwmachine: "false",
+has_signat_time  : "false",    
+has_reader       : "true",         
+has_feeder       : "true",
+has_mutidetect   : "false",
+has_rmt_cpy_recv : "false",   
+has_output_stat  : "0000",
+has_trust_stmp   : "true",
+has_pcam         : "false",
+has_mlib         : "true",
+has_airfax_clie  : "false",
+has_airfax_serv  : "false",
+has_paf          : "true",
+has_pdfa         : "true",
+has_pdf_linear   : "true",
+has_pdf_policy   : "false",
+disp_feedsetting : "true",
+has_shift        : "false",
+has_dfe_ch_main  : "false",
+has_dfe_ch_sub   : "false",
+has_usb_host     : "false",
+has_bdl          : "true",
+has_nw           : "false",
+has_ether        : "true",
+has_appletalk    : "true",
+has_pdl          : "true",
+has_signat_time  : "false",
+has_lips         : "false",
+has_ps           : "false",
+has_rmt_cpy_send : 
