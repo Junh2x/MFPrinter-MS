@@ -167,6 +167,8 @@ def main():
             detail_fields.append((name, "JA_TEST_SMB"))
         elif name == "AAD1":
             detail_fields.append((name, "192.168.11.99"))
+        elif name == "APRTCL":
+            detail_fields.append((name, "7"))  # Windows (SMB)
         elif name == "APATH":
             detail_fields.append((name, "scan_test"))
         elif name == "AUSER":
@@ -204,6 +206,8 @@ def main():
             reg_fields.append((name, str(int(time.time()*1000))))
         elif name == "PASSCHK":
             reg_fields.append((name, "1"))  # 둘 다 1로
+        elif name == "APRTCL":
+            reg_fields.append((name, "7"))  # Windows (SMB)
         else:
             reg_fields.append((name, val))
 
