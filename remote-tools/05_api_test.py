@@ -18,6 +18,8 @@ RESULT_DIR = Path(__file__).parent / "results"
 RESULT_DIR.mkdir(exist_ok=True)
 TIMEOUT = 10
 
+LOG_FILE = RESULT_DIR / f"05_api_test_log_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+
 TEST_PREFIX = "JA_TEST_"
 test_results = []
 
@@ -29,6 +31,8 @@ def log(msg, color=None):
     suffix = reset if color else ""
     ts = datetime.now().strftime("%H:%M:%S")
     print(f"[{ts}] {prefix}{msg}{suffix}")
+    with open(LOG_FILE, "a", encoding="utf-8") as f:
+        f.write(f"[{ts}] {msg}\n")
 
 
 def record_test(test_name, success, details):

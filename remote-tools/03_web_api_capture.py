@@ -19,6 +19,8 @@ RESULT_DIR = Path(__file__).parent / "results"
 RESULT_DIR.mkdir(exist_ok=True)
 TIMEOUT = 10
 
+LOG_FILE = RESULT_DIR / f"03_web_api_capture_log_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+
 
 def log(msg, color=None):
     colors = {"red": "\033[91m", "green": "\033[92m", "yellow": "\033[93m", "cyan": "\033[96m"}
@@ -27,6 +29,8 @@ def log(msg, color=None):
     suffix = reset if color else ""
     ts = datetime.now().strftime("%H:%M:%S")
     print(f"[{ts}] {prefix}{msg}{suffix}")
+    with open(LOG_FILE, "a", encoding="utf-8") as f:
+        f.write(f"[{ts}] {msg}\n")
 
 
 def save_response(brand, ip, name, response, extra_info=None):

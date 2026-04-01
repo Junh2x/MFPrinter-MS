@@ -19,6 +19,8 @@ except ImportError:
 RESULT_DIR = Path(__file__).parent / "results"
 RESULT_DIR.mkdir(exist_ok=True)
 
+LOG_FILE = RESULT_DIR / f"02_discovery_log_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+
 TIMEOUT = 5
 COMMON_PORTS = [80, 443, 631, 8000, 8443, 9100, 161, 515, 21, 139, 445, 9090, 8080]
 
@@ -40,6 +42,8 @@ def log(msg, color=None):
     suffix = reset if color else ""
     ts = datetime.now().strftime("%H:%M:%S")
     print(f"[{ts}] {prefix}{msg}{suffix}")
+    with open(LOG_FILE, "a", encoding="utf-8") as f:
+        f.write(f"[{ts}] {msg}\n")
 
 
 def scan_port(ip, port, timeout=2):

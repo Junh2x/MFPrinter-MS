@@ -20,6 +20,8 @@ except ImportError:
 RESULT_DIR = Path(__file__).parent / "results"
 RESULT_DIR.mkdir(exist_ok=True)
 
+LOG_FILE = RESULT_DIR / f"04_traffic_log_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+
 traffic_log = []
 
 
@@ -30,6 +32,8 @@ def log(msg, color=None):
     suffix = reset if color else ""
     ts = datetime.now().strftime("%H:%M:%S")
     print(f"[{ts}] {prefix}{msg}{suffix}")
+    with open(LOG_FILE, "a", encoding="utf-8") as f:
+        f.write(f"[{ts}] {msg}\n")
 
 
 def replay_mode(target_ip):
