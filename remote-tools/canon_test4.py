@@ -85,7 +85,7 @@ def main():
 
     # Step 2.5: alframe (브라우저가 프레임으로 로드)
     log("[2.5] alframe (프레임)")
-    r = s.get(f"{BASE}/rps/alframe.cgi?", timeout=10,
+    r = s.get(f"{BASE}/rps/alframe.cgi?AID={aid}", timeout=10,
               headers={"Referer": f"{BASE}/rps/asublist.cgi?CorePGTAG=24&AMOD=0"})
     log(f"  → {r.status_code}")
     save("2b_alframe", r)
@@ -97,7 +97,7 @@ def main():
                data=f"AID={aid}&FILTER_ID=0&Dummy={dummy()}",
                headers={"Content-Type": "application/x-www-form-urlencoded",
                          "Origin": BASE,
-                         "Referer": f"{BASE}/rps/alframe.cgi?",
+                         "Referer": f"{BASE}/rps/alframe.cgi?AID={aid}",
                          "Cache-Control": "max-age=0"},
                timeout=10)
     log(f"  → {r.status_code}")
