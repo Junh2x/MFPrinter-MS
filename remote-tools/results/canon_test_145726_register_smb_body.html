@@ -1,0 +1,5565 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-script-type" content="text/javascript" />
+<meta http-equiv="content-style-type" content="text/css" />
+<meta http-equiv= "pragma" content="no-cache" />
+<meta http-equiv="cache-control" content="no-cache,no-store,max-age=0" />
+<meta http-equiv="expires" content="Thu, 01 Jan 1970 00:00:00 GMT" />
+<link rel="shortcut icon" type="image/x-icon" href="media/favicon.ico" />
+<link rel="stylesheet" type="text/css" media="all" href="css/common2.css" />
+<link rel="stylesheet" type="text/css" media="all" href="css/address.css" />
+<link rel="stylesheet" type="text/css" media="all" href="css/LanguageDependent/en.css" />
+<link rel="stylesheet" type="text/css" media="all" href="css/empty.css" />
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+  CacheImage1 = new Image();
+  CacheImage2 = new Image();
+  CacheImage3 = new Image();
+  CacheImage4 = new Image();
+  CacheImage5 = new Image();
+  CacheImage6 = new Image();
+  CacheImage7 = new Image();
+  CacheImage8 = new Image();
+  CacheImage1.src = "media/navigation_bg_nu.gif";
+  CacheImage2.src = "media/navigation_bg_fc.png";
+  CacheImage3.src = "media/navigation_bg_su.png";
+  CacheImage4.src = "media/navigation_bg_selected.png";
+  CacheImage5.src = "media/listsubmenumark_ic2.gif";
+  CacheImage6.src = "media/command_bg_nu.gif";
+  CacheImage7.src = "media/command_bg_fc.gif";
+  CacheImage8.src = "media/command_bg_su.gif";
+//]]>
+</script>
+
+<title>Remote UI : Address Book : iR-ADV&nbsp;C3720 : iR-ADV&nbsp;C3720</title>
+</head>
+<body>
+<form name="ERR_SUBMIT_FORM" action="" method="post" target="_top">
+<input type="hidden" name="AID" value="11" />
+<input type="hidden" name="PageFlag" value="" />
+<input type="hidden" name="AIDX" value="5" />
+<input type="hidden" name="ANAME" value="JA_TEST_SMB" />
+<input type="hidden" name="ANAMEONE" value="JA_TEST_SMB" />
+<input type="hidden" name="AREAD" value="JA_TEST_SMB" />
+<input type="hidden" name="APNO" value="0" />
+<input type="hidden" name="AAD1" value="192.168.11.99" />
+<input type="hidden" name="ACLS" value="7" />
+<input type="hidden" name="APRTCL" value="7" />
+<input type="hidden" name="APATH" value="scan_test" />
+<input type="hidden" name="AUSER" value="testuser" />
+<input type="hidden" name="INPUT_PSWD" value="0" />
+<input type="hidden" name="APWORD" value="testpass" />
+<input type="hidden" name="PASSCHK" value="1" />
+<input type="hidden" name="DATADIV" value="0" />
+<input type="hidden" name="AdrAction" value="./aprop.cgi?" />
+<input type="hidden" name="AMOD" value="1" />
+<input type="hidden" name="Dummy" value="9999" />
+<input type="hidden" name="AFCLS" value="" />
+<input type="hidden" name="AFINT" value="" />
+<input type="hidden" name="APNOL" value="" />
+<input type="hidden" name="AFION" value="1" />
+<input type="hidden" name="AUUID" value="" />
+<input type="hidden" name="Token" value="34588541442032240600" />
+</form>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+var sform = document.ERR_SUBMIT_FORM;
+function history_back() {
+var now_time = new Date();
+sform.Dummy.value = now_time.getTime();
+sform.action = sform.AdrAction.value;
+sform.submit();
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function ComMkup_RuiCommons()
+{
+var title  = "imageRUNNER ";
+if( "true" == "false" )
+{
+title = "imagePRESS Lite ";
+}
+else if( "true" == "false" )
+{
+title = "imagePRESS ";
+}
+else if( "true" == "true" )
+{
+title = "imageRUNNER ADVANCE DX ";
+}
+else if( "true" == "false" )
+{
+title  = "imageRUNNER ADVANCE ";
+}
+else if( "true" == "false" )
+{
+title = "Satera ";
+}
+else if( "true" == "false" )
+{
+title = "i-SENSYS ";
+}
+else if( "true" == "false" )
+{
+title = "i-SENSYS X ";
+}
+else if( "true" == "false" )
+{
+title = "Color imageCLASS X ";
+}
+else if( "true" == "false" )
+{
+title = "imageCLASS X ";
+}
+else if( "true" == "false" )
+{
+title = "imageCLASS ";
+}
+document.writeln('<div id="ruiCommons">');
+document.writeln('<div class="Wrapper">');
+document.writeln('<div id="commonBranding">');
+document.writeln('<h1 id="deviceLogo">');
+if( aapFromAirPrint() )
+{
+document.writeln('<img src="media/favicon.png" width="16" height="16" alt="" title="" \/>');
+document.writeln('<span>');
+document.writeln( title );
+document.writeln('<\/span>');
+}
+else
+{
+document.writeln('<a href="http://192.168.11.227:8000">');
+document.writeln('<img src="media/favicon.png" width="16" height="16" alt="" title="" \/>');
+document.writeln('<span>');
+document.writeln( title );
+document.writeln('<\/span>');
+document.writeln('<\/a>');
+}
+document.writeln('<\/h1>');
+document.writeln('<p id="deviceType">');
+document.writeln('<span class="Supplement">Device Type : <\/span>');
+document.writeln('<span id="deviceName">iR-ADV C3720 / iR-ADV C3720 /  <\/span>');
+document.writeln('<\/p>');
+document.writeln('<\/div>');
+document.writeln('<div id="commonTools">');
+document.writeln('<fieldset id="moveTools">');
+document.writeln('<legend>Move <\/legend>');
+document.writeln('<p>');
+if( !aapFromAirPrint() )
+{
+document.writeln('<a href="http://192.168.11.227:8000"><span class="Name">To Portal <\/span><\/a>');
+}
+document.writeln('<\/p>');
+document.writeln('<\/fieldset>');
+if( "true" == "false" )
+{
+document.writeln('<fieldset id="authTools">');
+document.writeln('<legend>Authentication <\/legend>');
+if( "false" == "false" )
+{
+document.writeln('<p id="loginUserData">');
+document.writeln('<span class="Supplement">Login User : <\/span>');
+document.writeln('<span id="userName">----- <\/span>');
+document.writeln('<\/p>');
+document.writeln('<p>');
+}
+document.writeln('<a href="/logout"><span class="Name">Log Out <\/span><\/a>');
+document.writeln('<\/p>');
+document.writeln('<\/fieldset>');
+}
+document.writeln('<\/div>');
+document.writeln('<\/div>');
+document.writeln('<hr \/>');
+document.writeln('<\/div>');
+}
+function aapFromAirPrint()
+{
+return ("true" == "false");
+}
+function ComMkup_ApplicationBranding()
+{
+if( aapFromAirPrint() )
+{
+AirPrint_ApplicationBranding();
+}
+else
+{
+Legacy_ApplicationBranding();
+}
+}
+function AirPrint_ApplicationBranding()
+{
+document.writeln( '<div id="applicationBranding">' );
+document.writeln( '<div class="Wrapper">' );
+document.writeln( '<h1 id="applicationLogo"></h1>' );
+document.writeln( '</div>' );
+document.writeln( '</div>' );
+}
+function Legacy_ApplicationBranding()
+{
+var userModeIcon;
+if("true" == "true")
+{
+userModeIcon = "usermode_icon.png";
+}
+else
+{
+userModeIcon = "listgear_ic2.png";
+}
+var message_tbl =
+{
+9 : { media : "device_icon.png", msg : "Status Monitor/Cancel" },
+10 : { media : "device_icon.png", msg : "Status Monitor/Cancel" },
+11 : { media : "device_icon.png", msg : "Status Monitor/Cancel" },
+13 : { media : "device_icon.png", msg : "Status Monitor/Cancel" },
+12 : { media : "device_icon.png", msg : "Status Monitor/Cancel" },
+14 : { media : "device_icon.png", msg : "Status Monitor/Cancel" },
+45 : { media : "device_icon.png", msg : "Status Monitor/Cancel" },
+1 : { media : "device_icon.png", msg : "Status Monitor/Cancel" },
+2 : { media : "device_icon.png", msg : "Status Monitor/Cancel" },
+7 : { media : "device_icon.png", msg : "Status Monitor/Cancel" },
+8 : { media : "device_icon.png", msg : "Status Monitor/Cancel" },
+3 : { media : "device_icon.png", msg : "Status Monitor/Cancel" },
+4 : { media : "device_icon.png", msg : "Status Monitor/Cancel" },
+5 : { media : "device_icon.png", msg : "Status Monitor/Cancel" },
+6 : { media : "device_icon.png", msg : "Status Monitor/Cancel" },
+16 : { media : "box_icon.png", msg : "Access Received/Stored Files" },
+17 : { media : "box_icon.png", msg : "Access Received/Stored Files" },
+18 : { media : "box_icon.png", msg : "Access Received/Stored Files" },
+19 : { media : "directprint_icon.png", msg : "Direct Print" },
+20 : { media : "directprint_icon.png", msg : "Direct Print" },
+21 : { media : "directprint_icon.png", msg : "Direct Print" },
+22 : { media : "directprint_icon.png", msg : "Direct Print" },
+23 : { media : "directprint_icon.png", msg : "Direct Print" },
+24 : { media : "address_icon.png", msg : "Address Book" },
+25 : { media : userModeIcon, msg : "Settings/Registration" },
+26 : { media : userModeIcon, msg : "Settings/Registration" },
+27 : { media : userModeIcon, msg : "Settings/Registration" },
+28 : { media : userModeIcon, msg : "Settings/Registration" },
+29 : { media : userModeIcon, msg : "Settings/Registration" },
+30 : { media : userModeIcon, msg : "Settings/Registration" },
+31 : { media : userModeIcon, msg : "Settings/Registration" },
+32 : { media : userModeIcon, msg : "Settings/Registration" },
+33 : { media : userModeIcon, msg : "Settings/Registration" },
+34 : { media : userModeIcon, msg : "Settings/Registration" },
+35 : { media : userModeIcon, msg : "Settings/Registration" },
+36 : { media : userModeIcon, msg : "Settings/Registration" },
+37 : { media : userModeIcon, msg : "Settings/Registration" },
+38 : { media : userModeIcon, msg : "Settings/Registration" },
+39 : { media : userModeIcon, msg : "Settings/Registration" },
+40 : { media : userModeIcon, msg : "Settings/Registration" },
+41 : { media : userModeIcon, msg : "Settings/Registration" },
+42 : { media : userModeIcon, msg : "Settings/Registration" },
+43 : { media : userModeIcon, msg : "Settings/Registration" },
+44 : { media : userModeIcon, msg : "Settings/Registration" }
+};
+if(( "false" == "true") || ("false" == "true"))
+{
+message_tbl[ 16 ] = { media : "box_fax_icon.png", msg : "Fax/I-Fax Inbox" };
+message_tbl[ 17 ] = { media : "box_fax_icon.png", msg : "Fax/I-Fax Inbox" };
+message_tbl[ 18 ] = { media : "box_fax_icon.png", msg : "Fax/I-Fax Inbox" };
+}
+var target_tbl = message_tbl[ 24 ];
+document.writeln('<div id="applicationBranding">');
+document.writeln('<div class="Wrapper">');
+if( target_tbl )
+{
+document.write('<h1 id="applicationLogo">');
+document.write('<img src="media/' + target_tbl.media );
+document.write('" width="32" height="32" alt="' + target_tbl.msg + '" title="" \/>' );
+document.write('<span class="BrandingName">');
+document.write( target_tbl.msg );
+document.write('<\/span>');
+document.write('<\/h1>');
+document.writeln('<div id="appTools">');
+document.writeln('<a href="mailto:"><span class="Name">E-Mail to System Manager <\/span><\/a>');
+document.writeln('<\/div>');
+}
+document.writeln('<\/div>');
+
+document.writeln('<\/div>');
+document.writeln('<hr \/>');
+}
+function ComMkup_NavTopicPath( obj )
+{
+document.writeln('<div id="navTopicPath">');
+document.writeln('<h4>Path <\/h4>');
+obj.tpcp_lst_draw();
+document.writeln('<\/div>');
+}
+function ComMkup_ContentHeading( title_name )
+{
+document.writeln('<div id="contentHeading">');
+document.write('<h2 class="PageName">');
+document.write( title_name );
+document.write('<\/h2>');
+document.writeln('<div id="contentHeadingTools">');
+document.writeln('<div id="tmpUpdate" x-ms-format-detection="none">');
+document.writeln( "Last Updated : 2026 04/01 14:56:48" );
+document.writeln('<\/div>');
+document.writeln('<div id="tmpReload">');
+document.writeln('<a href="javascript:reload_click()"><img src="media/bh_updt.gif" alt="Update " title="Update " height="22" width="22" \/><\/a>');
+document.writeln('<\/div>');
+document.writeln('<\/div>');
+document.writeln('<\/div>');
+}
+function ComMkup_ContentHeadingNoReload( title_name )
+{
+document.writeln('<div id="contentHeading">');
+document.write('<h2 class="PageName">');
+document.write( title_name );
+document.write('<\/h2>');
+document.writeln('<div id="contentHeadingTools">');
+document.writeln('<div id="tmpUpdate" x-ms-format-detection="none">');
+document.writeln( "Last Updated : 2026 04/01 14:56:48" );
+document.writeln('<\/div>');
+document.writeln('<\/div>');
+document.writeln('<\/div>');
+}
+function ComMkup_TmpFooter()
+{
+document.writeln('<div id="tmpFooter">');
+document.writeln('<hr \/>');
+document.writeln('<div class="GotoTop">');
+document.writeln('<a href="javascript:scrollTo(0,0);"><img src="media/ba_ptp.gif" width="16" height="16" alt="Back to Page Top " title="Back to Page Top " \/><\/a>');
+document.writeln('<\/div>');
+document.writeln('<\/div>');
+}
+function ComMkup_NavigationWrapper()
+{
+document.writeln('<div id="navigationWrapper">');
+document.writeln('<div id="navigation">');
+document.writeln('<h2>Menu <\/h2>');
+ComIdx_DrawLink();
+document.writeln('<\/div>');
+document.writeln('<\/div>');
+}
+function ComMkup_ApplicationInfo()
+{
+document.writeln('<div id="applicationInfo">');
+document.writeln('<address class="SiteInforLegal">Copyright CANON INC. 2011 All Rights Reserved<\/address>');
+document.writeln('<\/div>');
+}
+function Draw_ContModEditStart( title )
+{
+document.writeln('<div class="ContentModuleEditable">');
+if( null != title )
+{
+document.writeln('<div class="ModuleHeading">');
+document.writeln('<h4>');
+document.writeln( title );
+document.writeln('<\/h4>');
+document.writeln('<\/div>');
+}
+}
+function Draw_ContModEditEnd()
+{
+document.writeln('<\/div>');
+}
+function Draw_ModuleElementeStart( title )
+{
+document.writeln('<div class="ModuleElement">');
+if( null != title )
+{
+document.writeln('<h5>');
+document.writeln( title );
+document.writeln('<\/h5>');
+}
+document.writeln('<table class="PropertyListComponent" rules="groups" >');
+document.writeln('<colgroup>');
+document.writeln('<col class="ItemNameColumn" \/>');
+document.writeln('<col class="ItemValueColumn" \/>');
+document.writeln('<\/colgroup>');
+document.writeln('<thead>');
+document.writeln('<tr>');
+document.writeln('<th>');
+document.writeln('Item ');
+document.writeln('<\/th>');
+document.writeln('<th>');
+document.writeln('Details ');
+document.writeln('<\/th>');
+document.writeln('<\/tr>');
+document.writeln('<\/thead>');
+}
+function Draw_ModuleElementeEnd()
+{
+document.writeln('<\/table>');
+document.writeln('<\/div>');
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function ComMkup_ApplicationInfo()
+{
+document.writeln('<div id="applicationInfo">');
+document.writeln('<address class="SiteInforLegal">Copyright CANON INC. 2019 <\/address>');
+document.writeln('<\/div>');
+}
+//]]>
+</script>
+
+
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+var NaviGlobal = {
+HasMeapLogin       : "false",
+HasAuth_Device     : "true",
+HasAuth_Network    : "true",
+HasAuth_System     : "true",
+AuthKind           : "1",
+UserType           : "2",
+AirAuthGenericFlg  : "4",
+AirAuthDeviceFlg   : "8",
+AirAuthNetwkFlg    : "16",
+AirAuthSystemFlg   : "32",
+AuthKindNone       : "1",
+AuthKindCpca       : "2",
+UserTypeAdmin      : "2"
+}
+function Go_NextPage( cgi_str )
+{
+var now_time = new Date();
+cgi_str += "&Dummy=" + now_time.getTime();
+document.location.href = cgi_str;
+}
+function Draw_UserModeMenu( TBL )
+{
+document.write('<div class="ContentModuleListUp">');
+document.write('<div class="ListUpModuleElement">');
+Draw_MainItems( TBL );
+document.write('<\/div>');
+document.write('<\/div>');
+}
+function Auth_Check( auth_flg )
+{
+if( NaviGlobal.AirAuthGenericFlg & auth_flg ) {
+return true;
+}
+if( "false" == NaviGlobal.HasMeapLogin             ||
+NaviGlobal.AuthKindNone == NaviGlobal.AuthKind ||
+NaviGlobal.AuthKindCpca == NaviGlobal.AuthKind ) {
+return true;
+}
+else if( NaviGlobal.UserTypeAdmin != NaviGlobal.UserType ) {
+return false;
+}
+var AuthJsonAry = [
+{ "chkflg" : NaviGlobal.AirAuthDeviceFlg, "auth" : NaviGlobal.HasAuth_Device },
+{ "chkflg" : NaviGlobal.AirAuthNetwkFlg,  "auth" : NaviGlobal.HasAuth_Network },
+{ "chkflg" : NaviGlobal.AirAuthSystemFlg, "auth" : NaviGlobal.HasAuth_System }
+];
+for( property in AuthJsonAry ) {
+if( !( AuthJsonAry[property].chkflg & auth_flg ) ) {
+continue;
+}
+if( "true" == AuthJsonAry[property].auth ) {
+return true;
+}
+}
+return false;
+}
+function Draw_MainItems( TBL )
+{
+document.write('<ul>');
+for( var i=0 ; i<TBL.length ; i++ )
+{
+document.write('<li>');
+if( null != TBL[i].cgi_str )
+{
+if( "function" == typeof( UmdMenuTbl[ TBL[i].cgi_str ] ) )
+{
+document.write('<a href=JavaScript:UmdMenuTbl.' );
+document.write( TBL[i].cgi_str );
+document.write('()>' );
+document.write( TBL[i].title_str );
+document.write('<\/a>');
+}
+else
+{
+document.write('<a href=\'JavaScript:Go_NextPage(' );
+document.write( '"' + TBL[i].cgi_str + '"' );
+document.write(')\'>' );
+document.write( TBL[i].title_str );
+document.write('<\/a>');
+}
+}
+else
+{
+document.write('<span class="GroupTitle">')
+document.write( TBL[i].title_str );
+document.write('<\/span>')
+}
+if( null != TBL[i].tbl )
+{
+Draw_MainItems( TBL[i].tbl );
+}
+document.write('<\/li>');
+}
+document.write('<\/ul>');
+}
+function menu_obj(
+title_str,  
+cgi_str, 
+c_func,   
+auth_flg, 
+tbl)  
+{
+this.title_str  = title_str;
+this.cgi_str = cgi_str;
+this.c_func   = c_func;
+this.auth_flg = auth_flg;
+this.tbl  = tbl;
+}
+//]]>
+</script>
+
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+var UmdMenuTbl = new function()
+{
+var umdtblGlobal =
+{
+has_cl4          : "false",           
+has_cb2          : "true",
+has_cbul3        : "false",
+has_send         : "true",           
+has_sendpkg      : "true",
+has_fax          : "false",            
+has_ipfax        : "false",            
+has_ifax_cash    : "true",
+has_ldap         : "true",
+has_clrprt       : "true",     
+has_clr_bwmachine: "false",
+has_signat_time  : "false",    
+has_reader       : "true",         
+has_feeder       : "true",
+has_mutidetect   : "false",
+has_rmt_cpy_recv : "false",   
+has_output_stat  : "0000",
+has_trust_stmp   : "true",
+has_pcam         : "false",
+has_mlib         : "true",
+has_airfax_clie  : "false",
+has_airfax_serv  : "false",
+has_paf          : "true",
+has_pdfa         : "true",
+has_pdf_linear   : "true",
+has_pdf_policy   : "false",
+disp_feedsetting : "true",
+has_shift        : "false",
+has_dfe_ch_main  : "false",
+has_dfe_ch_sub   : "false",
+has_usb_host     : "false",
+has_bdl          : "true",
+has_nw           : "false",
+has_ether        : "true",
+has_appletalk    : "true",
+has_pdl          : "true",
+has_signat_time  : "false",
+has_lips         : "false",
+has_ps           : "false",
+has_rmt_cpy_send : "false",
+has_canon_pcl    : "true",
+has_canon_pdl    : "true",
+has_adobe_ps     : "true",
+has_psk          : "false",
+has_pcl          : "false",
+has_pdf          : "true",
+has_in_pdf       : "true",
+has_xps          : "true",
+has_office : "false",
+has_imaging      : "true",
+has_ks           : "false",
+has_canobureau   : "true",
+has_browser      : "true",
+has_n201         : "false",
+has_n201Ext      : "false",
+has_escp         : "false",
+has_escpExt      : "false",
+has_i5577        : "false",
+has_hpgl         : "false",
+has_hpgl2        : "false",
+has_somepnp      : "true",
+has_faxtype      : "0",
+has_hdddel       : "true",
+has_meap         : "true",
+has_signat_user  : "true",
+has_encrypt      : "true",
+has_vnc          : "true",
+has_ipsec        : "true",
+has_ooxml        : "true",
+has_manypunch    : "false",
+has_remotescan   : "true",
+has_trimer       : "false",
+has_DFD          : "false",
+has_bridge       : "false",
+has_HCS3_stack   : "false",
+has_inseternum   : "0",
+fin_type         : "0",
+has_cryptpdf     : "true",
+has_sign_app     : "true",
+fin_type_yg      : "33",
+fin_type_yg3     : "40",
+dsp_usb_i        : "true",
+dsp_usb_m        : "true",
+disp_send        : "true",
+disp_fax         : "true",
+disp_shutdown    : "true",
+disp_ui_box      : "true",        
+disp_ui_sbox     : "true",        
+disp_ui_mem      : "true",        
+disp_coin        : "false",
+ui_coin_type     : "0",
+disp_faxrecvcall : "true",
+disp_faxtel      : "false",
+disp_voiplowqual : "true",
+JobArcvImage     : "true",   
+JobArcvSboxCon   : "true",   
+country_code     : "12",            
+country_jp       : "1",
+tray_count       : "1",        
+pcam_umdstate    : "0",
+OcrPdf_Opt       : "true",
+SclPdf_Opt       : "true",
+ksize_disp       : "true",
+stat_tstmp       : "false",
+stat_boxbkup     : "true",
+disp_drs         : "false",
+has_acqlicense   : "true",
+is_acq           : "false",
+is_oem           : "false",
+faxType_G4       : "3",
+has_numdisp      : "false",
+has_bkupsnddoc   : "false",
+has_cryptprint   : "true",
+has_netcap       : "false",
+opt_fax : "false",
+disp_stime       : "false",
+ip_fax_num : "0",
+airfax_ipfax_use : "false",
+fax_type_standard: "false",
+has_bind         : "false",
+has_sbox         : "true",
+has_sbox_network : "true",
+disp_sec_print    : "false",
+disp_auth_print   : "true",
+disp_ppa          : "true",
+isSimpleBox           : "true",
+has_foward_use   : "true",
+has_traypap_sensor : "false",
+has_neatstack      : "false",
+has_force_print  : "false",
+has_copy_print_ext : "false",
+has_trust_stampcopy : "false",
+has_trust_stampbox : "false",
+has_trust_stampprt : "false",
+has_trust_stamvalid : "false",
+has_print_crepe_pri : "false",
+has_normal_coat_pri : "false",
+has_df_tray_raise          : "false",
+has_df_jam_recovery        : "true",
+has_scan_noise             : "true",
+has_streak_prevent         : "true",
+has_ltrr_stmt_org          : "true",
+VARIE_PAF_TXT_ORG       : "false",
+VARIE_IMG_COMPOSITION      : "false",
+VARIE_BOX_ALL_SETTING      : "true",
+VARIE_BOX_BACKUP           : "true",
+VARIE_KEY_OFF_FUNC_LMT     : "false",
+VARIE_BOX_USER             : "true",
+VARIE_PRINT_CREPE_PRI      : "false",
+VARIE_COAT_QUALITY_PRI     : "false",
+VARIE_TAB_FORCED_DISCHARGE : "false",
+VARIE_SCAN_COPY_IMG_RESOLUTION : "false",
+VARIE_DEV_PRINT_SIZE_A3    : "true",
+VARIE_DEV_PICTURE_FACE_UP  : "false",
+has_nfc           : "false",
+disp_log   : "true",
+has_userbox   : "false",
+has_mptdeck                : "true",
+disp_driverbypass   : "true",
+has_Ocsp                   : "true",
+has_HasDroplet             : "false",
+has_HasFogMode             : "false",
+has_HasEnvFixLv            : "false",
+has_fixTemp                : "false",
+has_normalSmooth           : "false",
+has_heavySmooth            : "false",
+has_envStickMode           : "false",
+has_lowCurl           : "false",
+has_thickFixMode           : "false",
+has_offset                 : "false",
+has_mpMode1                : "false",
+has_mpMode2                : "false",
+has_lowSlip                : "false",
+has_2tRollerAutoClean      : "false",
+has_whiteLineAdj           : "false",
+has_plainFix               : "false",
+has_plainBackFix           : "false",
+has_SecureBoot             : "true",
+has_CondenseMode           : "false",
+disp_LgcyScp           : "true",
+has_ScanCLSensor           : "false",
+isSendLite                 : "false",
+isSendLite2                : "false",
+has_Linearize              : "true",
+has_TimeStampPDF           : "false",
+has_PaperSetRui           : "false",
+has_box_user           : "true",
+has_ScanBwSensor   : "false", 
+has_dispSendSpc   : "true", 
+has_hotFolder   : "true",
+has_jdf   : "false",
+disp_mix_size   : "true",
+has_anyfax   : "false",
+is_Line5UI   : "false",
+has_emailreceiveonly   : "false",
+has_freesize   : "true",
+has_superfine   : "false",
+has_superimposeimage   : "false",
+isScanToPresetDestEnabled  : "false", 
+has_imageFlow          : "false",  
+has_roller             : "false",  
+has_rotary             : "false",  
+HasMeapLogin       : "false",
+HasAuth_Device     : "true",
+HasAuth_Network    : "true",
+HasAuth_System     : "true",
+AuthKind           : "1",
+UserType           : "2",
+AirAuthGenericFlg  : "4",
+AirAuthDeviceFlg   : "8",
+AirAuthNetwkFlg    : "16",
+AirAuthSystemFlg   : "32",
+AuthKindNone       : "1",
+AuthKindCpca       : "2",
+UserTypeAdmin      : "2",
+PCAM_USE_OFF       : "0",
+PCAM_USE_TL        : "1",
+PCAM_USE_QR        : "2",
+is_lite           : "false",
+has_ddil           : "false",
+stmp_msg_tbl :
+{
+"true" :    
+{
+"true"  : 
+{
+title     : "Secure Watermark/Document Scan Lock Settings ",
+title_sub : "Forced Secure Watermark/Document Scan Lock ",
+pdlmsg    : "Printer Driver Secure Watermark/Document Scan Lock "
+},
+"false" : 
+{
+title     : "Secure Watermark Settings ",
+title_sub : "Forced Secure Watermark ",
+pdlmsg    : "Printer Driver Secure Watermark "
+}
+},
+"false" :   
+{
+"true"  : 
+{
+title     : "Document Scan Lock Settings ",
+title_sub : "Forced Document Scan Lock ",
+pdlmsg    : "Printer Driver Document Scan Lock "
+},
+"false" : 
+{
+title     : "",
+title_sub : "",
+pdlmsg    : ""
+}
+}
+},
+has_ftp_print  : "true",
+has_smb_server : "true",
+has_hscom_ena : "false",
+en_smb_com_name : "true",
+en_smb_wgp_name : "true",
+has_aap : "true",
+has_gcp : "false",
+has_ble : "false",
+is_sfp : "false",
+is_reseller : "false",
+disp_genuine_menu : "false",
+has_dup : "true",
+carps2spt : "false",
+isSecPolValid : "false",
+has_forced_discharge : "false"
+};
+var pcam_func_valid = (umdtblGlobal.PCAM_USE_OFF != umdtblGlobal.pcam_umdstate) ? "true" : "false" ;
+function stmp_title()
+{
+return umdtblGlobal.stmp_msg_tbl[umdtblGlobal.has_trust_stmp][pcam_func_valid].title;
+}
+function stmp_title_sub()
+{
+return umdtblGlobal.stmp_msg_tbl[umdtblGlobal.has_trust_stmp][pcam_func_valid].title_sub;
+}
+function stmp_pdl_title()
+{
+return umdtblGlobal.stmp_msg_tbl[umdtblGlobal.has_trust_stmp][pcam_func_valid].pdlmsg;
+}
+function DrawStat_tststmp()
+{
+if( "false" == umdtblGlobal.has_clrprt || "false" == umdtblGlobal.disp_coin )
+{
+if( "true" == umdtblGlobal.has_trust_stmp )
+{
+return true;
+}
+if( "true" == umdtblGlobal.has_pcam && umdtblGlobal.PCAM_USE_OFF != umdtblGlobal.pcam_umdstate )
+{
+return true;
+}
+}
+return false;
+}
+function DrawStat_tststmpCpy()
+{
+if( true == DrawStat_tststmp() )
+{
+if( "true" == umdtblGlobal.has_reader || "true" == umdtblGlobal.has_rmt_cpy_recv )
+{
+return true;
+}
+}
+return false;
+}
+function DrawStat_tststmpBox()
+{
+if( "true" == umdtblGlobal.disp_coin )
+{
+return false;
+}
+if( true == DrawStat_tststmp() )
+{
+return true;
+}
+return false;
+}
+function DrawStat_tststmpPrinter()
+{
+if( true == DrawStat_tststmp() )
+{
+return true;
+}
+return false;
+}
+function DrawStat_tststmpPdl()
+{
+if( "true" == umdtblGlobal.has_force_print )
+{
+return false;
+}
+if( false == DrawStat_tststmp() )
+{
+return false;
+}
+if( "false" == umdtblGlobal.has_pdl && "false" == umdtblGlobal.has_bdl )
+{
+return false;
+}
+if( "true" == umdtblGlobal.stat_tstmp )
+{
+return false;
+}
+return true;
+}
+var forcedStmpTBL = new Array
+(
+new menu_obj
+(
+"Copy ",
+"./cdtststmp.cgi?FuncTypeFlag=Copy_Page&Flag=Init_Copy&PageFlag=c_tstmpl.tpl",
+DrawStat_tststmpCpy(),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Access Stored Files ",
+"./cdtststmp.cgi?FuncTypeFlag=Box_Page&Flag=Init_Box&PageFlag=c_tstmpl.tpl",
+DrawStat_tststmpBox(),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Printer ",
+"./cdtststmp.cgi?FuncTypeFlag=Prt_Page&Flag=Init_Prt&PageFlag=c_tstmpl.tpl",
+DrawStat_tststmpPrinter(),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+)
+var tststmpTBL = new Array
+(
+new menu_obj
+(
+stmp_title_sub(),
+null,
+null,
+null,
+forcedStmpTBL
+),
+new menu_obj
+(
+stmp_pdl_title(),
+"./cdtststmp.cgi?FuncTypeFlag=Pdl_Page&Flag=Init_Pdl&PageFlag=c_tstmpl.tpl",
+DrawStat_tststmpPdl(),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"QR Code Print Position ",
+"./cdimpqrloc.cgi?Flag=Init_Data&PageFlag=c_qrloc.tpl",
+(umdtblGlobal.PCAM_USE_QR == umdtblGlobal.pcam_umdstate && "false" == umdtblGlobal.has_force_print),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+);
+function DrawStat_tstmp()
+{
+if( "true" == umdtblGlobal.has_TimeStampPDF )
+{
+return true;
+}
+return false;
+}
+var timeStumpTBL = new Array
+(
+new menu_obj
+(
+"Install License File ",
+"./cdtimestamp.cgi?Flag=InsInit_Data&PageFlag=c_tmsi.tpl",
+DrawStat_tstmp(),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Basic Settings ",
+"./cdtimestamp.cgi?Flag=Init_Data&PageFlag=c_tms1.tpl&FuncTypeFlag=Basic_Page",
+DrawStat_tstmp(),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Limited ",
+"./cdtimestamp.cgi?Flag=Init_Data&PageFlag=c_tms2.tpl&FuncTypeFlag=Restrict_Page",
+DrawStat_tstmp(),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+)
+function Get_Casset_Auto_Title()
+{
+if( "true" == umdtblGlobal.VARIE_DEV_PRINT_SIZE_A3 &&
+"true" == umdtblGlobal.has_clrprt &&
+"true" == umdtblGlobal.has_reader &&
+"false" == umdtblGlobal.has_clr_bwmachine )
+{
+return "Paper Source Auto Selection/Paper Source Auto Selection Based on Color ";
+}
+else
+{
+return "Paper Source Auto Selection ";
+}
+}
+var providePaperTBL = new Array
+(
+new menu_obj
+(
+Get_Casset_Auto_Title(),
+"./cdacs.cgi?Flag=Init_Data&PageFlag=c_acs.tpl&FuncTypeFlag=ACS_Page",
+            null,
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Feed Method Switch ",
+"./cdpfmsw.cgi?Flag=Init_Data&PageFlag=c_pfms.tpl",
+( "false" == umdtblGlobal.VARIE_DEV_PICTURE_FACE_UP && "true" == umdtblGlobal.has_dup ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Suspended Job Settings ",
+"./cdacs.cgi?Flag=Init_Data&PageFlag=c_suppap.tpl&FuncTypeFlag=SupPap_Page",
+( "false" == umdtblGlobal.disp_coin ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Auto Switch Inserter Paper Source ",
+"./cdacs.cgi?Flag=Init_Data&PageFlag=c_insauto.tpl&FuncTypeFlag=InsAuto_Page",
+( "2" == umdtblGlobal.has_inseternum ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+)
+)
+function DrawStat_priority_PAGE_2()
+{
+if( 2 <= eval( umdtblGlobal.tray_count ) )
+{
+if( ("0" == umdtblGlobal.has_output_stat.charAt(0)   ) &&
+("1" == umdtblGlobal.has_output_stat.charAt(1) ) &&
+("1" == umdtblGlobal.has_output_stat.charAt(2) ) )
+{
+return true;
+}
+}
+return false;
+}
+function DrawStat_priority_PAGE1()
+{
+if( 2 <= eval( umdtblGlobal.tray_count ) )
+{
+var outtray_cnt = 0;
+if( "1" == umdtblGlobal.has_output_stat.charAt(0) )
+{
+outtray_cnt = outtray_cnt + 2;
+}
+if( "1" == umdtblGlobal.has_output_stat.charAt(1) )
+{
+outtray_cnt++;
+}
+if( "1" == umdtblGlobal.has_output_stat.charAt(2) )
+{
+outtray_cnt++;
+}
+if( "1" == umdtblGlobal.has_output_stat.charAt(3) )
+{
+outtray_cnt++;
+}
+if( "0" == umdtblGlobal.has_output_stat.charAt(3) &&
+"true" == umdtblGlobal.has_bridge )
+{
+outtray_cnt=0;
+}
+if( 2 <= outtray_cnt )
+{
+return true;
+}
+}
+return false;
+}
+var dischargePaperTBL = new Array
+(
+new menu_obj
+(
+"Output Tray Settings ",
+"./cdtray.cgi?Flag=Init_Data&PageFlag=c_tray.tpl",
+DrawStat_priority_PAGE1(),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Stacker Output Tray Settings ",
+"./cdtray.cgi?Flag=Init_Data&PageFlag=c_try2.tpl",
+DrawStat_priority_PAGE_2(),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Offset Jobs ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_fmout.tpl&FuncTypeFlag=Output_Page",
+( "true" == umdtblGlobal.has_shift ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Job Separator Between Jobs ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_fmout.tpl&FuncTypeFlag=Output_Page",
+( "false" == umdtblGlobal.disp_coin ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Job Separator Between Copies ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_fmout.tpl&FuncTypeFlag=Output_Page",
+( "false" == umdtblGlobal.disp_coin ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Insert Job Separator After Removing Stacker Paper Jam ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_fmout.tpl&FuncTypeFlag=Output_Page",
+( "true" == umdtblGlobal.has_HCS3_stack ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Different Paper Sizes for Output Tray ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_fmout.tpl&FuncTypeFlag=Output_Page",
+( "true" == umdtblGlobal.has_traypap_sensor || "true" == umdtblGlobal.has_HCS3_stack ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Stacker Settings ",
+"./cdstack.cgi?Flag=Init_Data&PageFlag=c_stack.tpl",
+( "true" == umdtblGlobal.has_HCS3_stack ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"External Finisher Settings ",
+"./cdexfin.cgi?Flag=Init_Data&PageFlag=c_exfin.tpl",
+( "true" == umdtblGlobal.has_DFD ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Align Output Paper of Different Sizes ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_fmout.tpl&FuncTypeFlag=Output_Page",
+( "true" == umdtblGlobal.has_neatstack && ( "40" == umdtblGlobal.fin_type || "42" == umdtblGlobal.fin_type )),
+null
+),
+new menu_obj
+(
+"Unprocessed Tab Paper Forced Output ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_fmout.tpl&FuncTypeFlag=Output_Page",
+( "true" == umdtblGlobal.has_forced_discharge ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Enable Offset for Single-Sheet Print Jobs ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_fmout.tpl&FuncTypeFlag=Output_Page",
+( "true" == umdtblGlobal.has_shift ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+)
+)
+function DrawStat_cpyprtext()
+{
+if( ("false" == umdtblGlobal.has_clrprt || "true" == umdtblGlobal.has_clr_bwmachine || "false" == umdtblGlobal.disp_coin) && "false" == umdtblGlobal.isSendLite2 )
+{
+if( "false" == umdtblGlobal.has_force_print )
+{
+return true;
+}
+}
+return false;
+}
+this.GoImgFormFunc = function()
+{
+if( "false" == umdtblGlobal.JobArcvImage )
+{
+alert("Cannot use this function because job recording is being performed. ");
+return;
+}
+Go_NextPage("./blogin.cgi?BOX_No=2000&FormLogin=");
+}
+var printTBL = new Array
+(
+new menu_obj
+(
+"Print Priority ",
+"./cdpriority.cgi?PageFlag=c_prio.tpl&Flag=Init_Data",
+null,
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Productivity Priority Settings ",
+"./prodimagepri.cgi?PageFlag=c_prodimg.tpl&Flag=Init_Data",
+( "true" ==  umdtblGlobal.has_print_crepe_pri || "true" == umdtblGlobal.has_normal_coat_pri ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Text/Photo Priority When Recognized as Black & White by Auto Color Selection ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_cpprio.tpl&FuncTypeFlag=CPprio_Page",
+( "true" == umdtblGlobal.has_clrprt && "false" == umdtblGlobal.has_clr_bwmachine && "true" == umdtblGlobal.has_reader ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Output Report Default Settings ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_reppri.tpl&FuncTypeFlag=Rpt2side_Page",
+( "true" == umdtblGlobal.has_dup),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+( ( "true" == umdtblGlobal.VARIE_IMG_COMPOSITION )?"Register Form ":"Form for Superimpose Image " ),
+"GoImgFormFunc",
+( "true" == umdtblGlobal.has_userbox && "true" == umdtblGlobal.has_superimposeimage ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Image Quality Priority for Superimpose Image ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_fmpri.tpl&FuncTypeFlag=ImgQua_Page",
+( "true" == umdtblGlobal.has_userbox && "true" == umdtblGlobal.has_clrprt && "true" == umdtblGlobal.has_superimposeimage ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Register Characters for Page Number/Watermark ",
+"./cpgstmpstr.cgi?Flag=Init_Data&PageFlag=c_str.tpl",
+( "false" == umdtblGlobal.isSendLite2 ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Copy Set Numbering Option Settings ",
+"./ccpprtext.cgi?Flag=Init_Data&PageFlag=c_cpex.tpl",
+DrawStat_cpyprtext(),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Settings for Forced Print of Recognition Information ",
+"./cforcedprt.cgi?Flag=Init_Data&PageFlag=c_forcedprt.tpl",
+( false == false && "false" == umdtblGlobal.has_copy_print_ext && "false" == umdtblGlobal.has_trust_stampcopy && "false" == umdtblGlobal.has_trust_stampbox && "false" == umdtblGlobal.has_trust_stampprt && "false" == umdtblGlobal.has_trust_stamvalid && "false" == umdtblGlobal.isSendLite2 ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+stmp_title(),
+null,
+( "false" == umdtblGlobal.has_force_print ),
+null,
+tststmpTBL
+),
+new menu_obj
+(
+"Settings for Quick Exit of Sleep Mode for Print Job ",
+"./cdsrpd.cgi?Flag=Init_Data&PageFlag=c_srpd.tpl&FuncTypeFlag=SLEEP_RECOVERY_PRINT_PREDIRECTION_Page",
+( false == false ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Auto Delete Suspended Jobs ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_deljob.tpl&FuncTypeFlag=DelJobOnErr_Page",
+( "0" == umdtblGlobal.ui_coin_type ),
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Conversion Color by Specific Color for Two Colors Printing ",
+"./umodecom.cgi?Flag=Init_Data&PageFlag=umodecom.tpl&p_id=TWOCOLOR",
+( "true" == umdtblGlobal.has_clrprt ) && ( "false" == umdtblGlobal.has_clr_bwmachine ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Speed/Image Quality Priority for Superfine (1200 dpi) ",
+"./umodecom.cgi?Flag=Init_Data&PageFlag=umodecom.tpl&p_id=SUPERFINE",
+( "true" == umdtblGlobal.has_superfine ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Action When Remaining Toner Is Low ",
+"./umodecom.cgi?Flag=Init_Data&PageFlag=umodecom.tpl&p_id=LOWTONER",
+( "true" == umdtblGlobal.is_reseller),
+umdtblGlobal.AirAuthSystemFlg | umdtblGlobal.AirAuthDeviceFlg,
+null
+)
+);
+function Get_Scan_FaxIFax_OnOff()
+{
+var ret_scan_varie = 0;
+if( "true" == umdtblGlobal.has_fax )
+{
+if( "true" == umdtblGlobal.has_ifax_cash )
+{
+ret_scan_varie = 1;
+}
+else
+{
+ret_scan_varie = 2;
+}
+}
+else if( "true" == umdtblGlobal.has_ifax_cash )
+{
+ret_scan_varie = 3;
+}
+return ret_scan_varie;
+}
+function Get_Scan_CL_Read_FAX_Title()
+{
+var ret_msg = "Speed/Image Quality Priority for Black & White Scan ";
+switch( Get_Scan_FaxIFax_OnOff() )
+{
+case 1:
+if( "true" == umdtblGlobal.has_ScanBwSensor )
+{
+ret_msg = "Speed/Image Quality Priority for Black & White Scan (Fax/I-Fax Send Jobs) ";
+}
+else
+{
+ret_msg = "Speed/Image Quality Priority for Black & White Scan ";
+}
+break;
+case 2:
+ret_msg = "Speed/Image Quality Priority for Black & White Scan (Fax Send Jobs) ";
+break;
+case 3:
+ret_msg = "Speed/Image Quality Priority for Black & White Scan (I-Fax Send Jobs) ";
+break;
+}
+return ret_msg;
+}
+function Get_Scan_CL_Read_OTHER_FAX_Title()
+{
+var ret_msg = "Speed/Image Quality Priority for Black & White Scan ";
+switch( Get_Scan_FaxIFax_OnOff() )
+{
+case 1:
+ret_msg = "Speed/Image Quality Priority for Black & White Scan (All Send Jobs Except Fax/I-Fax Jobs) ";
+break;
+case 2:
+ret_msg = "Speed/Image Quality Priority for Black & White Scan (All Send Jobs Except Fax Jobs) ";
+break;
+case 3:
+ret_msg = "Speed/Image Quality Priority for Black & White Scan (All Send Jobs Except I-Fax Jobs) ";
+break;
+}
+return ret_msg;
+}
+var scanTBL = new Array
+(
+new menu_obj
+(
+"Timing to Raise Feeder Tray ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_comm.tpl&FuncTypeFlag=Scan_Page",
+( "true" == umdtblGlobal.has_df_tray_raise && "true" == umdtblGlobal.has_feeder ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Feeder Jam Recovery Method ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_comm.tpl&FuncTypeFlag=Scan_Page",
+( "true" == umdtblGlobal.has_df_jam_recovery && "true" == umdtblGlobal.has_feeder ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Set Detection of Feeder Multiple Sheet Feed as Default ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_comm.tpl&FuncTypeFlag=Scan_Page",
+( "true" == umdtblGlobal.has_feeder && "true" == umdtblGlobal.has_mutidetect && false == false ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Scanner Noise Settings ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_comm.tpl&FuncTypeFlag=Scan_Page",
+( "true" == umdtblGlobal.has_scan_noise && "true" == umdtblGlobal.disp_feedsetting ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Streak Prevention ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_comm.tpl&FuncTypeFlag=Scan_Page",
+( "true" == umdtblGlobal.has_streak_prevent && "true" == umdtblGlobal.disp_feedsetting ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Speed/Image Quality Priority for Black & White Scan ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_comm.tpl&FuncTypeFlag=Scan_Page",
+( "true" == umdtblGlobal.has_ScanBwSensor && ( "false" == umdtblGlobal.has_fax && "false" == umdtblGlobal.has_ifax_cash ) ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+Get_Scan_CL_Read_FAX_Title(),
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_comm.tpl&FuncTypeFlag=Scan_Page",
+( "true" == umdtblGlobal.has_fax || "true" == umdtblGlobal.has_ifax_cash ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+Get_Scan_CL_Read_OTHER_FAX_Title(),
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_comm.tpl&FuncTypeFlag=Scan_Page",
+( "true" == umdtblGlobal.has_ScanBwSensor && ( "true" == umdtblGlobal.has_fax || "true" == umdtblGlobal.has_ifax_cash ) ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Speed/Image Quality Priority for Scan from Feeder ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_comm.tpl&FuncTypeFlag=Scan_Page",
+( "true" == umdtblGlobal.VARIE_SCAN_COPY_IMG_RESOLUTION && "true" == umdtblGlobal.has_feeder && "true" == umdtblGlobal.has_clrprt ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Speed/Image Quality Priority for Color Scan ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_comm.tpl&FuncTypeFlag=Scan_Page",
+( "true" == umdtblGlobal.has_ScanCLSensor ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"LTRR/STMT Original Selection ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_comm.tpl&FuncTypeFlag=Scan_Page",
+( "true" == umdtblGlobal.has_ltrr_stmt_org && "true" == umdtblGlobal.has_reader ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Remote Scan Gamma Value ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_comm.tpl&FuncTypeFlag=Scan_Page",
+( "true" == umdtblGlobal.has_remotescan ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Auto Set Different Size Originals When Using Feeder ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_comm.tpl&FuncTypeFlag=Scan_Page",
+( "true" == umdtblGlobal.has_feeder && "true" == umdtblGlobal.disp_mix_size),
+umdtblGlobal.AirAuthGenericFlg,
+null
+)
+);
+function DrawStat_PafSettings()
+{
+if( "true" != umdtblGlobal.has_paf )
+{
+return false;
+}
+return true;
+}
+function GetTitle_PafSettings()
+{
+if( "true" == umdtblGlobal.has_cl4 && "true" == umdtblGlobal.has_clrprt && "false" == umdtblGlobal.has_clr_bwmachine )
+{
+return "Image Quality Level Settings for Limited Color/Compact "
+}
+else
+{
+return "Image Quality Level for Compact "
+}
+}
+function DrawStat_PafTxtSettings()
+{
+if( "true" != umdtblGlobal.VARIE_PAF_TXT_ORG )
+{
+return false;
+}
+if( "true" != umdtblGlobal.has_send || "true" != umdtblGlobal.has_paf )
+{
+return false;
+}
+return true;
+}
+function DrawStat_PdfSmallNumberOfColor()
+{
+if( "false" == umdtblGlobal.has_cl4 )
+{
+return false;
+}
+if( "true" != umdtblGlobal.has_paf )
+{
+return false;
+}
+if( "false" == umdtblGlobal.has_clrprt || "true" == umdtblGlobal.has_clr_bwmachine )
+{
+return false;
+}
+return true;
+}
+function DrawStat_OCRSettings()
+{
+if( "true" == umdtblGlobal.OcrPdf_Opt )
+{
+return true;
+}
+return false;
+}
+function DrawStat_OutLineSettings()
+{
+if( "true" == umdtblGlobal.SclPdf_Opt )
+{
+return true;
+}
+return false;
+}
+var fileTBL = new Array
+(
+new menu_obj
+(
+GetTitle_PafSettings(),
+"./cfilegen.cgi?Flag=Init_Data&PageFlag=c_fpaflevel.tpl&FuncTypeFlag=PafImg_Page",
+DrawStat_PafSettings(),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Compact PDF Settings for Text Original ",
+"./cfilegen.cgi?Flag=Init_Data&PageFlag=c_fchrimg.tpl&FuncTypeFlag=ChrImg_Page",
+DrawStat_PafTxtSettings(),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"PDF (Limited Color) Resolution Settings ",
+"./cfilegen.cgi?Flag=Init_Data&PageFlag=c_pdfsmallNocolor.tpl&FuncTypeFlag=ChrImg2_Page",
+DrawStat_PdfSmallNumberOfColor(),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"OCR (Text Searchable) Settings ",
+"./cfilegen.cgi?Flag=Init_Data&PageFlag=c_focr.tpl&FuncTypeFlag=OCR_Page",
+DrawStat_OCRSettings(),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Trace & Smooth Settings ",
+"./cfilegen.cgi?Flag=Init_Data&PageFlag=c_foutline.tpl&FuncTypeFlag=OutLine_Page",
+DrawStat_OutLineSettings(),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"OOXML Settings ",
+"./cfilegen.cgi?Flag=Init_Data&PageFlag=c_ooxml.tpl&FuncTypeFlag=OOXML_Page",
+( "true" == umdtblGlobal.has_ooxml ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Word File Image Settings ",
+"./cfilegen.cgi?Flag=Init_Data&PageFlag=c_ooxmlword.tpl&FuncTypeFlag=OOXML_BgDisp_Page",
+( "true" == umdtblGlobal.has_ooxml && "true" == umdtblGlobal.OcrPdf_Opt ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Specify Minimum PDF Version ",
+"./cfilegen.cgi?Flag=Init_Data&PageFlag=c_pdfver.tpl&FuncTypeFlag=PDFVer_Page",
+null,
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Format PDF to PDF/A ",
+"./cfilegen.cgi?Flag=Init_Data&PageFlag=c_apdf.tpl&FuncTypeFlag=PdfA_Page",
+null,
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Optimize PDF for Web ",
+"./cfilegen.cgi?Flag=Init_Data&PageFlag=c_adjpdf.tpl&FuncTypeFlag=PdfOptimizeWeb_Page",
+( "true" == umdtblGlobal.has_Linearize ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"256-bit AES Settings for Encrypted PDF ",
+"./cpdfaes.cgi?Flag=Init_Data&PageFlag=c_pdfaes.tpl",
+( "true" == umdtblGlobal.has_cryptpdf ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Rotate Scanned Image When Generating PDF ",
+"./umodecom.cgi?Flag=Init_Data&PageFlag=umodecom.tpl&p_id=PDFROTATE",
+( "true" == umdtblGlobal.isSendLite && "true" == umdtblGlobal.has_dispSendSpc ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Time Stamp Settings <span class=\"memo\">*Setting changes are effective after clicking [Apply Setting Changes] and performing the necessary operations. <\/span>",
+null,
+null,
+null,
+timeStumpTBL
+),
+new menu_obj
+(
+"Rights Management Server Settings ",
+"./cdadbplsv.cgi?Flag=Init_Data&PageFlag=c_adobe.tpl&FuncTypeFlag=AdobePolicyL_Page",
+( "true" == umdtblGlobal.has_pdf_policy ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+);
+this.FucComMainTBL = new Array
+(
+new menu_obj
+(
+"Paper Feed Settings ",
+null,
+null,
+null,
+providePaperTBL
+),
+new menu_obj
+(
+"Paper Output Settings ",
+null,
+null,
+null,
+dischargePaperTBL
+),
+new menu_obj
+(
+"Print Settings ",
+null,
+null,
+null,
+printTBL
+),
+new menu_obj
+(
+"Scan Settings ",
+null,
+( "true" == umdtblGlobal.has_reader ),
+null,
+scanTBL
+),
+new menu_obj
+(
+"Generate File ",
+null,
+( "true" == umdtblGlobal.has_reader ),
+null,
+fileTBL
+),
+new menu_obj
+(
+"Document Scan Lock Operational Settings ",
+"./cdimpdtct.cgi?Flag=Init_Data&PageFlag=c_dimpdt.tpl",
+( "true" == umdtblGlobal.has_pcam && "false" == umdtblGlobal.disp_coin && "false" == umdtblGlobal.has_force_print ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Set Authentication Method ",
+"./cdauthmethod.cgi?Flag=Init_Data&PageFlag=c_authmethod.tpl",
+( "true" == umdtblGlobal.has_send && "true" == umdtblGlobal.HasMeapLogin ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+);
+this.AdjMntMainTBL = new Array
+(
+new menu_obj
+(
+"Quick Adjust ",
+"./cprtpasquick.cgi?Flag=Init_Data&PageFlag=c_prtpasquick.tpl",
+( "false" == umdtblGlobal.is_Line5UI ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Settings for Auto Full Calibration ",
+"./umodecom.cgi?Flag=Init_Data&PageFlag=umodecom.tpl&p_id=CALIBRATION",
+( "true" == umdtblGlobal.has_clrprt &&
+  "true" == umdtblGlobal.is_lite &&
+  "true" == umdtblGlobal.has_ddil ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Print Sample for Adjust Print Position ",
+"./cadjposprn.cgi?Flag=Init_Data&PageFlag=c_adjposprn.tpl",
+( "true" ==  umdtblGlobal.is_sfp && "true" == umdtblGlobal.isSendLite2 ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Adjust Print Position ",
+"./umodecom.cgi?Flag=Init_Data&PageFlag=umodecom.tpl&p_id=ADJPRINTPOS",
+( "true" == umdtblGlobal.is_sfp && "true" == umdtblGlobal.isSendLite2 ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Special Processing ",
+"./umodecom.cgi?Flag=Init_Data&PageFlag=umodecom.tpl&p_id=ADJIMGMP",
+( "true" == umdtblGlobal.has_HasDroplet        ||
+  "true" == umdtblGlobal.has_HasEnvFixLv       ||
+  "true" == umdtblGlobal.has_HasFogMode        ||
+  "true" == umdtblGlobal.has_fixTemp           ||
+  "true" == umdtblGlobal.has_normalSmooth      ||
+  "true" == umdtblGlobal.has_heavySmooth       ||
+  "true" == umdtblGlobal.has_envStickMode      ||
+  "true" == umdtblGlobal.has_lowCurl           ||
+  "true" == umdtblGlobal.has_imageFlow         ||
+  "true" == umdtblGlobal.has_roller            ||
+  "true" == umdtblGlobal.has_rotary            ||
+  "true" == umdtblGlobal.has_thickFixMode      ||
+  "true" == umdtblGlobal.has_offset            ||
+  "true" == umdtblGlobal.has_mpMode1           ||
+  "true" == umdtblGlobal.has_mpMode2           ||
+  "true" == umdtblGlobal.has_lowSlip           ||
+  "true" == umdtblGlobal.has_2tRollerAutoClean ||
+  "true" == umdtblGlobal.has_whiteLineAdj      ||
+  "true" == umdtblGlobal.has_plainFix          ||
+  "true" == umdtblGlobal.has_plainBackFix      ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+);
+this.AdjMntMntMainTBL = new Array
+(
+new menu_obj
+(
+"Control Recognized Condensation ",
+"./ccndmd.cgi?Flag=Init_Data&PageFlag=c_cndmd.tpl",
+( "true" ==  umdtblGlobal.has_CondenseMode ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+)
+);
+this.EnvPapMainTBL = new Array
+(
+new menu_obj
+(
+"Paper Settings ",
+"./cdmtreg.cgi?Flag=Init_Data&PageFlag=c_mtrg.tpl",
+( "true" == umdtblGlobal.has_PaperSetRui ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Paper Settings ",
+"/dvccom/papersettings/?portalLang=en&disp=paper_menu",
+( "false" == umdtblGlobal.has_PaperSetRui ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Paper Type Management Settings ",
+"/dvccom/paperman/List?portalLang=en&disp=paper_menu",
+( "true" == umdtblGlobal.has_mlib ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+);
+function GetTitle_UsePGAdr()
+{
+var ret = "Personal Address List/User Group Address List Settings ";
+if( "true" == umdtblGlobal.is_acq )
+{
+ret = "User Group Address List Settings ";
+}
+return ret;
+}
+this.AdrsMainTBL = new Array
+(
+new menu_obj
+(
+"Address Lists (Output Report) ",
+"./cdreportprt.cgi?Flag=Init_Data&PageFlag=c_repads.tpl",
+( "true" == umdtblGlobal.has_reader ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Address Book PIN ",
+"./cadrs.cgi?Flag=Init_Data&PageFlag=c_adspsw.tpl",
+( "false" == umdtblGlobal.is_acq ),
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Manage Address Book Access Numbers ",
+"./cadrs.cgi?Flag=Init_Data&PageFlag=c_adsacs.tpl",
+null,
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Address Book Export Settings ",
+"./cadrs.cgi?Flag=Init_Data&PageFlag=c_adrexppass.tpl",
+null,
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Register LDAP Server ",
+"./cldap.cgi?CorePGTAG=39&Flag=Init_Data&PageFlag=c_topll.tpl",
+( "true" == umdtblGlobal.has_ldap ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"TLS Certificate Confirmation Settings for LDAP Server Access ",
+"./clsask.cgi?CorePGTAG=39&Flag=Init_Data&PageFlag=c_lsa.tpl",
+( "true" == umdtblGlobal.has_ldap ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Register/Edit LDAP Search ",
+"./clsatrb.cgi?CorePGTAG=39&Flag=Init_Data&PageFlag=c_topls.tpl",
+( "true" == umdtblGlobal.has_ldap ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Acquire Remote Address Book ",
+"./cairadrs.cgi?CorePGTAG=39&Flag=Init_Data&PageFlag=c_airadsget.tpl&FuncTypeFlag=Client_Page",
+( "true" == umdtblGlobal.has_send || "true" == umdtblGlobal.has_fax || "true" == umdtblGlobal.has_airfax_clie ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Make Remote Address Book Open ",
+"./cairadrs.cgi?CorePGTAG=39&Flag=Init_Data&PageFlag=c_airadsrls.tpl&FuncTypeFlag=Serv_Page",
+( "true" == umdtblGlobal.has_send || "true" == umdtblGlobal.has_fax || "true" == umdtblGlobal.has_airfax_clie ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Fax Destination Settings ",
+"./faxaddr.cgi?CorePGTAG=39&Flag=Init_Data&PageFlag=c_faxaddr.tpl",
+( "0" != umdtblGlobal.ip_fax_num || ("true" == umdtblGlobal.has_airfax_clie && "true" == umdtblGlobal.airfax_ipfax_use) ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+GetTitle_UsePGAdr(),
+"./cusepgadr.cgi?Flag=Init_Data&PageFlag=c_usepgadr.tpl",
+(( "true" == "false" ) &&
+ ( "true" == umdtblGlobal.has_send || "true" == umdtblGlobal.has_fax || "true" == umdtblGlobal.has_airfax_clie )),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+);
+this.EnvIndMainTBL = new Array
+(
+new menu_obj
+(
+"Edit Puncher Unit Die Name ",
+"./cinddie.cgi?Flag=Init_Data&PageFlag=c_inddie.tpl",
+( "true" == "true" && "true" == umdtblGlobal.has_manypunch ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+);
+function DrawStat_usb()
+{
+return true;
+}
+function load_extend_card_setting()
+{
+var excard_setting = new Array(
+""
+
+);
+if( 0 == excard_setting.length || "" == excard_setting[0] )
+{
+return null;
+}
+return ( "./" + excard_setting[0] + "?" );
+}
+this.EnvIntMainTBL = new Array
+(
+new menu_obj
+(
+"USB Settings ",
+"./cdntwkusb.cgi?Flag=Init_Data&PageFlag=c_nusb.tpl&FuncTypeFlag=Usb_Page",
+DrawStat_usb(),
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Output Extension Card Report ",
+"./cdreportprt.cgi?Flag=Init_Data&PageFlag=c_repint.tpl",
+( "true" == "false" && "false" == umdtblGlobal.has_dfe_ch_main ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Extension Card Settings ",
+load_extend_card_setting(),
+( "true" == "false" && "false" == umdtblGlobal.has_dfe_ch_main ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+);
+var tcpip_ipsecTBL = new Array
+(
+new menu_obj
+(
+"IPSec Policy List ",
+"./rnwipsec.cgi?Flag=Init_Data&PageFlag=c_plcyl.tpl&FuncTypeFlag=List_Page",
+( "true" == umdtblGlobal.has_ipsec ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+);
+function DrawStat_BMLinks()
+{
+if( "true" == umdtblGlobal.has_dfe_ch_main )
+{
+return false;
+}
+if( "true" == umdtblGlobal.has_pdl || "true" == umdtblGlobal.has_bdl )
+{
+if( umdtblGlobal.country_jp == umdtblGlobal.country_code )
+{
+if( "false" == umdtblGlobal.is_oem  )
+{
+return true;
+}
+}
+}
+return false;
+}
+var net_tcpipTBL = new Array
+(
+new menu_obj
+(
+"IPv4 Settings ",
+"./rnwntcp.cgi?Flag=Init_Data&PageFlag=c_nip.tpl&FuncTypeFlag=IpAdrs_Page",
+( "false" == umdtblGlobal.has_dfe_ch_main ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"IPv6 Settings ",
+"./rnwipv6.cgi?Flag=Init_Data&PageFlag=c_ipv6.tpl",
+( "false" == umdtblGlobal.has_dfe_ch_main || "true" == umdtblGlobal.VARIE_COKIE_BISCOTTI_EFI ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"WINS Settings ",
+"./rnwntcp.cgi?Flag=Init_Data&PageFlag=c_nwns.tpl&FuncTypeFlag=Wins_Page",
+( "false" == umdtblGlobal.has_dfe_ch_main ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"SMB Server Settings ",
+"./rnwntcp.cgi?Flag=Init_Data&PageFlag=c_nsmb.tpl&FuncTypeFlag=Smb_Page",
+( true == ( ( "true" == umdtblGlobal.has_pdl || "true" == umdtblGlobal.has_bdl )  || "true" == umdtblGlobal.has_fax || "true" == umdtblGlobal.has_send ) && "false" == umdtblGlobal.has_dfe_ch_main && "true" == umdtblGlobal.has_smb_server ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Computer Name/Workgroup Name Settings ",
+"./rnwntcp.cgi?Flag=Init_Data&PageFlag=c_nsmbcom.tpl&FuncTypeFlag=SmbCom_Page",
+( true == ( ( "true" == umdtblGlobal.has_pdl || "true" == umdtblGlobal.has_bdl )  || "true" == umdtblGlobal.has_fax || "true" == umdtblGlobal.has_send ) && "false" == umdtblGlobal.has_dfe_ch_main ) && ( "true" == umdtblGlobal.en_smb_com_name || "true" == umdtblGlobal.en_smb_wgp_name ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"LPD Print Settings ",
+"./rnwntcp.cgi?Flag=Init_Data&PageFlag=c_nlpd.tpl&FuncTypeFlag=Lpd_Page",
+( "false" == umdtblGlobal.has_dfe_ch_main ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"RAW Print Settings ",
+"./rnwntcp.cgi?Flag=Init_Data&PageFlag=c_nraw.tpl&FuncTypeFlag=Raw_Page",
+( "false" == umdtblGlobal.has_dfe_ch_main ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"SNTP Settings ",
+"./rnwntcp.cgi?Flag=Init_Data&PageFlag=c_nsnt.tpl&FuncTypeFlag=Sntp_Page",
+( "false" == umdtblGlobal.has_dfe_ch_main ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"FTP Print Settings ",
+"./rnwntcp.cgi?Flag=Init_Data&PageFlag=c_nfp.tpl&FuncTypeFlag=FtpPrint_Page",
+( "false" == umdtblGlobal.has_dfe_ch_main && "true" == umdtblGlobal.has_ftp_print ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"WSD Settings ",
+"./rnwntcp.cgi?Flag=Init_Data&PageFlag=c_nwsd.tpl&FuncTypeFlag=Wsd_Page",
+( "false" == umdtblGlobal.has_dfe_ch_main ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"FTP PASV Mode Settings ",
+"./rnwntcp.cgi?Flag=Init_Data&PageFlag=c_nfpv.tpl&FuncTypeFlag=FtpPasv_Page",
+( "true" == umdtblGlobal.has_send ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"BMLinkS Settings ",
+"./rnwntcp.cgi?Flag=Init_Data&PageFlag=c_nbml.tpl&FuncTypeFlag=BMLinkS_Page",
+DrawStat_BMLinks(),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"IPP Print Settings ",
+"./rnwntcp.cgi?Flag=Init_Data&PageFlag=c_nipp.tpl&FuncTypeFlag=Ipp_Page",
+( "false" == umdtblGlobal.has_dfe_ch_main ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Network Link Scan Settings ",
+"./rnwntcp.cgi?Flag=Init_Data&PageFlag=c_nnls.tpl&FuncTypeFlag=Nls_Page",
+( "false" == umdtblGlobal.has_dfe_ch_main && "true" == umdtblGlobal.has_aap && "true" == umdtblGlobal.has_reader ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Multicast Discovery Settings ",
+"./rnwntcp.cgi?Flag=Init_Data&PageFlag=c_ndsc.tpl&FuncTypeFlag=Discovery_Page",
+( "false" == umdtblGlobal.has_dfe_ch_main ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"HTTP Settings ",
+"./rnwntcp.cgi?Flag=Init_Data&PageFlag=c_nhtp.tpl&FuncTypeFlag=Http_Page",
+null,
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"WebDAV Server Settings ",
+"./rnwnetwork.cgi?Flag=Init_Data&PageFlag=c_nwebdav.tpl&FuncTypeFlag=WebDav_Page",
+( "true" == umdtblGlobal.has_sbox ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"TLS Settings ",
+"./rnwntssl.cgi?PageFlag=c_sslm.tpl",
+null,
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Proxy Settings ",
+"./rnwntcp.cgi?Flag=Init_Data&PageFlag=c_npxy.tpl&FuncTypeFlag=Proxy_Page",
+null,
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Settings for Confirming Authentication Information When in Authentication Management Mode ",
+"./rnwntcp.cgi?Flag=Init_Data&PageFlag=c_npwc.tpl&FuncTypeFlag=UsrPwdChk_Page",
+( "false" == umdtblGlobal.has_dfe_ch_main ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"IPSec Settings ",
+"./rnwipsec.cgi?Flag=Init_Data&PageFlag=c_ipsec.tpl&FuncTypeFlag=IPsec_Page",
+( "true" == umdtblGlobal.has_ipsec && "false" == umdtblGlobal.has_dfe_ch_main ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+tcpip_ipsecTBL
+),
+new menu_obj
+(
+"SIP Settings ",
+"./rnwsip.cgi?Flag=Init_Data&PageFlag=c_sip.tpl",
+( "0" != umdtblGlobal.ip_fax_num ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+)
+var net_pfw_ipv4TBL = new Array
+(
+new menu_obj
+(
+"Outbound Filter ",
+"./rnwfirewall.cgi?Flag=Init_Data&PageFlag=c_toppil.tpl&FuncTypeFlag=PwfIPv4S_Page",
+null,
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Inbound Filter ",
+"./rnwfirewall.cgi?Flag=Init_Data&PageFlag=c_toppil.tpl&FuncTypeFlag=PwfIPv4R_Page",
+null,
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"ICMP Sending/Receiving Settings ",
+"./rnwicmp.cgi?Flag=Init_Data&PageFlag=c_icmp.tpl&FuncTypeFlag=ICMPv4_Page",
+null,
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+)
+var net_pfw_ipv6TBL = new Array
+(
+new menu_obj
+(
+"Outbound Filter ",
+"./rnwfirewall.cgi?Flag=Init_Data&PageFlag=c_toppil.tpl&FuncTypeFlag=PwfIPv6S_Page", 
+null,
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Inbound Filter ",
+"./rnwfirewall.cgi?Flag=Init_Data&PageFlag=c_toppil.tpl&FuncTypeFlag=PwfIPv6R_Page",
+null,
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"ICMP Sending/Receiving Settings ",
+"./rnwicmp.cgi?Flag=Init_Data&PageFlag=c_icmp.tpl&FuncTypeFlag=ICMPv6_Page",
+null,
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+)
+var net_pfw_macTBL = new Array
+(
+new menu_obj
+(
+"Outbound Filter ",
+"./rnwfirewallmac.cgi?Flag=Init_Data&PageFlag=c_toppma.tpl&FuncTypeFlag=PwfMacS_Page",
+null,
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Inbound Filter ",
+"./rnwfirewallmac.cgi?Flag=Init_Data&PageFlag=c_toppma.tpl&FuncTypeFlag=PwfMacR_Page",
+null,
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+)
+var net_pfwTBL = new Array
+(
+new menu_obj
+(
+"IPv4 Address Filter ",
+null,
+null,
+null,
+net_pfw_ipv4TBL
+),
+new menu_obj
+(
+"IPv6 Address Filter ",
+null,
+null,
+null,
+net_pfw_ipv6TBL
+),
+new menu_obj
+(
+"MAC Address Filter ",
+null,
+null,
+null,
+net_pfw_macTBL
+),
+new menu_obj
+(
+"IP Address Block Log ",
+"./rnwnetworklog.cgi?Flag=Html_Data&LogType=6",
+null,
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+)
+var net_wlnTBL = new Array
+(
+new menu_obj
+(
+"Wireless LAN Settings ",
+"./rnwnetwork.cgi?Flag=Init_Data&PageFlag=c_wirelesslaninfo.tpl&FuncTypeFlag=WirelesslanInfo_Page",
+( "true" == "true" ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Direct Connection Settings ",
+"./rnwnetwork.cgi?Flag=Init_Data&PageFlag=c_dconset.tpl&FuncTypeFlag=DirectConnectSetting_Page",
+( ( "true" == "true" ) || ( "true" == "true" ) ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Direct Connection Information ",
+"./rnwnetwork.cgi?Flag=Init_Data&PageFlag=c_dconinfo.tpl&FuncTypeFlag=DirectConnectInfo_Page",
+( ( "true" == "true" ) || ( "true" == "true" ) ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+)
+var CopyOnlyFlg = ( "false" == umdtblGlobal.has_pdl && "false" == umdtblGlobal.has_lips && "false" == umdtblGlobal.has_ps && "false" == umdtblGlobal.has_bdl && "false" == umdtblGlobal.has_fax && "false" == umdtblGlobal.has_send );
+function DrawStat_SMB()
+{
+if( "false" == umdtblGlobal.has_smb_server )
+{
+return false;
+}
+if( "true" == umdtblGlobal.has_dfe_ch_main )
+{
+return false;
+}
+if(( "false" == umdtblGlobal.has_pdl ) &&
+( "false" == umdtblGlobal.has_bdl ) &&
+( "false" == umdtblGlobal.has_fax ) &&
+( "false" == umdtblGlobal.has_send ))
+{
+return false;
+}
+return true;
+}
+this.EnvNetMainTBL = new Array
+(
+new menu_obj
+(
+"Output Report ",
+"./rnwreportprt.cgi?Flag=Init_Data&PageFlag=c_repnet.tpl",
+null,
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"TCP/IP Settings ",
+null,
+null,
+null,
+net_tcpipTBL
+),
+new menu_obj
+(
+"Google Cloud Print Settings ",
+"./rnwnetwork.cgi?Flag=Init_Data&PageFlag=c_ncloud.tpl&FuncTypeFlag=CloudPrint_Page",
+("true" == umdtblGlobal.has_gcp),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"NetWare Settings ",
+"./rnwnnet.cgi?Flag=Init_Data&PageFlag=c_nnet.tpl",
+( false == CopyOnlyFlg && "true" == umdtblGlobal.has_nw && "false" == umdtblGlobal.has_dfe_ch_main ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Mopria Settings ",
+"./rnwnetwork.cgi?Flag=Init_Data&PageFlag=c_mopria.tpl&FuncTypeFlag=MopriaUse_Page",
+( false == CopyOnlyFlg && "false" == umdtblGlobal.has_dfe_ch_main ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"AppleTalk Settings ",
+"./rnwnetwork.cgi?Flag=Init_Data&PageFlag=c_napl.tpl&FuncTypeFlag=AppleTalk_Page",
+( false == CopyOnlyFlg && "true" == umdtblGlobal.has_appletalk && "false" == umdtblGlobal.has_dfe_ch_main ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"SNMP Settings ",
+"./rnwsnmp.cgi?Flag=Init_Data&PageFlag=c_snmp.tpl",
+( "false" == umdtblGlobal.has_dfe_ch_main ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Dedicated Port Settings ",
+"./rnwnetwork.cgi?Flag=Init_Data&PageFlag=c_cprt.tpl&FuncTypeFlag=CanonPort_Page",
+( "false" == umdtblGlobal.has_dfe_ch_main ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Spool Function Settings ",
+"./rnwnetwork.cgi?Flag=Init_Data&PageFlag=c_nspl.tpl&FuncTypeFlag=Spool_Page",
+(( "false" == umdtblGlobal.has_dfe_ch_main ) && ( "true" == umdtblGlobal.has_pdl || "true" == umdtblGlobal.has_fax ||  "true" == umdtblGlobal.has_bdl )),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Waiting Time for Connection at Startup ",
+"./rnwnetwork.cgi?Flag=Init_Data&PageFlag=c_nwak.tpl&FuncTypeFlag=WakeupTime_Page",
+( "false" == umdtblGlobal.has_dfe_ch_main ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Ethernet Driver Settings ",
+"./rnwnetwork.cgi?Flag=Init_Data&PageFlag=c_nedr.tpl&FuncTypeFlag=Ethernet_Page",
+( "true" == umdtblGlobal.has_ether && "false" == umdtblGlobal.has_dfe_ch_main ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Sleep Mode Priority Settings ",
+"./rnwnetwork.cgi?Flag=Init_Data&PageFlag=c_slpr.tpl&FuncTypeFlag=SleepPriorityMode_Page",
+( "true" == umdtblGlobal.has_ether && "false" == umdtblGlobal.has_dfe_ch_main && !false),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"IEEE 802.1X Settings ",
+"./rnwieee8021x.cgi?Flag=Init_Data&PageFlag=c_ieee.tpl&FuncTypeFlag=Main_Page",
+( "false" == umdtblGlobal.has_dfe_ch_main ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Bluetooth Settings ",
+"./rnwnetwork.cgi?Flag=Init_Data&PageFlag=c_ble.tpl&FuncTypeFlag=Ble_Page",
+( "false" == umdtblGlobal.has_dfe_ch_main && "true" == umdtblGlobal.has_ble ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"AirPrint Settings ",
+"./aapedit.cgi?Flag=Init_Data&PageFlag=aapedit.tpl&FuncTypeFlag=EditPage&Token=10916926872712668204",
+( "false" == umdtblGlobal.has_dfe_ch_main && "true" == umdtblGlobal.has_aap ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Wireless Connection Settings ",
+null,
+( "false" == umdtblGlobal.has_dfe_ch_main && (( "true" == "true" ) || ( "true" == "true" ) || ( "true" == "true" )) ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+net_wlnTBL
+),
+new menu_obj
+(
+"Firewall Settings ",
+null,
+( "false" == umdtblGlobal.has_dfe_ch_main ),
+null,
+net_pfwTBL
+),
+new menu_obj
+(
+"Store Network Packet Log ",
+"./rnwnetwork.cgi?Flag=Init_Data&PageFlag=c_netcap.tpl&FuncTypeFlag=Netcap_Page",
+( "true" == umdtblGlobal.has_netcap ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Settings for Increase of Data Transfer Speed ",
+"./rnwnetwork.cgi?Flag=Init_Data&PageFlag=c_highsp.tpl&FuncTypeFlag=HighSp_Page",
+( "true" == umdtblGlobal.has_hscom_ena ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+);
+this.EnvTimMainTBL = new Array
+(
+new menu_obj
+(
+"Date/Time Settings ",
+"./cdtmdate.cgi?Flag=Init_Data&PageFlag=c_date.tpl&FuncTypeFlag=Date_Page",
+null,
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Time Format ",
+"./cdtmampm.cgi?Flag=Init_Data&PageFlag=c_ampm.tpl&FuncTypeFlag=AmPm_Page",
+null,
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Quick Startup Settings for Main Power ",
+"./cdtmqboot.cgi?Flag=Init_Data&PageFlag=c_quickboot.tpl&FuncTypeFlag=QuickBoot_Page",
+null,
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+("true" == "false") ? "Timer/Energy Settings " : "Power Save Settings ",
+"./cdtmtime.cgi?Flag=Init_Data&PageFlag=c_time.tpl&FuncTypeFlag=Timer_Page",
+null,
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Auto Shutdown Settings ",
+"./cdtmstime.cgi?Flag=Init_Data&PageFlag=c_stime.tpl",
+( "true" == umdtblGlobal.disp_stime ),
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Restrict Auto Reset Time ",
+"./atcrmanage.cgi?Flag=Init_Data&PageFlag=c_atcrman.tpl",
+null,
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Perfect Binder Energy Saver Settings ",
+"./cdtmtime.cgi?Flag=Init_Data&PageFlag=c_wraptime.tpl&FuncTypeFlag=WrapTime_Page",
+( "true" == umdtblGlobal.has_bind ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+)
+);
+function DrawStat_FaxRing()
+{
+if( "true" == umdtblGlobal.has_fax && umdtblGlobal.faxType_G4 != umdtblGlobal.has_faxtype &&
+    "true" == umdtblGlobal.opt_fax && "true" == umdtblGlobal.disp_faxrecvcall )
+{
+return true;
+}
+return false;
+}
+this.EnvVolMainTBL = new Array
+(
+new menu_obj
+(
+"Fax Volume Settings ",
+"./cdfxbase.cgi?Flag=Init_Data&PageFlag=c_fbas.tpl&FuncTypeFlag=Volume_Page",
+( "true" == umdtblGlobal.has_fax ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Incoming Fax Ring ",
+"./cdfxbase.cgi?Flag=Init_Data&PageFlag=c_fcal.tpl&FuncTypeFlag=Call_Page",
+DrawStat_FaxRing(),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Audible Tones Settings ",
+"./cdfxbase.cgi?Flag=Init_Data&PageFlag=c_fbuz.tpl&FuncTypeFlag=Buzzer_Page",
+null,
+umdtblGlobal.AirAuthGenericFlg,
+null
+)
+);
+function DrawStat_RemtCpyPrnt()
+{
+if( "true" == umdtblGlobal.has_rmt_cpy_send && "false" == umdtblGlobal.is_acq )
+{
+if( "false" == umdtblGlobal.disp_coin )
+{
+return true;
+}
+}
+return false;
+}
+this.FucCpyMainTBL = new Array
+(
+new menu_obj
+(
+"Remote Device for Cascade Copy ",
+"./alframe.cgi?AMOD=1&AID=14",
+DrawStat_RemtCpyPrnt(),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Select Color Settings for Copy ",
+"./cdcpyclmd.cgi?Flag=Init_Data&PageFlag=c_clrmod.tpl&FuncTypeFlag=ClrMode_Page",
+( "true" == umdtblGlobal.has_clrprt ) && ( "false" == umdtblGlobal.has_clr_bwmachine ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+);
+function Get_pdl_lips_Title()
+{
+if( umdtblGlobal.country_jp == umdtblGlobal.country_code )
+{
+if ( "false" == umdtblGlobal.has_lips && "true" == umdtblGlobal.has_bdl )
+{
+if( "true" == umdtblGlobal.carps2spt )
+{
+return "CARPS2 ";
+}
+return "LIPS ";
+}
+return "LIPS/Emulation ";
+}
+else
+{
+if( "true" == umdtblGlobal.carps2spt )
+{
+return "UFRII LT ";
+}
+return "UFR II ";
+}
+}
+function DrawStat_lips_lips4()
+{
+if( umdtblGlobal.country_jp == umdtblGlobal.country_code )
+{
+if( "true" == umdtblGlobal.has_lips )
+{
+return true;
+}
+}
+return false;
+}
+function DrawStat_lips_n201()
+{
+if( umdtblGlobal.country_jp == umdtblGlobal.country_code )
+{
+if( "true" == umdtblGlobal.has_lips )
+{
+if( "true" == umdtblGlobal.has_n201 || "true" == umdtblGlobal.has_n201Ext )
+{
+return true;
+}
+}
+}
+return false;
+}
+function DrawStat_lips_escp()
+{
+if( umdtblGlobal.country_jp == umdtblGlobal.country_code )
+{
+if( "true" == umdtblGlobal.has_lips )
+{
+if( "true" == umdtblGlobal.has_escp || "true" == umdtblGlobal.has_escpExt )
+{
+return true;
+}
+}
+}
+return false;
+}
+function DrawStat_lips_i5577()
+{
+if( umdtblGlobal.country_jp == umdtblGlobal.country_code )
+{
+if( "true" == umdtblGlobal.has_lips )
+{
+if( "true" == umdtblGlobal.has_i5577 )
+{
+return true;
+}
+}
+}
+return false;
+}
+function DrawStat_lips_hpgl()
+{
+if( umdtblGlobal.country_jp == umdtblGlobal.country_code )
+{
+if( "true" == umdtblGlobal.has_lips )
+{
+if( "true" == umdtblGlobal.has_hpgl )
+{
+return true;
+}
+}
+}
+return false;
+}
+function DrawStat_lips_hpgl2()
+{
+if( umdtblGlobal.country_jp == umdtblGlobal.country_code )
+{
+if( "true" == umdtblGlobal.has_lips )
+{
+if( "true" == umdtblGlobal.has_hpgl2 )
+{
+return true;
+}
+}
+}
+return false;
+}
+function DrawStat_pdl_lips()
+{
+if( "true" == umdtblGlobal.has_lips || "true" == umdtblGlobal.has_bdl )
+{
+return true;
+}
+return false;
+}
+function Get_lipslx_carps2_Title()
+{
+if( "true" == umdtblGlobal.carps2spt )
+{
+return "CARPS2 ";
+}
+return "LIPSLX ";
+}
+var pdl_lipsTBL = new Array
+(
+new menu_obj
+(
+"Common Settings ",
+"./cdplicom.cgi?Flag=Init_Data&PageFlag=c_plic.tpl",
+( DrawStat_pdl_lips() && ( "false" == umdtblGlobal.carps2spt || "true" == umdtblGlobal.has_clrprt || umdtblGlobal.country_jp != umdtblGlobal.country_code )),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+Get_lipslx_carps2_Title(),
+"./cdplilip.cgi?Flag=Init_Data&PageFlag=c_plix.tpl&FuncTypeFlag=LipsLx_Page",
+( DrawStat_pdl_lips() && umdtblGlobal.country_jp == umdtblGlobal.country_code ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"LIPS4 ",
+"./cdplilip.cgi?Flag=Init_Data&PageFlag=c_plil.tpl&FuncTypeFlag=Lips4_Page",
+DrawStat_lips_lips4(),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"N201 ",
+"./cdplin21.cgi?Flag=Init_Data&PageFlag=c_plin.tpl",
+DrawStat_lips_n201(),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"ESC/P ",
+"./cdpliesc.cgi?Flag=Init_Data&PageFlag=c_plie.tpl",
+DrawStat_lips_escp(),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"I5577 ",
+"./cdplii57.cgi?Flag=Init_Data&PageFlag=c_plii.tpl",
+DrawStat_lips_i5577(),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"HP-GL ",
+"./cdplihpgl.cgi?Flag=Init_Data&PageFlag=c_plih.tpl",
+DrawStat_lips_hpgl(),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"HP-GL/2 ",
+"./cdplihpgl2.cgi?Flag=Init_Data&PageFlag=c_plh2.tpl",
+DrawStat_lips_hpgl2(),
+umdtblGlobal.AirAuthGenericFlg,
+null
+)
+);
+var ps_setTBL = new Array
+(
+new menu_obj
+(
+"PS Password Settings ",
+"./cdpdlpspw.cgi?Flag=Init_Data&PageFlag=c_pspw.tpl",
+DrawStat_pdl_ps_adobe(),
+umdtblGlobal.AirAuthSystemFlg,
+null
+)
+);
+var pcl_setTBL = new Array
+(
+new menu_obj
+(
+"Paper Feed Mode When Using PCL Emulation ",
+"./umodecom.cgi?Flag=Init_Data&PageFlag=umodecom.tpl&p_id=PCLPAPERMODE",
+( "true" == umdtblGlobal.has_pcl ),
+umdtblGlobal.AirAuthSystemFlg,
+null
+)
+);
+var pdl_ksTBL = new Array
+(
+new menu_obj
+(
+"KS5843 ",
+"./cdpks5843.cgi?Flag=Init_Data&PageFlag=c_pk43.tpl",
+( "true" == umdtblGlobal.has_ks ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"KS5895 ",
+"./cdpks5895.cgi?Flag=Init_Data&PageFlag=c_pk95.tpl",
+( "true" == umdtblGlobal.has_ks ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"KSSM ",
+"./cdpkssm.cgi?Flag=Init_Data&PageFlag=c_pksm.tpl",
+( "true" == umdtblGlobal.has_ks ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+)
+);
+var pdl_secureTBL = new Array
+(
+new menu_obj
+(
+"Simple Authentication Settings ",
+"./cdsecure.cgi?Flag=Init_Data&PageFlag=c_simpleauth.tpl&FuncTypeFlag=SimpleAuth_Page",
+( "true" == umdtblGlobal.HasMeapLogin ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Encrypted Secure Print Job Settings ",
+"./cdsecure.cgi?Flag=Init_Data&PageFlag=c_encryptedsp.tpl&FuncTypeFlag=EncryptedOnly_Page",
+( "true" == umdtblGlobal.has_cryptprint && ( "false" == umdtblGlobal.has_dfe_ch_main || "true" == "false" ) ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+);
+function Get_Cgi_load_pdl_pcl()
+{
+var tpl_name = ( "true" == umdtblGlobal.has_canon_pcl ) ? "c_ppc2.tpl" : "c_pdpc.tpl" ;
+var cgi_str  = ( "true" == umdtblGlobal.has_canon_pcl ) ? "./cdpdlpcl2.cgi?" : "./cdpdlpcl.cgi?";
+cgi_str += "Flag=Init_Data&PageFlag=" + tpl_name;
+return cgi_str;
+}
+function DrawStat_pdl_ps_adobe()
+{
+if( "true" == umdtblGlobal.has_psk || "true" == umdtblGlobal.has_ps )
+{
+if( "true" == umdtblGlobal.has_adobe_ps )
+{
+return true;
+}
+}
+return false;
+}
+function DrawStat_pdl_pdf_adobe()
+{
+if( "true" == umdtblGlobal.has_pdf && "true" == umdtblGlobal.has_in_pdf )
+{
+return true;
+}
+return false;
+}
+function DrawStat_pdl_repprt()
+{
+if( ( "true" == umdtblGlobal.has_psk || "true" == umdtblGlobal.has_ps ) && "false" == umdtblGlobal.disp_coin )
+{
+return true;
+}
+if( "true" == umdtblGlobal.has_pcl && "false" == umdtblGlobal.disp_coin )
+{
+return true;
+}
+if( "true" == umdtblGlobal.has_lips && "false" == umdtblGlobal.disp_coin )
+{
+return true;
+}
+return false;
+}
+this.goPrintfilter = function()
+{
+var now_time = new Date();
+document.location.href = "/printfilter/list/?portalLang=en&disp=print_menu&Dummy=" + now_time.getTime();
+}
+this.goHotFolder = function()
+{
+var now_time = new Date();
+document.location.href = "/printfilter/hotfolder/list/?portalLang=en&disp=print_menu&Dummy=" + now_time.getTime();
+}
+var pdlTBL = new Array
+(
+new menu_obj
+(
+"Output Report ",
+"./cdreportprt.cgi?Flag=Init_Data&PageFlag=c_repprt.tpl",
+DrawStat_pdl_repprt(),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Custom Settings ",
+"./cdpdlcom.cgi?Flag=Init_Data&PageFlag=c_pdlc.tpl&FuncTypeFlag=Common_Page",
+null,
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+Get_pdl_lips_Title(),
+null,
+DrawStat_pdl_lips(),
+umdtblGlobal.AirAuthGenericFlg,
+pdl_lipsTBL
+),
+new menu_obj
+(
+"PCL ",
+ Get_Cgi_load_pdl_pcl(),
+( "true" == umdtblGlobal.has_pcl ),
+umdtblGlobal.AirAuthGenericFlg,
+pcl_setTBL
+),
+new menu_obj
+(
+"PS ",
+"./cdpdlpsadb.cgi?Flag=Init_Data&PageFlag=c_psa.tpl",
+DrawStat_pdl_ps_adobe(),
+umdtblGlobal.AirAuthGenericFlg,
+ps_setTBL
+),
+new menu_obj
+(
+"Imaging ",
+"./cdpimaging.cgi?Flag=Init_Data&PageFlag=c_pimg.tpl",
+( "true" == umdtblGlobal.has_imaging ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"PDF ",
+"./cdpdlpdfadb.cgi?Flag=Init_Data&PageFlag=c_pdfa.tpl",
+DrawStat_pdl_pdf_adobe(),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"KS/Emulation Settings ",
+null,
+null,
+null,
+pdl_ksTBL
+),
+new menu_obj
+(
+"XPS ",
+"./cdpdlxps.cgi?Flag=Init_Data&PageFlag=c_xps.tpl",
+( "true" == umdtblGlobal.has_xps ) && ( "false" == umdtblGlobal.has_office ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"dummy_ ",
+"./cdpdlxps.cgi?Flag=Init_Data&PageFlag=c_xps.tpl",
+( "true" == umdtblGlobal.has_office ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Restrict Printer Jobs ",
+"./cdpdllimit.cgi?Flag=Init_Data&PageFlag=c_prilimit.tpl&FuncTypeFlag=PrintLimit_Page",
+null,
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj(
+"Feed from Multi-Purpose Tray When No Paper Source ",
+"./umodecom.cgi?Flag=Init_Data&PageFlag=umodecom.tpl&p_id=ESCAPETRAY",
+( "true" == umdtblGlobal.is_sfp && "true" == umdtblGlobal.isSendLite2 && "true" == umdtblGlobal.has_mptdeck && "true" == umdtblGlobal.has_canon_pdl ),
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj(
+"Multi-Purpose Tray Priority for Paper Source Auto Select ",
+"./umodecom.cgi?Flag=Init_Data&PageFlag=umodecom.tpl&p_id=MANUALSELECT",
+( "true" == umdtblGlobal.is_sfp && "true" == umdtblGlobal.isSendLite2 && "true" == umdtblGlobal.has_mptdeck && "true" == umdtblGlobal.has_canon_pdl ),
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Switch Paper Source Auto Selection Mode ",
+"./umodecom.cgi?Flag=Init_Data&PageFlag=umodecom.tpl&p_id=APSDIRECTION",
+( "true" == umdtblGlobal.is_sfp && "true" == umdtblGlobal.isSendLite2 && "true" == umdtblGlobal.has_canon_pdl ),
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"PDL Selection (Plug and Play) ",
+"./cadadpas.cgi?Flag=Init_Data&PageFlag=c_sltlan.tpl&FuncTypeFlag=SlectLang_Page",
+( "true" == umdtblGlobal.has_somepnp && "true" == umdtblGlobal.has_canon_pdl ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Prioritize Printer Driver Settings for Jobs with Multi-Purpose Tray ",
+"./cdpdldrvrpri.cgi?Flag=Init_Data&PageFlag=c_drvrpri.tpl&FuncTypeFlag=DrvrPri_Page",
+( "false" == umdtblGlobal.disp_driverbypass && "true" == umdtblGlobal.has_mptdeck && "true" == umdtblGlobal.has_canon_pdl ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Paper Feed Mode for Printer Driver Jobs with MP Tray ",
+"./umodecom.cgi?Flag=Init_Data&PageFlag=umodecom.tpl&p_id=DRIVERBYPASS",
+( "true" == umdtblGlobal.disp_driverbypass && "true" == umdtblGlobal.has_mptdeck && "false" == umdtblGlobal.is_sfp ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Paper Size Mismatch for Free Size Paper Source ",
+"./umodecom.cgi?Flag=Init_Data&PageFlag=umodecom.tpl&p_id=FREELENGTH",
+( "true" == umdtblGlobal.is_sfp && "true" == umdtblGlobal.isSendLite2 && "true" == umdtblGlobal.has_freesize && "true" == umdtblGlobal.has_canon_pdl ),
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Vertical Printing Priority for Free Size ",
+"./umodecom.cgi?Flag=Init_Data&PageFlag=umodecom.tpl&p_id=FREEDIRECTION",
+( "true" == umdtblGlobal.is_sfp && "true" == umdtblGlobal.isSendLite2 && "true" == umdtblGlobal.has_freesize && "true" == umdtblGlobal.has_canon_pdl ),
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Secure Print ",
+null,
+( "true" == umdtblGlobal.disp_sec_print ),
+null,
+pdl_secureTBL
+),
+new menu_obj
+(
+"Print ",
+"./authprint.cgi?Flag=Init_Data&PageFlag=c_authprint.tpl",
+( "true" == umdtblGlobal.disp_ppa ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Virtual Printer Management ",
+"goPrintfilter",
+( "true" == umdtblGlobal.disp_LgcyScp ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Hot Folder Management ",
+"goHotFolder",
+( "true" == umdtblGlobal.has_hotFolder ),
+umdtblGlobal.AirAuthGenericFlg | umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"JDF Settings ",
+"./umodecom.cgi?Flag=Init_Data&PageFlag=umodecom.tpl&p_id=USEJDF",
+( "true" == umdtblGlobal.has_jdf ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+);
+this.FucPriMainTBL = function()
+{
+if( "true" == umdtblGlobal.has_pdl || "true" == umdtblGlobal.has_bdl )
+{
+return pdlTBL;
+}
+return {};
+}()
+function Config_FilterDrawCondition()
+{
+return ( ( "true" == umdtblGlobal.has_send || "true" == umdtblGlobal.has_fax ) && "true" == umdtblGlobal.has_reader && "true" == umdtblGlobal.has_foward_use );
+}
+var recvcom_setTBL = new Array
+(
+new menu_obj
+(
+"Divided Data RX Timeout/Always Send Notice for RX Errors ",
+"./cdsrrcv.cgi?Flag=Init_Data&PageFlag=c_rertel.tpl&FuncTypeFlag=RcvErrTime_Page",
+( "true" == umdtblGlobal.has_send ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Forwarding Settings ",
+"./cfilmng.cgi?Flag=Init&PageMode=Init_Data&PageFlag=c_topfl.tpl",
+Config_FilterDrawCondition(),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Memory Lock Settings ",
+"./cdcombox.cgi?Flag=Init_Data&PageFlag=c_srmb.tpl",
+( "true" == umdtblGlobal.has_fax || "true" == umdtblGlobal.has_send ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+);
+function Drawstat_Send_Fax()
+{
+return ( "true" == umdtblGlobal.has_send || "true" == umdtblGlobal.has_fax );
+}
+function Drawstat_NumDisp()
+{
+if( "true" == umdtblGlobal.has_numdisp )
+{
+if( umdtblGlobal.faxType_G4 != umdtblGlobal.has_faxtype )
+{
+return true;
+}
+}
+return false;
+}
+var fucrecvRepTBL = new Array
+(
+new menu_obj
+(
+"TX/RX User Data List ",
+"./cdreportprt.cgi?Flag=Init_Data&PageFlag=c_reprcv.tpl",
+Drawstat_Send_Fax(),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Fax User Data List ",
+"./cdreportprt.cgi?Flag=Init_Data&PageFlag=c_repfaxrcv.tpl",
+( "true" == umdtblGlobal.has_fax ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+)
+);
+var faxrecv_setTBL = new Array
+(
+new menu_obj
+(
+"Fax RX Report/Confidential Fax Inbox RX Report ",
+"./cdfxrecv.cgi?Flag=Init_Data&PageFlag=c_frrpt.tpl&FuncTypeFlag=ReportFaxRcv_Page",
+( "true" == umdtblGlobal.has_fax ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"RX Start Speed/RX Password ",
+"./cdfxrecvspd.cgi?Flag=Init_Data&PageFlag=c_frcvsp.tpl&FuncTypeFlag=SpeedPass_Page",
+( "true" == umdtblGlobal.has_fax ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Set Number Display ",
+"./cdfxrecvspd.cgi?Flag=Init_Data&PageFlag=c_frnumdisp.tpl&FuncTypeFlag=NumDisp_Page",
+Drawstat_NumDisp(),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+);
+this.FucRecMainTBL = new Array
+(
+new menu_obj
+(
+"Output Report ",
+null,
+null,
+null,
+fucrecvRepTBL
+),
+new menu_obj
+(
+"Common Settings ",
+"./cdrecvcom.cgi?Flag=Init_Data&PageFlag=c_cmrv.tpl&FuncTypeFlag=ConfCommon_Page",
+( "true" == umdtblGlobal.has_send || "true" == umdtblGlobal.has_fax 
+|| "true" == umdtblGlobal.has_emailreceiveonly ),
+umdtblGlobal.AirAuthGenericFlg,
+recvcom_setTBL
+),
+new menu_obj
+(
+"Fax Settings - RX Settings ",
+"./cdfxrecv.cgi?Flag=Init_Data&PageFlag=c_frcv.tpl&FuncTypeFlag=ConfigFax_Page",
+( "true" == umdtblGlobal.has_fax ),
+umdtblGlobal.AirAuthGenericFlg,
+faxrecv_setTBL
+)
+);
+function DrawStat_bx_all_set()
+{
+if( "true" == umdtblGlobal.disp_ui_box &&
+    "true" == umdtblGlobal.VARIE_BOX_ALL_SETTING && "true" == umdtblGlobal.VARIE_BOX_USER )
+{
+return true;
+}
+return false;
+}
+function DrawStat_bx_sec_set()
+{
+if(( "true" == umdtblGlobal.has_send || "true" == umdtblGlobal.has_fax ) &&
+  "true" == umdtblGlobal.disp_ui_box && "true" == umdtblGlobal.has_reader )
+{
+return true;
+}
+else if( ( "true" == umdtblGlobal.disp_ui_box ) && ( "true" == umdtblGlobal.has_box_user ) )
+{
+return true;
+}
+return false;
+}
+var NetworkTbl = new Array
+(
+new menu_obj
+(
+"Network Place Settings ",
+"./cdfilenet.cgi?Flag=Init_List&PageFlag=c_netplc.tpl",
+null,
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Protocol for External Reference ",
+"./cdsuperbox.cgi?Flag=Init_Data&PageFlag=c_sboxprot.tpl&FuncTypeFlag=ProtcolPage",
+null,
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"TLS Certificate Confirmation Settings for Network Access ",
+"./cdsboxcert.cgi?Flag=Init_Data&PageFlag=c_sboxcert.tpl",
+null,
+umdtblGlobal.AirAuthSystemFlg,
+null
+)
+);
+function GetSboxTitleStr()
+{
+if( "2" == "1" )
+{
+return "Advanced Space Settings ";
+}
+return "Advanced Box Settings ";
+}
+this.FucSavMainTBL = new Array
+(
+new menu_obj
+(
+"Settings for All Mail Boxes ",
+"./cdbxallset.cgi?Flag=Init_Data&PageFlag=c_bas.tpl",
+DrawStat_bx_all_set(),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Box Security Settings ",
+"./cdbxsecref.cgi?Flag=Init_Data&PageFlag=c_bsr.tpl",
+DrawStat_bx_sec_set(),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+GetSboxTitleStr(),
+"./cdsuperbox.cgi?Flag=Init_Data&PageFlag=c_sboxlist.tpl&FuncTypeFlag=ListPage",
+( "true" == umdtblGlobal.disp_ui_sbox && "true" == umdtblGlobal.has_sbox ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Network Settings ",
+null,
+( "true" == umdtblGlobal.has_sbox_network && "true" == umdtblGlobal.disp_ui_sbox && "true" == umdtblGlobal.JobArcvSboxCon ),
+null,
+NetworkTbl
+),
+new menu_obj
+(
+"Memory Media Settings ",
+"./cmemmedia.cgi?Flag=Init_Data&PageFlag=c_memmedia.tpl",
+( "true" == umdtblGlobal.disp_ui_mem && "false" == umdtblGlobal.is_acq ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+);
+function Config_Send_Fax_AirfaxClie()
+{
+return ( "true" == umdtblGlobal.has_send || "true" == umdtblGlobal.has_fax  || "true" == umdtblGlobal.has_airfax_clie );
+}
+var fucSndrepTBL = new Array
+(
+new menu_obj
+(
+"TX/RX User Data List ",
+"./cdreportprt.cgi?Flag=Init_Data&PageFlag=c_repsnd.tpl",
+Config_Send_Fax_AirfaxClie(),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Fax User Data List ",
+"./cdreportprt.cgi?Flag=Init_Data&PageFlag=c_repfax.tpl",
+( "true" == umdtblGlobal.has_fax  || "true" == umdtblGlobal.has_airfax_clie ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+)
+);
+function Config_ReportDrawCondition()
+{
+if( Config_Send_Fax_AirfaxClie() )
+{
+if( "true" == umdtblGlobal.HasAuth_System || "true" == umdtblGlobal.HasAuth_Device )
+{
+return true;
+}
+if( "true" == umdtblGlobal.disp_log )
+{
+return true;
+}
+}
+return false;
+}
+function Config_FaxReportDrawCondition()
+{
+if( "true" == umdtblGlobal.has_fax || "true" == umdtblGlobal.has_airfax_clie )
+{
+if( "true" == umdtblGlobal.HasAuth_System || "true" == umdtblGlobal.HasAuth_Device )
+{
+return true;
+}
+if( "true" == umdtblGlobal.disp_log )
+{
+return true;
+}
+}
+return false;
+}
+function Config_SndRglDrawCondition()
+{
+if( ( "true" == umdtblGlobal.has_send && "true" == umdtblGlobal.disp_send ) || ( "true" == umdtblGlobal.has_fax  && "true" == umdtblGlobal.disp_fax ) || "true" == umdtblGlobal.has_airfax_clie )
+{
+if( "true" == umdtblGlobal.has_reader )
+{
+return true;
+}
+}
+return false;
+}
+var rfaxsend_setTBL = new Array
+(
+new menu_obj
+(
+"Specify Line ",
+"./cdrmfxsnd.cgi?Flag=Init_Data&PageFlag=c_rfaxprio.tpl&FuncTypeFlag=FaxRemotePrioLine_Page",
+( "true" == umdtblGlobal.has_airfax_clie ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+);
+function DrawStat_FaxNumCheck()
+{
+if( "true" == umdtblGlobal.has_fax || "true" == umdtblGlobal.has_airfax_clie )
+{
+return true;
+}
+return false;
+}
+function DrawStat_AirFaxServer()
+{
+if( "true" == umdtblGlobal.has_airfax_serv && "true" == umdtblGlobal.has_fax )
+{
+return true;
+}
+return false;
+}
+var fax_setTBL = new Array
+(
+new menu_obj
+(
+"Register Sender Name (TTI) ",
+"./cdsruser.cgi?Flag=List_Data&PageFlag=c_cmur.tpl",
+( "true" == umdtblGlobal.has_fax || "true" == umdtblGlobal.has_airfax_clie ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+("false" == umdtblGlobal.HasAuth_System && "false" == umdtblGlobal.HasAuth_Device) ? "Fax Activity Report " : "Fax TX Report/Fax Activity Report ",
+"./cdfxsnd.cgi?Flag=Init_Data&PageFlag=c_faxrep.tpl&FuncTypeFlag=FaxSendReport_Page",
+Config_FaxReportDrawCondition(),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Set Line ",
+"./cdfxadd.cgi?Flag=Init_Data&PageFlag=c_fadd.tpl",
+( ("true" == umdtblGlobal.has_fax) && (umdtblGlobal.faxType_G4 != umdtblGlobal.has_faxtype) ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Set Line ",
+"./cdfxisdn.cgi?Flag=Init_Data&PageFlag=c_fisdn.tpl",
+( ("true" == umdtblGlobal.has_fax) && (umdtblGlobal.faxType_G4 == umdtblGlobal.has_faxtype) ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Communications Settings - Fax Settings ",
+"./cdcomfax.cgi?Flag=Init_Data&PageFlag=c_srfx.tpl&FuncTypeFlag=FAX_Page",
+( "true" == umdtblGlobal.has_fax ||
+  ( "true" == umdtblGlobal.has_airfax_clie && "true" == umdtblGlobal.fax_type_standard ) ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Confirm Entered Fax Number ",
+"./cdfxnum.cgi?Flag=Init_Data&PageFlag=c_faxnum.tpl&FuncTypeFlag=FaxNumCheck_Page",
+DrawStat_FaxNumCheck(),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Allow Fax Driver TX ",
+"./cdfxdrv.cgi?Flag=Init_Data&PageFlag=c_fdriv.tpl&FuncTypeFlag=FaxDriverSend_Page",
+( "true" == umdtblGlobal.has_fax ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Remote Fax TX Settings ",
+"./cdrmfxsnd.cgi?Flag=Init_Data&PageFlag=c_rfaxclie.tpl&FuncTypeFlag=FaxRemoteSendConfig_Page",
+( "true" == umdtblGlobal.has_airfax_clie ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+rfaxsend_setTBL
+),
+new menu_obj
+(
+"Remote Fax Settings ",
+"./cdremotefax.cgi?Flag=Init_Data&PageFlag=c_rfaxserv.tpl&FuncTypeFlag=FaxRemoteConfig_Page",
+DrawStat_AirFaxServer(),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"NGN My Number Settings ",
+"./cdngnmynum.cgi?Flag=Init_Data&PageFlag=c_ngnmynum.tpl",
+( "0" != umdtblGlobal.ip_fax_num && umdtblGlobal.country_jp == umdtblGlobal.country_code ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"VoIP Gateway Priority Settings ",
+"./cdipfaxpri.cgi?Flag=Init_Data&PageFlag=c_ipfaxpri.tpl",
+( "0" != umdtblGlobal.ip_fax_num ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Settings for Communication Speed When Using VoIP ",
+"./umodecom.cgi?Flag=Init_Data&PageFlag=umodecom.tpl&p_id=VOIP",
+( "true" == umdtblGlobal.has_fax && "true" == umdtblGlobal.disp_voiplowqual ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+);
+function DrawStat_sendset()
+{
+if( "true" == umdtblGlobal.has_send || "true" == umdtblGlobal.has_fax || "true" == umdtblGlobal.has_airfax_clie )
+{
+return true;
+}
+return false;
+}
+function DrawStat_faxset()
+{
+if(( "true" == umdtblGlobal.has_fax )||
+( "true" == umdtblGlobal.has_airfax_clie && "true" == umdtblGlobal.HasAuth_System ))
+{
+return "./cdfxsnd.cgi?Flag=Init_Data&PageFlag=c_fsen.tpl&FuncTypeFlag=FaxSendConfig_Page";
+}
+return null;
+}
+this.FucSndMainTBL = new Array
+(
+new menu_obj
+(
+"Output Report ",
+null,
+null,
+null,
+fucSndrepTBL
+),
+new menu_obj
+(
+"Common Settings ",
+"./cdsrsnd.cgi?Flag=Init_Data&PageFlag=c_cmsd.tpl",
+( true == DrawStat_sendset() ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+("false" == umdtblGlobal.HasAuth_System && "false" == umdtblGlobal.HasAuth_Device) ? "Communication Management Report " : "TX Report/Communication Management Report ",
+"./cdreport.cgi?Flag=Init_Data&PageFlag=c_reps.tpl",
+Config_ReportDrawCondition(),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Network Settings - E-Mail/I-Fax Settings ",
+"./cdntwkem.cgi?Flag=Init_Data&PageFlag=c_rnet.tpl&FuncTypeFlag=EmailAdrs_Page",
+( "true" == umdtblGlobal.has_send  && "false" == umdtblGlobal.has_emailreceiveonly ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Network Settings - E-Mail Settings ",
+"./cdntwkem.cgi?Flag=Init_Data&PageFlag=c_rnet.tpl&FuncTypeFlag=EmailAdrs_Page",
+( "true" == umdtblGlobal.has_emailreceiveonly ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Communications Settings - E-Mail/I-Fax Settings ",
+"./cdcommail.cgi?Flag=Init_Data&PageFlag=c_srml.tpl&FuncTypeFlag=IFAXMAIL_Page",
+( "true" == umdtblGlobal.has_send ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"S/MIME Settings ",
+"./cdsmime.cgi?Flag=Init_Data&PageFlag=c_smime.tpl&FuncTypeFlag=Smime_Page",
+( "true" == umdtblGlobal.has_send && "false" == "false" &&
+ ("true" == umdtblGlobal.has_sign_app || "true" == umdtblGlobal.has_signat_user) ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Limit New Destination ",
+"./casndlmt.cgi?Flag=Init_Data&PageFlag=c_rstsnd.tpl&FuncTypeFlag=ResSnd_Page",
+Config_Send_Fax_AirfaxClie(),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Favorite Settings ",
+"./csndrglext.cgi?CorePGTAG=36&Flag=List_Data&PageFlag=c_topsrl.tpl",
+Config_SndRglDrawCondition(),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Limit Send Destination ",
+"./cdsndlimit.cgi?Flag=Init_Data&PageFlag=c_sndlimit.tpl",
+( "true" == umdtblGlobal.HasMeapLogin && "true" == umdtblGlobal.has_send ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Archive TX Document ",
+"./cdbkupsnddoc.cgi?Flag=Init_Data&PageFlag=c_sdbkup.tpl",
+( ( true == DrawStat_sendset() ) && ( false == false ) && ("true" == umdtblGlobal.has_bkupsnddoc) ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"TX Settings - Fax Settings ",
+DrawStat_faxset(),
+( "true" == umdtblGlobal.has_fax || "true" == umdtblGlobal.has_airfax_clie ),
+umdtblGlobal.AirAuthGenericFlg,
+fax_setTBL
+),
+new menu_obj
+(
+"Scan to Preset Destination ",
+"/nameandscan/?portalLang=en&disp=send_menu",
+( "true" == umdtblGlobal.isScanToPresetDestEnabled ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+);
+function DrawStat_bxbkup()
+{
+if(( "true" == umdtblGlobal.VARIE_BOX_BACKUP ) && ( "true" == umdtblGlobal.VARIE_BOX_USER ) && ( "false" == umdtblGlobal.disp_coin ))
+{
+if( "true" == umdtblGlobal.stat_boxbkup )
+{
+return true;
+}
+}
+return false;
+}
+var bxbkupTBL = new Array
+(
+new menu_obj
+(
+"Backup Location Settings ",
+"./cdboxbkup.cgi?Flag=Init_Data&PageFlag=c_bset.tpl",
+DrawStat_bxbkup(),
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Auto Backup Settings ",
+"./cdboxbkup.cgi?Flag=AutoInit_Data&PageFlag=c_bat.tpl",
+DrawStat_bxbkup(),
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Back Up ",
+"./cdboxbkup.cgi?Flag=InitBackup_Data&PageFlag=c_bbup.tpl",
+DrawStat_bxbkup(),
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Restore ",
+"./cdboxbkup.cgi?Flag=Init_Data&PageFlag=c_brst.tpl",
+DrawStat_bxbkup(),
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Back Up/Restore Log ",
+"./cdboxbkup.cgi?Flag=LogList_Data&PageFlag=c_blog.tpl",
+DrawStat_bxbkup(),
+umdtblGlobal.AirAuthSystemFlg,
+null
+)
+);
+var devconfTBL = new Array
+(
+new menu_obj
+(
+"Import ",
+"./cddevcnf.cgi?Flag=Init_Data&PageFlag=c_devimp.tpl",
+null,
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Export ",
+"./cddevcnf.cgi?Flag=Init_Data&PageFlag=c_devexp.tpl",
+null,
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Import/Export Results ",
+"./cddevcnf.cgi?Flag=Init_Data&PageFlag=c_devstatus.tpl",
+null,
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Settings for Import/Export from Web Service ",
+"./cdcmport.cgi?Flag=Init_Data&PageFlag=c_dcmport.tpl",
+null,
+umdtblGlobal.AirAuthSystemFlg,
+null
+)
+);
+
+var securityTBL = new Array
+(
+new menu_obj
+(
+"Security Policy Settings ",
+"https://192.168.11.227:8443/PolicyEditor/Top/?portalLang=en&disp=sec_menu",
+( "false" == umdtblGlobal.has_dfe_ch_main ),
+(umdtblGlobal.AirAuthSystemFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthDeviceFlg),
+null
+),
+new menu_obj
+(
+"Network/Interface Settings ",
+"./cdseccnf.cgi?Flag=Init_Data&PageFlag=c_s_nwif.tpl&Token=10916926872712668204",
+( "true" == "true" || "true" == "true" ||
+ ("true" == "true" && "true" == umdtblGlobal.disp_ui_sbox && "true" == umdtblGlobal.has_sbox)
+),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Authentication/Password Settings ",
+"./cdseccnf.cgi?Flag=Init_Data&PageFlag=c_s_vfpw.tpl&Token=10916926872712668204",
+(   "true" == "true"  ||
+  (("true" == "true" || "true" == "true") && "true" == umdtblGlobal.disp_ui_sbox && "true" == umdtblGlobal.has_sbox)
+),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Encryption/Key Settings ",
+"./cdseccnf.cgi?Flag=Init_Data&PageFlag=c_s_crky.tpl&Token=10916926872712668204",
+null,
+(umdtblGlobal.AirAuthSystemFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthDeviceFlg),
+null
+),
+new menu_obj
+(
+"Log Settings ",
+"./cdseccnf.cgi?Flag=Init_Data&PageFlag=c_s_log.tpl&Token=10916926872712668204",
+(  "true" == "true" ||
+ (("true" == "true" || "true" == "true") &&
+   "true" == umdtblGlobal.disp_ui_sbox && "true" == umdtblGlobal.has_sbox
+  )
+),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Storage Settings ",
+"./cdseccnf.cgi?Flag=Init_Data&PageFlag=c_s_strg.tpl&Token=10916926872712668204",
+( "true" == umdtblGlobal.has_hdddel ),
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"System Verification Settings ",
+"./bootchk.cgi?Flag=Init_Data&PageFlag=c_s_btck.tpl&Token=10916926872712668204",
+( "true" == umdtblGlobal.has_SecureBoot ),
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Recommended Security Settings for Usage Environment ",
+"/SecurityTemplate/?portalLang=en&disp=sec_menu",
+( "false" == umdtblGlobal.isSecPolValid && "false" == umdtblGlobal.has_dfe_ch_main && "false" == umdtblGlobal.has_dfe_ch_sub ),
+umdtblGlobal.AirAuthSystemFlg,
+null
+)
+);
+function DrawStat_inpexpAd()
+{
+if( ( umdtblGlobal.has_send == "true" || umdtblGlobal.has_fax == "true" || umdtblGlobal.has_air_fax_clie == "true" ) && umdtblGlobal.has_reader == "true" )
+{
+return true;
+}
+return false;
+}
+function DrawStat_inpexpDev()
+{
+if( ( umdtblGlobal.has_send == "true" || umdtblGlobal.has_fax == "true" || umdtblGlobal.has_air_fax_clie == "true" ) && umdtblGlobal.has_reader == "true" && umdtblGlobal.isSendLite == "false" )
+{
+return true;
+}
+return false;
+}
+var impexpTBL = new Array
+(
+new menu_obj
+(
+"Address Lists ",
+"./asubinex.cgi?AMOD=2",
+DrawStat_inpexpAd(),
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Device Settings (Forwarding Settings, Address Book, Send Function Favorite Settings) ",
+"./ciemenu.cgi?PageFlag=c_topifb.tpl",
+DrawStat_inpexpDev(),
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Web Access Favorites ",
+"./ciemenu.cgi?PageFlag=c_topibm.tpl",
+( "true" == umdtblGlobal.has_browser && "false" == umdtblGlobal.isSendLite ),
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Printer Settings ",
+"./ciemenu.cgi?PageFlag=c_topipm.tpl",
+( ("true" == umdtblGlobal.has_dfe_ch_main || "true" == umdtblGlobal.has_dfe_ch_sub || "true" == umdtblGlobal.has_canobureau || "true" == umdtblGlobal.has_pdl || "true" == umdtblGlobal.has_bdl) && "false" == umdtblGlobal.isSendLite ),
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Paper Information ",
+"./ciemenu.cgi?PageFlag=c_topimm.tpl",
+( "true" == umdtblGlobal.has_mlib && "false" == umdtblGlobal.isSendLite ),
+umdtblGlobal.AirAuthSystemFlg,
+null
+)
+);
+if( "false" == "false" )
+{
+this.MngDatMainTBL = new Array
+(
+new menu_obj
+(
+"Hard Disk Data Complete Deletion ",
+"./hddclear.cgi?Flag=Init_Data&PageFlag=c_hdclr.tpl",
+( "true" == umdtblGlobal.has_hdddel ),
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Import/Export All ",
+null,
+null,
+null,
+devconfTBL
+),
+new menu_obj
+(
+"Import/Export Individually ",
+null,
+null,
+null,
+impexpTBL
+),
+new menu_obj
+(
+"Back Up/Restore Settings ",
+null,
+null,
+null,
+bxbkupTBL
+)
+);
+}
+else
+{
+this.MngDatMainTBL = new Array
+(
+new menu_obj
+(
+"Storage Data Complete Deletion Settings ",
+"./hddclear.cgi?Flag=Init_Data&PageFlag=c_hdclr.tpl",
+( "true" == umdtblGlobal.has_hdddel ),
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Import/Export All ",
+null,
+null,
+null,
+devconfTBL
+),
+new menu_obj
+(
+"Import/Export Individually ",
+null,
+null,
+null,
+impexpTBL
+),
+new menu_obj
+(
+"Back Up/Restore Settings ",
+null,
+null,
+null,
+bxbkupTBL
+)
+);
+}
+this.MngSecMainTBL = new Array
+(
+new menu_obj
+(
+"Security Settings ",
+null,
+null,
+null,
+securityTBL
+)
+);
+this.goScepSettings = function()
+{
+var now_time = new Date();
+document.location.href = "/ScepSettings/?portalLang=en&disp=dev_menu&Dummy=" + now_time.getTime();
+}
+
+var certifi_setTBL = new Array
+(
+new menu_obj
+(
+"Key and Certificate Settings ",
+"./cdkeycert.cgi?Flag=KeyList_Data&PageFlag=c_keyls.tpl",
+null,
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"CA Certificate Settings ",
+"./cdkeycert.cgi?Flag=CAList_Data&PageFlag=c_crtls.tpl",
+null,
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Certificate Revocation List (CRL) Settings ",
+"./cdkeycert.cgi?Flag=CRLList_Data&PageFlag=c_crlls.tpl",
+null,
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"OCSP (Online Certificate Status Protocol) Settings ",
+"./umodecom.cgi?Flag=Init_Data&PageFlag=umodecom.tpl&p_id=OCSP",
+( "true" == umdtblGlobal.has_Ocsp ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Settings for Certificate Issuance Request (SCEP) ",
+"goScepSettings",
+null,
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"S/MIME Certificate Settings ",
+"./cdkeycert.cgi?Flag=SMIMEList_Data&PageFlag=c_mimels.tpl",
+( ( "true" == umdtblGlobal.has_sign_app || "true" == umdtblGlobal.has_signat_user ) && "true" == umdtblGlobal.has_reader ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+);
+function Config_UsrKeyDrawCondition()
+{
+return ( "true" == umdtblGlobal.has_meap && "true" == umdtblGlobal.HasMeapLogin && "true" == umdtblGlobal.has_signat_user );
+}
+this.goAuditlogExpPage = function()
+{
+var now_time = new Date();
+document.location.href = "/auditlog/Top/?portalLang=en&disp=dev_menu&Dummy=" + now_time.getTime();
+}
+this.goAnnounceMail = function()
+{
+var now_time = new Date();
+document.location.href = "/DeviceSettings/AnnounceMail/?portalLang=en&disp=dev_menu&Dummy=" + now_time.getTime();
+}
+this.MngDevMainTBL = new Array
+(
+new menu_obj
+(
+"Output Report (Settings/Registration) ",
+"./devmngreportprt.cgi?Flag=Init_Data&PageFlag=c_repsetreg.tpl",
+( "true" == umdtblGlobal.is_sfp && "true" == umdtblGlobal.is_Line5UI ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Device Information Settings ",
+"./cadinf1.cgi?Flag=Init_Data&PageFlag=c_devinf.tpl&FuncTypeFlag=DevInfo_Page",
+null,
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Limit Functions When Security Key is Off ",
+"./cadkeyoff.cgi?Flag=Init_Data&PageFlag=c_keyoff.tpl&FuncTypeFlag=KeyOff_Page",
+( "true" == umdtblGlobal.VARIE_KEY_OFF_FUNC_LMT ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"User Key and Certificate Settings ",
+"./cdusrkey.cgi?CorePGTAG=41&Flag=UsrKeyList_Data&PageFlag=c_topul.tpl",
+Config_UsrKeyDrawCondition(),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Certificate Settings <span class=\"memo\">*Setting changes are effective after clicking [Apply Setting Changes] and performing the necessary operations. <\/span>",
+null,
+null,
+null,
+certifi_setTBL
+),
+new menu_obj
+(
+"Export Device Signature ",
+"./cdkeycert.cgi?Flag=DevKeyExp_Page&PageFlag=c_devkeyexp.tpl&FuncTypeFlag=DevKeyExp_Page&KeyNXAction=./cdmenu.cgi&KeyNXPage=&KeyNXFlag=&KeyCertId=",
+( "true" == umdtblGlobal.has_sign_app ),
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Display Job Status Before Authentication ",
+"./cadinf1.cgi?Flag=Init_Data&PageFlag=c_befauth.tpl&FuncTypeFlag=BeforeAuth_Page",
+null,
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Restrict Access to Other User Jobs ",
+"./cadinf1.cgi?Flag=Init_Data&PageFlag=c_otherscsrb.tpl&FuncTypeFlag=OthrsCSRB_Page",
+( "true" == umdtblGlobal.HasMeapLogin ),
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Display Job Log ",
+"./cadinf1.cgi?Flag=Init_Data&PageFlag=c_jobhst.tpl&FuncTypeFlag=JobHist_Page",
+null,
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Save Audit Log ",
+"./auditlog.cgi?Flag=Init_Data&PageFlag=c_auditlog.tpl",
+null,
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Export/Clear Audit Log ",
+"goAuditlogExpPage",
+null,
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Network Authentication Log Settings ",
+"./cadinf1.cgi?Flag=Init_Data&PageFlag=c_netlog.tpl&FuncTypeFlag=NetAuthLog_Page",
+null,
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Key Operation Log Store Settings ",
+"./keyopelog.cgi?Flag=Init_Data&PageFlag=c_keyopelog.tpl",
+( "false" == umdtblGlobal.is_Line5UI ),
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Key Lock/Function Lock Settings ",
+"./umodecom.cgi?Flag=Init_Data&PageFlag=umodecom.tpl&p_id=KEYFUNCLOCK",
+( "true" == umdtblGlobal.is_Line5UI ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Remote Shutdown ",
+"./shutdown.cgi?PageFlag=c_sdn.tpl&Flag=Init_Data&Token=10916926872712668204",
+( "true" == umdtblGlobal.disp_shutdown ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"Settings for Service Representative Access Restriction ",
+"./feopecontrol.cgi?Flag=Init_Data&PageFlag=c_fopecont.tpl&FuncTypeFlag=FeOpeControl_Page",
+null,
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Information for Purchasing Consumables ",
+"./umodecom.cgi?Flag=Init_Data&PageFlag=umodecom.tpl&p_id=CONSPURCHASE",
+( "true" == umdtblGlobal.is_reseller ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Canon Genuine Mode ",
+"./umodecom.cgi?Flag=Init_Data&PageFlag=umodecom.tpl&p_id=GENUINE",
+( "true" == umdtblGlobal.disp_genuine_menu ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"NFC Settings ",
+"./nfc.cgi?Flag=Init_Data&PageFlag=c_nfc.tpl",
+( "true" == umdtblGlobal.has_nfc ),
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"E-Mail Notification Settings ",
+"goAnnounceMail",
+( "true" == umdtblGlobal.has_sendpkg ),
+umdtblGlobal.AirAuthSystemFlg,
+null
+)
+);
+this.goInstallPage = function()
+{
+var now_time = new Date();
+document.location.href = "/nis/?portalLang=en&disp=lic_menu&Dummy=" + now_time.getTime();
+}
+this.goSimpleSignage = function()
+{
+var now_time = new Date();
+document.location.href = "/SignageSettings/?portalLang=en&disp=lic_menu&Dummy=" + now_time.getTime();
+}
+function GetTitle_MeapSetting()
+{
+var ret = "MEAP Settings ";
+if( "false" == "true" )
+{
+ret = "AddOn Settings ";
+}
+return ret;
+}
+this.MngLicMainTBL = new Array
+(
+new menu_obj
+(
+"Message Board/Support Link ",
+"./cadinf1.cgi?Flag=Init_Data&PageFlag=c_bbsupo.tpl&FuncTypeFlag=BbSup_Page",
+null,
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Visual Message Settings ",
+"goSimpleSignage",
+( "false" == umdtblGlobal.is_Line5UI ),
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Remote UI Settings ",
+"./cadinf1.cgi?Flag=Init_Data&PageFlag=c_cfrui.tpl&FuncTypeFlag=SetRui_Page",
+( "true" == umdtblGlobal.has_encrypt ),
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Remote Operation Settings ",
+"./cadinf1.cgi?Flag=Init_Data&PageFlag=c_ropera.tpl&FuncTypeFlag=SetRope_Page",
+( "true" == umdtblGlobal.has_vnc ),
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"ACCESS MANAGEMENT SYSTEM Settings ",
+"./amssetting.cgi?Flag=Init_Data&PageFlag=c_amssetting.tpl",
+( "true" == umdtblGlobal.has_acqlicense && "0" == umdtblGlobal.ui_coin_type ),
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+GetTitle_MeapSetting(),
+"./cadinf1.cgi?Flag=Init_Data&PageFlag=c_cfmeap.tpl&FuncTypeFlag=SetMeap_Page",
+( "true" == umdtblGlobal.has_meap ),
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Register/Update Software ",
+"goInstallPage",
+null,
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Direct Remote Service Settings ",
+"./cadinf1.cgi?Flag=Init_Data&PageFlag=c_drsservice.tpl&FuncTypeFlag=SetDrs_Page",
+( "true" == umdtblGlobal.disp_drs ),
+umdtblGlobal.AirAuthSystemFlg,
+null
+)
+);
+this.goMeapUserAuthPage = function()
+{
+var now_time = new Date();
+document.location.href = "/userauth/?portalLang=en&disp=usr_menu&Dummy=" + now_time.getTime();
+}
+this.MngUsrMainTBL = new Array
+(
+new menu_obj
+(
+"Authentication Management ",
+"goMeapUserAuthPage",
+null,
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"System Manager/Contact Person Information Settings ",
+"./cadinf1.cgi?Flag=Init_Data&PageFlag=c_setadm.tpl&FuncTypeFlag=SetMngr_Page",
+null,
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Department ID Management ",
+"./csl.cgi?Flag=Init_Data&SecID=0&Page=0",
+( "false" == umdtblGlobal.disp_coin && "true" != "true" ),
+umdtblGlobal.AirAuthSystemFlg,
+null
+)
+);
+this.MngUsrMainACQTBL = new Array
+(
+new menu_obj
+(
+"Authentication Management ",
+"goMeapUserAuthPage",
+null,
+umdtblGlobal.AirAuthGenericFlg,
+null
+)
+);
+function CopyJSON( from )
+{
+var dist = {};
+for( var key in from )
+{
+dist[key] = from[key];
+}
+return dist;
+}
+function DrawStatCheck( Tbl )
+{
+var ChildTbl = new Array;
+var Childidx = 0;
+for( var i = 0; i < Tbl.length; i++ )
+{
+if( false == Tbl[i].c_func || false == com_index.checkAuth( Tbl[i].auth_flg ) )
+{
+continue;
+}
+if( null == Tbl[i].tbl )
+{
+ChildTbl[Childidx] = CopyJSON( Tbl[i] );
+Childidx++;
+continue;
+}
+var Ret = DrawStatCheck( Tbl[i].tbl );
+if( 0 != Ret.length || null != Tbl[i].cgi_str )
+{
+ChildTbl[Childidx] = CopyJSON( Tbl[i] );
+ChildTbl[Childidx].tbl = Ret;
+Childidx++;
+}
+}
+return ChildTbl;
+}
+this.UmdDrawStatCheck = function( Tbl )
+{
+return DrawStatCheck(Tbl);
+}
+this.MenuBridge = function( Tbl )
+{
+var Ret =DrawStatCheck( Tbl );
+if( 0 == Ret.length )
+{
+return false;
+}
+return true;
+}
+this.MenuDebugPrint = function()
+{
+function UsermodeTest( testtbl )
+{
+for( var i = 0; i < testtbl.length; i++ )
+{
+document.write( "title =" + testtbl[i].title_str + "Stat = " +  testtbl[i].c_func + " Auth = " + com_index.checkAuth( testtbl[i].auth_flg )  + "<br />" );
+if( testtbl[i].tbl )
+{
+UsermodeTest( testtbl[i].tbl );
+}
+}
+}
+UsermodeTest( UmdMenuTbl.EnvPapMainTBL );
+UsermodeTest( UmdMenuTbl.EnvIndMainTBL );
+UsermodeTest( UmdMenuTbl.EnvTimMainTBL );
+UsermodeTest( UmdMenuTbl.EnvNetMainTBL );
+UsermodeTest( UmdMenuTbl.EnvIntMainTBL );
+UsermodeTest( UmdMenuTbl.EnvVolMainTBL );
+UsermodeTest( UmdMenuTbl.FucComMainTBL );
+UsermodeTest( UmdMenuTbl.AdjMntMainTBL );
+UsermodeTest( UmdMenuTbl.AdjMntMntMainTBL );
+UsermodeTest( UmdMenuTbl.FucCpyMainTBL );
+UsermodeTest( UmdMenuTbl.FucPriMainTBL );
+UsermodeTest( UmdMenuTbl.FucSndMainTBL );
+UsermodeTest( UmdMenuTbl.FucRecMainTBL );
+UsermodeTest( UmdMenuTbl.FucSavMainTBL );
+UsermodeTest( UmdMenuTbl.AdrsMainTBL );
+UsermodeTest( UmdMenuTbl.MngUsrMainTBL );
+UsermodeTest( UmdMenuTbl.MngDevMainTBL );
+UsermodeTest( UmdMenuTbl.MngLicMainTBL );
+UsermodeTest( UmdMenuTbl.MngDatMainTBL );
+}
+};
+//]]>
+</script>
+
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+comidxGlobal = {
+has_reader           : "true",
+has_send             : "true",
+has_fax              : "false",
+has_rmt_cpy_send     : "false",
+disp_copy            : "true",
+disp_box             : "true",
+disp_box_value     : "1",
+disp_sys_fax_box     : "true",
+disp_send            : "true",
+disp_sbox            : "true",
+disp_mem             : "true",
+disp_log             : "true",
+disp_coin            : "false",
+has_ps               : "false",
+has_psk              : "false",
+has_pdf              : "true",
+has_img              : "true",
+has_xps              : "true",
+has_mso              : "false",
+has_faxpkg           : "false",
+has_sendpkg          : "true",
+is_acq_on            : "false",
+has_dfe_ch_main      : "false",
+has_mlib             : "true",
+com_cur_tag          : "24",
+has_airfax_clie      : "false",
+use_usb_host         : "true",
+use_usb_strg_meap    : "false",
+VARIE_PNCHR_DIE_NAME : "false",
+VARIE_BOX_USER       : "true",
+hasMeapLogin         : "false",
+hasBoxAllSetting     : "true",
+smb_use              : "true",
+webdav_use           : "false",
+sbox_smb_open        : "true",
+sbox_webdav_open     : "false",
+has_emailreceiveonly : "false",
+disp_crglog          : "false",
+HasAuth_Device       : "true",
+HasAuth_Network      : "true",
+HasAuth_System       : "true",
+AuthKind             : "1",
+UserType             : "2",
+IsRestrictedUser     : "false",
+AirAuthGenericFlg    : "4",
+AirAuthDeviceFlg     : "8",
+AirAuthNetwkFlg      : "16",
+AirAuthSystemFlg     : "32",
+AuthKindNone         : "1",
+AuthKindCpca         : "2",
+UserTypeAdmin        : "2"
+}
+function ie6LayoutFixListener()
+{
+if(!/MSIE 6\./.test(navigator.userAgent))
+{
+return;
+}
+var appContents = document.getElementById("applicationContents");
+var contents = document.getElementById("contentsWrapper");
+var navigation = document.getElementById("navigationWrapper");
+if( !contents || !navigation )
+{
+return;
+}
+appContents.style.height = ( contents.offsetHeight > navigation.offsetHeight )
+? contents.offsetHeight : navigation.offsetHeight;
+}
+(function() {
+if(!/MSIE 6\./.test(navigator.userAgent))
+{
+return;
+}
+window.attachEvent( "onresize" , ie6LayoutFixListener );
+window.attachEvent( "onload" , ie6LayoutFixListener );
+})();
+(function() {
+if(!/MSIE 8\./.test(navigator.userAgent))
+{
+return;
+}
+function ie8LayoutFixListener()
+{
+document.body.style.visiblity = "visible";
+}
+window.attachEvent( "onload" , ie8LayoutFixListener );
+})();
+function com_index_base_interface()
+{
+this.tbl = null;
+this.createTbl = null;
+}
+function Adrs_NormalAdrsDrawCondition()
+{
+if( "true" == comidxGlobal.disp_send )
+{
+if( "true" == comidxGlobal.has_send || "true" == comidxGlobal.has_fax || "true" == comidxGlobal.has_airfax_clie )
+{
+return true;
+}
+}
+return false;
+}
+var com_index = new function()
+{
+this.checkAuth = function( checkAuthFlg )
+{
+if( null == checkAuthFlg )
+{
+return true;
+}
+if( comidxGlobal.AirAuthGenericFlg & checkAuthFlg ) {
+return true;
+}
+if( comidxGlobal.UserTypeAdmin != comidxGlobal.UserType ) {
+return false;
+}
+var AuthJsonAry = [
+{ "chkflg" : comidxGlobal.AirAuthDeviceFlg, "auth" : comidxGlobal.HasAuth_Device },
+{ "chkflg" : comidxGlobal.AirAuthNetwkFlg,  "auth" : comidxGlobal.HasAuth_Network },
+{ "chkflg" : comidxGlobal.AirAuthSystemFlg, "auth" : comidxGlobal.HasAuth_System }
+];
+for( property in AuthJsonAry ) {
+if( !( AuthJsonAry[property].chkflg & checkAuthFlg ) ) {
+continue;
+}
+if( "true" == AuthJsonAry[property].auth ) {
+return true;
+}
+}
+return false;
+}
+this.getTree = function( key )
+{
+return this.seek_tbl_Top( key );
+}
+this.getCgistr = function( key )
+{
+var foundTable = this.seek_tbl( this.seek_tbl_Top( key ), key );
+if( foundTable )
+{
+return foundTable.cgi_str;
+}
+}
+this.getTopTbl = function( key )
+{
+function findTopTble( tree )
+{
+for( var propaty in tree )
+{
+if( tree[ propaty ].c_func && com_index.checkAuth( tree[ propaty ].auth_flg ) && tree[ propaty ].pgtag_idx )
+{
+return tree[ propaty ];
+}
+if( null != tree[ propaty ].tbl )
+{
+foundCgiStr = findTopTble( tree[ propaty ].tbl );
+if( foundCgiStr )
+{
+return foundCgiStr;
+}
+}
+}
+}
+return findTopTble( this.seek_tbl_Top( key ) );
+}
+this.getTopCgistr = function( key )
+{
+return this.getTopTbl( key ).cgi_str;
+}
+this.getTopCorePgtagstr = function( key )
+{
+return this.getTopTbl( key ).pgtag_idx;
+}
+this.menuapi = function(){};
+this.seek_tbl_Top = function( key )
+{
+var PgtagFunctionTbl = new Array
+(
+{ pgtagMin : 1, pgtagMax : 14,func : com_index.sysmonitor },  
+{ pgtagMin : 45,  pgtagMax : 45,func : com_index.sysmonitor },  
+{ pgtagMin : 16,     pgtagMax : 18,      func : com_index.box },         
+{ pgtagMin : 19,     pgtagMax : 23,     func : com_index.direct },      
+{ pgtagMin : 24,      pgtagMax : 24,      func : com_index.address },     
+{ pgtagMin : 25, pgtagMax : 44, func : com_index.usermode } 
+);
+var targetTBL;
+for( var i=0; i < PgtagFunctionTbl.length; i++ )
+{
+if( PgtagFunctionTbl[i].pgtagMin <= key && key <= PgtagFunctionTbl[i].pgtagMax )
+{
+if( null == PgtagFunctionTbl[i].func.tbl )
+{
+PgtagFunctionTbl[i].func.createTbl();
+}
+return PgtagFunctionTbl[i].func.tbl;
+}
+}
+}
+this.seek_tbl = function( targetTBL, key )
+{
+for( var Draw_Item in targetTBL )
+{
+if( key == targetTBL[ Draw_Item ].pgtag_idx )
+{
+return targetTBL[ Draw_Item ];
+}
+if( null != targetTBL[ Draw_Item ].tbl )
+{
+var foundTbl = this.seek_tbl( targetTBL[ Draw_Item ].tbl , key );
+if( foundTbl )
+{
+return foundTbl;
+}
+}
+}
+return null;
+}
+}
+function ComIdx_DrawLink()
+{
+com_index.menuapi.draw_sub_link_menu();
+}
+com_index.menuapi.draw_list = function( tbl )
+{
+var now_time  = new Date();
+document.writeln('<li class="');
+document.write( ( tbl.pgtag_idx == comidxGlobal.com_cur_tag ) ? 'Selected' : 'Standby' );
+document.write('">')
+document.write('<a href="');
+document.write( tbl.cgi_str + "&Dummy=" + now_time.getTime() );
+document.write('">');
+document.write( tbl.title_str );
+document.write('<\/a>');
+document.writeln('<\/li>');
+}
+com_index.menuapi.draw_sub_link_submenu = function( tbl )
+{
+for( var i=0 ; i<tbl.length ; i++ )
+{
+if( false == tbl[i].c_func )
+{
+continue ;
+}
+if( false == com_index.checkAuth( tbl[i].auth_flg ) )
+{
+continue ;
+}
+com_index.menuapi.draw_list( tbl[i] );
+}
+}
+function getRebootButtunStat()
+{
+if( "true" == comidxGlobal.IsRestrictedUser )
+{
+return false;
+}
+if("true" == comidxGlobal.hasMeapLogin )
+{
+if( "false" == comidxGlobal.HasAuth_Device &&
+"false" == comidxGlobal.HasAuth_Network &&
+"false" == comidxGlobal.HasAuth_System )
+{
+return false;
+}
+}
+else
+{
+if( "true" == "true" )
+{
+if( "true" != "true" )
+{
+return false;
+}
+}
+}
+return true;
+}
+com_index.menuapi.draw_sub_link_menu = function()
+{
+var tbl = com_index.getTree( comidxGlobal.com_cur_tag )
+if( !tbl )
+{
+return;
+}
+if( com_index.usermode.tbl == tbl )
+{
+document.write('<fieldset id="rebootModule">');
+document.write('<legend>');
+document.write('Restart Device ');
+document.write('<\/legend>');
+document.write('<span class="Supplement">');
+document.write('Restart the device from here. ');
+document.write('<\/span>');
+if( getRebootButtunStat() )
+{
+document.write('<input type="button" class="ButtonEnable" value="Restart Device " onclick=\"JavaScript:reboot_click()\" \/>');
+}
+else
+{
+document.write('<input type="button" class="ButtonEnable" value="Restart Device " onclick=\"JavaScript:reboot_click()\" disabled="disabled" \/>');
+}
+document.write('<br \/>');
+if( "false" == comidxGlobal.IsRestrictedUser )
+{
+document.write('<input type="button" class="ButtonEnable" value="Apply Setting Changes " onclick=\"JavaScript:dynamic_update_click()\" \/>');
+}
+else
+{
+document.write('<input type="button" class="ButtonEnable" value="Apply Setting Changes " onclick=\"JavaScript:dynamic_update_click()\" disabled="disabled" \/>');
+}
+document.write('<\/fieldset>');
+}
+for( var i=0 ; i<tbl.length ; i++ )
+{
+if( false == tbl[i].c_func )
+{
+continue ;
+}
+if( false == com_index.checkAuth( tbl[i].auth_flg ) )
+{
+continue ;
+}
+document.writeln('<ul class="Main">');
+if( null == tbl[i].tbl )
+{
+com_index.menuapi.draw_list( tbl[i] );
+}
+else
+{
+document.write('<li class="MainItem">')
+document.write('<span class="GroupTitle">');
+document.write( tbl[i].title_str );
+document.write('<\/span>');
+document.write('<ul class="Sub">')
+com_index.menuapi.draw_sub_link_submenu( tbl[i].tbl );
+document.write('<\/ul>')
+document.write('<\/li>')
+}
+document.writeln('<\/ul>');
+}
+ie6LayoutFixListener();
+}
+function reboot_click()
+{
+var now_time = new Date();
+document.location.href = "./caboot.cgi?PageFlag=c_rbt.tpl&Flag=Init_Reboot&Token=10916926872712668204&Dummy=" + now_time.getTime();
+}
+function dynamic_update_click()
+{
+var now_time = new Date();
+document.location.href = "./cnwupdt.cgi?PageFlag=c_nwupdt.tpl&Flag=Init_Data&FuncTypeFlag=Init_Request&Token=10916926872712668204&Dummy=" + now_time.getTime();
+}
+com_index.sysmonitor = new com_index_base_interface();
+com_index.sysmonitor.createTbl = function()
+{
+com_index.sysmonitor.tbl = ( function()
+{
+function CpyJobDrawCondition()
+{
+return ( "true" == comidxGlobal.has_reader && "true" == comidxGlobal.disp_copy );
+}
+function SndJobDrawCondition()
+{
+return ( "true" == comidxGlobal.has_send || "true" == comidxGlobal.has_fax || "true" == comidxGlobal.has_airfax_clie );
+}
+function RcvJobDrawCondition()
+{
+return ( "true" == comidxGlobal.has_send || "true" == comidxGlobal.has_fax || "true" == comidxGlobal.has_emailreceiveonly );
+}
+function SvJobDrawCondition()
+{
+if ( "true" != comidxGlobal.has_reader )
+{
+return false;
+}
+if ( "false" == comidxGlobal.disp_mem && "false" == comidxGlobal.disp_sbox )
+{
+return false;
+}
+if ( "false" == comidxGlobal.disp_sbox && "true"  == comidxGlobal.disp_mem )
+{
+if( "false" == comidxGlobal.use_usb_host || "true"  == comidxGlobal.use_usb_strg_meap )
+{
+return false;
+}
+}
+return true;
+}
+function DrawStat_SboxAccess()
+{
+if( "true" == comidxGlobal.disp_sbox )
+{
+if( ( "true" == comidxGlobal.sbox_smb_open && "true" == comidxGlobal.smb_use ) ||
+( "true" == comidxGlobal.sbox_webdav_open && "true" == comidxGlobal.webdav_use ) )
+{
+return true;
+}
+}
+return false;
+}
+function DrawCGI_SboxAccess()
+{
+var cgi_str = "./dsbox.cgi?Flag=Init_Data&CorePGTAG=10&PageFlag=d_sbox.tpl";
+if( "true" == comidxGlobal.disp_sbox )
+{
+if( "true" == comidxGlobal.sbox_smb_open && "true" == comidxGlobal.smb_use )
+{
+cgi_str += "&FuncTypeFlag=SMB";
+}
+else if( "true" == comidxGlobal.sbox_webdav_open && "true" == comidxGlobal.webdav_use )
+{
+cgi_str += "&FuncTypeFlag=WebDAV";
+}
+}
+return cgi_str;
+}
+function GetSboxTitleStr()
+{
+if( "2" == "1" )
+{
+return "Advanced Space Connection Status ";
+}
+return "Advanced Box Connection Status ";
+}
+function prtjob_menu_idx_tbl()
+{
+return new Array
+(
+{
+pgtag_idx : "1",
+title_str : "Job Status ",
+cgi_str : "./jstatpri.cgi?Flag=Init_Data&CorePGTAG=1",
+c_func : true,
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "2",
+title_str : "Job Log ",
+cgi_str : "./jlp.cgi?Flag=Html_Data&LogType=0&CorePGTAG=2",
+c_func : ( "true" == comidxGlobal.disp_log ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+}
+);
+}
+function sndjob_menu_idx_tbl()
+{
+return new Array
+(
+{
+pgtag_idx : "3",
+title_str : "Job Status ",
+cgi_str : "./jsl.cgi?Flag=Init_Data&CorePGTAG=3",
+c_func : true,
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "4",
+title_str : "Job Log ",
+cgi_str : "./jls.cgi?Flag=Html_Data&CorePGTAG=4",
+c_func : ( "true" == comidxGlobal.has_send && "true" == comidxGlobal.disp_log ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "4",
+title_str : "Job Log ",
+cgi_str : "./jlf.cgi?Flag=Html_Data&LogType=TX&CorePGTAG=4",
+c_func : ( "false" == comidxGlobal.has_send && "true" == comidxGlobal.disp_log ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+}
+);
+}
+function rcvjob_menu_idx_tbl()
+{
+return new Array
+(
+{
+pgtag_idx : "5",
+title_str : "Job Status ",
+cgi_str : "./jrl.cgi?Flag=Init_Data&CorePGTAG=5",
+c_func : ( "true" == comidxGlobal.has_fax ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "5",
+title_str : "Job Status ",
+cgi_str : "./jtl.cgi?CorePGTAG=5",
+c_func : ( "false" == comidxGlobal.has_fax && "false" == comidxGlobal.has_emailreceiveonly ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "6",
+title_str : "Job Log ",
+cgi_str : "./jlr.cgi?Flag=Html_Data&CorePGTAG=6",
+c_func : ( ( "true" == comidxGlobal.has_send || "true" == comidxGlobal.has_emailreceiveonly ) && "true" == comidxGlobal.disp_log ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "6",
+title_str : "Job Log ",
+cgi_str : "./jlf.cgi?Flag=Html_Data&LogType=RX&CorePGTAG=6",
+c_func : ( "false" == comidxGlobal.has_send && "true" == comidxGlobal.disp_log && "false" == comidxGlobal.has_emailreceiveonly ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+}
+);
+}
+function svjob_menu_idx_tbl()
+{
+return new Array
+(
+{
+pgtag_idx : "7",
+title_str : "Job Status ",
+cgi_str : "./jsvl.cgi?Flag=Init_Data&CorePGTAG=7",
+c_func : true,
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "8",
+title_str : "Job Log ",
+cgi_str : "./jlsv.cgi?Flag=Html_Data&CorePGTAG=8",
+c_func : ( "true" == comidxGlobal.disp_log ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+}
+);
+}
+return new Array
+(
+{
+pgtag_idx : null,
+title_str : CpyJobDrawCondition() ? "Copy/Print " : "Print ",
+cgi_str : null,
+c_func : true,
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : prtjob_menu_idx_tbl()
+},
+{
+pgtag_idx : null,
+title_str : "Send ",
+cgi_str : null,
+c_func : SndJobDrawCondition(),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : sndjob_menu_idx_tbl()
+},
+{
+pgtag_idx : null,
+title_str : "Receive ",
+cgi_str : null,
+c_func : RcvJobDrawCondition(),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : rcvjob_menu_idx_tbl()
+},
+{
+pgtag_idx : null,
+title_str : "Store ",
+cgi_str : null,
+c_func : SvJobDrawCondition(),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : svjob_menu_idx_tbl()
+},
+{
+pgtag_idx : "9",
+title_str : "Error Information ",
+cgi_str : "./dstatus.cgi?CorePGTAG=9&PageFlag=d_sts2.tpl",
+c_func : true,
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "10",
+title_str : GetSboxTitleStr(),
+cgi_str : DrawCGI_SboxAccess(),
+c_func : DrawStat_SboxAccess(),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "11",
+title_str : "Consumables ",
+cgi_str : "./dstatus.cgi?CorePGTAG=11&PageFlag=d_tops.tpl",
+c_func : true,
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "12",
+title_str : "Device Features ",
+cgi_str : "./dfeat.cgi?CorePGTAG=12",
+c_func : true,
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "13",
+title_str : "Device Information ",
+cgi_str : "./dinfo.cgi?CorePGTAG=13",
+c_func : true,
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "14",
+title_str : "Check Counter ",
+cgi_str : "./dcounter.cgi?CorePGTAG=14",
+c_func : true,
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "45",
+title_str : "Cartridge Log ",
+cgi_str : "./dcrglog.cgi?CorePGTAG=45&PageFlag=d_topcl.tpl",
+c_func : ( "true" == comidxGlobal.disp_crglog ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+}
+)
+})();
+}
+com_index.box = new com_index_base_interface();
+function Box_FaxSysBoxDrawCondition()
+{
+if( "false" == comidxGlobal.has_reader )
+{
+return false;
+}
+if( "true" == comidxGlobal.has_send && "true" == comidxGlobal.has_sendpkg )
+{
+return true;
+}
+if( "true" == comidxGlobal.has_fax && "true" == comidxGlobal.has_faxpkg )
+{
+return true;
+}
+return false;
+}
+com_index.box.createTbl = function()
+{
+com_index.box.tbl = ( function()
+{
+return new Array
+(
+{
+pgtag_idx : "16",
+title_str : "Mail Box ",
+cgi_str : "./bpbl.cgi?CorePGTAG=16&BoxKind=UserBox",
+c_func : ( "true" == comidxGlobal.VARIE_BOX_USER && "1" == comidxGlobal.disp_box_value ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "17",
+title_str : "Memory RX Inbox ",
+cgi_str : "./bpbl.cgi?CorePGTAG=17&BoxKind=SysBox",
+c_func : Box_FaxSysBoxDrawCondition(),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "18",
+title_str : "Confidential Fax Inbox ",
+cgi_str : "./bpbl.cgi?CorePGTAG=18&BoxKind=FaxBox",
+c_func : Box_FaxSysBoxDrawCondition(),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+}
+)
+})();
+}
+com_index.direct = new com_index_base_interface();
+com_index.direct.createTbl = function()
+{
+com_index.direct.tbl = ( function()
+{
+return new Array
+(
+{
+pgtag_idx : "19",
+title_str : "PDF File ",
+cgi_str : "./ppdf.cgi?CorePGTAG=19&Type=PDF",
+c_func : ( "true" == comidxGlobal.has_pdf ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "20",
+title_str : ( "true" == "true" ) ? "PS/EPS File " : "PS File ",
+cgi_str : "./ppdf.cgi?CorePGTAG=20&Type=PS",
+c_func : ( "true" == comidxGlobal.has_ps  || "true" == comidxGlobal.has_psk ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "21",
+title_str : "Image File ",
+cgi_str : "./pimg.cgi?CorePGTAG=21",
+c_func : ( "true" == comidxGlobal.has_img ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "22",
+title_str : "XPS File ",
+cgi_str : "./pxps.cgi?CorePGTAG=22",
+c_func : ( "true" == comidxGlobal.has_xps ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "23",
+title_str : "Dummy ",
+cgi_str : "./pmso.cgi?CorePGTAG=23",
+c_func : ( "true" == comidxGlobal.has_mso ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+}
+)
+})();
+}
+com_index.address = new com_index_base_interface();
+com_index.address.createTbl = function()
+{
+com_index.address.tbl = ( function()
+{
+return new Array
+(
+{
+pgtag_idx : "24",
+title_str : "Address Lists ",
+cgi_str : "./asublist.cgi?CorePGTAG=24&AMOD=0",
+c_func : Adrs_NormalAdrsDrawCondition(),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+}
+)
+})();
+}
+com_index.usermode = new com_index_base_interface();
+function GetComidxUmdTbl()
+{
+function Stat_SendFaxAirfaxClie()
+{
+return ( "true" == comidxGlobal.has_send || "true" == comidxGlobal.has_fax || "true" == comidxGlobal.has_airfax_clie );
+}
+function DrawStat_FuncCopy()
+{
+if( "true" == comidxGlobal.disp_copy && "true" == comidxGlobal.has_reader )
+{
+if( UmdMenuTbl.MenuBridge( UmdMenuTbl.FucCpyMainTBL ) )
+{
+return true;
+}
+}
+return false;
+}
+function DrawStat_FuncSend()
+{
+if( "true" == comidxGlobal.disp_send )
+{
+if( UmdMenuTbl.MenuBridge( UmdMenuTbl.FucSndMainTBL ) )
+{
+return true;
+}
+}
+return false;
+}
+function DrawStat_FuncRecv()
+{
+if( "true" == comidxGlobal.disp_send )
+{
+if( UmdMenuTbl.MenuBridge( UmdMenuTbl.FucRecMainTBL ) )
+{
+if( "false" == comidxGlobal.has_emailreceiveonly )
+{
+return true;
+}
+}
+}
+return false;
+}
+function DrawStat_FuncRecvOnly()
+{
+if( "true" == comidxGlobal.disp_send )
+{
+if( UmdMenuTbl.MenuBridge( UmdMenuTbl.FucRecMainTBL ) )
+{
+if( "true" == comidxGlobal.has_emailreceiveonly )
+{
+return true;
+}
+}
+}
+return false;
+}
+function DrawStat_FuncSav()
+{
+if( "true" == comidxGlobal.disp_sys_fax_box )
+{
+if( UmdMenuTbl.MenuBridge( UmdMenuTbl.FucSavMainTBL ) )
+{
+return true;
+}
+}
+return false;
+}
+function config_menu_env_tbl()
+{
+return new Array
+(
+{
+pgtag_idx : "25",
+title_str : "Paper Settings ",
+cgi_str : "./cdmenu.cgi?CorePGTAG=25",
+c_func : UmdMenuTbl.MenuBridge( UmdMenuTbl.EnvPapMainTBL ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "26",
+title_str : "Display Settings ",
+cgi_str : "./cdmenu.cgi?CorePGTAG=26",
+c_func : UmdMenuTbl.MenuBridge( UmdMenuTbl.EnvIndMainTBL ),
+auth_flg : comidxGlobal.AirAuthDeviceFlg | comidxGlobal.AirAuthSystemFlg,
+tbl : null
+},
+{
+pgtag_idx : "27",
+title_str : "Timer/Energy Settings ",
+cgi_str : "./cdmenu.cgi?CorePGTAG=27",
+c_func : UmdMenuTbl.MenuBridge( UmdMenuTbl.EnvTimMainTBL ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "28",
+title_str : "Network Settings ",
+cgi_str : "/NetworkSettings/page/?CorePGTAG=28&Flag=Init_Data&PageFlag=c_envnet.tpl&FuncTypeFlag=NetworkMenu_Page",
+c_func : UmdMenuTbl.MenuBridge( UmdMenuTbl.EnvNetMainTBL ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+
+tbl : null
+},
+{
+pgtag_idx : "29",
+title_str : "External Interface ",
+cgi_str : "./cdmenu.cgi?CorePGTAG=29",
+c_func : UmdMenuTbl.MenuBridge( UmdMenuTbl.EnvIntMainTBL ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "30",
+title_str : "Volume Settings ",
+cgi_str : "./cdmenu.cgi?CorePGTAG=30",
+c_func : UmdMenuTbl.MenuBridge( UmdMenuTbl.EnvVolMainTBL ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+}
+)
+}
+function config_menu_mainte_tbl()
+{
+return new Array
+(
+{
+pgtag_idx : "31",
+title_str : "Adjust Image Quality ",
+cgi_str : "./cdmenu.cgi?CorePGTAG=31",
+c_func : UmdMenuTbl.MenuBridge( UmdMenuTbl.AdjMntMainTBL ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "32",
+title_str : "Maintenance ",
+cgi_str : "./cdmenu.cgi?CorePGTAG=32",
+c_func : UmdMenuTbl.MenuBridge( UmdMenuTbl.AdjMntMntMainTBL ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+}
+)
+}
+function config_menu_func_tbl()
+{
+return new Array
+(
+{
+pgtag_idx : "33",
+title_str : "Common Settings ",
+cgi_str : "./cdmenu.cgi?CorePGTAG=33",
+c_func : UmdMenuTbl.MenuBridge( UmdMenuTbl.FucComMainTBL ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "34",
+title_str : "Copy ",
+cgi_str : "./cdmenu.cgi?CorePGTAG=34",
+c_func : DrawStat_FuncCopy(),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "35",
+title_str : "Printer ",
+cgi_str : "./cdmenu.cgi?CorePGTAG=35",
+c_func : UmdMenuTbl.MenuBridge( UmdMenuTbl.FucPriMainTBL ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "36",
+title_str : "Send ",
+cgi_str : "./cdmenu.cgi?CorePGTAG=36",
+c_func : DrawStat_FuncSend(),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "37",
+title_str : "Receive/Forward ",
+cgi_str : "./cdmenu.cgi?CorePGTAG=37",
+c_func : DrawStat_FuncRecv(),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "37",
+title_str : "Receive ",
+cgi_str : "./cdmenu.cgi?CorePGTAG=37",
+c_func : DrawStat_FuncRecvOnly(),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "38",
+title_str : "Store/Access Files ",
+cgi_str : "./cdmenu.cgi?CorePGTAG=38",
+c_func : DrawStat_FuncSav(),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+}
+)
+}
+function config_menu_manage_tbl()
+{
+return new Array
+(
+{
+pgtag_idx : "40",
+title_str : "User Management ",
+cgi_str : "./cdmenu.cgi?CorePGTAG=40",
+c_func : UmdMenuTbl.MenuBridge( UmdMenuTbl.MngUsrMainTBL ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "41",
+title_str : "Device Management ",
+cgi_str : "./cdmenu.cgi?CorePGTAG=41",
+c_func : UmdMenuTbl.MenuBridge( UmdMenuTbl.MngDevMainTBL ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "42",
+title_str : "License/Other ",
+cgi_str : "./cdmenu.cgi?CorePGTAG=42",
+c_func : UmdMenuTbl.MenuBridge( UmdMenuTbl.MngLicMainTBL ),
+auth_flg : comidxGlobal.AirAuthSystemFlg,
+tbl : null
+},
+{
+pgtag_idx : "43",
+title_str : "Data Management ",
+cgi_str : "./cdmenu.cgi?CorePGTAG=43",
+c_func : UmdMenuTbl.MenuBridge( UmdMenuTbl.MngDatMainTBL ),
+auth_flg : comidxGlobal.AirAuthSystemFlg,
+tbl : null
+},
+{
+pgtag_idx : "44",
+title_str : "Security Settings ",
+cgi_str : "./cdmenu.cgi?CorePGTAG=44&Token=10916926872712668204",
+c_func : UmdMenuTbl.MenuBridge( UmdMenuTbl.MngSecMainTBL ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+}
+)
+}
+function DrawStat_AdrsMain()
+{
+if( Adrs_NormalAdrsDrawCondition() )
+{
+if( UmdMenuTbl.MenuBridge( UmdMenuTbl.AdrsMainTBL ) )
+{
+return true;
+}
+}
+return false;
+}
+if( "true" == comidxGlobal.IsRestrictedUser )
+{
+return [
+{
+pgtag_idx : null,
+title_str : "Management Settings ",
+cgi_str : null,
+c_func : null,
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : [{
+pgtag_idx : "40",
+title_str : "User Management ",
+cgi_str : "./cdmenu.cgi?CorePGTAG=40",
+c_func : UmdMenuTbl.MenuBridge( UmdMenuTbl.MngUsrMainACQTBL ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+}
+]
+}
+];
+}
+else
+{
+return new Array
+(
+{
+pgtag_idx : null,
+title_str : "Preferences ",
+cgi_str : null,
+c_func : null,
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : config_menu_env_tbl()
+},
+{
+pgtag_idx : null,
+title_str : "Adjustment/Maintenance ",
+cgi_str : null,
+c_func : null,
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : config_menu_mainte_tbl()
+},
+{
+pgtag_idx : null,
+title_str : "Function Settings ",
+cgi_str : null,
+c_func : null,
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : config_menu_func_tbl()
+},
+{
+pgtag_idx : "39",
+title_str : "Set Destination ",
+cgi_str : "./cdmenu.cgi?CorePGTAG=39",
+c_func : DrawStat_AdrsMain(),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : null,
+title_str : "Management Settings ",
+cgi_str : null,
+c_func : null,
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : config_menu_manage_tbl()
+}
+)
+}
+}
+com_index.usermode.createTbl = function()
+{
+if( "undefined" == typeof( UmdMenuTbl ) )
+{
+com_index.usermode.tbl = null;
+return;
+}
+com_index.usermode.tbl = UmdMenuTbl.UmdDrawStatCheck( GetComidxUmdTbl() );
+}
+//]]>
+</script>
+
+<div id="container">
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+ComMkup_RuiCommons();
+//]]>
+</script>
+<div id="applications">
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+ComMkup_ApplicationBranding();
+//]]>
+</script>
+<div id="applicationContents">
+<div class="Wrapper">
+<div id="contentsWrapper">
+<div id="contents">
+<div class="ContentModule">
+<div class="MsgModule">
+<div class="Glitch">
+<img src="media/dialog_symbol_warn.gif" alt="" />
+<p class="MainMessage">
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+if( "14" == sform.AID.value )
+{
+document.writeln('Cannot register or update the IP address. ')
+}
+else
+{
+document.writeln('Cannot create or update the destination. ')
+}
+//]]>
+</script>
+</p>
+<input type="button" class="ButtonEnable" value="OK " onclick="history_back()" />
+</div>
+</div>
+</div>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+ComMkup_TmpFooter();
+//]]>
+</script>
+</div>
+</div>
+<hr />
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+ComMkup_NavigationWrapper();
+//]]>
+</script>
+</div>
+</div>
+<hr />
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+ComMkup_ApplicationInfo();
+//]]>
+</script>
+</div>
+</div>
+</body>
+</html>

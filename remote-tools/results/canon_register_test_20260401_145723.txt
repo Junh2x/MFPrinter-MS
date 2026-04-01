@@ -1,0 +1,47 @@
+[14:57:24] [세션] GET http://192.168.11.227:8000/ → 200
+[14:57:24]   저장: canon_test_145724_init_session_meta.json, canon_test_145724_init_session_body.html
+[14:57:25] [세션] GET http://192.168.11.227:8000/rps/nativetop.cgi?CorePGTAG=PGTAG_ADR_USR → 200
+[14:57:25]   저장: canon_test_145725_init_session_meta.json, canon_test_145725_init_session_body.html
+[14:57:25] [세션] 쿠키: {'sessionid': 'cee2d22f737370fce1cadb82996e0512', 'portalLang': 'en', 'iR': '738510064'}
+[14:57:25] [목록 조회] POST http://192.168.11.227:8000/rps/albody.cgi → 200
+[14:57:25]   저장: canon_test_145725_list_addresses_meta.json, canon_test_145725_list_addresses_body.html
+[14:57:25] [목록] adrsList 없음
+[14:57:25]   응답 미리보기: <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-script-type" content="text/javascript" />
+<meta http-equiv="content-style-type" content="text/css" />
+<meta http-equiv= "pragma" content="no-cache" />
+<meta http-equiv="cache-control" content="no-cach
+[14:57:25] [등록] POST http://192.168.11.227:8000/rps/anewadrs.cgi → 200
+[14:57:25]   응답 크기: 139237B
+[14:57:25]   저장: canon_test_145725_register_smb_meta.json, canon_test_145725_register_smb_body.html
+[14:57:26] [목록 조회] POST http://192.168.11.227:8000/rps/albody.cgi → 200
+[14:57:26]   저장: canon_test_145726_list_addresses_meta.json, canon_test_145726_list_addresses_body.html
+[14:57:26] [목록] adrsList 없음
+[14:57:26]   응답 미리보기: <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-script-type" content="text/javascript" />
+<meta http-equiv="content-style-type" content="text/css" />
+<meta http-equiv= "pragma" content="no-cache" />
+<meta http-equiv="cache-control" content="no-cach
+[14:57:26] [토큰 취득] GET http://192.168.11.227:8000/rps/asublist.cgi?CorePGTAG=24&AMOD=0&FromTopPage=1&Dummy=9999 → 200
+[14:57:26]   저장: canon_test_145726_get_token_asublist_meta.json, canon_test_145726_get_token_asublist_body.html
+[14:57:26] [토큰] JS 변수에서 발견: 34588541442032240600...
+[14:57:26] [등록] POST http://192.168.11.227:8000/rps/anewadrs.cgi → 200
+[14:57:26]   응답 크기: 140078B
+[14:57:26]   저장: canon_test_145726_register_smb_meta.json, canon_test_145726_register_smb_body.html
+[14:57:27] [목록 조회] POST http://192.168.11.227:8000/rps/albody.cgi → 200
+[14:57:27]   저장: canon_test_145727_list_addresses_meta.json, canon_test_145727_list_addresses_body.html
+[14:57:27] [목록] adrsList 없음
+[14:57:27]   응답 미리보기: <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-script-type" content="text/javascript" />
+<meta http-equiv="content-style-type" content="text/css" />
+<meta http-equiv= "pragma" content="no-cache" />
+<meta http-equiv="cache-control" content="no-cach
