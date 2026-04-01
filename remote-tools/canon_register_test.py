@@ -1,7 +1,8 @@
-"""캐논 iR-ADV C3720 수신지 등록 테스트"""
+"""캐논 iR-ADV C3720 수신지 등록/삭제 테스트"""
 import re
 import sys
 import json
+import time
 from datetime import datetime
 from pathlib import Path
 import requests
@@ -26,128 +27,104 @@ def log(msg):
 
 
 def save_response(name, r):
-    """HTTP 응답을 파일로 저장"""
     ts = datetime.now().strftime("%H%M%S")
     prefix = f"canon_test_{ts}_{name}"
-
     meta = {
-        "name": name,
-        "url": r.url,
-        "method": r.request.method,
+        "name": name, "url": r.url, "method": r.request.method,
         "status_code": r.status_code,
         "request_headers": dict(r.request.headers),
         "response_headers": dict(r.headers),
         "request_body": r.request.body if r.request.body else None,
-        "timestamp": datetime.now().isoformat(),
     }
-    meta_file = RESULT_DIR / f"{prefix}_meta.json"
-    with open(meta_file, "w", encoding="utf-8") as f:
-        json.dump(meta, f, ensure_ascii=False, indent=2)
-
-    body_file = RESULT_DIR / f"{prefix}_body.html"
-    body_file.write_text(r.text, encoding="utf-8")
-
-    log(f"  저장: {meta_file.name}, {body_file.name}")
+    (RESULT_DIR / f"{prefix}_meta.json").write_text(
+        json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
+    (RESULT_DIR / f"{prefix}_body.html").write_text(r.text, encoding="utf-8")
+    log(f"  저장: {prefix}")
 
 
-def init_session(session):
-    """포털 페이지부터 순서대로 접근하여 세션 쿠키 확보"""
-    urls = [
-        f"http://{IP}:8000/",
-        f"http://{IP}:8000/rps/nativetop.cgi?CorePGTAG=PGTAG_ADR_USR",
-    ]
-    for url in urls:
-        r = session.get(url, timeout=TIMEOUT, allow_redirects=True)
-        log(f"[세션] GET {url} → {r.status_code}")
-        save_response("init_session", r)
-    log(f"[세션] 쿠키: {dict(session.cookies)}")
-
-
-def get_token(session):
-    """주소록 페이지에서 Token 추출"""
-    # 주소 리스트 원터치 페이지 접근
-    url = f"{BASE}/rps/asublist.cgi?CorePGTAG=24&AMOD=0&FromTopPage=1&Dummy=9999"
-    r = session.get(url, timeout=TIMEOUT)
-    log(f"[토큰 취득] GET {url} → {r.status_code}")
-    save_response("get_token_asublist", r)
-
-    # Token 추출 시도 - hidden input
-    match = re.search(r'name=["\']Token["\'][^>]*value=["\']([^"\']+)', r.text, re.I)
-    if match:
-        log(f"[토큰] hidden input에서 발견: {match.group(1)[:20]}...")
-        return match.group(1)
-
-    # Token 추출 시도 - JS 변수
-    match = re.search(r'Token["\s]*[:=]\s*["\']?(\d+)', r.text, re.I)
-    if match:
-        log(f"[토큰] JS 변수에서 발견: {match.group(1)[:20]}...")
-        return match.group(1)
-
-    # Token 추출 시도 - URL 파라미터
-    match = re.search(r'Token=(\d+)', r.text)
-    if match:
-        log(f"[토큰] URL 파라미터에서 발견: {match.group(1)[:20]}...")
-        return match.group(1)
-
-    # 못 찾으면 전체 응답에서 Token 관련 부분 출력
-    log("[토큰] 자동 추출 실패. Token 관련 텍스트 검색:")
-    for line in r.text.split("\n"):
-        if "token" in line.lower() or "Token" in line:
-            log(f"  > {line.strip()[:200]}")
-
-    # 등록 폼 페이지에서도 시도
-    url2 = f"{BASE}/rps/aprop.cgi?AMOD=1&AID=11&AIDX=5&ACLS=7&AFION=1"
-    r2 = session.get(url2, timeout=TIMEOUT)
-    log(f"[토큰 2차] GET {url2} → {r2.status_code}")
-    save_response("get_token_aprop", r2)
-
+def extract_token(html):
+    """HTML에서 Token 추출 (여러 패턴 시도)"""
     for pattern in [
         r'name=["\']Token["\'][^>]*value=["\']([^"\']+)',
-        r'Token["\s]*[:=]\s*["\']?(\d+)',
-        r'Token=(\d+)',
+        r'value=["\']([^"\']+)["\'][^>]*name=["\']Token["\']',
+        r'Token=(\d{10,})',
     ]:
-        match = re.search(pattern, r2.text, re.I)
-        if match:
-            log(f"[토큰] 2차 시도에서 발견: {match.group(1)[:20]}...")
-            return match.group(1)
-
-    log("[토큰] 2차에서도 Token 관련 텍스트:")
-    for line in r2.text.split("\n"):
-        if "token" in line.lower() or "Token" in line:
-            log(f"  > {line.strip()[:200]}")
-
+        m = re.search(pattern, html, re.I)
+        if m:
+            return m.group(1)
     return None
 
 
-def list_addresses(session):
-    """수신지 목록 조회"""
-    url = f"{BASE}/rps/albody.cgi"
-    r = session.post(url, data={"AID": "11", "FILTER_ID": "0", "Dummy": "9999"}, timeout=TIMEOUT)
-    log(f"[목록 조회] POST {url} → {r.status_code}")
-    save_response("list_addresses", r)
+def init_session(session):
+    """포털 → 주소록 페이지 순서로 접근하여 세션 확보"""
+    # 1) 포털
+    r = session.get(f"{BASE}/", timeout=TIMEOUT)
+    log(f"[세션] 포털 → {r.status_code}")
+    save_response("01_portal", r)
 
-    # adrsList 파싱
-    match = re.search(r'var\s+adrsList\s*=\s*\{([^;]+)\}', r.text)
+    # 2) 주소록 진입
+    r = session.get(f"{BASE}/rps/nativetop.cgi?CorePGTAG=PGTAG_ADR_USR&Dummy={int(time.time()*1000)}",
+                    timeout=TIMEOUT)
+    log(f"[세션] 주소록진입 → {r.status_code}")
+    save_response("02_nativetop", r)
+
+    log(f"[세션] 쿠키: {dict(session.cookies)}")
+    return session
+
+
+def get_address_list(session):
+    """주소 리스트 원터치 페이지 → 목록 조회 + Token A 획득"""
+    # asublist.cgi (프레임 페이지)
+    url = f"{BASE}/rps/asublist.cgi?CorePGTAG=24&AMOD=0&FromTopPage=1&Dummy={int(time.time()*1000)}"
+    r = session.get(url, timeout=TIMEOUT,
+                    headers={"Referer": f"{BASE}/rps/nativetop.cgi?CorePGTAG=PGTAG_ADR_USR"})
+    log(f"[목록] asublist → {r.status_code}")
+    save_response("03_asublist", r)
+    token_a = extract_token(r.text)
+    log(f"[목록] Token A: {token_a[:20] if token_a else 'None'}...")
+
+    # albody.cgi (목록 본문)
+    r2 = session.post(f"{BASE}/rps/albody.cgi",
+                      data={"AID": "11", "FILTER_ID": "0", "Dummy": str(int(time.time()*1000))},
+                      headers={"Referer": url}, timeout=TIMEOUT)
+    log(f"[목록] albody → {r2.status_code}")
+    save_response("04_albody", r2)
+
+    # adrsList 파싱 (배열 형태)
+    entries = []
+    match = re.search(r'var\s+adrsList\s*=\s*\[([^\]]*)\]', r2.text, re.DOTALL)
     if match:
-        log(f"[목록] adrsList 발견:")
         raw = match.group(1)
-        entries = re.findall(r'(\d+):\{tp:(\d+),nm:"([^"]*)"', raw)
+        entries = re.findall(r'id:(\d+),tp:(\d+),nm:"([^"]*)"', raw)
         for idx, tp, name in entries:
             type_name = {2: "이메일", 7: "파일(SMB)"}.get(int(tp), f"타입{tp}")
             log(f"  [{idx}] {name.strip()} ({type_name})")
-        return entries
     else:
         log("[목록] adrsList 없음")
-        # 응답 일부 출력
-        log(f"  응답 미리보기: {r.text[:500]}")
-        return []
+
+    return token_a, entries
 
 
-def register_smb(session, token, slot=5):
-    """SMB 수신지 등록"""
-    import time
-    url = f"{BASE}/rps/anewadrs.cgi"
-    # 브라우저 캡처와 동일한 형태로 전송 (PASSCHK 2번, URL 인코딩된 AdrAction)
+def register_smb(session, token_a, slot=5):
+    """SMB 수신지 등록: aprop.cgi(폼) → anewadrs.cgi(등록)"""
+
+    # 1) 등록 폼 페이지 (Token A 사용 → Token B 획득)
+    form_url = (f"{BASE}/rps/aprop.cgi?AMOD=1&AID=11&AIDX={slot}&ACLS=7"
+                f"&AFION=1&AdrAction=.%2Falframe.cgi%3F"
+                f"&Dummy={int(time.time()*1000)}&Token={token_a}")
+    r = session.get(form_url, timeout=TIMEOUT,
+                    headers={"Referer": f"{BASE}/rps/asublist.cgi?CorePGTAG=24&AMOD=0"})
+    log(f"[등록] 폼 페이지 → {r.status_code}")
+    save_response("05_aprop_form", r)
+
+    token_b = extract_token(r.text)
+    log(f"[등록] Token B: {token_b[:20] if token_b else 'None'}...")
+
+    if not token_b:
+        log("[등록] Token B 추출 실패!")
+        return False
+
+    # 2) 실제 등록 POST (Token B 사용)
     body = (
         f"AID=11&PageFlag=&AIDX={slot}"
         f"&ANAME=JA_TEST_SMB&ANAMEONE=JA_TEST_SMB&AREAD=JA_TEST_SMB"
@@ -157,32 +134,36 @@ def register_smb(session, token, slot=5):
         f"&AdrAction=.%2Faprop.cgi%3F&AMOD=1"
         f"&Dummy={int(time.time()*1000)}"
         f"&AFCLS=&AFINT=&APNOL=&AFION=1&AUUID="
-        f"&Token={token}"
+        f"&Token={token_b}"
     )
-    r = session.post(url, data=body, headers={"Content-Type": "application/x-www-form-urlencoded"}, timeout=TIMEOUT)
-    log(f"[등록] POST {url} → {r.status_code}")
-    log(f"  응답 크기: {len(r.content)}B")
-    save_response("register_smb", r)
-    return r
+    r2 = session.post(f"{BASE}/rps/anewadrs.cgi", data=body,
+                      headers={"Content-Type": "application/x-www-form-urlencoded",
+                               "Referer": form_url},
+                      timeout=TIMEOUT)
+    log(f"[등록] POST → {r2.status_code} ({len(r2.content)}B)")
+    save_response("06_register", r2)
+
+    # 성공/실패 확인
+    if "ERR_SUBMIT_FORM" in r2.text:
+        log("[등록] 실패: ERR_SUBMIT_FORM 반환")
+        return False
+    else:
+        log("[등록] 에러 폼 없음 — 성공 가능성 있음")
+        return True
 
 
-def delete_address(session, token, slot=5):
+def delete_smb(session, token_a, slot=5):
     """수신지 삭제"""
-    url = f"{BASE}/rps/adelete.cgi"
-    data = {
-        "AMOD": "1",
-        "AID": "11",
-        "AIDX": str(slot),
-        "ACLS": "7",
-        "AFION": "1",
-        "AdrAction": "./alframe.cgi?",
-        "Dummy": "9999",
-        "Token": token,
-    }
-    r = session.post(url, data=data, timeout=TIMEOUT)
-    log(f"[삭제] POST {url} → {r.status_code}")
-    save_response("delete_address", r)
-    return r
+    body = (
+        f"AMOD=1&AID=11&AIDX={slot}&ACLS=7&AFION=1"
+        f"&AdrAction=.%2Falframe.cgi%3F"
+        f"&Dummy={int(time.time()*1000)}&Token={token_a}"
+    )
+    r = session.post(f"{BASE}/rps/adelete.cgi", data=body,
+                     headers={"Content-Type": "application/x-www-form-urlencoded"},
+                     timeout=TIMEOUT)
+    log(f"[삭제] POST → {r.status_code}")
+    save_response("07_delete", r)
 
 
 def main():
@@ -195,52 +176,37 @@ def main():
     print(f" 캐논 수신지 등록 테스트 (슬롯 {slot:03d})")
     print("=" * 50)
 
-    # 0. 세션 초기화
-    print("\n[0] 세션 초기화")
+    # 1. 세션 초기화
+    print("\n[1] 세션 초기화")
     init_session(session)
 
-    # 1. 현재 목록 조회
-    print("\n[1] 현재 수신지 목록")
-    list_addresses(session)
+    # 2. 목록 조회 + Token A
+    print("\n[2] 현재 목록 조회")
+    token_a, entries = get_address_list(session)
 
-    # 2. 토큰 없이 등록 시도
-    print(f"\n[2] 토큰 없이 등록 시도 (슬롯 {slot:03d})")
-    register_smb(session, token="", slot=slot)
+    if not token_a:
+        print("\n>>> Token A 추출 실패. 종료.")
+        return
 
-    # 3. 등록 확인
-    print("\n[3] 등록 후 목록 확인")
-    entries = list_addresses(session)
-    found = any(name.strip().startswith("JA_TEST") for _, _, name in entries)
+    # 3. SMB 수신지 등록 (Token A → 폼 → Token B → 등록)
+    print(f"\n[3] SMB 수신지 등록 (슬롯 {slot:03d})")
+    success = register_smb(session, token_a, slot)
+
+    # 4. 등록 확인
+    print("\n[4] 등록 후 목록 확인")
+    token_a2, entries2 = get_address_list(session)
+    found = any("JA_TEST" in name for _, _, name in entries2)
 
     if found:
-        print("\n>>> 토큰 없이 등록 성공! (토큰 불필요)")
-        # 삭제
-        print(f"\n[4] 테스트 수신지 삭제 (슬롯 {slot:03d})")
-        delete_address(session, token="", slot=slot)
-        print("\n[5] 삭제 후 목록 확인")
-        list_addresses(session)
+        print("\n>>> 등록 성공!")
+        # 5. 삭제
+        print(f"\n[5] 삭제 (슬롯 {slot:03d})")
+        if token_a2:
+            delete_smb(session, token_a2, slot)
+            print("\n[6] 삭제 후 목록 확인")
+            get_address_list(session)
     else:
-        print("\n>>> 토큰 없이 등록 실패. 토큰 필요 확인됨.")
-        # 토큰 포함 재시도
-        print("\n[4] 토큰 추출 시도")
-        token = get_token(session)
-        if token:
-            print(f"\n[5] 토큰 포함 등록 시도 (슬롯 {slot:03d})")
-            register_smb(session, token, slot)
-            print("\n[6] 등록 후 목록 확인")
-            entries = list_addresses(session)
-            found = any(name.strip().startswith("JA_TEST") for _, _, name in entries)
-            if found:
-                print("\n>>> 토큰 포함 등록 성공!")
-                print(f"\n[7] 삭제")
-                token2 = get_token(session)
-                if token2:
-                    delete_address(session, token2, slot)
-                    list_addresses(session)
-            else:
-                print("\n>>> 토큰 포함해도 등록 실패. 추가 조사 필요.")
-        else:
-            print("  토큰 자동 추출 실패")
+        print(f"\n>>> 등록 {'실패' if not success else '확인 불가'}.")
 
 
 if __name__ == "__main__":
