@@ -1,0 +1,33 @@
+{
+  "name": "04_albody",
+  "url": "http://192.168.11.227:8000/rps/albody.cgi",
+  "method": "POST",
+  "status_code": 200,
+  "request_headers": {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0",
+    "Accept-Encoding": "gzip, deflate, zstd",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Connection": "keep-alive",
+    "Origin": "http://192.168.11.227:8000",
+    "Accept-Language": "ko-KR,ko;q=0.9",
+    "Referer": "http://192.168.11.227:8000/rps/asublist.cgi?CorePGTAG=24&AMOD=0&FromTopPage=1&Dummy=1775025210624",
+    "Cookie": "sessionid=3cd52e38d3a1e2eb4f26678abcab1726; portalLang=ko; iR=2483731731",
+    "Content-Length": "38",
+    "Content-Type": "application/x-www-form-urlencoded"
+  },
+  "response_headers": {
+    "Date": "Wed, 01 Apr 2026 06:32:52 GMT",
+    "Server": "CANON HTTP Server",
+    "X-Frame-Options": "DENY",
+    "X-Content-Type-Options": "nosniff",
+    "X-XSS-Protection": "1; mode=block",
+    "Content-Type": "text/html;charset=UTF-8",
+    "Pragma": "no-cache",
+    "Cache-Control": "no-cache,no-store,max-age=0",
+    "Expires": "Thu, 01 Jan 1970 00:00:00 GMT",
+    "Transfer-Encoding": "chunked",
+    "Connection": "Keep-Alive",
+    "Keep-Alive": "timeout=30"
+  },
+  "request_body": "AID=11&FILTER_ID=0&Dummy=1775025210873"
+}
