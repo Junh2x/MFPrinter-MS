@@ -1,0 +1,28 @@
+{
+  "name": "01_portal",
+  "url": "http://192.168.11.227:8000/",
+  "method": "GET",
+  "status_code": 200,
+  "request_headers": {
+    "User-Agent": "python-requests/2.33.1",
+    "Accept-Encoding": "gzip, deflate, zstd",
+    "Accept": "*/*",
+    "Connection": "keep-alive"
+  },
+  "response_headers": {
+    "Server": "Catwalk",
+    "Date": "Wed, 1 Apr 2026 6:25:20 GMT",
+    "Set-Cookie": "sessionid=c4451b8b838baa24f000934d94864462; path=/; HttpOnly, portalLang=en",
+    "Content-Type": "text/html; charset=UTF-8",
+    "Pragma": "No-cache",
+    "Cache-Control": "no-cache,no-store,max-age=0",
+    "Expires": "Thu, 1 Jan 1970 0:0:0 GMT",
+    "Content-Encoding": "gzip",
+    "Content-Length": "28224",
+    "Connection": "Keep-Alive",
+    "Keep-Alive": "timeout=30",
+    "X-Frame-Options": "SAMEORIGIN",
+    "X-XSS-Protection": "1; mode=block"
+  },
+  "request_body": null
+}
