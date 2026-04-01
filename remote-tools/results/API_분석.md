@@ -1,6 +1,9 @@
 ## 캐논
  192.168.11.227
  
+진입 step별 토큰 발급
+토큰 A > 토큰 B > ...
+
 http://192.168.11.227:8000/
 페이로드 없음
 
@@ -101,3 +104,61 @@ http://192.168.11.227:8000/rps/blogin.cgi
 Request Method
 POST
 페이로드: BOX_No=00&BoxKind=UserBox&Dummy=1775021746449&Cookie=
+
+
+
+성공 요청
+Request URL
+http://192.168.11.227:8000/rps/asublist.cgi?CorePGTAG=24&AMOD=0&FromTopPage=1&Dummy=1775023968866
+Request Method
+GET
+Status Code
+200 OK
+Remote Address
+192.168.11.227:8000
+Referrer Policy
+strict-origin-when-cross-origin
+cache-control
+no-cache,no-store,max-age=0
+connection
+Keep-Alive
+content-type
+text/html;charset=UTF-8
+date
+Wed, 01 Apr 2026 06:13:31 GMT
+expires
+Thu, 01 Jan 1970 00:00:00 GMT
+keep-alive
+timeout=30
+pragma
+no-cache
+server
+CANON HTTP Server
+transfer-encoding
+chunked
+x-content-type-options
+nosniff
+x-frame-options
+DENY
+x-xss-protection
+1; mode=block
+accept
+text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+accept-encoding
+gzip, deflate
+accept-language
+ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7
+cache-control
+max-age=0
+connection
+keep-alive
+cookie
+portalLang=ko; sessionid=43ea476de0f32d3a09758ade3cd9d731; iR=3489871917
+host
+192.168.11.227:8000
+referer
+http://192.168.11.227:8000/rps/nativetop.cgi?RUIPNxBundle=&CorePGTAG=PGTAG_ADR_USR&Dummy=1775023929866
+upgrade-insecure-requests
+1
+
+페이로드: CorePGTAG=24&AMOD=0&FromTopPage=1&Dummy=1775023968866
