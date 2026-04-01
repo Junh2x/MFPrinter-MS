@@ -159,40 +159,44 @@ def main():
     print("\n[1] 현재 수신지 목록")
     list_addresses(session)
 
-    # 2. 토큰 취득
-    print("\n[2] 토큰 취득")
-    token = get_token(session)
-    if not token:
-        print("\n토큰 추출 실패. 수동으로 토큰을 입력하세요.")
-        token = input("Token 값: ").strip()
-        if not token:
-            print("토큰 없이 종료.")
-            return
+    # 2. 토큰 없이 등록 시도
+    print(f"\n[2] 토큰 없이 등록 시도 (슬롯 {slot:03d})")
+    register_smb(session, token="", slot=slot)
 
-    # 3. SMB 수신지 등록
-    print(f"\n[3] SMB 수신지 등록 (슬롯 {slot:03d})")
-    register_smb(session, token, slot)
-
-    # 4. 등록 확인
-    print("\n[4] 등록 후 목록 확인")
+    # 3. 등록 확인
+    print("\n[3] 등록 후 목록 확인")
     entries = list_addresses(session)
-
     found = any(name.strip().startswith("JA_TEST") for _, _, name in entries)
+
     if found:
-        print("\n>>> 등록 성공!")
-    else:
-        print("\n>>> 등록 실패 또는 확인 불가")
-
-    # 5. 삭제
-    print(f"\n[5] 테스트 수신지 삭제 (슬롯 {slot:03d})")
-    token2 = get_token(session)
-    if token2:
-        delete_address(session, token2, slot)
-
-        print("\n[6] 삭제 후 목록 확인")
+        print("\n>>> 토큰 없이 등록 성공! (토큰 불필요)")
+        # 삭제
+        print(f"\n[4] 테스트 수신지 삭제 (슬롯 {slot:03d})")
+        delete_address(session, token="", slot=slot)
+        print("\n[5] 삭제 후 목록 확인")
         list_addresses(session)
     else:
-        print("  삭제용 토큰 추출 실패")
+        print("\n>>> 토큰 없이 등록 실패. 토큰 필요 확인됨.")
+        # 토큰 포함 재시도
+        print("\n[4] 토큰 추출 시도")
+        token = get_token(session)
+        if token:
+            print(f"\n[5] 토큰 포함 등록 시도 (슬롯 {slot:03d})")
+            register_smb(session, token, slot)
+            print("\n[6] 등록 후 목록 확인")
+            entries = list_addresses(session)
+            found = any(name.strip().startswith("JA_TEST") for _, _, name in entries)
+            if found:
+                print("\n>>> 토큰 포함 등록 성공!")
+                print(f"\n[7] 삭제")
+                token2 = get_token(session)
+                if token2:
+                    delete_address(session, token2, slot)
+                    list_addresses(session)
+            else:
+                print("\n>>> 토큰 포함해도 등록 실패. 추가 조사 필요.")
+        else:
+            print("  토큰 자동 추출 실패")
 
 
 if __name__ == "__main__":
