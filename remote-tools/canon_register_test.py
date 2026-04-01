@@ -1,6 +1,9 @@
 """캐논 iR-ADV C3720 수신지 등록 테스트"""
 import re
 import sys
+import json
+from datetime import datetime
+from pathlib import Path
 import requests
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -9,9 +12,42 @@ IP = "192.168.11.227"
 BASE = f"http://{IP}:8000"
 TIMEOUT = 10
 
+RESULT_DIR = Path(__file__).parent / "results"
+RESULT_DIR.mkdir(exist_ok=True)
+LOG_FILE = RESULT_DIR / f"canon_register_test_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+
 
 def log(msg):
-    print(f"  {msg}")
+    ts = datetime.now().strftime("%H:%M:%S")
+    line = f"[{ts}] {msg}"
+    print(f"  {line}")
+    with open(LOG_FILE, "a", encoding="utf-8") as f:
+        f.write(line + "\n")
+
+
+def save_response(name, r):
+    """HTTP 응답을 파일로 저장"""
+    ts = datetime.now().strftime("%H%M%S")
+    prefix = f"canon_test_{ts}_{name}"
+
+    meta = {
+        "name": name,
+        "url": r.url,
+        "method": r.request.method,
+        "status_code": r.status_code,
+        "request_headers": dict(r.request.headers),
+        "response_headers": dict(r.headers),
+        "request_body": r.request.body if r.request.body else None,
+        "timestamp": datetime.now().isoformat(),
+    }
+    meta_file = RESULT_DIR / f"{prefix}_meta.json"
+    with open(meta_file, "w", encoding="utf-8") as f:
+        json.dump(meta, f, ensure_ascii=False, indent=2)
+
+    body_file = RESULT_DIR / f"{prefix}_body.html"
+    body_file.write_text(r.text, encoding="utf-8")
+
+    log(f"  저장: {meta_file.name}, {body_file.name}")
 
 
 def get_token(session):
@@ -20,6 +56,7 @@ def get_token(session):
     url = f"{BASE}/rps/asublist.cgi?CorePGTAG=24&AMOD=0&FromTopPage=1&Dummy=9999"
     r = session.get(url, timeout=TIMEOUT)
     log(f"[토큰 취득] GET {url} → {r.status_code}")
+    save_response("get_token_asublist", r)
 
     # Token 추출 시도 - hidden input
     match = re.search(r'name=["\']Token["\'][^>]*value=["\']([^"\']+)', r.text, re.I)
@@ -49,6 +86,7 @@ def get_token(session):
     url2 = f"{BASE}/rps/aprop.cgi?AMOD=1&AID=11&AIDX=5&ACLS=7&AFION=1"
     r2 = session.get(url2, timeout=TIMEOUT)
     log(f"[토큰 2차] GET {url2} → {r2.status_code}")
+    save_response("get_token_aprop", r2)
 
     for pattern in [
         r'name=["\']Token["\'][^>]*value=["\']([^"\']+)',
@@ -73,6 +111,7 @@ def list_addresses(session):
     url = f"{BASE}/rps/albody.cgi"
     r = session.post(url, data={"AID": "11", "FILTER_ID": "0", "Dummy": "9999"}, timeout=TIMEOUT)
     log(f"[목록 조회] POST {url} → {r.status_code}")
+    save_response("list_addresses", r)
 
     # adrsList 파싱
     match = re.search(r'var\s+adrsList\s*=\s*\{([^;]+)\}', r.text)
@@ -124,6 +163,7 @@ def register_smb(session, token, slot=5):
     r = session.post(url, data=data, timeout=TIMEOUT)
     log(f"[등록] POST {url} → {r.status_code}")
     log(f"  응답 크기: {len(r.content)}B")
+    save_response("register_smb", r)
     return r
 
 
@@ -142,6 +182,7 @@ def delete_address(session, token, slot=5):
     }
     r = session.post(url, data=data, timeout=TIMEOUT)
     log(f"[삭제] POST {url} → {r.status_code}")
+    save_response("delete_address", r)
     return r
 
 
