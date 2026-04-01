@@ -145,35 +145,21 @@ def list_addresses(session):
 
 def register_smb(session, token, slot=5):
     """SMB 수신지 등록"""
+    import time
     url = f"{BASE}/rps/anewadrs.cgi"
-    data = {
-        "AID": "11",
-        "PageFlag": "",
-        "AIDX": str(slot),
-        "ANAME": "JA_TEST_SMB",
-        "ANAMEONE": "JA_TEST_SMB",
-        "AREAD": "JA_TEST_SMB",
-        "APNO": "0",
-        "AAD1": "192.168.11.99",
-        "ACLS": "7",
-        "APRTCL": "7",
-        "APATH": "scan_test",
-        "AUSER": "testuser",
-        "INPUT_PSWD": "0",
-        "APWORD": "testpass",
-        "PASSCHK": "1",
-        "DATADIV": "0",
-        "AdrAction": "./aprop.cgi?",
-        "AMOD": "1",
-        "Dummy": "9999",
-        "AFCLS": "",
-        "AFINT": "",
-        "APNOL": "",
-        "AFION": "1",
-        "AUUID": "",
-        "Token": token,
-    }
-    r = session.post(url, data=data, timeout=TIMEOUT)
+    # 브라우저 캡처와 동일한 형태로 전송 (PASSCHK 2번, URL 인코딩된 AdrAction)
+    body = (
+        f"AID=11&PageFlag=&AIDX={slot}"
+        f"&ANAME=JA_TEST_SMB&ANAMEONE=JA_TEST_SMB&AREAD=JA_TEST_SMB"
+        f"&APNO=0&AAD1=192.168.11.99&ACLS=7&APRTCL=7"
+        f"&APATH=scan_test&AUSER=testuser&INPUT_PSWD=0&APWORD=testpass"
+        f"&PASSCHK=1&PASSCHK=1"
+        f"&AdrAction=.%2Faprop.cgi%3F&AMOD=1"
+        f"&Dummy={int(time.time()*1000)}"
+        f"&AFCLS=&AFINT=&APNOL=&AFION=1&AUUID="
+        f"&Token={token}"
+    )
+    r = session.post(url, data=body, headers={"Content-Type": "application/x-www-form-urlencoded"}, timeout=TIMEOUT)
     log(f"[등록] POST {url} → {r.status_code}")
     log(f"  응답 크기: {len(r.content)}B")
     save_response("register_smb", r)
