@@ -55,8 +55,18 @@ def extract_token(html):
     return None
 
 
+BROWSER_HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0",
+    "Origin": BASE,
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "ko-KR,ko;q=0.9",
+}
+
+
 def init_session(session):
     """포털 → 주소록 페이지 순서로 접근하여 세션 확보"""
+    session.headers.update(BROWSER_HEADERS)
+
     # 1) 포털
     r = session.get(f"{BASE}/", timeout=TIMEOUT)
     log(f"[세션] 포털 → {r.status_code}")
@@ -154,7 +164,7 @@ def register_smb(session, token_a, slot=5):
         ("APATH", "scan_test"), ("AUSER", "testuser"),
         ("INPUT_PSWD", "0"), ("APWORD", "testpass"),
         ("PASSCHK", "1"), ("PASSCHK", "1"),
-        ("AdrAction", "./alframe.cgi?"), ("AMOD", "1"),
+        ("AdrAction", "./aprop.cgi?"), ("AMOD", "1"),
         ("Dummy", str(int(time.time()*1000))),
         ("AFCLS", ""), ("AFINT", ""), ("APNOL", ""),
         ("AFION", "1"), ("AUUID", ""), ("Token", token_b2),
