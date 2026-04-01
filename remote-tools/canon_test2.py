@@ -125,19 +125,23 @@ def main():
 
     # 4. 타입 변경 - 파일(SMB)로 변경
     log("\n[5] 타입 변경 (파일)")
-    # SUBMIT_FORM 필드를 기반으로, ACLS만 7로 변경하고 form_clear 시뮬레이션
+    # 브라우저 Go_NextPage() 시뮬레이션:
+    # form_clear → 비보호 필드 전부 비움(Token 포함), ACLS=7 설정
+    form_leave = {"AID","AIDX","AdrAction","ACLS","ANAME","ANAMEONE","APWORD","APNO","AREAD","DATADIV","AFCLS","AFINT","APNOL","AFION"}
     change_fields = []
     for name, val in fields1:
         if name == "ACLS":
             change_fields.append((name, "7"))
-        elif name == "Dummy":
-            change_fields.append((name, str(int(time.time()*1000))))
         elif name == "AMOD":
             change_fields.append((name, "1"))
         elif name == "PageFlag":
             change_fields.append((name, ""))
+        elif name == "Dummy":
+            change_fields.append((name, str(int(time.time()*1000))))
+        elif name in form_leave:
+            change_fields.append((name, val))  # 보호 필드는 유지
         else:
-            change_fields.append((name, val))
+            change_fields.append((name, ""))  # 나머지(Token 등) 비움
 
     r = s.post(f"{BASE}/rps/aprop.cgi?", data=change_fields, timeout=TIMEOUT,
                headers={"Referer": f"{BASE}/rps/aprop.cgi?"})
