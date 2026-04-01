@@ -1,0 +1,330 @@
+[13:36:41] ============================================================
+[13:36:41]  복합기 탐색 검증
+[13:36:41] ============================================================
+[13:36:41] 로컬 IP: 192.168.11.184, 서브넷: 192.168.11.0/24
+[13:36:41] 서브넷 192.168.11.0/24 스캔 중... (1~254)
+[13:36:41]   발견: 192.168.11.43 (80포트 열림)
+[13:36:41]   발견: 192.168.11.1 (80포트 열림)
+[13:36:43]   발견: 192.168.11.112 (80포트 열림)
+[13:36:43]   발견: 192.168.11.146 (80포트 열림)
+[13:36:44]   발견: 192.168.11.186 (80포트 열림)
+[13:36:44]   발견: 192.168.11.185 (80포트 열림)
+[13:36:45]   발견: 192.168.11.228 (80포트 열림)
+[13:36:45]   발견: 192.168.11.227 (80포트 열림)
+[13:36:45]   발견: 192.168.11.252 (80포트 열림)
+[13:36:45]   발견: 192.168.11.254 (80포트 열림)
+[13:36:46] 발견된 장치: 10개
+[13:36:46] 
+==================================================
+[13:36:46]  프로브 시작: 192.168.11.1
+[13:36:46] ==================================================
+[13:36:46] [192.168.11.1] 포트 스캔 중...
+[13:36:48]   포트 80 (HTTP): OPEN
+[13:36:48] [192.168.11.1] 브랜드 식별 중...
+[13:36:48] [192.168.11.1] 엔드포인트 프로브 중 (unknown)...
+[13:36:48]   [X] eSCL ScannerCapabilities: 404 (text/html; charset=utf-8, 4462B) - http
+[13:36:53]   [X] eSCL ScannerStatus: 404 (text/html; charset=utf-8, 4462B) - http
+[13:36:58]   [X] WSD Metadata: 404 (text/html; charset=utf-8, 4462B) - http
+[13:37:03] [192.168.11.1] eSCL 상세 정보 수집 중...
+[13:37:08]   eSCL 미지원 또는 접속 불가
+[13:37:08] [192.168.11.1] 웹 페이지 저장 중...
+[13:37:08]   저장: 192_168_11_1_http_80_index.html (112B)
+[13:37:08] 
+==================================================
+[13:37:08]  프로브 시작: 192.168.11.43
+[13:37:08] ==================================================
+[13:37:08] [192.168.11.43] 포트 스캔 중...
+[13:37:10]   포트 21 (FTP): OPEN
+[13:37:10]   포트 80 (HTTP): OPEN
+[13:37:10]   포트 139 (NetBIOS): OPEN
+[13:37:10]   포트 443 (HTTPS): OPEN
+[13:37:10]   포트 445 (SMB): OPEN
+[13:37:10] [192.168.11.43] 브랜드 식별 중...
+[13:37:10] [192.168.11.43] 엔드포인트 프로브 중 (unknown)...
+[13:37:10]   [O] eSCL ScannerCapabilities: 200 (text/html, 544B) - http
+[13:37:10]   [O] eSCL ScannerStatus: 200 (text/html, 544B) - http
+[13:37:10]   [O] WSD Metadata: 200 (text/html, 544B) - http
+[13:37:10] [192.168.11.43] eSCL 상세 정보 수집 중...
+[13:37:10]   eSCL 미지원 또는 접속 불가
+[13:37:10] [192.168.11.43] 웹 페이지 저장 중...
+[13:37:10]   저장: 192_168_11_43_http_80_index.html (544B)
+[13:37:11]   저장: 192_168_11_43_https_443_index.html (544B)
+[13:37:11] 
+==================================================
+[13:37:11]  프로브 시작: 192.168.11.112
+[13:37:11] ==================================================
+[13:37:11] [192.168.11.112] 포트 스캔 중...
+[13:37:13]   포트 80 (HTTP): OPEN
+[13:37:13]   포트 139 (NetBIOS): OPEN
+[13:37:13]   포트 443 (HTTPS): OPEN
+[13:37:13]   포트 445 (SMB): OPEN
+[13:37:13]   포트 515 (LPD): OPEN
+[13:37:13]   포트 631 (IPP): OPEN
+[13:37:13]   포트 9100 (JetDirect): OPEN
+[13:37:13] [192.168.11.112] 브랜드 식별 중...
+[13:37:13]   https://192.168.11.112:443/ 접속 실패: HTTPSConnectionPool(host='192.168.11.112', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLError(1, '[SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] sslv3 alert handshake failure (_ssl.c:1081)')))
+[13:37:13] [192.168.11.112] 엔드포인트 프로브 중 (unknown)...
+[13:37:13]   [X] eSCL ScannerCapabilities: 404 (text/html, 0B) - http
+[13:37:13]   [X] eSCL ScannerStatus: 404 (text/html, 0B) - http
+[13:37:13]   [X] WSD Metadata: 404 (text/html, 0B) - http
+[13:37:13] [192.168.11.112] eSCL 상세 정보 수집 중...
+[13:37:13]   eSCL 미지원 또는 접속 불가
+[13:37:13] [192.168.11.112] 웹 페이지 저장 중...
+[13:37:13]   저장: 192_168_11_112_http_80_index.html (563B)
+[13:37:13]   https://192.168.11.112:443/ 저장 실패: HTTPSConnectionPool(host='192.168.11.112', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLError(1, '[SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] sslv3 alert handshake failure (_ssl.c:1081)')))
+[13:37:13] 
+==================================================
+[13:37:13]  프로브 시작: 192.168.11.146
+[13:37:13] ==================================================
+[13:37:13] [192.168.11.146] 포트 스캔 중...
+[13:37:15]   포트 80 (HTTP): OPEN
+[13:37:15]   포트 139 (NetBIOS): OPEN
+[13:37:15]   포트 443 (HTTPS): OPEN
+[13:37:15]   포트 445 (SMB): OPEN
+[13:37:15] [192.168.11.146] 브랜드 식별 중...
+[13:37:15]   https://192.168.11.146:443/ 접속 실패: HTTPSConnectionPool(host='192.168.11.146', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLError(1, '[SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:1081)')))
+[13:37:15] [192.168.11.146] 엔드포인트 프로브 중 (unknown)...
+[13:37:30] [192.168.11.146] eSCL 상세 정보 수집 중...
+[13:37:35]   eSCL 미지원 또는 접속 불가
+[13:37:35] [192.168.11.146] 웹 페이지 저장 중...
+[13:37:35]   저장: 192_168_11_146_http_80_index.html (1009B)
+[13:37:35]   https://192.168.11.146:443/ 저장 실패: HTTPSConnectionPool(host='192.168.11.146', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLError(1, '[SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:1081)')))
+[13:37:35] 
+==================================================
+[13:37:35]  프로브 시작: 192.168.11.185
+[13:37:35] ==================================================
+[13:37:35] [192.168.11.185] 포트 스캔 중...
+[13:37:37]   포트 21 (FTP): OPEN
+[13:37:37]   포트 80 (HTTP): OPEN
+[13:37:37]   포트 139 (NetBIOS): OPEN
+[13:37:37]   포트 443 (HTTPS): OPEN
+[13:37:37]   포트 515 (LPD): OPEN
+[13:37:37]   포트 631 (IPP): OPEN
+[13:37:37]   포트 9100 (JetDirect): OPEN
+[13:37:37] [192.168.11.185] 브랜드 식별 중...
+[13:37:37]   브랜드 식별: RICOH (키워드: 'web image monitor')
+[13:37:37] [192.168.11.185] 엔드포인트 프로브 중 (ricoh)...
+[13:37:38]   [O] eSCL ScannerCapabilities: 200 (text/xml, 9422B) - http
+[13:37:38]   [O] eSCL ScannerStatus: 200 (text/xml, 355B) - http
+[13:37:38]   [X] WSD Metadata: 404 (text/html, 89B) - http
+[13:37:38]   [X] WSD Metadata: 404 (text/html, 89B) - https
+[13:37:38]   [X] Ricoh REST API root: 404 (application/json; charset=utf-, 62B) - http
+[13:37:39]   [X] Ricoh REST API root: 404 (application/json; charset=utf-, 62B) - https
+[13:37:39]   [X] Ricoh Documents API: 404 (application/json; charset=utf-, 62B) - http
+[13:37:39]   [X] Ricoh Documents API: 404 (application/json; charset=utf-, 62B) - https
+[13:37:39]   [X] Ricoh AddressBook API: 404 (application/json; charset=utf-, 62B) - http
+[13:37:39]   [X] Ricoh AddressBook API: 404 (application/json; charset=utf-, 62B) - https
+[13:37:39]   [X] Ricoh Scanner API: 404 (application/json; charset=utf-, 62B) - http
+[13:37:40]   [X] Ricoh Scanner API: 404 (application/json; charset=utf-, 62B) - https
+[13:37:40]   [X] Ricoh DeviceInfo API: 404 (application/json; charset=utf-, 62B) - http
+[13:37:40]   [X] Ricoh DeviceInfo API: 404 (application/json; charset=utf-, 62B) - https
+[13:37:40]   [X] Ricoh Login CGI: 500 (text/html; charset=UTF-8, 113B) - http
+[13:37:41]   [X] Ricoh Login CGI: 500 (text/html; charset=UTF-8, 113B) - https
+[13:37:41]   [X] Ricoh Document Server: 404 (text/html, 89B) - http
+[13:37:41]   [X] Ricoh Document Server: 404 (text/html, 89B) - https
+[13:37:42]   [X] Ricoh Status: 404 (text/html, 89B) - http
+[13:37:42]   [X] Ricoh Status: 404 (text/html, 89B) - https
+[13:37:42] [192.168.11.185] eSCL 상세 정보 수집 중...
+[13:37:43]   eSCL 지원 확인! 응답 크기: 9422B
+[13:37:43] [192.168.11.185] 웹 페이지 저장 중...
+[13:37:43]   저장: 192_168_11_185_http_80_index.html (577B)
+[13:37:43]   저장: 192_168_11_185_https_443_index.html (577B)
+[13:37:43] 
+==================================================
+[13:37:43]  프로브 시작: 192.168.11.186
+[13:37:43] ==================================================
+[13:37:43] [192.168.11.186] 포트 스캔 중...
+[13:37:45]   포트 80 (HTTP): OPEN
+[13:37:46]   포트 139 (NetBIOS): OPEN
+[13:37:46]   포트 443 (HTTPS): OPEN
+[13:37:46]   포트 445 (SMB): OPEN
+[13:37:46]   포트 515 (LPD): OPEN
+[13:37:46]   포트 631 (IPP): OPEN
+[13:37:46]   포트 9100 (JetDirect): OPEN
+[13:37:46] [192.168.11.186] 브랜드 식별 중...
+[13:37:46]   https://192.168.11.186:443/ 접속 실패: HTTPSConnectionPool(host='192.168.11.186', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLError(1, '[SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] sslv3 alert handshake failure (_ssl.c:1081)')))
+[13:37:46] [192.168.11.186] 엔드포인트 프로브 중 (unknown)...
+[13:37:46]   [X] eSCL ScannerCapabilities: 404 (text/html, 0B) - http
+[13:37:46]   [X] eSCL ScannerStatus: 404 (text/html, 0B) - http
+[13:37:46]   [X] WSD Metadata: 404 (text/html, 0B) - http
+[13:37:46] [192.168.11.186] eSCL 상세 정보 수집 중...
+[13:37:46]   eSCL 미지원 또는 접속 불가
+[13:37:46] [192.168.11.186] 웹 페이지 저장 중...
+[13:37:46]   저장: 192_168_11_186_http_80_index.html (563B)
+[13:37:46]   https://192.168.11.186:443/ 저장 실패: HTTPSConnectionPool(host='192.168.11.186', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLError(1, '[SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] sslv3 alert handshake failure (_ssl.c:1081)')))
+[13:37:46] 
+==================================================
+[13:37:46]  프로브 시작: 192.168.11.227
+[13:37:46] ==================================================
+[13:37:46] [192.168.11.227] 포트 스캔 중...
+[13:37:48]   포트 80 (HTTP): OPEN
+[13:37:48]   포트 139 (NetBIOS): OPEN
+[13:37:48]   포트 443 (HTTPS): OPEN
+[13:37:48]   포트 445 (SMB): OPEN
+[13:37:48]   포트 515 (LPD): OPEN
+[13:37:48]   포트 631 (IPP): OPEN
+[13:37:48]   포트 8000 (HTTP-alt): OPEN
+[13:37:48]   포트 8443 (HTTPS-alt): OPEN
+[13:37:48]   포트 9100 (JetDirect): OPEN
+[13:37:48] [192.168.11.227] 브랜드 식별 중...
+[13:37:48]   브랜드 식별: CANON (키워드: 'canon')
+[13:37:48] [192.168.11.227] 엔드포인트 프로브 중 (canon)...
+[13:37:48]   [O] eSCL ScannerCapabilities: 200 (text/xml, 15618B) - http
+[13:37:48]   [O] eSCL ScannerStatus: 200 (text/xml, 302B) - http
+[13:37:48]   [X] WSD Metadata: 404 (text/html, 74B) - http
+[13:37:48]   [X] WSD Metadata: 404 (text/html, 74B) - https
+[13:37:48]   [X] Canon Remote UI: 404 (text/html, 74B) - http
+[13:37:49]   [X] Canon Remote UI: 404 (text/html, 74B) - https
+[13:37:49]   [X] Canon WebDAV AdvancedBox: 404 (text/html, 74B) - http
+[13:37:49]   [X] Canon WebDAV AdvancedBox: 404 (text/html, 74B) - https
+[13:37:49]   [X] Canon WebDAV root: 404 (text/html, 74B) - http
+[13:37:49]   [X] Canon WebDAV root: 404 (text/html, 74B) - https
+[13:37:49]   [X] Canon Portal: 404 (text/html, 74B) - http
+[13:37:49]   [X] Canon Portal: 404 (text/html, 74B) - https
+[13:37:49]   [X] Canon SSMISession: 404 (text/html, 74B) - http
+[13:37:49]   [X] Canon SSMISession: 404 (text/html, 74B) - https
+[13:37:49]   [X] Canon AddressBook: 404 (text/html, 74B) - http
+[13:37:49]   [X] Canon AddressBook: 404 (text/html, 74B) - https
+[13:37:49] [192.168.11.227] eSCL 상세 정보 수집 중...
+[13:37:50]   eSCL 지원 확인! 응답 크기: 15618B
+[13:37:50] [192.168.11.227] 웹 페이지 저장 중...
+[13:37:50]   저장: 192_168_11_227_http_80_index.html (100B)
+[13:37:50]   저장: 192_168_11_227_http_8000_index.html (296424B)
+[13:37:50]   저장: 192_168_11_227_https_443_index.html (74B)
+[13:37:51]   저장: 192_168_11_227_https_8443_index.html (101B)
+[13:37:51] 
+==================================================
+[13:37:51]  프로브 시작: 192.168.11.228
+[13:37:51] ==================================================
+[13:37:51] [192.168.11.228] 포트 스캔 중...
+[13:37:53]   포트 21 (FTP): OPEN
+[13:37:53]   포트 80 (HTTP): OPEN
+[13:37:53]   포트 139 (NetBIOS): OPEN
+[13:37:53]   포트 515 (LPD): OPEN
+[13:37:53]   포트 631 (IPP): OPEN
+[13:37:53]   포트 8080 (HTTP-proxy): OPEN
+[13:37:53]   포트 9100 (JetDirect): OPEN
+[13:37:53] [192.168.11.228] 브랜드 식별 중...
+[13:37:53]   브랜드 식별: RICOH (키워드: 'web image monitor')
+[13:37:53] [192.168.11.228] 엔드포인트 프로브 중 (ricoh)...
+[13:37:53]   [O] eSCL ScannerCapabilities: 200 (text/xml, 8950B) - http
+[13:37:53]   [O] eSCL ScannerStatus: 200 (text/xml, 355B) - http
+[13:37:53]   [X] WSD Metadata: 404 (text/html, 89B) - http
+[13:37:55]   [X] Ricoh REST API root: 404 (application/json; charset=utf-, 62B) - http
+[13:37:57]   [X] Ricoh Documents API: 404 (application/json; charset=utf-, 62B) - http
+[13:38:00]   [X] Ricoh AddressBook API: 404 (application/json; charset=utf-, 62B) - http
+[13:38:02]   [X] Ricoh Scanner API: 404 (application/json; charset=utf-, 62B) - http
+[13:38:04]   [X] Ricoh DeviceInfo API: 404 (application/json; charset=utf-, 62B) - http
+[13:38:06]   [X] Ricoh Login CGI: 500 (text/html; charset=UTF-8, 113B) - http
+[13:38:08]   [X] Ricoh Document Server: 404 (text/html, 89B) - http
+[13:38:10]   [X] Ricoh Status: 404 (text/html, 89B) - http
+[13:38:12] [192.168.11.228] eSCL 상세 정보 수집 중...
+[13:38:14]   eSCL 지원 확인! 응답 크기: 8950B
+[13:38:14] [192.168.11.228] 웹 페이지 저장 중...
+[13:38:15]   저장: 192_168_11_228_http_80_index.html (627B)
+[13:38:15] 
+==================================================
+[13:38:15]  프로브 시작: 192.168.11.252
+[13:38:15] ==================================================
+[13:38:15] [192.168.11.252] 포트 스캔 중...
+[13:38:17]   포트 80 (HTTP): OPEN
+[13:38:17] [192.168.11.252] 브랜드 식별 중...
+[13:38:17] [192.168.11.252] 엔드포인트 프로브 중 (unknown)...
+[13:38:17]   [X] eSCL ScannerCapabilities: 404 (text/html, 341B) - http
+[13:38:19]   [X] eSCL ScannerStatus: 404 (text/html, 341B) - http
+[13:38:21]   [X] WSD Metadata: 404 (text/html, 341B) - http
+[13:38:23] [192.168.11.252] eSCL 상세 정보 수집 중...
+[13:38:25]   eSCL 미지원 또는 접속 불가
+[13:38:25] [192.168.11.252] 웹 페이지 저장 중...
+[13:38:25]   저장: 192_168_11_252_http_80_index.html (5887B)
+[13:38:25] 
+==================================================
+[13:38:25]  프로브 시작: 192.168.11.254
+[13:38:25] ==================================================
+[13:38:25] [192.168.11.254] 포트 스캔 중...
+[13:38:27]   포트 80 (HTTP): OPEN
+[13:38:27] [192.168.11.254] 브랜드 식별 중...
+[13:38:27] [192.168.11.254] 엔드포인트 프로브 중 (unknown)...
+[13:38:27]   [X] eSCL ScannerCapabilities: 404 (text/html; charset=utf-8, 4460B) - http
+[13:38:32]   [X] eSCL ScannerStatus: 404 (text/html; charset=utf-8, 4460B) - http
+[13:38:37]   [X] WSD Metadata: 404 (text/html; charset=utf-8, 4460B) - http
+[13:38:42] [192.168.11.254] eSCL 상세 정보 수집 중...
+[13:38:47]   eSCL 미지원 또는 접속 불가
+[13:38:47] [192.168.11.254] 웹 페이지 저장 중...
+[13:38:47]   저장: 192_168_11_254_http_80_index.html (112B)
+[13:38:47] 
+전체 결과 저장: C:\Users\hyunji\Desktop\TEST\MFPrinter-MS\remote-tools\results\discovery_results.json
+[13:38:47] 
+============================================================
+[13:38:47]  탐색 결과 요약
+[13:38:47] ============================================================
+[13:38:47] 
+  192.168.11.1:
+[13:38:47]     브랜드: UNKNOWN
+[13:38:47]     웹 타이틀: 
+[13:38:47]     열린 포트: [80]
+[13:38:47]     eSCL: 미지원
+[13:38:47]     성공 엔드포인트: 없음
+[13:38:47] 
+  192.168.11.43:
+[13:38:47]     브랜드: UNKNOWN
+[13:38:47]     웹 타이틀: 
+[13:38:47]     열린 포트: [21, 80, 139, 443, 445]
+[13:38:47]     eSCL: 미지원
+[13:38:47]     성공 엔드포인트: eSCL ScannerCapabilities, eSCL ScannerStatus, WSD Metadata
+[13:38:47] 
+  192.168.11.112:
+[13:38:47]     브랜드: UNKNOWN
+[13:38:47]     웹 타이틀: 
+[13:38:47]     열린 포트: [80, 139, 443, 445, 515, 631, 9100]
+[13:38:47]     eSCL: 미지원
+[13:38:47]     성공 엔드포인트: 없음
+[13:38:47] 
+  192.168.11.146:
+[13:38:47]     브랜드: UNKNOWN
+[13:38:47]     웹 타이틀: Member's Login...
+[13:38:47]     열린 포트: [80, 139, 443, 445]
+[13:38:47]     eSCL: 미지원
+[13:38:47]     성공 엔드포인트: 없음
+[13:38:47] 
+  192.168.11.185:
+[13:38:47]     브랜드: RICOH
+[13:38:47]     웹 타이틀: Web Image Monitor
+[13:38:47]     열린 포트: [21, 80, 139, 443, 515, 631, 9100]
+[13:38:47]     eSCL: 지원
+[13:38:47]     성공 엔드포인트: eSCL ScannerCapabilities, eSCL ScannerStatus
+[13:38:47] 
+  192.168.11.186:
+[13:38:47]     브랜드: UNKNOWN
+[13:38:47]     웹 타이틀: 
+[13:38:47]     열린 포트: [80, 139, 443, 445, 515, 631, 9100]
+[13:38:47]     eSCL: 미지원
+[13:38:47]     성공 엔드포인트: 없음
+[13:38:47] 
+  192.168.11.227:
+[13:38:47]     브랜드: CANON
+[13:38:47]     웹 타이틀: 
+[13:38:47]     열린 포트: [80, 139, 443, 445, 515, 631, 8000, 8443, 9100]
+[13:38:47]     eSCL: 지원
+[13:38:47]     성공 엔드포인트: eSCL ScannerCapabilities, eSCL ScannerStatus
+[13:38:47] 
+  192.168.11.228:
+[13:38:47]     브랜드: RICOH
+[13:38:47]     웹 타이틀: Web Image Monitor
+[13:38:47]     열린 포트: [21, 80, 139, 515, 631, 8080, 9100]
+[13:38:47]     eSCL: 지원
+[13:38:47]     성공 엔드포인트: eSCL ScannerCapabilities, eSCL ScannerStatus
+[13:38:47] 
+  192.168.11.252:
+[13:38:47]     브랜드: UNKNOWN
+[13:38:47]     웹 타이틀: IP Camera
+[13:38:47]     열린 포트: [80]
+[13:38:47]     eSCL: 미지원
+[13:38:47]     성공 엔드포인트: 없음
+[13:38:47] 
+  192.168.11.254:
+[13:38:47]     브랜드: UNKNOWN
+[13:38:47]     웹 타이틀: 
+[13:38:47]     열린 포트: [80]
+[13:38:47]     eSCL: 미지원
+[13:38:47]     성공 엔드포인트: 없음

@@ -1,0 +1,1608 @@
+[
+  {
+    "ip": "192.168.11.1",
+    "timestamp": "2026-04-01T13:36:46.562291",
+    "open_ports": [
+      80
+    ],
+    "brand_info": {
+      "ip": "192.168.11.1",
+      "brand": "unknown",
+      "model": "unknown",
+      "web_title": "",
+      "server_header": "Httpd/1.0",
+      "response_headers": {
+        "Date": "Wed, 01 Apr 2026 04:36:38 GMT",
+        "Server": "Httpd/1.0",
+        "Connection": "Keep-Alive",
+        "Keep-Alive": "timeout=10, max=100",
+        "Content-Length": "112",
+        "Last-Modified": "Wed, 04 Sep 2024 11:34:25 GMT",
+        "Cache-Control": "no-cache",
+        "Content-Type": "text/html"
+      },
+      "final_url": "http://192.168.11.1:80/",
+      "status_code": 200
+    },
+    "endpoints": [
+      {
+        "name": "eSCL ScannerCapabilities",
+        "url": "http://192.168.11.1/eSCL/ScannerCapabilities",
+        "method": "GET",
+        "status": 404,
+        "content_type": "text/html; charset=utf-8",
+        "content_length": 4462,
+        "headers": {
+          "Date": "Wed, 01 Apr 2026 04:36:38 GMT",
+          "Server": "Httpd/1.0",
+          "Connection": "close",
+          "Content-Type": "text/html; charset=utf-8"
+        }
+      },
+      {
+        "name": "eSCL ScannerCapabilities",
+        "url": "https://192.168.11.1/eSCL/ScannerCapabilities",
+        "method": "GET",
+        "status": "ERROR",
+        "error": "HTTPSConnectionPool(host='192.168.11.1', port=443): Max retries exceeded with url: /eSCL/ScannerCapabilities (Caused by ConnectTimeoutError(<HTTPSConnection(host='192.168.11.1', port=443) at 0x18aa32b2f90>, 'Connection to 192.168.11.1 timed out. (connect timeout=5)'))"
+      },
+      {
+        "name": "eSCL ScannerStatus",
+        "url": "http://192.168.11.1/eSCL/ScannerStatus",
+        "method": "GET",
+        "status": 404,
+        "content_type": "text/html; charset=utf-8",
+        "content_length": 4462,
+        "headers": {
+          "Date": "Wed, 01 Apr 2026 04:36:43 GMT",
+          "Server": "Httpd/1.0",
+          "Connection": "close",
+          "Content-Type": "text/html; charset=utf-8"
+        }
+      },
+      {
+        "name": "eSCL ScannerStatus",
+        "url": "https://192.168.11.1/eSCL/ScannerStatus",
+        "method": "GET",
+        "status": "ERROR",
+        "error": "HTTPSConnectionPool(host='192.168.11.1', port=443): Max retries exceeded with url: /eSCL/ScannerStatus (Caused by ConnectTimeoutError(<HTTPSConnection(host='192.168.11.1', port=443) at 0x18aa3b6d950>, 'Connection to 192.168.11.1 timed out. (connect timeout=5)'))"
+      },
+      {
+        "name": "WSD Metadata",
+        "url": "http://192.168.11.1/wsd",
+        "method": "GET",
+        "status": 404,
+        "content_type": "text/html; charset=utf-8",
+        "content_length": 4462,
+        "headers": {
+          "Date": "Wed, 01 Apr 2026 04:36:48 GMT",
+          "Server": "Httpd/1.0",
+          "Connection": "close",
+          "Content-Type": "text/html; charset=utf-8"
+        }
+      },
+      {
+        "name": "WSD Metadata",
+        "url": "https://192.168.11.1/wsd",
+        "method": "GET",
+        "status": "ERROR",
+        "error": "HTTPSConnectionPool(host='192.168.11.1', port=443): Max retries exceeded with url: /wsd (Caused by ConnectTimeoutError(<HTTPSConnection(host='192.168.11.1', port=443) at 0x18aa3b6e5d0>, 'Connection to 192.168.11.1 timed out. (connect timeout=5)'))"
+      }
+    ],
+    "escl": {
+      "supported": false
+    },
+    "saved_pages": {
+      "http://192.168.11.1:80/": {
+        "file": "192_168_11_1_http_80_index.html",
+        "status": 200,
+        "final_url": "http://192.168.11.1:80/"
+      }
+    }
+  },
+  {
+    "ip": "192.168.11.43",
+    "timestamp": "2026-04-01T13:37:08.672474",
+    "open_ports": [
+      21,
+      80,
+      139,
+      443,
+      445
+    ],
+    "brand_info": {
+      "ip": "192.168.11.43",
+      "brand": "unknown",
+      "model": "unknown",
+      "web_title": "",
+      "server_header": "nginx",
+      "response_headers": {
+        "Server": "nginx",
+        "Date": "Wed, 01 Apr 2026 04:37:10 GMT",
+        "Content-Type": "text/html",
+        "Content-Length": "544",
+        "Last-Modified": "Thu, 19 Mar 2026 13:14:08 GMT",
+        "Connection": "keep-alive",
+        "Keep-Alive": "timeout=20",
+        "ETag": "\"69bbf6a0-220\"",
+        "Cache-Control": "no-cache",
+        "Accept-Ranges": "bytes"
+      },
+      "final_url": "https://192.168.11.43:443/",
+      "status_code": 200
+    },
+    "endpoints": [
+      {
+        "name": "eSCL ScannerCapabilities",
+        "url": "http://192.168.11.43/eSCL/ScannerCapabilities",
+        "method": "GET",
+        "status": 200,
+        "content_type": "text/html",
+        "content_length": 544,
+        "headers": {
+          "Server": "nginx",
+          "Date": "Wed, 01 Apr 2026 04:37:10 GMT",
+          "Content-Type": "text/html",
+          "Content-Length": "544",
+          "Last-Modified": "Thu, 19 Mar 2026 13:14:08 GMT",
+          "Connection": "keep-alive",
+          "Keep-Alive": "timeout=20",
+          "ETag": "\"69bbf6a0-220\"",
+          "Cache-Control": "no-cache",
+          "Accept-Ranges": "bytes"
+        },
+        "body_preview": "<!DOCTYPE html>\n<html>\n    <body>\n        <input type=\"hidden\" id=\"http\" name=\"http\" value=\"5000\">\n        <input type=\"hidden\" id=\"https\" name=\"https\" value=\"5001\">\n        <input type=\"hidden\" id=\"prefer_https\" name=\"prefer_https\" value=\"false\">\n    </body>\n    <script type=\"text/javascript\">\n        var protocol=location.protocol;\n        var port=location.protocol === \"https:\" ? 5001 : 5000;\n        var URL=protocol+\"//\"+location.hostname+\":\"+port+location.pathname+location.search;\n        location.replace(URL);\n    </script>\n</html>\n"
+      },
+      {
+        "name": "eSCL ScannerStatus",
+        "url": "http://192.168.11.43/eSCL/ScannerStatus",
+        "method": "GET",
+        "status": 200,
+        "content_type": "text/html",
+        "content_length": 544,
+        "headers": {
+          "Server": "nginx",
+          "Date": "Wed, 01 Apr 2026 04:37:10 GMT",
+          "Content-Type": "text/html",
+          "Content-Length": "544",
+          "Last-Modified": "Thu, 19 Mar 2026 13:14:08 GMT",
+          "Connection": "keep-alive",
+          "Keep-Alive": "timeout=20",
+          "ETag": "\"69bbf6a0-220\"",
+          "Cache-Control": "no-cache",
+          "Accept-Ranges": "bytes"
+        },
+        "body_preview": "<!DOCTYPE html>\n<html>\n    <body>\n        <input type=\"hidden\" id=\"http\" name=\"http\" value=\"5000\">\n        <input type=\"hidden\" id=\"https\" name=\"https\" value=\"5001\">\n        <input type=\"hidden\" id=\"prefer_https\" name=\"prefer_https\" value=\"false\">\n    </body>\n    <script type=\"text/javascript\">\n        var protocol=location.protocol;\n        var port=location.protocol === \"https:\" ? 5001 : 5000;\n        var URL=protocol+\"//\"+location.hostname+\":\"+port+location.pathname+location.search;\n        location.replace(URL);\n    </script>\n</html>\n"
+      },
+      {
+        "name": "WSD Metadata",
+        "url": "http://192.168.11.43/wsd",
+        "method": "GET",
+        "status": 200,
+        "content_type": "text/html",
+        "content_length": 544,
+        "headers": {
+          "Server": "nginx",
+          "Date": "Wed, 01 Apr 2026 04:37:10 GMT",
+          "Content-Type": "text/html",
+          "Content-Length": "544",
+          "Last-Modified": "Thu, 19 Mar 2026 13:14:08 GMT",
+          "Connection": "keep-alive",
+          "Keep-Alive": "timeout=20",
+          "ETag": "\"69bbf6a0-220\"",
+          "Cache-Control": "no-cache",
+          "Accept-Ranges": "bytes"
+        },
+        "body_preview": "<!DOCTYPE html>\n<html>\n    <body>\n        <input type=\"hidden\" id=\"http\" name=\"http\" value=\"5000\">\n        <input type=\"hidden\" id=\"https\" name=\"https\" value=\"5001\">\n        <input type=\"hidden\" id=\"prefer_https\" name=\"prefer_https\" value=\"false\">\n    </body>\n    <script type=\"text/javascript\">\n        var protocol=location.protocol;\n        var port=location.protocol === \"https:\" ? 5001 : 5000;\n        var URL=protocol+\"//\"+location.hostname+\":\"+port+location.pathname+location.search;\n        location.replace(URL);\n    </script>\n</html>\n"
+      }
+    ],
+    "escl": {
+      "supported": false
+    },
+    "saved_pages": {
+      "http://192.168.11.43:80/": {
+        "file": "192_168_11_43_http_80_index.html",
+        "status": 200,
+        "final_url": "http://192.168.11.43:80/"
+      },
+      "https://192.168.11.43:443/": {
+        "file": "192_168_11_43_https_443_index.html",
+        "status": 200,
+        "final_url": "https://192.168.11.43:443/"
+      }
+    }
+  },
+  {
+    "ip": "192.168.11.112",
+    "timestamp": "2026-04-01T13:37:11.056790",
+    "open_ports": [
+      80,
+      139,
+      443,
+      445,
+      515,
+      631,
+      9100
+    ],
+    "brand_info": {
+      "ip": "192.168.11.112",
+      "brand": "unknown",
+      "model": "unknown",
+      "web_title": "",
+      "server_header": "",
+      "response_headers": {
+        "Content-Type": "text/html",
+        "Expires": "Thu, 01 Jan 1970 00:00:00 GMT",
+        "X-Frame-Options": "SAMEORIGIN",
+        "Content-Length": "563"
+      },
+      "final_url": "http://192.168.11.112:80/",
+      "status_code": 200
+    },
+    "endpoints": [
+      {
+        "name": "eSCL ScannerCapabilities",
+        "url": "http://192.168.11.112/eSCL/ScannerCapabilities",
+        "method": "GET",
+        "status": 404,
+        "content_type": "text/html",
+        "content_length": 0,
+        "headers": {
+          "Content-Type": "text/html",
+          "Expires": "Thu, 01 Jan 1970 00:00:00 GMT",
+          "X-Frame-Options": "SAMEORIGIN",
+          "Content-Length": "0"
+        }
+      },
+      {
+        "name": "eSCL ScannerStatus",
+        "url": "http://192.168.11.112/eSCL/ScannerStatus",
+        "method": "GET",
+        "status": 404,
+        "content_type": "text/html",
+        "content_length": 0,
+        "headers": {
+          "Content-Type": "text/html",
+          "Expires": "Thu, 01 Jan 1970 00:00:00 GMT",
+          "X-Frame-Options": "SAMEORIGIN",
+          "Content-Length": "0"
+        }
+      },
+      {
+        "name": "WSD Metadata",
+        "url": "http://192.168.11.112/wsd",
+        "method": "GET",
+        "status": 404,
+        "content_type": "text/html",
+        "content_length": 0,
+        "headers": {
+          "Content-Type": "text/html",
+          "Expires": "Thu, 01 Jan 1970 00:00:00 GMT",
+          "X-Frame-Options": "SAMEORIGIN",
+          "Content-Length": "0"
+        }
+      }
+    ],
+    "escl": {
+      "supported": false
+    },
+    "saved_pages": {
+      "http://192.168.11.112:80/": {
+        "file": "192_168_11_112_http_80_index.html",
+        "status": 200,
+        "final_url": "http://192.168.11.112:80/"
+      }
+    }
+  },
+  {
+    "ip": "192.168.11.146",
+    "timestamp": "2026-04-01T13:37:13.621275",
+    "open_ports": [
+      80,
+      139,
+      443,
+      445
+    ],
+    "brand_info": {
+      "ip": "192.168.11.146",
+      "brand": "unknown",
+      "model": "unknown",
+      "web_title": "Member's Login...",
+      "server_header": "Unification MailServer",
+      "response_headers": {
+        "Server": "Unification MailServer",
+        "Connection": "close",
+        "Date": "Thu, 01 Jan 1970 00:00:00 GMT",
+        "Pragma": "no-cache",
+        "Content-type": "text/html"
+      },
+      "final_url": "http://192.168.11.146:80/",
+      "status_code": 200
+    },
+    "endpoints": [
+      {
+        "name": "eSCL ScannerCapabilities",
+        "url": "http://192.168.11.146/eSCL/ScannerCapabilities",
+        "method": "GET",
+        "status": "ERROR",
+        "error": "HTTPConnectionPool(host='192.168.11.146', port=80): Read timed out."
+      },
+      {
+        "name": "eSCL ScannerStatus",
+        "url": "http://192.168.11.146/eSCL/ScannerStatus",
+        "method": "GET",
+        "status": "ERROR",
+        "error": "HTTPConnectionPool(host='192.168.11.146', port=80): Read timed out."
+      },
+      {
+        "name": "WSD Metadata",
+        "url": "http://192.168.11.146/wsd",
+        "method": "GET",
+        "status": "ERROR",
+        "error": "HTTPConnectionPool(host='192.168.11.146', port=80): Read timed out."
+      }
+    ],
+    "escl": {
+      "supported": false
+    },
+    "saved_pages": {
+      "http://192.168.11.146:80/": {
+        "file": "192_168_11_146_http_80_index.html",
+        "status": 200,
+        "final_url": "http://192.168.11.146:80/"
+      }
+    }
+  },
+  {
+    "ip": "192.168.11.185",
+    "timestamp": "2026-04-01T13:37:35.917943",
+    "open_ports": [
+      21,
+      80,
+      139,
+      443,
+      515,
+      631,
+      9100
+    ],
+    "brand_info": {
+      "ip": "192.168.11.185",
+      "brand": "ricoh",
+      "model": "unknown",
+      "web_title": "Web Image Monitor",
+      "server_header": "Web-Server/3.0",
+      "response_headers": {
+        "Date": "Wed, 01 Apr 2026 04:35:01 GMT",
+        "Content-Security-Policy": "default-src 'self' 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'self'",
+        "Server": "Web-Server/3.0",
+        "Content-Type": "text/html; charset=UTF-8",
+        "Content-Length": "577",
+        "Expires": "Wed, 01 Apr 2026 04:35:01 GMT",
+        "Pragma": "no-cache",
+        "Cache-Control": "no-cache",
+        "Set-Cookie": "cookieOnOffChecker=on; path=/; HttpOnly",
+        "X-Frame-Options": "SAMEORIGIN",
+        "Connection": "Keep-Alive"
+      },
+      "final_url": "http://192.168.11.185:80/",
+      "status_code": 200
+    },
+    "endpoints": [
+      {
+        "name": "eSCL ScannerCapabilities",
+        "url": "http://192.168.11.185/eSCL/ScannerCapabilities",
+        "method": "GET",
+        "status": 200,
+        "content_type": "text/xml",
+        "content_length": 9422,
+        "headers": {
+          "Cache-Control": "no-cache",
+          "Connection": "Keep-Alive",
+          "Content-Type": "text/xml",
+          "Content-Length": "9422"
+        },
+        "body_preview": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<scan:ScannerCapabilities xmlns:pwg=\"http://www.pwg.org/schemas/2010/12/sm\" xmlns:scan=\"http://schemas.hp.com/imaging/escl/2011/05/03\">\n <pwg:Version>2.9</pwg:Version>\n <pwg:MakeAndModel>RICOH IM C2010</pwg:MakeAndModel>\n <pwg:SerialNumber>9134RC11631</pwg:SerialNumber>\n <pwg:Manufacturer>RICOH</pwg:Manufacturer>\n <scan:Certifications>\n  <scan:Certification>\n   <scan:Name>mopria-certified-scan</scan:Name>\n   <scan:Version>1.4</scan:Version>\n  </scan:Certification>\n </scan:Certifications>\n <scan:UUID>b77f4a9a-1dd1-11b2-b293-b294be7b1752</scan:UUID>\n <scan:AdminURI>http://RNP583879B615DF.local/web/entry/zz/websys/direct/airPrintConfig.cgi</scan:AdminURI>\n <scan:IconURI>http://RNP583879B615DF.local/printer/icon128.png</scan:IconURI>\n <scan:Platen>\n  <scan:PlatenInputCaps>\n   <scan:MinWidth>118</scan:MinWidth>\n   <scan:MaxWidth>3507</scan:MaxWidth>\n   <scan:MinHeight>118</scan:MinHeight>\n   <scan:MaxHeight>5102</scan:MaxHeight>\n   <scan:MaxScanRegions>1</scan:MaxScanRegions>\n   <scan:SettingProfiles>\n    <scan:SettingProfile>\n     <scan:ColorModes>\n      <scan:ColorMode>BlackAndWhite1</scan:ColorMode>\n      <scan:ColorMode>Grayscale8</scan:ColorMode>\n      <scan:ColorMode>RGB24</scan:ColorMode>\n     </scan:ColorModes>\n     <scan:DocumentFormats>\n      <pwg:DocumentFormat>application/pdf</pwg:DocumentFormat>\n      <pwg:DocumentFormat>image/jpeg</pwg:DocumentFormat>\n      <pwg:DocumentFormat>image/tiff</pwg:DocumentFormat>\n      <scan:DocumentFormatExt>application/pdf</scan:DocumentFormatExt>\n      <scan:DocumentFormatExt>image/jpeg</scan:DocumentFormatExt>\n      <scan:DocumentFormatExt>image/tiff</scan:DocumentFormatExt>\n     </scan:DocumentFormats>\n     <scan:SupportedResolutions>\n      <scan:DiscreteResolutions>\n       <scan:DiscreteResolution>\n        <scan:XResolution>100</scan:XResolution>\n        <scan:YResolution>100</scan:YResolution>\n       </scan:DiscreteResolution>\n       <scan:DiscreteResolution>\n        <scan:XResolution>200</scan:XResolution>\n        <scan:YResolution>200</scan:YResolution>\n       </scan:DiscreteResolution>\n       <scan:DiscreteResolution>\n        <scan:XResolution>300</scan:XResolution>\n        <scan:YResolution>300</scan:YResolution>\n       </scan:DiscreteResolution>\n       <scan:DiscreteResolution>\n        <scan:XResolution>400</scan:XResolution>\n        <scan:YResolution>400</scan:YResolution>\n       </scan:DiscreteResolution>\n       <scan:DiscreteResolution>\n        <scan:XResolution>600</scan:XResolution>\n        <scan:YResolution>600</scan:YResolution>\n       </scan:DiscreteResolution>\n      </scan:DiscreteResolutions>\n     </scan:SupportedResolutions>\n    </scan:SettingProfile>\n   </scan:SettingProfiles>\n   <scan:SupportedIntents>\n    <scan:Intent>Document</scan:Intent>\n    <scan:Intent>TextAndGraphic</scan:Intent>\n    <scan:Intent>Photo</scan:Intent>\n    <scan:Intent>Preview</scan:Intent>\n   </scan:SupportedIntents>\n   <scan:EdgeAutoDetection>\n    <scan:SupportedEdge>LeftEdge</scan:SupportedEdge>\n    <scan:SupportedEdge>BottomEdge</scan:SupportedEdge>\n   </scan:EdgeAutoDetection>\n   <scan:MaxOpticalXResolution>600</scan:MaxOpticalXResolution>\n   <scan:MaxOpticalYResolution>600</scan:MaxOpticalYResolution>\n   <scan:RiskyLeftMargin>0</scan:RiskyLeftMargin>\n   <scan:RiskyRightMargin>0</scan:RiskyRightMargin>\n   <scan:RiskyTopMargin>0</scan:RiskyTopMargin>\n   <scan:RiskyBottomMargin>0</scan:RiskyBottomMargin>\n   <scan:MaxPhysicalWidth>3507</scan:MaxPhysicalWidth>\n   <scan:MaxPhysicalHeight>5102</scan:MaxPhysicalHeight>\n  </scan:PlatenInputCaps>\n </scan:Platen>\n <scan:Adf>\n  <scan:AdfSimplexInputCaps>\n   <scan:MinWidth>118</scan:MinWidth>\n   <scan:MaxWidth>3507</scan:MaxWidth>\n   <scan:MinHeight>118</scan:MinHeight>\n   <scan:MaxHeight>5102</scan:MaxHeight>\n   <scan:MaxScanRegions>1</scan:MaxScanRegions>\n   <scan:SettingProfiles>\n    <scan:SettingProfile>\n     <scan:ColorModes>\n      <scan:ColorMode>BlackAndWhite1</scan:ColorMode>\n      <scan:ColorMode>Grayscale8</scan:ColorMode>\n      <scan:ColorMode>RGB24</scan:ColorMode>\n     </scan:ColorModes>\n     <scan:DocumentFormats>\n      <pwg:DocumentFormat>application/pdf</pwg:DocumentFormat>\n      <pwg:DocumentFormat>image/jpeg</pwg:DocumentFormat>\n      <pwg:DocumentFormat>image/tiff</pwg:DocumentFormat>\n      <scan:DocumentFormatExt>application/pdf</scan:DocumentFormatExt>\n      <scan:DocumentFormatExt>image/jpeg</scan:DocumentFormatExt>\n      <scan:DocumentFormatExt>image/tiff</scan:DocumentFormatExt>\n     </scan:DocumentFormats>\n     <scan:SupportedResolutions>\n      <scan:DiscreteResolutions>\n       <scan:DiscreteResolution>\n        <scan:XResolution>100</scan:XResolution>\n        <scan:YResolution>100</scan:YResolution>\n       </scan:DiscreteResolution>\n       <scan:DiscreteResolution>\n        <scan:XResolution>200</scan:XResolution>\n        <scan:YResolution>200</scan:YResolution>\n       </scan:DiscreteResolution>\n       <scan:DiscreteResolution>\n        <scan:XResolution>300</scan:XResol"
+      },
+      {
+        "name": "eSCL ScannerStatus",
+        "url": "http://192.168.11.185/eSCL/ScannerStatus",
+        "method": "GET",
+        "status": 200,
+        "content_type": "text/xml",
+        "content_length": 355,
+        "headers": {
+          "Cache-Control": "no-cache",
+          "Connection": "Keep-Alive",
+          "Content-Type": "text/xml",
+          "Content-Length": "355"
+        },
+        "body_preview": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<scan:ScannerStatus xmlns:pwg=\"http://www.pwg.org/schemas/2010/12/sm\" xmlns:scan=\"http://schemas.hp.com/imaging/escl/2011/05/03\">\n <pwg:Version>2.9</pwg:Version>\n <pwg:State>Idle</pwg:State>\n <pwg:StateReasons>AttentionRequired</pwg:StateReasons>\n <scan:AdfState>ScannerAdfEmpty</scan:AdfState>\n</scan:ScannerStatus>"
+      },
+      {
+        "name": "WSD Metadata",
+        "url": "http://192.168.11.185/wsd",
+        "method": "GET",
+        "status": 404,
+        "content_type": "text/html",
+        "content_length": 89,
+        "headers": {
+          "Connection": "close",
+          "Content-Type": "text/html",
+          "Content-Length": "89",
+          "Server": "Web-Server/3.0"
+        }
+      },
+      {
+        "name": "WSD Metadata",
+        "url": "https://192.168.11.185/wsd",
+        "method": "GET",
+        "status": 404,
+        "content_type": "text/html",
+        "content_length": 89,
+        "headers": {
+          "Connection": "close",
+          "Content-Type": "text/html",
+          "Content-Length": "89",
+          "Server": "Web-Server/3.0"
+        }
+      },
+      {
+        "name": "Ricoh REST API root",
+        "url": "http://192.168.11.185/rws/service-api/",
+        "method": "GET",
+        "status": 404,
+        "content_type": "application/json; charset=utf-8",
+        "content_length": 62,
+        "headers": {
+          "Date": "Wed, 01 Apr 2026 04:35:01 GMT",
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json; charset=utf-8",
+          "Content-Length": "62",
+          "Set-Cookie": "cookieOnOffChecker=on; path=/; HttpOnly",
+          "X-Frame-Options": "SAMEORIGIN",
+          "Connection": "Keep-Alive"
+        }
+      },
+      {
+        "name": "Ricoh REST API root",
+        "url": "https://192.168.11.185/rws/service-api/",
+        "method": "GET",
+        "status": 404,
+        "content_type": "application/json; charset=utf-8",
+        "content_length": 62,
+        "headers": {
+          "Date": "Wed, 01 Apr 2026 04:35:02 GMT",
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json; charset=utf-8",
+          "Content-Length": "62",
+          "Set-Cookie": "cookieOnOffChecker=on; path=/; HttpOnly",
+          "Strict-Transport-Security": "max-age=15552000",
+          "X-Frame-Options": "SAMEORIGIN",
+          "Connection": "Keep-Alive"
+        }
+      },
+      {
+        "name": "Ricoh Documents API",
+        "url": "http://192.168.11.185/rws/service-api/documents",
+        "method": "GET",
+        "status": 404,
+        "content_type": "application/json; charset=utf-8",
+        "content_length": 62,
+        "headers": {
+          "Date": "Wed, 01 Apr 2026 04:35:02 GMT",
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json; charset=utf-8",
+          "Content-Length": "62",
+          "Set-Cookie": "cookieOnOffChecker=on; path=/; HttpOnly",
+          "X-Frame-Options": "SAMEORIGIN",
+          "Connection": "Keep-Alive"
+        }
+      },
+      {
+        "name": "Ricoh Documents API",
+        "url": "https://192.168.11.185/rws/service-api/documents",
+        "method": "GET",
+        "status": 404,
+        "content_type": "application/json; charset=utf-8",
+        "content_length": 62,
+        "headers": {
+          "Date": "Wed, 01 Apr 2026 04:35:02 GMT",
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json; charset=utf-8",
+          "Content-Length": "62",
+          "Set-Cookie": "cookieOnOffChecker=on; path=/; HttpOnly",
+          "Strict-Transport-Security": "max-age=15552000",
+          "X-Frame-Options": "SAMEORIGIN",
+          "Connection": "Keep-Alive"
+        }
+      },
+      {
+        "name": "Ricoh AddressBook API",
+        "url": "http://192.168.11.185/rws/service-api/addressbook/entries",
+        "method": "GET",
+        "status": 404,
+        "content_type": "application/json; charset=utf-8",
+        "content_length": 62,
+        "headers": {
+          "Date": "Wed, 01 Apr 2026 04:35:02 GMT",
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json; charset=utf-8",
+          "Content-Length": "62",
+          "Set-Cookie": "cookieOnOffChecker=on; path=/; HttpOnly",
+          "X-Frame-Options": "SAMEORIGIN",
+          "Connection": "Keep-Alive"
+        }
+      },
+      {
+        "name": "Ricoh AddressBook API",
+        "url": "https://192.168.11.185/rws/service-api/addressbook/entries",
+        "method": "GET",
+        "status": 404,
+        "content_type": "application/json; charset=utf-8",
+        "content_length": 62,
+        "headers": {
+          "Date": "Wed, 01 Apr 2026 04:35:03 GMT",
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json; charset=utf-8",
+          "Content-Length": "62",
+          "Set-Cookie": "cookieOnOffChecker=on; path=/; HttpOnly",
+          "Strict-Transport-Security": "max-age=15552000",
+          "X-Frame-Options": "SAMEORIGIN",
+          "Connection": "Keep-Alive"
+        }
+      },
+      {
+        "name": "Ricoh Scanner API",
+        "url": "http://192.168.11.185/rws/service-api/scanner",
+        "method": "GET",
+        "status": 404,
+        "content_type": "application/json; charset=utf-8",
+        "content_length": 62,
+        "headers": {
+          "Date": "Wed, 01 Apr 2026 04:35:03 GMT",
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json; charset=utf-8",
+          "Content-Length": "62",
+          "Set-Cookie": "cookieOnOffChecker=on; path=/; HttpOnly",
+          "X-Frame-Options": "SAMEORIGIN",
+          "Connection": "Keep-Alive"
+        }
+      },
+      {
+        "name": "Ricoh Scanner API",
+        "url": "https://192.168.11.185/rws/service-api/scanner",
+        "method": "GET",
+        "status": 404,
+        "content_type": "application/json; charset=utf-8",
+        "content_length": 62,
+        "headers": {
+          "Date": "Wed, 01 Apr 2026 04:35:03 GMT",
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json; charset=utf-8",
+          "Content-Length": "62",
+          "Set-Cookie": "cookieOnOffChecker=on; path=/; HttpOnly",
+          "Strict-Transport-Security": "max-age=15552000",
+          "X-Frame-Options": "SAMEORIGIN",
+          "Connection": "Keep-Alive"
+        }
+      },
+      {
+        "name": "Ricoh DeviceInfo API",
+        "url": "http://192.168.11.185/rws/service-api/device",
+        "method": "GET",
+        "status": 404,
+        "content_type": "application/json; charset=utf-8",
+        "content_length": 62,
+        "headers": {
+          "Date": "Wed, 01 Apr 2026 04:35:03 GMT",
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json; charset=utf-8",
+          "Content-Length": "62",
+          "Set-Cookie": "cookieOnOffChecker=on; path=/; HttpOnly",
+          "X-Frame-Options": "SAMEORIGIN",
+          "Connection": "Keep-Alive"
+        }
+      },
+      {
+        "name": "Ricoh DeviceInfo API",
+        "url": "https://192.168.11.185/rws/service-api/device",
+        "method": "GET",
+        "status": 404,
+        "content_type": "application/json; charset=utf-8",
+        "content_length": 62,
+        "headers": {
+          "Date": "Wed, 01 Apr 2026 04:35:03 GMT",
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json; charset=utf-8",
+          "Content-Length": "62",
+          "Set-Cookie": "cookieOnOffChecker=on; path=/; HttpOnly",
+          "Strict-Transport-Security": "max-age=15552000",
+          "X-Frame-Options": "SAMEORIGIN",
+          "Connection": "Keep-Alive"
+        }
+      },
+      {
+        "name": "Ricoh Login CGI",
+        "url": "http://192.168.11.185/web/guest/en/websys/webArch/login.cgi",
+        "method": "GET",
+        "status": 500,
+        "content_type": "text/html; charset=UTF-8",
+        "content_length": 113,
+        "headers": {
+          "Date": "Wed, 01 Apr 2026 04:35:03 GMT",
+          "Content-Security-Policy": "default-src 'self' 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'self'",
+          "Server": "Web-Server/3.0",
+          "Content-Type": "text/html; charset=UTF-8",
+          "Content-Length": "113",
+          "Expires": "Wed, 01 Apr 2026 04:35:03 GMT",
+          "Pragma": "no-cache",
+          "Cache-Control": "no-cache",
+          "Set-Cookie": "cookieOnOffChecker=on; path=/; HttpOnly",
+          "X-Frame-Options": "SAMEORIGIN",
+          "Connection": "Keep-Alive"
+        }
+      },
+      {
+        "name": "Ricoh Login CGI",
+        "url": "https://192.168.11.185/web/guest/en/websys/webArch/login.cgi",
+        "method": "GET",
+        "status": 500,
+        "content_type": "text/html; charset=UTF-8",
+        "content_length": 113,
+        "headers": {
+          "Date": "Wed, 01 Apr 2026 04:35:04 GMT",
+          "Content-Security-Policy": "default-src 'self' 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'self'",
+          "Server": "Web-Server/3.0",
+          "Content-Type": "text/html; charset=UTF-8",
+          "Content-Length": "113",
+          "Expires": "Wed, 01 Apr 2026 04:35:04 GMT",
+          "Pragma": "no-cache",
+          "Cache-Control": "no-cache",
+          "Set-Cookie": "cookieOnOffChecker=on; path=/; HttpOnly",
+          "Strict-Transport-Security": "max-age=15552000",
+          "X-Frame-Options": "SAMEORIGIN",
+          "Connection": "Keep-Alive"
+        }
+      },
+      {
+        "name": "Ricoh Document Server",
+        "url": "http://192.168.11.185/DRS/document/list",
+        "method": "GET",
+        "status": 404,
+        "content_type": "text/html",
+        "content_length": 89,
+        "headers": {
+          "Connection": "close",
+          "Content-Type": "text/html",
+          "Content-Length": "89",
+          "Server": "Web-Server/3.0"
+        }
+      },
+      {
+        "name": "Ricoh Document Server",
+        "url": "https://192.168.11.185/DRS/document/list",
+        "method": "GET",
+        "status": 404,
+        "content_type": "text/html",
+        "content_length": 89,
+        "headers": {
+          "Connection": "close",
+          "Content-Type": "text/html",
+          "Content-Length": "89",
+          "Server": "Web-Server/3.0"
+        }
+      },
+      {
+        "name": "Ricoh Status",
+        "url": "http://192.168.11.185/web/guest/en/websys/status/getUnificationStatus.cgi",
+        "method": "GET",
+        "status": 404,
+        "content_type": "text/html",
+        "content_length": 89,
+        "headers": {
+          "Date": "Wed, 01 Apr 2026 04:35:05 GMT",
+          "Content-Security-Policy": "default-src 'self' 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'self'",
+          "Server": "Web-Server/3.0",
+          "Content-Type": "text/html",
+          "Content-Length": "89",
+          "Set-Cookie": "cookieOnOffChecker=on; path=/; HttpOnly",
+          "X-Frame-Options": "SAMEORIGIN",
+          "Connection": "Keep-Alive"
+        }
+      },
+      {
+        "name": "Ricoh Status",
+        "url": "https://192.168.11.185/web/guest/en/websys/status/getUnificationStatus.cgi",
+        "method": "GET",
+        "status": 404,
+        "content_type": "text/html",
+        "content_length": 89,
+        "headers": {
+          "Date": "Wed, 01 Apr 2026 04:35:05 GMT",
+          "Content-Security-Policy": "default-src 'self' 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'self'",
+          "Server": "Web-Server/3.0",
+          "Content-Type": "text/html",
+          "Content-Length": "89",
+          "Set-Cookie": "cookieOnOffChecker=on; path=/; HttpOnly",
+          "Strict-Transport-Security": "max-age=15552000",
+          "X-Frame-Options": "SAMEORIGIN",
+          "Connection": "Keep-Alive"
+        }
+      }
+    ],
+    "escl": {
+      "supported": true,
+      "url": "https://192.168.11.185/eSCL/ScannerCapabilities",
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<scan:ScannerCapabilities xmlns:pwg=\"http://www.pwg.org/schemas/2010/12/sm\" xmlns:scan=\"http://schemas.hp.com/imaging/escl/2011/05/03\">\n <pwg:Version>2.9</pwg:Version>\n <pwg:MakeAndModel>RICOH IM C2010</pwg:MakeAndModel>\n <pwg:SerialNumber>9134RC11631</pwg:SerialNumber>\n <pwg:Manufacturer>RICOH</pwg:Manufacturer>\n <scan:Certifications>\n  <scan:Certification>\n   <scan:Name>mopria-certified-scan</scan:Name>\n   <scan:Version>1.4</scan:Version>\n  </scan:Certification>\n </scan:Certifications>\n <scan:UUID>b77f4a9a-1dd1-11b2-b293-b294be7b1752</scan:UUID>\n <scan:AdminURI>http://RNP583879B615DF.local/web/entry/zz/websys/direct/airPrintConfig.cgi</scan:AdminURI>\n <scan:IconURI>http://RNP583879B615DF.local/printer/icon128.png</scan:IconURI>\n <scan:Platen>\n  <scan:PlatenInputCaps>\n   <scan:MinWidth>118</scan:MinWidth>\n   <scan:MaxWidth>3507</scan:MaxWidth>\n   <scan:MinHeight>118</scan:MinHeight>\n   <scan:MaxHeight>5102</scan:MaxHeight>\n   <scan:MaxScanRegions>1</scan:MaxScanRegions>\n   <scan:SettingProfiles>\n    <scan:SettingProfile>\n     <scan:ColorModes>\n      <scan:ColorMode>BlackAndWhite1</scan:ColorMode>\n      <scan:ColorMode>Grayscale8</scan:ColorMode>\n      <scan:ColorMode>RGB24</scan:ColorMode>\n     </scan:ColorModes>\n     <scan:DocumentFormats>\n      <pwg:DocumentFormat>application/pdf</pwg:DocumentFormat>\n      <pwg:DocumentFormat>image/jpeg</pwg:DocumentFormat>\n      <pwg:DocumentFormat>image/tiff</pwg:DocumentFormat>\n      <scan:DocumentFormatExt>application/pdf</scan:DocumentFormatExt>\n      <scan:DocumentFormatExt>image/jpeg</scan:DocumentFormatExt>\n      <scan:DocumentFormatExt>image/tiff</scan:DocumentFormatExt>\n     </scan:DocumentFormats>\n     <scan:SupportedResolutions>\n      <scan:DiscreteResolutions>\n       <scan:DiscreteResolution>\n        <scan:XResolution>100</scan:XResolution>\n        <scan:YResolution>100</scan:YResolution>\n       </scan:DiscreteResolution>\n       <scan:DiscreteResolution>\n        <scan:XResolution>200</scan:XResolution>\n        <scan:YResolution>200</scan:YResolution>\n       </scan:DiscreteResolution>\n       <scan:DiscreteResolution>\n        <scan:XResolution>300</scan:XResolution>\n        <scan:YResolution>300</scan:YResolution>\n       </scan:DiscreteResolution>\n       <scan:DiscreteResolution>\n        <scan:XResolution>400</scan:XResolution>\n        <scan:YResolution>400</scan:YResolution>\n       </scan:DiscreteResolution>\n       <scan:DiscreteResolution>\n        <scan:XResolution>600</scan:XResolution>\n        <scan:YResolution>600</scan:YResolution>\n       </scan:DiscreteResolution>\n      </scan:DiscreteResolutions>\n     </scan:SupportedResolutions>\n    </scan:SettingProfile>\n   </scan:SettingProfiles>\n   <scan:SupportedIntents>\n    <scan:Intent>Document</scan:Intent>\n    <scan:Intent>TextAndGraphic</scan:Intent>\n    <scan:Intent>Photo</scan:Intent>\n    <scan:Intent>Preview</scan:Intent>\n   </scan:SupportedIntents>\n   <scan:EdgeAutoDetection>\n    <scan:SupportedEdge>LeftEdge</scan:SupportedEdge>\n    <scan:SupportedEdge>BottomEdge</scan:SupportedEdge>\n   </scan:EdgeAutoDetection>\n   <scan:MaxOpticalXResolution>600</scan:MaxOpticalXResolution>\n   <scan:MaxOpticalYResolution>600</scan:MaxOpticalYResolution>\n   <scan:RiskyLeftMargin>0</scan:RiskyLeftMargin>\n   <scan:RiskyRightMargin>0</scan:RiskyRightMargin>\n   <scan:RiskyTopMargin>0</scan:RiskyTopMargin>\n   <scan:RiskyBottomMargin>0</scan:RiskyBottomMargin>\n   <scan:MaxPhysicalWidth>3507</scan:MaxPhysicalWidth>\n   <scan:MaxPhysicalHeight>5102</scan:MaxPhysicalHeight>\n  </scan:PlatenInputCaps>\n </scan:Platen>\n <scan:Adf>\n  <scan:AdfSimplexInputCaps>\n   <scan:MinWidth>118</scan:MinWidth>\n   <scan:MaxWidth>3507</scan:MaxWidth>\n   <scan:MinHeight>118</scan:MinHeight>\n   <scan:MaxHeight>5102</scan:MaxHeight>\n   <scan:MaxScanRegions>1</scan:MaxScanRegions>\n   <scan:SettingProfiles>\n    <scan:SettingProfile>\n     <scan:ColorModes>\n      <scan:ColorMode>BlackAndWhite1</scan:ColorMode>\n      <scan:ColorMode>Grayscale8</scan:ColorMode>\n      <scan:ColorMode>RGB24</scan:ColorMode>\n     </scan:ColorModes>\n     <scan:DocumentFormats>\n      <pwg:DocumentFormat>application/pdf</pwg:DocumentFormat>\n      <pwg:DocumentFormat>image/jpeg</pwg:DocumentFormat>\n      <pwg:DocumentFormat>image/tiff</pwg:DocumentFormat>\n      <scan:DocumentFormatExt>application/pdf</scan:DocumentFormatExt>\n      <scan:DocumentFormatExt>image/jpeg</scan:DocumentFormatExt>\n      <scan:DocumentFormatExt>image/tiff</scan:DocumentFormatExt>\n     </scan:DocumentFormats>\n     <scan:SupportedResolutions>\n      <scan:DiscreteResolutions>\n       <scan:DiscreteResolution>\n        <scan:XResolution>100</scan:XResolution>\n        <scan:YResolution>100</scan:YResolution>\n       </scan:DiscreteResolution>\n       <scan:DiscreteResolution>\n        <scan:XResolution>200</scan:XResolution>\n        <scan:YResolution>200</scan:YResolution>\n       </scan:DiscreteResolution>\n       <scan:DiscreteResolution>\n        <scan:XResolution>300</scan:XResolution>\n        <scan:YResolution>300</scan:YResolution>\n       </scan:DiscreteResolution>\n       <scan:DiscreteResolution>\n        <scan:XResolution>400</scan:XResolution>\n        <scan:YResolution>400</scan:YResolution>\n       </scan:DiscreteResolution>\n       <scan:DiscreteResolution>\n        <scan:XResolution>600</scan:XResolution>\n        <scan:YResolution>600</scan:YResolution>\n       </scan:DiscreteResolution>\n      </scan:DiscreteResolutions>\n     </scan:SupportedResolutions>\n    </scan:SettingProfile>\n   </scan:SettingProfiles>\n   <scan:SupportedIntents>\n    <scan:Intent>Document</scan:Intent>\n    <scan:Intent>TextAndGraphic</scan:Intent>\n    <scan:Intent>Photo</scan:Intent>\n    <scan:Intent>Preview</scan:Intent>\n   </scan:SupportedIntents>\n   <scan:EdgeAutoDetection>\n    <scan:SupportedEdge>LeftEdge</scan:SupportedEdge>\n    <scan:SupportedEdge>BottomEdge</scan:SupportedEdge>\n   </scan:EdgeAutoDetection>\n   <scan:MaxOpticalXResolution>600</scan:MaxOpticalXResolution>\n   <scan:MaxOpticalYResolution>600</scan:MaxOpticalYResolution>\n   <scan:RiskyLeftMargin>0</scan:RiskyLeftMargin>\n   <scan:RiskyRightMargin>0</scan:RiskyRightMargin>\n   <scan:RiskyTopMargin>0</scan:RiskyTopMargin>\n   <scan:RiskyBottomMargin>0</scan:RiskyBottomMargin>\n   <scan:MaxPhysicalWidth>3507</scan:MaxPhysicalWidth>\n   <scan:MaxPhysicalHeight>5102</scan:MaxPhysicalHeight>\n  </scan:AdfSimplexInputCaps>\n  <scan:AdfDuplexInputCaps>\n   <scan:MinWidth>118</scan:MinWidth>\n   <scan:MaxWidth>3507</scan:MaxWidth>\n   <scan:MinHeight>118</scan:MinHeight>\n   <scan:MaxHeight>5102</scan:MaxHeight>\n   <scan:MaxScanRegions>1</scan:MaxScanRegions>\n   <scan:SettingProfiles>\n    <scan:SettingProfile>\n     <scan:ColorModes>\n      <scan:ColorMode>BlackAndWhite1</scan:ColorMode>\n      <scan:ColorMode>Grayscale8</scan:ColorMode>\n      <scan:ColorMode>RGB24</scan:ColorMode>\n     </scan:ColorModes>\n     <scan:DocumentFormats>\n      <pwg:DocumentFormat>application/pdf</pwg:DocumentFormat>\n      <pwg:DocumentFormat>image/jpeg</pwg:DocumentFormat>\n      <pwg:DocumentFormat>image/tiff</pwg:DocumentFormat>\n      <scan:DocumentFormatExt>application/pdf</scan:DocumentFormatExt>\n      <scan:DocumentFormatExt>image/jpeg</scan:DocumentFormatExt>\n      <scan:DocumentFormatExt>image/tiff</scan:DocumentFormatExt>\n     </scan:DocumentFormats>\n     <scan:SupportedResolutions>\n      <scan:DiscreteResolutions>\n       <scan:DiscreteResolution>\n        <scan:XResolution>100</scan:XResolution>\n        <scan:YResolution>100</scan:YResolution>\n       </scan:DiscreteResolution>\n       <scan:DiscreteResolution>\n        <scan:XResolution>200</scan:XResolution>\n        <scan:YResolution>200</scan:YResolution>\n       </scan:DiscreteResolution>\n       <scan:DiscreteResolution>\n        <scan:XResolution>300</scan:XResolution>\n        <scan:YResolution>300</scan:YResolution>\n       </scan:DiscreteResolution>\n       <scan:DiscreteResolution>\n        <scan:XResolution>400</scan:XResolution>\n        <scan:YResolution>400</scan:YResolution>\n       </scan:DiscreteResolution>\n       <scan:DiscreteResolution>\n        <scan:XResolution>600</scan:XResolution>\n        <scan:YResolution>600</scan:YResolution>\n       </scan:DiscreteResolution>\n      </scan:DiscreteResolutions>\n     </scan:SupportedResolutions>\n    </scan:SettingProfile>\n   </scan:SettingProfiles>\n   <scan:SupportedIntents>\n    <scan:Intent>Document</scan:Intent>\n    <scan:Intent>TextAndGraphic</scan:Intent>\n    <scan:Intent>Photo</scan:Intent>\n    <scan:Intent>Preview</scan:Intent>\n   </scan:SupportedIntents>\n   <scan:EdgeAutoDetection>\n    <scan:SupportedEdge>LeftEdge</scan:SupportedEdge>\n    <scan:SupportedEdge>BottomEdge</scan:SupportedEdge>\n   </scan:EdgeAutoDetection>\n   <scan:MaxOpticalXResolution>600</scan:MaxOpticalXResolution>\n   <scan:MaxOpticalYResolution>600</scan:MaxOpticalYResolution>\n   <scan:RiskyLeftMargin>0</scan:RiskyLeftMargin>\n   <scan:RiskyRightMargin>0</scan:RiskyRightMargin>\n   <scan:RiskyTopMargin>0</scan:RiskyTopMargin>\n   <scan:RiskyBottomMargin>0</scan:RiskyBottomMargin>\n   <scan:MaxPhysicalWidth>3507</scan:MaxPhysicalWidth>\n   <scan:MaxPhysicalHeight>5102</scan:MaxPhysicalHeight>\n  </scan:AdfDuplexInputCaps>\n  <scan:AdfOptions>\n   <scan:AdfOption>DetectPaperLoaded</scan:AdfOption>\n   <scan:AdfOption>SelectSinglePage</scan:AdfOption>\n   <scan:AdfOption>Duplex</scan:AdfOption>\n  </scan:AdfOptions>\n </scan:Adf>\n</scan:ScannerCapabilities>"
+    },
+    "saved_pages": {
+      "http://192.168.11.185:80/": {
+        "file": "192_168_11_185_http_80_index.html",
+        "status": 200,
+        "final_url": "http://192.168.11.185:80/"
+      },
+      "https://192.168.11.185:443/": {
+        "file": "192_168_11_185_https_443_index.html",
+        "status": 200,
+        "final_url": "https://192.168.11.185:443/"
+      }
+    }
+  },
+  {
+    "ip": "192.168.11.186",
+    "timestamp": "2026-04-01T13:37:43.984984",
+    "open_ports": [
+      80,
+      139,
+      443,
+      445,
+      515,
+      631,
+      9100
+    ],
+    "brand_info": {
+      "ip": "192.168.11.186",
+      "brand": "unknown",
+      "model": "unknown",
+      "web_title": "",
+      "server_header": "",
+      "response_headers": {
+        "Content-Type": "text/html",
+        "Expires": "Thu, 01 Jan 1970 00:00:00 GMT",
+        "X-Frame-Options": "SAMEORIGIN",
+        "Content-Length": "563"
+      },
+      "final_url": "http://192.168.11.186:80/",
+      "status_code": 200
+    },
+    "endpoints": [
+      {
+        "name": "eSCL ScannerCapabilities",
+        "url": "http://192.168.11.186/eSCL/ScannerCapabilities",
+        "method": "GET",
+        "status": 404,
+        "content_type": "text/html",
+        "content_length": 0,
+        "headers": {
+          "Content-Type": "text/html",
+          "Expires": "Thu, 01 Jan 1970 00:00:00 GMT",
+          "X-Frame-Options": "SAMEORIGIN",
+          "Content-Length": "0"
+        }
+      },
+      {
+        "name": "eSCL ScannerStatus",
+        "url": "http://192.168.11.186/eSCL/ScannerStatus",
+        "method": "GET",
+        "status": 404,
+        "content_type": "text/html",
+        "content_length": 0,
+        "headers": {
+          "Content-Type": "text/html",
+          "Expires": "Thu, 01 Jan 1970 00:00:00 GMT",
+          "X-Frame-Options": "SAMEORIGIN",
+          "Content-Length": "0"
+        }
+      },
+      {
+        "name": "WSD Metadata",
+        "url": "http://192.168.11.186/wsd",
+        "method": "GET",
+        "status": 404,
+        "content_type": "text/html",
+        "content_length": 0,
+        "headers": {
+          "Content-Type": "text/html",
+          "Expires": "Thu, 01 Jan 1970 00:00:00 GMT",
+          "X-Frame-Options": "SAMEORIGIN",
+          "Content-Length": "0"
+        }
+      }
+    ],
+    "escl": {
+      "supported": false
+    },
+    "saved_pages": {
+      "http://192.168.11.186:80/": {
+        "file": "192_168_11_186_http_80_index.html",
+        "status": 200,
+        "final_url": "http://192.168.11.186:80/"
+      }
+    }
+  },
+  {
+    "ip": "192.168.11.227",
+    "timestamp": "2026-04-01T13:37:46.509838",
+    "open_ports": [
+      80,
+      139,
+      443,
+      445,
+      515,
+      631,
+      8000,
+      8443,
+      9100
+    ],
+    "brand_info": {
+      "ip": "192.168.11.227",
+      "brand": "canon",
+      "model": "unknown",
+      "web_title": "",
+      "server_header": "CANON HTTP Server",
+      "response_headers": {
+        "Date": "Wed, 01 Apr 2026 04:37:10 GMT",
+        "Server": "CANON HTTP Server",
+        "X-Frame-Options": "DENY",
+        "X-Content-Type-Options": "nosniff",
+        "X-XSS-Protection": "1; mode=block",
+        "Content-Type": "text/html;charset=UTF-8",
+        "Pragma": "no-cache",
+        "Cache-Control": "no-cache,no-store,max-age=0",
+        "Expires": "Thu, 01 Jan 1970 00:00:00 GMT",
+        "Transfer-Encoding": "chunked"
+      },
+      "final_url": "http://192.168.11.227:80/",
+      "status_code": 200
+    },
+    "endpoints": [
+      {
+        "name": "eSCL ScannerCapabilities",
+        "url": "http://192.168.11.227/eSCL/ScannerCapabilities",
+        "method": "GET",
+        "status": 200,
+        "content_type": "text/xml",
+        "content_length": 15618,
+        "headers": {
+          "Date": "Wed, 01 Apr 2026 04:37:10 GMT",
+          "Server": "CANON HTTP Server",
+          "Content-Type": "text/xml",
+          "Content-Length": "15618"
+        }
+      },
+      {
+        "name": "eSCL ScannerStatus",
+        "url": "http://192.168.11.227/eSCL/ScannerStatus",
+        "method": "GET",
+        "status": 200,
+        "content_type": "text/xml",
+        "content_length": 302,
+        "headers": {
+          "Date": "Wed, 01 Apr 2026 04:37:10 GMT",
+          "Server": "CANON HTTP Server",
+          "Content-Type": "text/xml",
+          "Content-Length": "302"
+        },
+        "body_preview": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><scan:ScannerStatus xmlns:pwg=\"http://www.pwg.org/schemas/2010/12/sm\" xmlns:scan=\"http://schemas.hp.com/imaging/escl/2011/05/03\">\n  <pwg:Version>2.63</pwg:Version>\n  <pwg:State>Idle</pwg:State>\n  <scan:AdfState>ScannerAdfEmpty</scan:AdfState>\n</scan:ScannerStatus>"
+      },
+      {
+        "name": "WSD Metadata",
+        "url": "http://192.168.11.227/wsd",
+        "method": "GET",
+        "status": 404,
+        "content_type": "text/html",
+        "content_length": 74,
+        "headers": {
+          "Date": "Wed, 01 Apr 2026 04:37:10 GMT",
+          "Server": "CANON HTTP Server",
+          "Content-Type": "text/html",
+          "Content-Length": "74"
+        }
+      },
+      {
+        "name": "WSD Metadata",
+        "url": "https://192.168.11.227/wsd",
+        "method": "GET",
+        "status": 404,
+        "content_type": "text/html",
+        "content_length": 74,
+        "headers": {
+          "Date": "Wed, 01 Apr 2026 04:37:10 GMT",
+          "Server": "CANON HTTP Server",
+          "Content-Type": "text/html",
+          "Content-Length": "74"
+        }
+      },
+      {
+        "name": "Canon Remote UI",
+        "url": "http://192.168.11.227/login",
+        "method": "GET",
+        "status": 404,
+        "content_type": "text/html",
+        "content_length": 74,
+        "headers": {
+          "Date": "Wed, 01 Apr 2026 04:37:10 GMT",
+          "Server": "CANON HTTP Server",
+          "Content-Type": "text/html",
+          "Content-Length": "74"
+        }
+      },
+      {
+        "name": "Canon Remote UI",
+        "url": "https://192.168.11.227/login",
+        "method": "GET",
+        "status": 404,
+        "content_type": "text/html",
+        "content_length": 74,
+        "headers": {
+          "Date": "Wed, 01 Apr 2026 04:37:10 GMT",
+          "Server": "CANON HTTP Server",
+          "Content-Type": "text/html",
+          "Content-Length": "74"
+        }
+      },
+      {
+        "name": "Canon WebDAV AdvancedBox",
+        "url": "http://192.168.11.227/WebDAV/AdvancedBox/",
+        "method": "PROPFIND",
+        "status": 404,
+        "content_type": "text/html",
+        "content_length": 74,
+        "headers": {
+          "Date": "Wed, 01 Apr 2026 04:37:10 GMT",
+          "Server": "CANON HTTP Server",
+          "Content-Type": "text/html",
+          "Content-Length": "74"
+        }
+      },
+      {
+        "name": "Canon WebDAV AdvancedBox",
+        "url": "https://192.168.11.227/WebDAV/AdvancedBox/",
+        "method": "PROPFIND",
+        "status": 404,
+        "content_type": "text/html",
+        "content_length": 74,
+        "headers": {
+          "Date": "Wed, 01 Apr 2026 04:37:10 GMT",
+          "Server": "CANON HTTP Server",
+          "Content-Type": "text/html",
+          "Content-Length": "74"
+        }
+      },
+      {
+        "name": "Canon WebDAV root",
+        "url": "http://192.168.11.227/WebDAV/",
+        "method": "PROPFIND",
+        "status": 404,
+        "content_type": "text/html",
+        "content_length": 74,
+        "headers": {
+          "Date": "Wed, 01 Apr 2026 04:37:10 GMT",
+          "Server": "CANON HTTP Server",
+          "Content-Type": "text/html",
+          "Content-Length": "74"
+        }
+      },
+      {
+        "name": "Canon WebDAV root",
+        "url": "https://192.168.11.227/WebDAV/",
+        "method": "PROPFIND",
+        "status": 404,
+        "content_type": "text/html",
+        "content_length": 74,
+        "headers": {
+          "Date": "Wed, 01 Apr 2026 04:37:10 GMT",
+          "Server": "CANON HTTP Server",
+          "Content-Type": "text/html",
+          "Content-Length": "74"
+        }
+      },
+      {
+        "name": "Canon Portal",
+        "url": "http://192.168.11.227/portal.html",
+        "method": "GET",
+        "status": 404,
+        "content_type": "text/html",
+        "content_length": 74,
+        "headers": {
+          "Date": "Wed, 01 Apr 2026 04:37:10 GMT",
+          "Server": "CANON HTTP Server",
+          "Content-Type": "text/html",
+          "Content-Length": "74"
+        }
+      },
+      {
+        "name": "Canon Portal",
+        "url": "https://192.168.11.227/portal.html",
+        "method": "GET",
+        "status": 404,
+        "content_type": "text/html",
+        "content_length": 74,
+        "headers": {
+          "Date": "Wed, 01 Apr 2026 04:37:11 GMT",
+          "Server": "CANON HTTP Server",
+          "Content-Type": "text/html",
+          "Content-Length": "74"
+        }
+      },
+      {
+        "name": "Canon SSMISession",
+        "url": "http://192.168.11.227/SSMISession",
+        "method": "GET",
+        "status": 404,
+        "content_type": "text/html",
+        "content_length": 74,
+        "headers": {
+          "Date": "Wed, 01 Apr 2026 04:37:11 GMT",
+          "Server": "CANON HTTP Server",
+          "Content-Type": "text/html",
+          "Content-Length": "74"
+        }
+      },
+      {
+        "name": "Canon SSMISession",
+        "url": "https://192.168.11.227/SSMISession",
+        "method": "GET",
+        "status": 404,
+        "content_type": "text/html",
+        "content_length": 74,
+        "headers": {
+          "Date": "Wed, 01 Apr 2026 04:37:11 GMT",
+          "Server": "CANON HTTP Server",
+          "Content-Type": "text/html",
+          "Content-Length": "74"
+        }
+      },
+      {
+        "name": "Canon AddressBook",
+        "url": "http://192.168.11.227/oce/addressbook",
+        "method": "GET",
+        "status": 404,
+        "content_type": "text/html",
+        "content_length": 74,
+        "headers": {
+          "Date": "Wed, 01 Apr 2026 04:37:11 GMT",
+          "Server": "CANON HTTP Server",
+          "Content-Type": "text/html",
+          "Content-Length": "74"
+        }
+      },
+      {
+        "name": "Canon AddressBook",
+        "url": "https://192.168.11.227/oce/addressbook",
+        "method": "GET",
+        "status": 404,
+        "content_type": "text/html",
+        "content_length": 74,
+        "headers": {
+          "Date": "Wed, 01 Apr 2026 04:37:11 GMT",
+          "Server": "CANON HTTP Server",
+          "Content-Type": "text/html",
+          "Content-Length": "74"
+        }
+      }
+    ],
+    "escl": {
+      "supported": true,
+      "url": "http://192.168.11.227/eSCL/ScannerCapabilities",
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><scan:ScannerCapabilities xmlns:pwg=\"http://www.pwg.org/schemas/2010/12/sm\" xmlns:scan=\"http://schemas.hp.com/imaging/escl/2011/05/03\">\n  <pwg:Version>2.63</pwg:Version>\n  <pwg:MakeAndModel>Canon iR-ADV C3720</pwg:MakeAndModel>\n  <pwg:SerialNumber>22M02750e</pwg:SerialNumber>\n  <scan:Manufacturer>Canon</scan:Manufacturer>\n  <scan:UUID>55cf4caf-7501-3e2f-7b24-360e654ea8bf</scan:UUID>\n  <scan:AdminURI>http://CanonDE9474.local:8000/rps/airprint</scan:AdminURI>\n  <scan:IconURI>http://CanonDE9474.local/ippmedia/icon/128x128.png</scan:IconURI>\n  <scan:BlankPageDetection>false</scan:BlankPageDetection>\n  <scan:BlankPageDetectionAndRemoval>false</scan:BlankPageDetectionAndRemoval>\n  <scan:Platen>\n    <scan:PlatenInputCaps>\n      <scan:MinWidth>1748</scan:MinWidth>\n      <scan:MaxWidth>3508</scan:MaxWidth>\n      <scan:MinHeight>1748</scan:MinHeight>\n      <scan:MaxHeight>5100</scan:MaxHeight>\n      <scan:MaxXOffset>0</scan:MaxXOffset>\n      <scan:MaxYOffset>0</scan:MaxYOffset>\n      <scan:MaxScanRegions>2</scan:MaxScanRegions>\n      <scan:MaxOpticalXResolution>600</scan:MaxOpticalXResolution>\n      <scan:MaxOpticalYResolution>600</scan:MaxOpticalYResolution>\n      <scan:MaxPhysicalWidth>3508</scan:MaxPhysicalWidth>\n      <scan:MaxPhysicalHeight>5100</scan:MaxPhysicalHeight>\n      <scan:SettingProfiles>\n        <scan:SettingProfile>\n          <scan:ColorModes>\n            <scan:ColorMode>BlackAndWhite1</scan:ColorMode>\n            <scan:ColorMode>Grayscale8</scan:ColorMode>\n            <scan:ColorMode>RGB24</scan:ColorMode>\n          </scan:ColorModes>\n          <scan:ContentTypes>\n            <scan:ContentType>Photo</scan:ContentType>\n            <scan:ContentType>Text</scan:ContentType>\n            <scan:ContentType>TextAndPhoto</scan:ContentType>\n          </scan:ContentTypes>\n          <scan:DocumentFormats>\n            <pwg:DocumentFormat>application/pdf</pwg:DocumentFormat>\n            <pwg:DocumentFormat>image/jpeg</pwg:DocumentFormat>\n            <pwg:DocumentFormat>image/tiff</pwg:DocumentFormat>\n            <pwg:DocumentFormat>application/octet-stream</pwg:DocumentFormat>\n            <pwg:DocumentFormat>application/vnd.openxmlformats-officedocument.presentationml.presentation</pwg:DocumentFormat>\n            <pwg:DocumentFormat>application/vnd.openxmlformats-officedocument.wordprocessingml.document</pwg:DocumentFormat>\n            <scan:DocumentFormatExt>application/pdf</scan:DocumentFormatExt>\n            <scan:DocumentFormatExt>image/jpeg</scan:DocumentFormatExt>\n            <scan:DocumentFormatExt>image/tiff</scan:DocumentFormatExt>\n            <scan:DocumentFormatExt>application/octet-stream</scan:DocumentFormatExt>\n            <scan:DocumentFormatExt>application/oxps</scan:DocumentFormatExt>\n            <scan:DocumentFormatExt>application/vnd.openxmlformats-officedocument.presentationml.presentation</scan:DocumentFormatExt>\n            <scan:DocumentFormatExt>application/vnd.openxmlformats-officedocument.wordprocessingml.document</scan:DocumentFormatExt>\n          </scan:DocumentFormats>\n          <scan:SupportedResolutions>\n            <scan:DiscreteResolutions>\n              <scan:DiscreteResolution>\n                <scan:XResolution>100</scan:XResolution>\n                <scan:YResolution>100</scan:YResolution>\n              </scan:DiscreteResolution>\n              <scan:DiscreteResolution>\n                <scan:XResolution>200</scan:XResolution>\n                <scan:YResolution>200</scan:YResolution>\n              </scan:DiscreteResolution>\n              <scan:DiscreteResolution>\n                <scan:XResolution>300</scan:XResolution>\n                <scan:YResolution>300</scan:YResolution>\n              </scan:DiscreteResolution>\n              <scan:DiscreteResolution>\n                <scan:XResolution>400</scan:XResolution>\n                <scan:YResolution>400</scan:YResolution>\n              </scan:DiscreteResolution>\n              <scan:DiscreteResolution>\n                <scan:XResolution>600</scan:XResolution>\n                <scan:YResolution>600</scan:YResolution>\n              </scan:DiscreteResolution>\n            </scan:DiscreteResolutions>\n          </scan:SupportedResolutions>\n          <scan:ColorSpaces>\n            <scan:ColorSpace>sRGB</scan:ColorSpace>\n          </scan:ColorSpaces>\n          <scan:CcdChannels>\n            <scan:CcdChannel>Red</scan:CcdChannel>\n            <scan:CcdChannel>Green</scan:CcdChannel>\n            <scan:CcdChannel>Blue</scan:CcdChannel>\n          </scan:CcdChannels>\n          <scan:BinaryRenderings>\n            <scan:BinaryRendering>Threshold</scan:BinaryRendering>\n          </scan:BinaryRenderings>\n        </scan:SettingProfile>\n      </scan:SettingProfiles>\n      <scan:SupportedIntents>\n        <scan:Intent>Document</scan:Intent>\n        <scan:Intent>TextAndGraphic</scan:Intent>\n        <scan:Intent>Photo</scan:Intent>\n      </scan:SupportedIntents>\n      <scan:EdgeAutoDetection>\n        <scan:SupportedEdge>TopEdge</scan:SupportedEdge>\n        <scan:SupportedEdge>LeftEdge</scan:SupportedEdge>\n      </scan:EdgeAutoDetection>\n      <scan:FeedDirections>\n        <scan:FeedDirection>LongEdgeFeed</scan:FeedDirection>\n        <scan:FeedDirection>ShortEdgeFeed</scan:FeedDirection>\n      </scan:FeedDirections>\n      <scan:SupportedMediaTypes>\n        <scan:MediaType>White</scan:MediaType>\n      </scan:SupportedMediaTypes>\n    </scan:PlatenInputCaps>\n  </scan:Platen>\n  <scan:Adf>\n    <scan:AdfSimplexInputCaps>\n      <scan:MinWidth>1748</scan:MinWidth>\n      <scan:MaxWidth>3508</scan:MaxWidth>\n      <scan:MinHeight>1748</scan:MinHeight>\n      <scan:MaxHeight>5100</scan:MaxHeight>\n      <scan:MaxXOffset>0</scan:MaxXOffset>\n      <scan:MaxYOffset>0</scan:MaxYOffset>\n      <scan:MaxScanRegions>2</scan:MaxScanRegions>\n      <scan:MaxOpticalXResolution>600</scan:MaxOpticalXResolution>\n      <scan:MaxOpticalYResolution>600</scan:MaxOpticalYResolution>\n      <scan:MaxPhysicalWidth>3508</scan:MaxPhysicalWidth>\n      <scan:MaxPhysicalHeight>5100</scan:MaxPhysicalHeight>\n      <scan:SettingProfiles>\n        <scan:SettingProfile>\n          <scan:ColorModes>\n            <scan:ColorMode>BlackAndWhite1</scan:ColorMode>\n            <scan:ColorMode>Grayscale8</scan:ColorMode>\n            <scan:ColorMode>RGB24</scan:ColorMode>\n          </scan:ColorModes>\n          <scan:ContentTypes>\n            <scan:ContentType>Photo</scan:ContentType>\n            <scan:ContentType>Text</scan:ContentType>\n            <scan:ContentType>TextAndPhoto</scan:ContentType>\n          </scan:ContentTypes>\n          <scan:DocumentFormats>\n            <pwg:DocumentFormat>application/pdf</pwg:DocumentFormat>\n            <pwg:DocumentFormat>image/jpeg</pwg:DocumentFormat>\n            <pwg:DocumentFormat>image/tiff</pwg:DocumentFormat>\n            <pwg:DocumentFormat>application/octet-stream</pwg:DocumentFormat>\n            <pwg:DocumentFormat>application/vnd.openxmlformats-officedocument.presentationml.presentation</pwg:DocumentFormat>\n            <pwg:DocumentFormat>application/vnd.openxmlformats-officedocument.wordprocessingml.document</pwg:DocumentFormat>\n            <scan:DocumentFormatExt>application/pdf</scan:DocumentFormatExt>\n            <scan:DocumentFormatExt>image/jpeg</scan:DocumentFormatExt>\n            <scan:DocumentFormatExt>image/tiff</scan:DocumentFormatExt>\n            <scan:DocumentFormatExt>application/octet-stream</scan:DocumentFormatExt>\n            <scan:DocumentFormatExt>application/oxps</scan:DocumentFormatExt>\n            <scan:DocumentFormatExt>application/vnd.openxmlformats-officedocument.presentationml.presentation</scan:DocumentFormatExt>\n            <scan:DocumentFormatExt>application/vnd.openxmlformats-officedocument.wordprocessingml.document</scan:DocumentFormatExt>\n          </scan:DocumentFormats>\n          <scan:SupportedResolutions>\n            <scan:DiscreteResolutions>\n              <scan:DiscreteResolution>\n                <scan:XResolution>100</scan:XResolution>\n                <scan:YResolution>100</scan:YResolution>\n              </scan:DiscreteResolution>\n              <scan:DiscreteResolution>\n                <scan:XResolution>200</scan:XResolution>\n                <scan:YResolution>200</scan:YResolution>\n              </scan:DiscreteResolution>\n              <scan:DiscreteResolution>\n                <scan:XResolution>300</scan:XResolution>\n                <scan:YResolution>300</scan:YResolution>\n              </scan:DiscreteResolution>\n              <scan:DiscreteResolution>\n                <scan:XResolution>400</scan:XResolution>\n                <scan:YResolution>400</scan:YResolution>\n              </scan:DiscreteResolution>\n              <scan:DiscreteResolution>\n                <scan:XResolution>600</scan:XResolution>\n                <scan:YResolution>600</scan:YResolution>\n              </scan:DiscreteResolution>\n            </scan:DiscreteResolutions>\n          </scan:SupportedResolutions>\n          <scan:ColorSpaces>\n            <scan:ColorSpace>sRGB</scan:ColorSpace>\n          </scan:ColorSpaces>\n          <scan:CcdChannels>\n            <scan:CcdChannel>Red</scan:CcdChannel>\n            <scan:CcdChannel>Green</scan:CcdChannel>\n            <scan:CcdChannel>Blue</scan:CcdChannel>\n          </scan:CcdChannels>\n          <scan:BinaryRenderings>\n            <scan:BinaryRendering>Threshold</scan:BinaryRendering>\n          </scan:BinaryRenderings>\n        </scan:SettingProfile>\n      </scan:SettingProfiles>\n      <scan:SupportedIntents>\n        <scan:Intent>Document</scan:Intent>\n        <scan:Intent>TextAndGraphic</scan:Intent>\n        <scan:Intent>Photo</scan:Intent>\n      </scan:SupportedIntents>\n      <scan:EdgeAutoDetection>\n        <scan:SupportedEdge>TopEdge</scan:SupportedEdge>\n        <scan:SupportedEdge>LeftEdge</scan:SupportedEdge>\n      </scan:EdgeAutoDetection>\n      <scan:FeedDirections>\n        <scan:FeedDirection>LongEdgeFeed</scan:FeedDirection>\n        <scan:FeedDirection>ShortEdgeFeed</scan:FeedDirection>\n      </scan:FeedDirections>\n      <scan:SupportedMediaTypes>\n        <scan:MediaType>White</scan:MediaType>\n      </scan:SupportedMediaTypes>\n    </scan:AdfSimplexInputCaps>\n    <scan:AdfDuplexInputCaps>\n      <scan:MinWidth>1748</scan:MinWidth>\n      <scan:MaxWidth>3508</scan:MaxWidth>\n      <scan:MinHeight>1748</scan:MinHeight>\n      <scan:MaxHeight>5100</scan:MaxHeight>\n      <scan:MaxXOffset>0</scan:MaxXOffset>\n      <scan:MaxYOffset>0</scan:MaxYOffset>\n      <scan:MaxScanRegions>2</scan:MaxScanRegions>\n      <scan:MaxOpticalXResolution>600</scan:MaxOpticalXResolution>\n      <scan:MaxOpticalYResolution>600</scan:MaxOpticalYResolution>\n      <scan:MaxPhysicalWidth>3508</scan:MaxPhysicalWidth>\n      <scan:MaxPhysicalHeight>5100</scan:MaxPhysicalHeight>\n      <scan:SettingProfiles>\n        <scan:SettingProfile>\n          <scan:ColorModes>\n            <scan:ColorMode>BlackAndWhite1</scan:ColorMode>\n            <scan:ColorMode>Grayscale8</scan:ColorMode>\n            <scan:ColorMode>RGB24</scan:ColorMode>\n          </scan:ColorModes>\n          <scan:ContentTypes>\n            <scan:ContentType>Photo</scan:ContentType>\n            <scan:ContentType>Text</scan:ContentType>\n            <scan:ContentType>TextAndPhoto</scan:ContentType>\n          </scan:ContentTypes>\n          <scan:DocumentFormats>\n            <pwg:DocumentFormat>application/pdf</pwg:DocumentFormat>\n            <pwg:DocumentFormat>image/jpeg</pwg:DocumentFormat>\n            <pwg:DocumentFormat>image/tiff</pwg:DocumentFormat>\n            <pwg:DocumentFormat>application/octet-stream</pwg:DocumentFormat>\n            <pwg:DocumentFormat>application/vnd.openxmlformats-officedocument.presentationml.presentation</pwg:DocumentFormat>\n            <pwg:DocumentFormat>application/vnd.openxmlformats-officedocument.wordprocessingml.document</pwg:DocumentFormat>\n            <scan:DocumentFormatExt>application/pdf</scan:DocumentFormatExt>\n            <scan:DocumentFormatExt>image/jpeg</scan:DocumentFormatExt>\n            <scan:DocumentFormatExt>image/tiff</scan:DocumentFormatExt>\n            <scan:DocumentFormatExt>application/octet-stream</scan:DocumentFormatExt>\n            <scan:DocumentFormatExt>application/oxps</scan:DocumentFormatExt>\n            <scan:DocumentFormatExt>application/vnd.openxmlformats-officedocument.presentationml.presentation</scan:DocumentFormatExt>\n            <scan:DocumentFormatExt>application/vnd.openxmlformats-officedocument.wordprocessingml.document</scan:DocumentFormatExt>\n          </scan:DocumentFormats>\n          <scan:SupportedResolutions>\n            <scan:DiscreteResolutions>\n              <scan:DiscreteResolution>\n                <scan:XResolution>100</scan:XResolution>\n                <scan:YResolution>100</scan:YResolution>\n              </scan:DiscreteResolution>\n              <scan:DiscreteResolution>\n                <scan:XResolution>200</scan:XResolution>\n                <scan:YResolution>200</scan:YResolution>\n              </scan:DiscreteResolution>\n              <scan:DiscreteResolution>\n                <scan:XResolution>300</scan:XResolution>\n                <scan:YResolution>300</scan:YResolution>\n              </scan:DiscreteResolution>\n              <scan:DiscreteResolution>\n                <scan:XResolution>400</scan:XResolution>\n                <scan:YResolution>400</scan:YResolution>\n              </scan:DiscreteResolution>\n              <scan:DiscreteResolution>\n                <scan:XResolution>600</scan:XResolution>\n                <scan:YResolution>600</scan:YResolution>\n              </scan:DiscreteResolution>\n            </scan:DiscreteResolutions>\n          </scan:SupportedResolutions>\n          <scan:ColorSpaces>\n            <scan:ColorSpace>sRGB</scan:ColorSpace>\n          </scan:ColorSpaces>\n          <scan:CcdChannels>\n            <scan:CcdChannel>Red</scan:CcdChannel>\n            <scan:CcdChannel>Green</scan:CcdChannel>\n            <scan:CcdChannel>Blue</scan:CcdChannel>\n          </scan:CcdChannels>\n          <scan:BinaryRenderings>\n            <scan:BinaryRendering>Threshold</scan:BinaryRendering>\n          </scan:BinaryRenderings>\n        </scan:SettingProfile>\n      </scan:SettingProfiles>\n      <scan:SupportedIntents>\n        <scan:Intent>Document</scan:Intent>\n        <scan:Intent>TextAndGraphic</scan:Intent>\n        <scan:Intent>Photo</scan:Intent>\n      </scan:SupportedIntents>\n      <scan:EdgeAutoDetection>\n        <scan:SupportedEdge>TopEdge</scan:SupportedEdge>\n        <scan:SupportedEdge>LeftEdge</scan:SupportedEdge>\n      </scan:EdgeAutoDetection>\n      <scan:FeedDirections>\n        <scan:FeedDirection>LongEdgeFeed</scan:FeedDirection>\n        <scan:FeedDirection>ShortEdgeFeed</scan:FeedDirection>\n      </scan:FeedDirections>\n      <scan:SupportedMediaTypes>\n        <scan:MediaType>White</scan:MediaType>\n      </scan:SupportedMediaTypes>\n    </scan:AdfDuplexInputCaps>\n    <scan:FeederCapacity>100</scan:FeederCapacity>\n    <scan:Justification>\n      <pwg:XImagePosition>Left</pwg:XImagePosition>\n      <pwg:YImagePosition>Center</pwg:YImagePosition>\n    </scan:Justification>\n    <scan:AdfOptions>\n      <scan:AdfOption>SelectSinglePage</scan:AdfOption>\n      <scan:AdfOption>Duplex</scan:AdfOption>\n    </scan:AdfOptions>\n  </scan:Adf>\n  <scan:BrightnessSupport>\n    <scan:Min>1</scan:Min>\n    <scan:Max>9</scan:Max>\n    <scan:Normal>5</scan:Normal>\n    <scan:Step>1</scan:Step>\n  </scan:BrightnessSupport>\n  <scan:SharpenSupport>\n    <scan:Min>1</scan:Min>\n    <scan:Max>7</scan:Max>\n    <scan:Normal>4</scan:Normal>\n    <scan:Step>1</scan:Step>\n  </scan:SharpenSupport>\n</scan:ScannerCapabilities>"
+    },
+    "saved_pages": {
+      "http://192.168.11.227:80/": {
+        "file": "192_168_11_227_http_80_index.html",
+        "status": 200,
+        "final_url": "http://192.168.11.227:80/"
+      },
+      "http://192.168.11.227:8000/": {
+        "file": "192_168_11_227_http_8000_index.html",
+        "status": 200,
+        "final_url": "http://192.168.11.227:8000/"
+      },
+      "https://192.168.11.227:443/": {
+        "file": "192_168_11_227_https_443_index.html",
+        "status": 404,
+        "final_url": "https://192.168.11.227:443/"
+      },
+      "https://192.168.11.227:8443/": {
+        "file": "192_168_11_227_https_8443_index.html",
+        "status": 404,
+        "final_url": "https://192.168.11.227:8443/"
+      }
+    }
+  },
+  {
+    "ip": "192.168.11.228",
+    "timestamp": "2026-04-01T13:37:51.238032",
+    "open_ports": [
+      21,
+      80,
+      139,
+      515,
+      631,
+      8080,
+      9100
+    ],
+    "brand_info": {
+      "ip": "192.168.11.228",
+      "brand": "ricoh",
+      "model": "unknown",
+      "web_title": "Web Image Monitor",
+      "server_header": "Web-Server/3.0",
+      "response_headers": {
+        "Date": "Wed, 01 Apr 2026 04:36:35 GMT",
+        "Server": "Web-Server/3.0",
+        "Content-Type": "text/html; charset=UTF-8",
+        "Content-Length": "627",
+        "Expires": "Wed, 01 Apr 2026 04:36:35 GMT",
+        "Pragma": "no-cache",
+        "Cache-Control": "no-cache",
+        "Set-Cookie": "cookieOnOffChecker=on; path=/",
+        "Connection": "Keep-Alive"
+      },
+      "final_url": "http://192.168.11.228:80/",
+      "status_code": 200
+    },
+    "endpoints": [
+      {
+        "name": "eSCL ScannerCapabilities",
+        "url": "http://192.168.11.228/eSCL/ScannerCapabilities",
+        "method": "GET",
+        "status": 200,
+        "content_type": "text/xml",
+        "content_length": 8950,
+        "headers": {
+          "Cache-Control": "no-cache",
+          "Connection": "Keep-Alive",
+          "Content-Type": "text/xml",
+          "Content-Length": "8950"
+        },
+        "body_preview": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<scan:ScannerCapabilities xmlns:pwg=\"http://www.pwg.org/schemas/2010/12/sm\" xmlns:scan=\"http://schemas.hp.com/imaging/escl/2011/05/03\">\n <pwg:Version>2.5</pwg:Version>\n <pwg:MakeAndModel>Sindoh D430</pwg:MakeAndModel>\n <pwg:SerialNumber>3017R700026</pwg:SerialNumber>\n <scan:Platen>\n  <scan:PlatenInputCaps>\n   <scan:MinWidth>118</scan:MinWidth>\n   <scan:MaxWidth>3507</scan:MaxWidth>\n   <scan:MinHeight>118</scan:MinHeight>\n   <scan:MaxHeight>5102</scan:MaxHeight>\n   <scan:MaxScanRegions>1</scan:MaxScanRegions>\n   <scan:SettingProfiles>\n    <scan:SettingProfile>\n     <scan:ColorModes>\n      <scan:ColorMode>BlackAndWhite1</scan:ColorMode>\n      <scan:ColorMode>Grayscale8</scan:ColorMode>\n      <scan:ColorMode>RGB24</scan:ColorMode>\n     </scan:ColorModes>\n     <scan:DocumentFormats>\n      <pwg:DocumentFormat>application/pdf</pwg:DocumentFormat>\n      <pwg:DocumentFormat>image/jpeg</pwg:DocumentFormat>\n      <pwg:DocumentFormat>image/tiff</pwg:DocumentFormat>\n      <scan:DocumentFormatExt>application/pdf</scan:DocumentFormatExt>\n      <scan:DocumentFormatExt>image/jpeg</scan:DocumentFormatExt>\n      <scan:DocumentFormatExt>image/tiff</scan:DocumentFormatExt>\n     </scan:DocumentFormats>\n     <scan:SupportedResolutions>\n      <scan:DiscreteResolutions>\n       <scan:DiscreteResolution>\n        <scan:XResolution>100</scan:XResolution>\n        <scan:YResolution>100</scan:YResolution>\n       </scan:DiscreteResolution>\n       <scan:DiscreteResolution>\n        <scan:XResolution>200</scan:XResolution>\n        <scan:YResolution>200</scan:YResolution>\n       </scan:DiscreteResolution>\n       <scan:DiscreteResolution>\n        <scan:XResolution>300</scan:XResolution>\n        <scan:YResolution>300</scan:YResolution>\n       </scan:DiscreteResolution>\n       <scan:DiscreteResolution>\n        <scan:XResolution>400</scan:XResolution>\n        <scan:YResolution>400</scan:YResolution>\n       </scan:DiscreteResolution>\n       <scan:DiscreteResolution>\n        <scan:XResolution>600</scan:XResolution>\n        <scan:YResolution>600</scan:YResolution>\n       </scan:DiscreteResolution>\n      </scan:DiscreteResolutions>\n     </scan:SupportedResolutions>\n    </scan:SettingProfile>\n   </scan:SettingProfiles>\n   <scan:SupportedIntents>\n    <scan:Intent>Document</scan:Intent>\n    <scan:Intent>TextAndGraphic</scan:Intent>\n    <scan:Intent>Photo</scan:Intent>\n    <scan:Intent>Preview</scan:Intent>\n   </scan:SupportedIntents>\n   <scan:EdgeAutoDetection>\n    <scan:SupportedEdge>LeftEdge</scan:SupportedEdge>\n    <scan:SupportedEdge>BottomEdge</scan:SupportedEdge>\n   </scan:EdgeAutoDetection>\n   <scan:MaxOpticalXResolution>600</scan:MaxOpticalXResolution>\n   <scan:MaxOpticalYResolution>600</scan:MaxOpticalYResolution>\n   <scan:RiskyLeftMargin>0</scan:RiskyLeftMargin>\n   <scan:RiskyRightMargin>0</scan:RiskyRightMargin>\n   <scan:RiskyTopMargin>0</scan:RiskyTopMargin>\n   <scan:RiskyBottomMargin>0</scan:RiskyBottomMargin>\n   <scan:MaxPhysicalWidth>3507</scan:MaxPhysicalWidth>\n   <scan:MaxPhysicalHeight>5102</scan:MaxPhysicalHeight>\n  </scan:PlatenInputCaps>\n </scan:Platen>\n <scan:Adf>\n  <scan:AdfSimplexInputCaps>\n   <scan:MinWidth>118</scan:MinWidth>\n   <scan:MaxWidth>3507</scan:MaxWidth>\n   <scan:MinHeight>118</scan:MinHeight>\n   <scan:MaxHeight>5102</scan:MaxHeight>\n   <scan:MaxScanRegions>1</scan:MaxScanRegions>\n   <scan:SettingProfiles>\n    <scan:SettingProfile>\n     <scan:ColorModes>\n      <scan:ColorMode>BlackAndWhite1</scan:ColorMode>\n      <scan:ColorMode>Grayscale8</scan:ColorMode>\n      <scan:ColorMode>RGB24</scan:ColorMode>\n     </scan:ColorModes>\n     <scan:DocumentFormats>\n      <pwg:DocumentFormat>application/pdf</pwg:DocumentFormat>\n      <pwg:DocumentFormat>image/jpeg</pwg:DocumentFormat>\n      <pwg:DocumentFormat>image/tiff</pwg:DocumentFormat>\n      <scan:DocumentFormatExt>application/pdf</scan:DocumentFormatExt>\n      <scan:DocumentFormatExt>image/jpeg</scan:DocumentFormatExt>\n      <scan:DocumentFormatExt>image/tiff</scan:DocumentFormatExt>\n     </scan:DocumentFormats>\n     <scan:SupportedResolutions>\n      <scan:DiscreteResolutions>\n       <scan:DiscreteResolution>\n        <scan:XResolution>100</scan:XResolution>\n        <scan:YResolution>100</scan:YResolution>\n       </scan:DiscreteResolution>\n       <scan:DiscreteResolution>\n        <scan:XResolution>200</scan:XResolution>\n        <scan:YResolution>200</scan:YResolution>\n       </scan:DiscreteResolution>\n       <scan:DiscreteResolution>\n        <scan:XResolution>300</scan:XResolution>\n        <scan:YResolution>300</scan:YResolution>\n       </scan:DiscreteResolution>\n       <scan:DiscreteResolution>\n        <scan:XResolution>400</scan:XResolution>\n        <scan:YResolution>400</scan:YResolution>\n       </scan:DiscreteResolution>\n       <scan:DiscreteResolution>\n        <scan:XResolution>600</scan:XResolution>\n        <scan:YResolution>600</scan:YResolution>\n       </scan:DiscreteResolution>\n      </scan:DiscreteResolutions>\n     </scan:Suppor"
+      },
+      {
+        "name": "eSCL ScannerStatus",
+        "url": "http://192.168.11.228/eSCL/ScannerStatus",
+        "method": "GET",
+        "status": 200,
+        "content_type": "text/xml",
+        "content_length": 355,
+        "headers": {
+          "Cache-Control": "no-cache",
+          "Connection": "Keep-Alive",
+          "Content-Type": "text/xml",
+          "Content-Length": "355"
+        },
+        "body_preview": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<scan:ScannerStatus xmlns:pwg=\"http://www.pwg.org/schemas/2010/12/sm\" xmlns:scan=\"http://schemas.hp.com/imaging/escl/2011/05/03\">\n <pwg:Version>2.5</pwg:Version>\n <pwg:State>Idle</pwg:State>\n <pwg:StateReasons>AttentionRequired</pwg:StateReasons>\n <scan:AdfState>ScannerAdfEmpty</scan:AdfState>\n</scan:ScannerStatus>"
+      },
+      {
+        "name": "WSD Metadata",
+        "url": "http://192.168.11.228/wsd",
+        "method": "GET",
+        "status": 404,
+        "content_type": "text/html",
+        "content_length": 89,
+        "headers": {
+          "Connection": "close",
+          "Content-Type": "text/html",
+          "Content-Length": "89",
+          "Server": "Web-Server/3.0"
+        }
+      },
+      {
+        "name": "WSD Metadata",
+        "url": "https://192.168.11.228/wsd",
+        "method": "GET",
+        "status": "ERROR",
+        "error": "HTTPSConnectionPool(host='192.168.11.228', port=443): Max retries exceeded with url: /wsd (Caused by NewConnectionError(\"HTTPSConnection(host='192.168.11.228', port=443): Failed to establish a new connection: [WinError 10061] 대상 컴퓨터에서 연결을 거부했으므로 연결하지 못했습니다\"))"
+      },
+      {
+        "name": "Ricoh REST API root",
+        "url": "http://192.168.11.228/rws/service-api/",
+        "method": "GET",
+        "status": 404,
+        "content_type": "application/json; charset=utf-8",
+        "content_length": 62,
+        "headers": {
+          "Date": "Wed, 01 Apr 2026 04:36:37 GMT",
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json; charset=utf-8",
+          "Content-Length": "62",
+          "Set-Cookie": "cookieOnOffChecker=on; path=/",
+          "Connection": "Keep-Alive"
+        }
+      },
+      {
+        "name": "Ricoh REST API root",
+        "url": "https://192.168.11.228/rws/service-api/",
+        "method": "GET",
+        "status": "ERROR",
+        "error": "HTTPSConnectionPool(host='192.168.11.228', port=443): Max retries exceeded with url: /rws/service-api/ (Caused by NewConnectionError(\"HTTPSConnection(host='192.168.11.228', port=443): Failed to establish a new connection: [WinError 10061] 대상 컴퓨터에서 연결을 거부했으므로 연결하지 못했습니다\"))"
+      },
+      {
+        "name": "Ricoh Documents API",
+        "url": "http://192.168.11.228/rws/service-api/documents",
+        "method": "GET",
+        "status": 404,
+        "content_type": "application/json; charset=utf-8",
+        "content_length": 62,
+        "headers": {
+          "Date": "Wed, 01 Apr 2026 04:36:39 GMT",
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json; charset=utf-8",
+          "Content-Length": "62",
+          "Set-Cookie": "cookieOnOffChecker=on; path=/",
+          "Connection": "Keep-Alive"
+        }
+      },
+      {
+        "name": "Ricoh Documents API",
+        "url": "https://192.168.11.228/rws/service-api/documents",
+        "method": "GET",
+        "status": "ERROR",
+        "error": "HTTPSConnectionPool(host='192.168.11.228', port=443): Max retries exceeded with url: /rws/service-api/documents (Caused by NewConnectionError(\"HTTPSConnection(host='192.168.11.228', port=443): Failed to establish a new connection: [WinError 10061] 대상 컴퓨터에서 연결을 거부했으므로 연결하지 못했습니다\"))"
+      },
+      {
+        "name": "Ricoh AddressBook API",
+        "url": "http://192.168.11.228/rws/service-api/addressbook/entries",
+        "method": "GET",
+        "status": 404,
+        "content_type": "application/json; charset=utf-8",
+        "content_length": 62,
+        "headers": {
+          "Date": "Wed, 01 Apr 2026 04:36:42 GMT",
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json; charset=utf-8",
+          "Content-Length": "62",
+          "Set-Cookie": "cookieOnOffChecker=on; path=/",
+          "Connection": "Keep-Alive"
+        }
+      },
+      {
+        "name": "Ricoh AddressBook API",
+        "url": "https://192.168.11.228/rws/service-api/addressbook/entries",
+        "method": "GET",
+        "status": "ERROR",
+        "error": "HTTPSConnectionPool(host='192.168.11.228', port=443): Max retries exceeded with url: /rws/service-api/addressbook/entries (Caused by NewConnectionError(\"HTTPSConnection(host='192.168.11.228', port=443): Failed to establish a new connection: [WinError 10061] 대상 컴퓨터에서 연결을 거부했으므로 연결하지 못했습니다\"))"
+      },
+      {
+        "name": "Ricoh Scanner API",
+        "url": "http://192.168.11.228/rws/service-api/scanner",
+        "method": "GET",
+        "status": 404,
+        "content_type": "application/json; charset=utf-8",
+        "content_length": 62,
+        "headers": {
+          "Date": "Wed, 01 Apr 2026 04:36:44 GMT",
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json; charset=utf-8",
+          "Content-Length": "62",
+          "Set-Cookie": "cookieOnOffChecker=on; path=/",
+          "Connection": "Keep-Alive"
+        }
+      },
+      {
+        "name": "Ricoh Scanner API",
+        "url": "https://192.168.11.228/rws/service-api/scanner",
+        "method": "GET",
+        "status": "ERROR",
+        "error": "HTTPSConnectionPool(host='192.168.11.228', port=443): Max retries exceeded with url: /rws/service-api/scanner (Caused by NewConnectionError(\"HTTPSConnection(host='192.168.11.228', port=443): Failed to establish a new connection: [WinError 10061] 대상 컴퓨터에서 연결을 거부했으므로 연결하지 못했습니다\"))"
+      },
+      {
+        "name": "Ricoh DeviceInfo API",
+        "url": "http://192.168.11.228/rws/service-api/device",
+        "method": "GET",
+        "status": 404,
+        "content_type": "application/json; charset=utf-8",
+        "content_length": 62,
+        "headers": {
+          "Date": "Wed, 01 Apr 2026 04:36:46 GMT",
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json; charset=utf-8",
+          "Content-Length": "62",
+          "Set-Cookie": "cookieOnOffChecker=on; path=/",
+          "Connection": "Keep-Alive"
+        }
+      },
+      {
+        "name": "Ricoh DeviceInfo API",
+        "url": "https://192.168.11.228/rws/service-api/device",
+        "method": "GET",
+        "status": "ERROR",
+        "error": "HTTPSConnectionPool(host='192.168.11.228', port=443): Max retries exceeded with url: /rws/service-api/device (Caused by NewConnectionError(\"HTTPSConnection(host='192.168.11.228', port=443): Failed to establish a new connection: [WinError 10061] 대상 컴퓨터에서 연결을 거부했으므로 연결하지 못했습니다\"))"
+      },
+      {
+        "name": "Ricoh Login CGI",
+        "url": "http://192.168.11.228/web/guest/en/websys/webArch/login.cgi",
+        "method": "GET",
+        "status": 500,
+        "content_type": "text/html; charset=UTF-8",
+        "content_length": 113,
+        "headers": {
+          "Date": "Wed, 01 Apr 2026 04:36:48 GMT",
+          "Server": "Web-Server/3.0",
+          "Content-Type": "text/html; charset=UTF-8",
+          "Content-Length": "113",
+          "Expires": "Wed, 01 Apr 2026 04:36:48 GMT",
+          "Pragma": "no-cache",
+          "Cache-Control": "no-cache",
+          "Set-Cookie": "cookieOnOffChecker=on; path=/",
+          "Connection": "Keep-Alive"
+        }
+      },
+      {
+        "name": "Ricoh Login CGI",
+        "url": "https://192.168.11.228/web/guest/en/websys/webArch/login.cgi",
+        "method": "GET",
+        "status": "ERROR",
+        "error": "HTTPSConnectionPool(host='192.168.11.228', port=443): Max retries exceeded with url: /web/guest/en/websys/webArch/login.cgi (Caused by NewConnectionError(\"HTTPSConnection(host='192.168.11.228', port=443): Failed to establish a new connection: [WinError 10061] 대상 컴퓨터에서 연결을 거부했으므로 연결하지 못했습니다\"))"
+      },
+      {
+        "name": "Ricoh Document Server",
+        "url": "http://192.168.11.228/DRS/document/list",
+        "method": "GET",
+        "status": 404,
+        "content_type": "text/html",
+        "content_length": 89,
+        "headers": {
+          "Connection": "close",
+          "Content-Type": "text/html",
+          "Content-Length": "89",
+          "Server": "Web-Server/3.0"
+        }
+      },
+      {
+        "name": "Ricoh Document Server",
+        "url": "https://192.168.11.228/DRS/document/list",
+        "method": "GET",
+        "status": "ERROR",
+        "error": "HTTPSConnectionPool(host='192.168.11.228', port=443): Max retries exceeded with url: /DRS/document/list (Caused by NewConnectionError(\"HTTPSConnection(host='192.168.11.228', port=443): Failed to establish a new connection: [WinError 10061] 대상 컴퓨터에서 연결을 거부했으므로 연결하지 못했습니다\"))"
+      },
+      {
+        "name": "Ricoh Status",
+        "url": "http://192.168.11.228/web/guest/en/websys/status/getUnificationStatus.cgi",
+        "method": "GET",
+        "status": 404,
+        "content_type": "text/html",
+        "content_length": 89,
+        "headers": {
+          "Date": "Wed, 01 Apr 2026 04:36:52 GMT",
+          "Server": "Web-Server/3.0",
+          "Content-Type": "text/html",
+          "Content-Length": "89",
+          "Set-Cookie": "cookieOnOffChecker=on; path=/",
+          "Connection": "Keep-Alive"
+        }
+      },
+      {
+        "name": "Ricoh Status",
+        "url": "https://192.168.11.228/web/guest/en/websys/status/getUnificationStatus.cgi",
+        "method": "GET",
+        "status": "ERROR",
+        "error": "HTTPSConnectionPool(host='192.168.11.228', port=443): Max retries exceeded with url: /web/guest/en/websys/status/getUnificationStatus.cgi (Caused by NewConnectionError(\"HTTPSConnection(host='192.168.11.228', port=443): Failed to establish a new connection: [WinError 10061] 대상 컴퓨터에서 연결을 거부했으므로 연결하지 못했습니다\"))"
+      }
+    ],
+    "escl": {
+      "supported": true,
+      "url": "http://192.168.11.228/eSCL/ScannerCapabilities",
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<scan:ScannerCapabilities xmlns:pwg=\"http://www.pwg.org/schemas/2010/12/sm\" xmlns:scan=\"http://schemas.hp.com/imaging/escl/2011/05/03\">\n <pwg:Version>2.5</pwg:Version>\n <pwg:MakeAndModel>Sindoh D430</pwg:MakeAndModel>\n <pwg:SerialNumber>3017R700026</pwg:SerialNumber>\n <scan:Platen>\n  <scan:PlatenInputCaps>\n   <scan:MinWidth>118</scan:MinWidth>\n   <scan:MaxWidth>3507</scan:MaxWidth>\n   <scan:MinHeight>118</scan:MinHeight>\n   <scan:MaxHeight>5102</scan:MaxHeight>\n   <scan:MaxScanRegions>1</scan:MaxScanRegions>\n   <scan:SettingProfiles>\n    <scan:SettingProfile>\n     <scan:ColorModes>\n      <scan:ColorMode>BlackAndWhite1</scan:ColorMode>\n      <scan:ColorMode>Grayscale8</scan:ColorMode>\n      <scan:ColorMode>RGB24</scan:ColorMode>\n     </scan:ColorModes>\n     <scan:DocumentFormats>\n      <pwg:DocumentFormat>application/pdf</pwg:DocumentFormat>\n      <pwg:DocumentFormat>image/jpeg</pwg:DocumentFormat>\n      <pwg:DocumentFormat>image/tiff</pwg:DocumentFormat>\n      <scan:DocumentFormatExt>application/pdf</scan:DocumentFormatExt>\n      <scan:DocumentFormatExt>image/jpeg</scan:DocumentFormatExt>\n      <scan:DocumentFormatExt>image/tiff</scan:DocumentFormatExt>\n     </scan:DocumentFormats>\n     <scan:SupportedResolutions>\n      <scan:DiscreteResolutions>\n       <scan:DiscreteResolution>\n        <scan:XResolution>100</scan:XResolution>\n        <scan:YResolution>100</scan:YResolution>\n       </scan:DiscreteResolution>\n       <scan:DiscreteResolution>\n        <scan:XResolution>200</scan:XResolution>\n        <scan:YResolution>200</scan:YResolution>\n       </scan:DiscreteResolution>\n       <scan:DiscreteResolution>\n        <scan:XResolution>300</scan:XResolution>\n        <scan:YResolution>300</scan:YResolution>\n       </scan:DiscreteResolution>\n       <scan:DiscreteResolution>\n        <scan:XResolution>400</scan:XResolution>\n        <scan:YResolution>400</scan:YResolution>\n       </scan:DiscreteResolution>\n       <scan:DiscreteResolution>\n        <scan:XResolution>600</scan:XResolution>\n        <scan:YResolution>600</scan:YResolution>\n       </scan:DiscreteResolution>\n      </scan:DiscreteResolutions>\n     </scan:SupportedResolutions>\n    </scan:SettingProfile>\n   </scan:SettingProfiles>\n   <scan:SupportedIntents>\n    <scan:Intent>Document</scan:Intent>\n    <scan:Intent>TextAndGraphic</scan:Intent>\n    <scan:Intent>Photo</scan:Intent>\n    <scan:Intent>Preview</scan:Intent>\n   </scan:SupportedIntents>\n   <scan:EdgeAutoDetection>\n    <scan:SupportedEdge>LeftEdge</scan:SupportedEdge>\n    <scan:SupportedEdge>BottomEdge</scan:SupportedEdge>\n   </scan:EdgeAutoDetection>\n   <scan:MaxOpticalXResolution>600</scan:MaxOpticalXResolution>\n   <scan:MaxOpticalYResolution>600</scan:MaxOpticalYResolution>\n   <scan:RiskyLeftMargin>0</scan:RiskyLeftMargin>\n   <scan:RiskyRightMargin>0</scan:RiskyRightMargin>\n   <scan:RiskyTopMargin>0</scan:RiskyTopMargin>\n   <scan:RiskyBottomMargin>0</scan:RiskyBottomMargin>\n   <scan:MaxPhysicalWidth>3507</scan:MaxPhysicalWidth>\n   <scan:MaxPhysicalHeight>5102</scan:MaxPhysicalHeight>\n  </scan:PlatenInputCaps>\n </scan:Platen>\n <scan:Adf>\n  <scan:AdfSimplexInputCaps>\n   <scan:MinWidth>118</scan:MinWidth>\n   <scan:MaxWidth>3507</scan:MaxWidth>\n   <scan:MinHeight>118</scan:MinHeight>\n   <scan:MaxHeight>5102</scan:MaxHeight>\n   <scan:MaxScanRegions>1</scan:MaxScanRegions>\n   <scan:SettingProfiles>\n    <scan:SettingProfile>\n     <scan:ColorModes>\n      <scan:ColorMode>BlackAndWhite1</scan:ColorMode>\n      <scan:ColorMode>Grayscale8</scan:ColorMode>\n      <scan:ColorMode>RGB24</scan:ColorMode>\n     </scan:ColorModes>\n     <scan:DocumentFormats>\n      <pwg:DocumentFormat>application/pdf</pwg:DocumentFormat>\n      <pwg:DocumentFormat>image/jpeg</pwg:DocumentFormat>\n      <pwg:DocumentFormat>image/tiff</pwg:DocumentFormat>\n      <scan:DocumentFormatExt>application/pdf</scan:DocumentFormatExt>\n      <scan:DocumentFormatExt>image/jpeg</scan:DocumentFormatExt>\n      <scan:DocumentFormatExt>image/tiff</scan:DocumentFormatExt>\n     </scan:DocumentFormats>\n     <scan:SupportedResolutions>\n      <scan:DiscreteResolutions>\n       <scan:DiscreteResolution>\n        <scan:XResolution>100</scan:XResolution>\n        <scan:YResolution>100</scan:YResolution>\n       </scan:DiscreteResolution>\n       <scan:DiscreteResolution>\n        <scan:XResolution>200</scan:XResolution>\n        <scan:YResolution>200</scan:YResolution>\n       </scan:DiscreteResolution>\n       <scan:DiscreteResolution>\n        <scan:XResolution>300</scan:XResolution>\n        <scan:YResolution>300</scan:YResolution>\n       </scan:DiscreteResolution>\n       <scan:DiscreteResolution>\n        <scan:XResolution>400</scan:XResolution>\n        <scan:YResolution>400</scan:YResolution>\n       </scan:DiscreteResolution>\n       <scan:DiscreteResolution>\n        <scan:XResolution>600</scan:XResolution>\n        <scan:YResolution>600</scan:YResolution>\n       </scan:DiscreteResolution>\n      </scan:DiscreteResolutions>\n     </scan:SupportedResolutions>\n    </scan:SettingProfile>\n   </scan:SettingProfiles>\n   <scan:SupportedIntents>\n    <scan:Intent>Document</scan:Intent>\n    <scan:Intent>TextAndGraphic</scan:Intent>\n    <scan:Intent>Photo</scan:Intent>\n    <scan:Intent>Preview</scan:Intent>\n   </scan:SupportedIntents>\n   <scan:EdgeAutoDetection>\n    <scan:SupportedEdge>LeftEdge</scan:SupportedEdge>\n    <scan:SupportedEdge>BottomEdge</scan:SupportedEdge>\n   </scan:EdgeAutoDetection>\n   <scan:MaxOpticalXResolution>600</scan:MaxOpticalXResolution>\n   <scan:MaxOpticalYResolution>600</scan:MaxOpticalYResolution>\n   <scan:RiskyLeftMargin>0</scan:RiskyLeftMargin>\n   <scan:RiskyRightMargin>0</scan:RiskyRightMargin>\n   <scan:RiskyTopMargin>0</scan:RiskyTopMargin>\n   <scan:RiskyBottomMargin>0</scan:RiskyBottomMargin>\n   <scan:MaxPhysicalWidth>3507</scan:MaxPhysicalWidth>\n   <scan:MaxPhysicalHeight>5102</scan:MaxPhysicalHeight>\n  </scan:AdfSimplexInputCaps>\n  <scan:AdfDuplexInputCaps>\n   <scan:MinWidth>118</scan:MinWidth>\n   <scan:MaxWidth>3507</scan:MaxWidth>\n   <scan:MinHeight>118</scan:MinHeight>\n   <scan:MaxHeight>5102</scan:MaxHeight>\n   <scan:MaxScanRegions>1</scan:MaxScanRegions>\n   <scan:SettingProfiles>\n    <scan:SettingProfile>\n     <scan:ColorModes>\n      <scan:ColorMode>BlackAndWhite1</scan:ColorMode>\n      <scan:ColorMode>Grayscale8</scan:ColorMode>\n      <scan:ColorMode>RGB24</scan:ColorMode>\n     </scan:ColorModes>\n     <scan:DocumentFormats>\n      <pwg:DocumentFormat>application/pdf</pwg:DocumentFormat>\n      <pwg:DocumentFormat>image/jpeg</pwg:DocumentFormat>\n      <pwg:DocumentFormat>image/tiff</pwg:DocumentFormat>\n      <scan:DocumentFormatExt>application/pdf</scan:DocumentFormatExt>\n      <scan:DocumentFormatExt>image/jpeg</scan:DocumentFormatExt>\n      <scan:DocumentFormatExt>image/tiff</scan:DocumentFormatExt>\n     </scan:DocumentFormats>\n     <scan:SupportedResolutions>\n      <scan:DiscreteResolutions>\n       <scan:DiscreteResolution>\n        <scan:XResolution>100</scan:XResolution>\n        <scan:YResolution>100</scan:YResolution>\n       </scan:DiscreteResolution>\n       <scan:DiscreteResolution>\n        <scan:XResolution>200</scan:XResolution>\n        <scan:YResolution>200</scan:YResolution>\n       </scan:DiscreteResolution>\n       <scan:DiscreteResolution>\n        <scan:XResolution>300</scan:XResolution>\n        <scan:YResolution>300</scan:YResolution>\n       </scan:DiscreteResolution>\n       <scan:DiscreteResolution>\n        <scan:XResolution>400</scan:XResolution>\n        <scan:YResolution>400</scan:YResolution>\n       </scan:DiscreteResolution>\n       <scan:DiscreteResolution>\n        <scan:XResolution>600</scan:XResolution>\n        <scan:YResolution>600</scan:YResolution>\n       </scan:DiscreteResolution>\n      </scan:DiscreteResolutions>\n     </scan:SupportedResolutions>\n    </scan:SettingProfile>\n   </scan:SettingProfiles>\n   <scan:SupportedIntents>\n    <scan:Intent>Document</scan:Intent>\n    <scan:Intent>TextAndGraphic</scan:Intent>\n    <scan:Intent>Photo</scan:Intent>\n    <scan:Intent>Preview</scan:Intent>\n   </scan:SupportedIntents>\n   <scan:EdgeAutoDetection>\n    <scan:SupportedEdge>LeftEdge</scan:SupportedEdge>\n    <scan:SupportedEdge>BottomEdge</scan:SupportedEdge>\n   </scan:EdgeAutoDetection>\n   <scan:MaxOpticalXResolution>600</scan:MaxOpticalXResolution>\n   <scan:MaxOpticalYResolution>600</scan:MaxOpticalYResolution>\n   <scan:RiskyLeftMargin>0</scan:RiskyLeftMargin>\n   <scan:RiskyRightMargin>0</scan:RiskyRightMargin>\n   <scan:RiskyTopMargin>0</scan:RiskyTopMargin>\n   <scan:RiskyBottomMargin>0</scan:RiskyBottomMargin>\n   <scan:MaxPhysicalWidth>3507</scan:MaxPhysicalWidth>\n   <scan:MaxPhysicalHeight>5102</scan:MaxPhysicalHeight>\n  </scan:AdfDuplexInputCaps>\n  <scan:AdfOptions>\n   <scan:AdfOption>DetectPaperLoaded</scan:AdfOption>\n   <scan:AdfOption>SelectSinglePage</scan:AdfOption>\n   <scan:AdfOption>Duplex</scan:AdfOption>\n  </scan:AdfOptions>\n </scan:Adf>\n</scan:ScannerCapabilities>"
+    },
+    "saved_pages": {
+      "http://192.168.11.228:80/": {
+        "file": "192_168_11_228_http_80_index.html",
+        "status": 200,
+        "final_url": "http://192.168.11.228:80/"
+      }
+    }
+  },
+  {
+    "ip": "192.168.11.252",
+    "timestamp": "2026-04-01T13:38:15.101655",
+    "open_ports": [
+      80
+    ],
+    "brand_info": {
+      "ip": "192.168.11.252",
+      "brand": "unknown",
+      "model": "unknown",
+      "web_title": "IP Camera",
+      "server_header": "",
+      "response_headers": {
+        "Set-Cookie": "TRACKID=bc48ae0f3f3c66ba477936066cad11c4; HttpOnly, PHPSESSID=022339da2a64a507f2caffe7ea14242e; path=/; HttpOnly",
+        "Expires": "Thu, 19 Nov 1981 08:52:00 GMT",
+        "Cache-Control": "no-store, no-cache, must-revalidate, post-check=0, pre-check=0",
+        "Pragma": "no-cache",
+        "Content-type": "text/html; charset=UTF-8",
+        "X-Content-Type-Options": "nosniff",
+        "Content-Length": "5887",
+        "Date": "Wed, 01 Apr 2026 04:38:17 GMT"
+      },
+      "final_url": "http://192.168.11.252:80/",
+      "status_code": 200
+    },
+    "endpoints": [
+      {
+        "name": "eSCL ScannerCapabilities",
+        "url": "http://192.168.11.252/eSCL/ScannerCapabilities",
+        "method": "GET",
+        "status": 404,
+        "content_type": "text/html",
+        "content_length": 341,
+        "headers": {
+          "Content-Type": "text/html",
+          "X-Content-Type-Options": "nosniff",
+          "Content-Length": "341",
+          "Date": "Wed, 01 Apr 2026 04:38:17 GMT"
+        }
+      },
+      {
+        "name": "eSCL ScannerCapabilities",
+        "url": "https://192.168.11.252/eSCL/ScannerCapabilities",
+        "method": "GET",
+        "status": "ERROR",
+        "error": "HTTPSConnectionPool(host='192.168.11.252', port=443): Max retries exceeded with url: /eSCL/ScannerCapabilities (Caused by NewConnectionError(\"HTTPSConnection(host='192.168.11.252', port=443): Failed to establish a new connection: [WinError 10061] 대상 컴퓨터에서 연결을 거부했으므로 연결하지 못했습니다\"))"
+      },
+      {
+        "name": "eSCL ScannerStatus",
+        "url": "http://192.168.11.252/eSCL/ScannerStatus",
+        "method": "GET",
+        "status": 404,
+        "content_type": "text/html",
+        "content_length": 341,
+        "headers": {
+          "Content-Type": "text/html",
+          "X-Content-Type-Options": "nosniff",
+          "Content-Length": "341",
+          "Date": "Wed, 01 Apr 2026 04:38:19 GMT"
+        }
+      },
+      {
+        "name": "eSCL ScannerStatus",
+        "url": "https://192.168.11.252/eSCL/ScannerStatus",
+        "method": "GET",
+        "status": "ERROR",
+        "error": "HTTPSConnectionPool(host='192.168.11.252', port=443): Max retries exceeded with url: /eSCL/ScannerStatus (Caused by NewConnectionError(\"HTTPSConnection(host='192.168.11.252', port=443): Failed to establish a new connection: [WinError 10061] 대상 컴퓨터에서 연결을 거부했으므로 연결하지 못했습니다\"))"
+      },
+      {
+        "name": "WSD Metadata",
+        "url": "http://192.168.11.252/wsd",
+        "method": "GET",
+        "status": 404,
+        "content_type": "text/html",
+        "content_length": 341,
+        "headers": {
+          "Content-Type": "text/html",
+          "X-Content-Type-Options": "nosniff",
+          "Content-Length": "341",
+          "Date": "Wed, 01 Apr 2026 04:38:21 GMT"
+        }
+      },
+      {
+        "name": "WSD Metadata",
+        "url": "https://192.168.11.252/wsd",
+        "method": "GET",
+        "status": "ERROR",
+        "error": "HTTPSConnectionPool(host='192.168.11.252', port=443): Max retries exceeded with url: /wsd (Caused by NewConnectionError(\"HTTPSConnection(host='192.168.11.252', port=443): Failed to establish a new connection: [WinError 10061] 대상 컴퓨터에서 연결을 거부했으므로 연결하지 못했습니다\"))"
+      }
+    ],
+    "escl": {
+      "supported": false
+    },
+    "saved_pages": {
+      "http://192.168.11.252:80/": {
+        "file": "192_168_11_252_http_80_index.html",
+        "status": 200,
+        "final_url": "http://192.168.11.252:80/"
+      }
+    }
+  },
+  {
+    "ip": "192.168.11.254",
+    "timestamp": "2026-04-01T13:38:25.471676",
+    "open_ports": [
+      80
+    ],
+    "brand_info": {
+      "ip": "192.168.11.254",
+      "brand": "unknown",
+      "model": "unknown",
+      "web_title": "",
+      "server_header": "Httpd/1.0",
+      "response_headers": {
+        "Date": "Wed, 04 Mar 1970 02:00:03 GMT",
+        "Server": "Httpd/1.0",
+        "Connection": "Keep-Alive",
+        "Keep-Alive": "timeout=10, max=100",
+        "Content-Length": "112",
+        "Last-Modified": "Fri, 18 Oct 2024 09:34:40 GMT",
+        "Cache-Control": "no-cache",
+        "Content-Type": "text/html"
+      },
+      "final_url": "http://192.168.11.254:80/",
+      "status_code": 200
+    },
+    "endpoints": [
+      {
+        "name": "eSCL ScannerCapabilities",
+        "url": "http://192.168.11.254/eSCL/ScannerCapabilities",
+        "method": "GET",
+        "status": 404,
+        "content_type": "text/html; charset=utf-8",
+        "content_length": 4460,
+        "headers": {
+          "Date": "Wed, 04 Mar 1970 02:00:03 GMT",
+          "Server": "Httpd/1.0",
+          "Connection": "close",
+          "Content-Type": "text/html; charset=utf-8"
+        }
+      },
+      {
+        "name": "eSCL ScannerCapabilities",
+        "url": "https://192.168.11.254/eSCL/ScannerCapabilities",
+        "method": "GET",
+        "status": "ERROR",
+        "error": "HTTPSConnectionPool(host='192.168.11.254', port=443): Max retries exceeded with url: /eSCL/ScannerCapabilities (Caused by ConnectTimeoutError(<HTTPSConnection(host='192.168.11.254', port=443) at 0x18aa3e62e90>, 'Connection to 192.168.11.254 timed out. (connect timeout=5)'))"
+      },
+      {
+        "name": "eSCL ScannerStatus",
+        "url": "http://192.168.11.254/eSCL/ScannerStatus",
+        "method": "GET",
+        "status": 404,
+        "content_type": "text/html; charset=utf-8",
+        "content_length": 4460,
+        "headers": {
+          "Date": "Wed, 04 Mar 1970 02:00:08 GMT",
+          "Server": "Httpd/1.0",
+          "Connection": "close",
+          "Content-Type": "text/html; charset=utf-8"
+        }
+      },
+      {
+        "name": "eSCL ScannerStatus",
+        "url": "https://192.168.11.254/eSCL/ScannerStatus",
+        "method": "GET",
+        "status": "ERROR",
+        "error": "HTTPSConnectionPool(host='192.168.11.254', port=443): Max retries exceeded with url: /eSCL/ScannerStatus (Caused by ConnectTimeoutError(<HTTPSConnection(host='192.168.11.254', port=443) at 0x18aa3e63250>, 'Connection to 192.168.11.254 timed out. (connect timeout=5)'))"
+      },
+      {
+        "name": "WSD Metadata",
+        "url": "http://192.168.11.254/wsd",
+        "method": "GET",
+        "status": 404,
+        "content_type": "text/html; charset=utf-8",
+        "content_length": 4460,
+        "headers": {
+          "Date": "Wed, 04 Mar 1970 02:00:13 GMT",
+          "Server": "Httpd/1.0",
+          "Connection": "close",
+          "Content-Type": "text/html; charset=utf-8"
+        }
+      },
+      {
+        "name": "WSD Metadata",
+        "url": "https://192.168.11.254/wsd",
+        "method": "GET",
+        "status": "ERROR",
+        "error": "HTTPSConnectionPool(host='192.168.11.254', port=443): Max retries exceeded with url: /wsd (Caused by ConnectTimeoutError(<HTTPSConnection(host='192.168.11.254', port=443) at 0x18aa3e63610>, 'Connection to 192.168.11.254 timed out. (connect timeout=5)'))"
+      }
+    ],
+    "escl": {
+      "supported": false
+    },
+    "saved_pages": {
+      "http://192.168.11.254:80/": {
+        "file": "192_168_11_254_http_80_index.html",
+        "status": 200,
+        "final_url": "http://192.168.11.254:80/"
+      }
+    }
+  }
+]
