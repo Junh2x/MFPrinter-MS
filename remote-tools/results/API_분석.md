@@ -480,3 +480,497 @@ upgrade-insecure-requests
 1
 
 페이로드: CorePGTAG=24&AMOD=0&FromTopPage=1&Dummy=1775023968866
+
+
+## 수신지 등록 경로 
+1. 메인: http://192.168.11.227:8000/
+Request URL
+http://192.168.11.227:8000/
+Request Method
+GET
+Status Code
+200 OK
+Remote Address
+192.168.11.227:8000
+Referrer Policy
+strict-origin-when-cross-origin
+cache-control
+no-cache,no-store,max-age=0
+connection
+Keep-Alive
+content-encoding
+gzip
+content-length
+32389
+content-type
+text/html; charset=UTF-8
+date
+Wed, 1 Apr 2026 7:28:21 GMT
+expires
+Thu, 1 Jan 1970 0:0:0 GMT
+keep-alive
+timeout=30
+pragma
+No-cache
+server
+Catwalk
+x-frame-options
+SAMEORIGIN
+x-xss-protection
+1; mode=block
+accept
+text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+accept-encoding
+gzip, deflate
+accept-language
+ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7
+cache-control
+max-age=0
+connection
+keep-alive
+cookie
+portalLang=ko; sessionid=43ea476de0f32d3a09758ade3cd9d731; iR=1678673125
+host
+192.168.11.227:8000
+referer
+http://192.168.11.227:8000/rps/albody.cgi
+upgrade-insecure-requests
+1
+user-agent
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+
+2. 주소 리스트
+Request URL
+http://192.168.11.227:8000/rps/asublist.cgi?CorePGTAG=24&AMOD=0&FromTopPage=1&Dummy=1775028576900
+Request Method
+GET
+Status Code
+200 OK
+Remote Address
+192.168.11.227:8000
+Referrer Policy
+strict-origin-when-cross-origin
+cache-control
+no-cache,no-store,max-age=0
+connection
+Keep-Alive
+content-type
+text/html;charset=UTF-8
+date
+Wed, 01 Apr 2026 07:28:58 GMT
+expires
+Thu, 01 Jan 1970 00:00:00 GMT
+keep-alive
+timeout=30
+pragma
+no-cache
+server
+CANON HTTP Server
+transfer-encoding
+chunked
+x-content-type-options
+nosniff
+x-frame-options
+DENY
+x-xss-protection
+1; mode=block
+accept
+text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+accept-encoding
+gzip, deflate
+accept-language
+ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7
+connection
+keep-alive
+cookie
+portalLang=ko; sessionid=43ea476de0f32d3a09758ade3cd9d731; iR=1678673125
+host
+192.168.11.227:8000
+referer
+http://192.168.11.227:8000/rps/nativetop.cgi?RUIPNxBundle=&CorePGTAG=PGTAG_ADR_USR&Dummy=1775028537862
+upgrade-insecure-requests
+1
+user-agent
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+
+페이로드: CorePGTAG=24&AMOD=0&FromTopPage=1&Dummy=1775028576900
+
+3. 주소록 상세
+Request URL
+http://192.168.11.227:8000/rps/albody.cgi
+Request Method
+POST
+Status Code
+200 OK
+Remote Address
+192.168.11.227:8000
+Referrer Policy
+strict-origin-when-cross-origin
+cache-control
+no-cache,no-store,max-age=0
+connection
+Keep-Alive
+content-type
+text/html;charset=UTF-8
+date
+Wed, 01 Apr 2026 07:29:27 GMT
+expires
+Thu, 01 Jan 1970 00:00:00 GMT
+keep-alive
+timeout=30
+pragma
+no-cache
+server
+CANON HTTP Server
+transfer-encoding
+chunked
+x-content-type-options
+nosniff
+x-frame-options
+DENY
+x-xss-protection
+1; mode=block
+accept
+text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+accept-encoding
+gzip, deflate
+accept-language
+ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7
+cache-control
+max-age=0
+connection
+keep-alive
+content-length
+38
+content-type
+application/x-www-form-urlencoded
+cookie
+portalLang=ko; sessionid=43ea476de0f32d3a09758ade3cd9d731; iR=1678673125
+host
+192.168.11.227:8000
+origin
+http://192.168.11.227:8000
+referer
+http://192.168.11.227:8000/rps/alframe.cgi?
+upgrade-insecure-requests
+1
+user-agent
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+
+페이로드: AID=11&FILTER_ID=0&Dummy=1775028605347
+
+4. 신규 수신지 입력 폼 진입
+Request URL
+http://192.168.11.227:8000/rps/aprop.cgi?
+Request Method
+POST
+Status Code
+200 OK
+Remote Address
+192.168.11.227:8000
+Referrer Policy
+strict-origin-when-cross-origin
+cache-control
+no-cache,no-store,max-age=0
+connection
+Keep-Alive
+content-type
+text/html;charset=UTF-8
+date
+Wed, 01 Apr 2026 07:29:55 GMT
+expires
+Thu, 01 Jan 1970 00:00:00 GMT
+keep-alive
+timeout=30
+pragma
+no-cache
+server
+CANON HTTP Server
+transfer-encoding
+chunked
+x-content-type-options
+nosniff
+x-frame-options
+DENY
+x-xss-protection
+1; mode=block
+accept
+text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+accept-encoding
+gzip, deflate
+accept-language
+ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7
+cache-control
+max-age=0
+connection
+keep-alive
+content-length
+109
+content-type
+application/x-www-form-urlencoded
+cookie
+portalLang=ko; sessionid=43ea476de0f32d3a09758ade3cd9d731; iR=1678673125
+host
+192.168.11.227:8000
+origin
+http://192.168.11.227:8000
+referer
+http://192.168.11.227:8000/rps/albody.cgi
+upgrade-insecure-requests
+1
+user-agent
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+
+페이로드: AMOD=1&AID=11&AIDX=9&ACLS=2&AFION=1&AdrAction=.%2Falframe.cgi%3F&Dummy=1775028634062&Token=891904701222695061
+
+5. 파일 설정 페이지 진입
+Request URL
+http://192.168.11.227:8000/rps/aprop.cgi?
+Request Method
+POST
+Status Code
+200 OK
+Remote Address
+192.168.11.227:8000
+Referrer Policy
+strict-origin-when-cross-origin
+cache-control
+no-cache,no-store,max-age=0
+connection
+Keep-Alive
+content-type
+text/html;charset=UTF-8
+date
+Wed, 01 Apr 2026 07:30:34 GMT
+expires
+Thu, 01 Jan 1970 00:00:00 GMT
+keep-alive
+timeout=30
+pragma
+no-cache
+server
+CANON HTTP Server
+transfer-encoding
+chunked
+x-content-type-options
+nosniff
+x-frame-options
+DENY
+x-xss-protection
+1; mode=block
+accept
+text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+accept-encoding
+gzip, deflate
+accept-language
+ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7
+cache-control
+max-age=0
+connection
+keep-alive
+content-length
+175
+content-type
+application/x-www-form-urlencoded
+cookie
+portalLang=ko; sessionid=43ea476de0f32d3a09758ade3cd9d731; iR=1678673125
+host
+192.168.11.227:8000
+origin
+http://192.168.11.227:8000
+referer
+http://192.168.11.227:8000/rps/aprop.cgi?
+upgrade-insecure-requests
+1
+user-agent
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+페이로드:AID=11&PageFlag=&AIDX=9&ANAME=&ANAMEONE=&AREAD=&APNO=0&AAD1=&ACLS=7&DATADIV=&AdrAction=.%2Falframe.cgi%3F&AMOD=1&Dummy=1775028672331&AFCLS=&AFINT=&APNOL=&AFION=1&AUUID=&Token=
+
+6. 파일 설정 저장 클릭
+Request URL
+http://192.168.11.227:8000/rps/aprop.cgi
+Request Method
+POST
+Status Code
+200 OK
+Remote Address
+192.168.11.227:8000
+Referrer Policy
+strict-origin-when-cross-origin
+cache-control
+no-cache,no-store,max-age=0
+connection
+Keep-Alive
+content-type
+text/html;charset=UTF-8
+date
+Wed, 01 Apr 2026 07:31:06 GMT
+expires
+Thu, 01 Jan 1970 00:00:00 GMT
+keep-alive
+timeout=30
+pragma
+no-cache
+server
+CANON HTTP Server
+transfer-encoding
+chunked
+x-content-type-options
+nosniff
+x-frame-options
+DENY
+x-xss-protection
+1; mode=block
+accept
+text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+accept-encoding
+gzip, deflate
+accept-language
+ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7
+cache-control
+max-age=0
+connection
+keep-alive
+content-length
+280
+content-type
+application/x-www-form-urlencoded
+cookie
+portalLang=ko; sessionid=43ea476de0f32d3a09758ade3cd9d731; iR=1678673125
+host
+192.168.11.227:8000
+origin
+http://192.168.11.227:8000
+referer
+http://192.168.11.227:8000/rps/aprop.cgi?
+upgrade-insecure-requests
+1
+user-agent
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+페이로드: AID=11&PageFlag=a_rfn_f.tpl&AIDX=9&ANAME=test1&ANAMEONE=test1&AREAD=test1&APNO=0&AAD1=test1&ACLS=7&APRTCL=7&APATH=&AUSER=&INPUT_PSWD=0&APWORD=&PASSCHK=1&PASSCHK=&AdrAction=.%2Falframe.cgi%3F&AMOD=1&Dummy=1775028704946&AFCLS=&AFINT=&APNOL=&AFION=1&AUUID=&Token=35429592983609074253
+
+7. 폴더 설정 입력 및 저장
+Request URL
+http://192.168.11.227:8000/rps/aprop.cgi
+Request Method
+POST
+Status Code
+200 OK
+Remote Address
+192.168.11.227:8000
+Referrer Policy
+strict-origin-when-cross-origin
+cache-control
+no-cache,no-store,max-age=0
+connection
+Keep-Alive
+content-type
+text/html;charset=UTF-8
+date
+Wed, 01 Apr 2026 07:31:55 GMT
+expires
+Thu, 01 Jan 1970 00:00:00 GMT
+keep-alive
+timeout=30
+pragma
+no-cache
+server
+CANON HTTP Server
+transfer-encoding
+chunked
+x-content-type-options
+nosniff
+x-frame-options
+DENY
+x-xss-protection
+1; mode=block
+accept
+text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+accept-encoding
+gzip, deflate
+accept-language
+ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7
+cache-control
+max-age=0
+connection
+keep-alive
+content-length
+283
+content-type
+application/x-www-form-urlencoded
+cookie
+portalLang=ko; sessionid=43ea476de0f32d3a09758ade3cd9d731; iR=1678673125
+host
+192.168.11.227:8000
+origin
+http://192.168.11.227:8000
+referer
+http://192.168.11.227:8000/rps/aprop.cgi
+upgrade-insecure-requests
+1
+user-agent
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+페이로드: AID=11&PageFlag=&AIDX=9&ANAME=test1&ANAMEONE=test1&AREAD=test1&APNO=0&AAD1=test1&ACLS=7&APRTCL=7&APATH=test1&AUSER=test1&INPUT_PSWD=0&APWORD=1234&PASSCHK=1&PASSCHK=&AdrAction=.%2Falframe.cgi%3F&AMOD=1&Dummy=1775028753811&AFCLS=&AFINT=&APNOL=&AFION=1&AUUID=&Token=35429592983609074253
+
+8. 최종 제출
+Request URL
+http://192.168.11.227:8000/rps/anewadrs.cgi
+Request Method
+POST
+Status Code
+200 OK
+Remote Address
+192.168.11.227:8000
+Referrer Policy
+strict-origin-when-cross-origin
+cache-control
+no-cache,no-store,max-age=0
+connection
+Keep-Alive
+content-type
+text/html;charset=UTF-8
+date
+Wed, 01 Apr 2026 07:32:44 GMT
+expires
+Thu, 01 Jan 1970 00:00:00 GMT
+keep-alive
+timeout=30
+pragma
+no-cache
+server
+CANON HTTP Server
+transfer-encoding
+chunked
+x-content-type-options
+nosniff
+x-frame-options
+DENY
+x-xss-protection
+1; mode=block
+accept
+text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+accept-encoding
+gzip, deflate
+accept-language
+ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7
+cache-control
+max-age=0
+connection
+keep-alive
+content-length
+282
+content-type
+application/x-www-form-urlencoded
+cookie
+portalLang=ko; sessionid=43ea476de0f32d3a09758ade3cd9d731; iR=1678673125
+host
+192.168.11.227:8000
+origin
+http://192.168.11.227:8000
+referer
+http://192.168.11.227:8000/rps/aprop.cgi
+upgrade-insecure-requests
+1
+user-agent
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+페이로드: AID=11&PageFlag=&AIDX=9&ANAME=test1&ANAMEONE=test1&AREAD=test1&APNO=0&AAD1=test1&ACLS=7&APRTCL=7&APATH=test1&AUSER=test1&INPUT_PSWD=0&APWORD=1234&PASSCHK=1&PASSCHK=1&AdrAction=.%2Faprop.cgi%3F&AMOD=1&Dummy=1775028802328&AFCLS=&AFINT=&APNOL=&AFION=1&AUUID=&Token=23471282892252305869
