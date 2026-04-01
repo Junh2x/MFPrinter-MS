@@ -1,0 +1,19 @@
+{
+  "url": "http://192.168.11.227:8000/rps/anewadrs.cgi",
+  "status": 200,
+  "req_headers": {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0",
+    "Accept-Encoding": "gzip, deflate",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+    "Connection": "keep-alive",
+    "Origin": "http://192.168.11.227:8000",
+    "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
+    "Cache-Control": "max-age=0",
+    "Upgrade-Insecure-Requests": "1",
+    "Referer": "http://192.168.11.227:8000/rps/aprop.cgi?AMOD=1&AID=11&AIDX=7&ACLS=7&AFION=1&AdrAction=.%2Falframe.cgi%3F&Dummy=1775027845820&Token=15572520382643683313",
+    "Cookie": "sessionid=d697c687fdbb4ccacbfcff30256a7159; portalLang=ko; iR=2081752420",
+    "Content-Length": "315",
+    "Content-Type": "application/x-www-form-urlencoded"
+  },
+  "req_body": "AID=11&PageFlag=&AIDX=7&ANAME=JA_TEST_V3&ANAMEONE=JA_TEST_V3&AREAD=JA_TEST_V3&APNO=0&AAD1=192.168.11.99&ACLS=7&APRTCL=7&APATH=scan_test&AUSER=testuser&INPUT_PSWD=0&APWORD=testpass&PASSCHK=1&PASSCHK=1&AdrAction=.%2Faprop.cgi%3F&AMOD=1&Dummy=1775027848060&AFCLS=&AFINT=&APNOL=&AFION=1&AUUID=&Token=6302585581912385520"
+}

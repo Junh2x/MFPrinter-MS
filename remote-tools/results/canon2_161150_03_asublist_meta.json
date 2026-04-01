@@ -1,0 +1,32 @@
+{
+  "url": "http://192.168.11.227:8000/rps/asublist.cgi?CorePGTAG=24&AMOD=0&FromTopPage=1&Dummy=1775027510529",
+  "status": 200,
+  "method": "GET",
+  "req_headers": {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0",
+    "Accept-Encoding": "gzip, deflate, zstd",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Connection": "keep-alive",
+    "Origin": "http://192.168.11.227:8000",
+    "Accept-Language": "ko-KR,ko;q=0.9",
+    "Cache-Control": "max-age=0",
+    "Upgrade-Insecure-Requests": "1",
+    "Referer": "http://192.168.11.227:8000/rps/nativetop.cgi?CorePGTAG=PGTAG_ADR_USR",
+    "Cookie": "sessionid=184997f9a2e52b4e14f22327b3efb213; portalLang=ko; iR=4094833872"
+  },
+  "req_body": null,
+  "resp_headers": {
+    "Date": "Wed, 01 Apr 2026 07:11:12 GMT",
+    "Server": "CANON HTTP Server",
+    "X-Frame-Options": "DENY",
+    "X-Content-Type-Options": "nosniff",
+    "X-XSS-Protection": "1; mode=block",
+    "Content-Type": "text/html;charset=UTF-8",
+    "Pragma": "no-cache",
+    "Cache-Control": "no-cache,no-store,max-age=0",
+    "Expires": "Thu, 01 Jan 1970 00:00:00 GMT",
+    "Transfer-Encoding": "chunked",
+    "Connection": "Keep-Alive",
+    "Keep-Alive": "timeout=30"
+  }
+}

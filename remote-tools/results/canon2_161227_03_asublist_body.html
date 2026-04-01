@@ -1,0 +1,4956 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="ko " xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko ">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-script-type" content="text/javascript" />
+<meta http-equiv="content-style-type" content="text/css" />
+<meta http-equiv= "pragma" content="no-cache" />
+<meta http-equiv="cache-control" content="no-cache,no-store,max-age=0" />
+<meta http-equiv="expires" content="Thu, 01 Jan 1970 00:00:00 GMT" />
+<link rel="shortcut icon" type="image/x-icon" href="media/favicon.ico" />
+<link rel="stylesheet" type="text/css" media="all" href="css/common2.css" />
+<link rel="stylesheet" type="text/css" media="all" href="css/address.css" />
+<link rel="stylesheet" type="text/css" media="all" href="css/LanguageDependent/ko.css" />
+<link rel="stylesheet" type="text/css" media="all" href="css/empty.css" />
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+  CacheImage1 = new Image();
+  CacheImage2 = new Image();
+  CacheImage3 = new Image();
+  CacheImage4 = new Image();
+  CacheImage5 = new Image();
+  CacheImage6 = new Image();
+  CacheImage7 = new Image();
+  CacheImage8 = new Image();
+  CacheImage1.src = "media/navigation_bg_nu.gif";
+  CacheImage2.src = "media/navigation_bg_fc.png";
+  CacheImage3.src = "media/navigation_bg_su.png";
+  CacheImage4.src = "media/navigation_bg_selected.png";
+  CacheImage5.src = "media/listsubmenumark_ic2.gif";
+  CacheImage6.src = "media/command_bg_nu.gif";
+  CacheImage7.src = "media/command_bg_fc.gif";
+  CacheImage8.src = "media/command_bg_su.gif";
+//]]>
+</script>
+
+<title>리모트 UI : 주소 리스트 : iR-ADV&nbsp;C3720 : iR-ADV&nbsp;C3720</title>
+</head>
+<body>
+<form name="SUBMIT_FORM" action="" method="post" target="_self">
+<input type="hidden" name="AID" value="" />
+<input type="hidden" name="FILTER_ID" value="" />
+<input type="hidden" name="Dummy" value="1775027547749" />
+</form>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function getTopAdrsType()
+{
+var sendoff_email = "false";
+var has_send      = "true";
+var sendoff_ifax  = "false";
+var opt_ifax      = "true";
+var opt_fax       = "false";
+var opt_db        = "false";
+var sendoff_file  = "false";
+var airfax_clie   = "false";
+var send_myself     = "false";
+var send_myfolder   = "false";
+var HasAuth_Device  = "true";
+var HasAuth_Network = "true";
+var HasAuth_System  = "true";
+var HasMeapLogin   = "false";
+var email_send_limit  = ( "true" == send_myself && "true" == HasMeapLogin && "true" != HasAuth_System && "true" != HasAuth_Device && "true" != HasAuth_Network )
+? "true" : "false";
+var file_send_limit   = ( "true" == send_myfolder && "true" == HasMeapLogin && "true" != HasAuth_System && "true" != HasAuth_Device && "true" != HasAuth_Network )
+? "true" : "false";
+if( ( has_send == "true" ) && ( "false" == sendoff_email ) && ( "false" == email_send_limit ) )
+{
+return "2";
+}
+else if( (( has_send == "true" ) && ( opt_ifax == "true" )) && ( "false" == sendoff_ifax ) )
+{
+return "3";
+}
+else if( opt_fax == "true" || airfax_clie == "true")
+{
+return "4";
+}
+else if(( has_send == "true" ) && ( opt_db == "true" ))
+{
+return "6";
+}
+else if(( has_send == "true" ) && ( "false" == sendoff_file ) && ( "false" == file_send_limit ) )
+{
+return "7";
+}
+else
+{
+return;
+}
+}
+var max_12        = 12;
+var max_14        = 14;
+var max_16        = 16;
+var max_20        = 20;
+var max_24        = 24;
+    var max_32        = 32;
+var max_40        = 40;
+var max_120       = 120;
+var max_128       = 128;
+var max_255       = 255;
+var max_onetouch  = 200;
+function InitialPulldownShow()
+{
+var opt_jpn = "ko";
+if("ko" == opt_jpn)
+{
+document.write('<option value="0">모두 ');
+document.write('<option value="1">ㄱ ');
+document.write('<option value="2">ㄴㄷ ');
+document.write('<option value="3">ㄹㅁ ');
+document.write('<option value="4">ㅂ ');
+document.write('<option value="5">ㅅ ');
+document.write('<option value="6">ㅇ ');
+document.write('<option value="7">ㅈㅊㅋ ');
+document.write('<option value="8">ㅌㅍㅎ ');
+document.write('<option value="9">A-Z ');
+document.write('<option value="10">0-9 ');
+}
+else if("zh" == opt_jpn)
+{
+document.write('<option value="0">모두 ');
+document.write('<option value="1">ABC ');
+document.write('<option value="2">DEF ');
+document.write('<option value="3">GHI ');
+document.write('<option value="4">JKL ');
+document.write('<option value="5">MNO ');
+document.write('<option value="6">PQR ');
+document.write('<option value="7">STU ');
+document.write('<option value="8">V-Z ');
+document.write('<option value="9">영숫자 ');
+document.write('<option value="10">기타 ');
+}
+else if("tw" == opt_jpn)
+{
+document.write('<option value="0">모두 ');
+document.write('<option value="1">1-4 ');
+document.write('<option value="2">5-8 ');
+document.write('<option value="3">9-11 ');
+document.write('<option value="4">12-15 ');
+document.write('<option value="5">16-20 ');
+document.write('<option value="6">21-26 ');
+document.write('<option value="7">27-32 ');
+document.write('<option value="8">33+ ');
+document.write('<option value="9">A-Z ');
+document.write('<option value="10">0-9 ');
+}
+else
+{
+document.write('<option value="0">모두 ');
+document.write('<option value="1">ABC ');
+document.write('<option value="2">DEF ');
+document.write('<option value="3">GHI ');
+document.write('<option value="4">JKL ');
+document.write('<option value="5">MNO ');
+document.write('<option value="6">PQR ');
+document.write('<option value="7">STU ');
+document.write('<option value="8">VWX ');
+document.write('<option value="9">YZ ');
+document.write('<option value="10">기타 ');
+}
+}
+function FaxLineDataCtrl()
+{
+var PhyLineTbl_a = new Array
+(
+"",
+"",
+"",
+""
+);
+var LogLineTbl_a = new Array
+(
+"",
+"",
+"",
+""
+);
+var Object = new ComFuncFaxLineDataCtrl();
+for( var i = 0 ;
+ ( i < Object.GetDataSize() );
+ i++ )
+{
+var type_num = Object.GetTypeNum(i);
+if( 0 == type_num )
+{
+continue;
+}
+Object.SetObj( i, ( true == Object.IsPhycl(i) )
+? PhyLineTbl_a[ type_num-1 ]
+: LogLineTbl_a[ type_num-1 ] )
+}
+return Object;
+}
+var ComAdrs_ErrorMsgTBL =
+{
+18 : "리모트 주소록을 액세스 할 수 없습니다. ",
+19 : "리모트 주소록을 액세스 할 수 없습니다. "
+}
+var ComAdrs_IconMsgTBL =
+{
+1 :
+{ typeMsg : "그룹 ", icon : "ad_grp.gif"},
+2 :
+{ typeMsg : "이메일 ", icon : "ad_1.gif"},
+3 :
+{ typeMsg : "I-팩스 ", icon : "ad_2.gif"},
+4 :
+{ typeMsg : "팩스 ", icon : "ad_3.gif"},
+7 :
+{ typeMsg : "파일 ", icon : "ad_6.gif"},
+8 :
+{ typeMsg : "박스 ", icon : "ad_7.gif"},
+9 :
+{ typeMsg : "중연복사 리모트 디바이스 ", icon : "ad_rmt.gif"}
+}
+function Draw_AdrsList_Error()
+{
+if( adrsList.length < 1)
+{
+return ;
+}
+if( 'undefined' != typeof(adrsList[0].errCode) )
+{
+return ;
+}
+if( adrsList[0].errCode )
+{
+var ErrMsg = ComAdrs_ErrorMsgTBL[ adrsList[0].errCode ];
+if( !ErrMsg )
+{
+return;
+}
+document.write('<div class="MsgModule">');
+document.write('<div class="Glitch">');
+document.write('<img src="media/dialog_symbol_warn.gif" alt="" \/>');
+document.write('<p class="MainMessage">' + ErrMsg + '<\/p>');
+document.write('<\/div>');
+document.write('<\/div>');
+return ;
+}
+}
+function NumberZeroFill( num, width )
+{
+num += "";
+while( num.length < width )
+{
+num = "0" + num;
+}
+return num;
+}
+function AdrsUtil_GetBookName( AdrsBookID )
+{
+BookNameList =
+{
+1 : "주소 리스트 01",
+2 : "주소 리스트 02",
+3 : "주소 리스트 03",
+4 : "주소 리스트 04",
+5 : "주소 리스트 05",
+6 : "주소 리스트 06",
+7 : "주소 리스트 07",
+8 : "주소 리스트 08",
+9 : "주소 리스트 09",
+10 : "주소 리스트 10",
+11 : "주소 리스트 원터치",
+13 : "작업종료 통지용 주소 리스트",
+14 : "리모트 복사용 주소 리스트",
+15 : "개인 주소 리스트 ",
+12 : "관리자용 주소 리스트 "
+}
+if( BookNameList[ AdrsBookID ] )
+{
+return BookNameList[ AdrsBookID ];
+}
+else if((16 <= AdrsBookID) &&
+(AdrsBookID <= 65))
+{
+var groupId = AdrsBookID - 16 + 1;
+return "사용자 그룹 주소 리스트 " + NumberZeroFill( groupId, 2 );
+}
+else
+{
+return NumberZeroFill( AdrsBookID, 2 );
+}
+}
+function AdrsUtil_IsMyAddressPersonal( aid )
+{
+return (15 == parseIntEx(aid));
+}
+function AdrsUtil_IsMyAddressGroup( aid )
+{
+var val = parseIntEx( aid );
+return ((16 <= val) && (val <= 65));
+}
+function AdrsUtil_IsMyAddress( aid )
+{
+return (AdrsUtil_IsMyAddressPersonal(aid) || AdrsUtil_IsMyAddressGroup(aid));
+}
+function AdrsUtil_EditAddress( aid )
+{
+var ret = true;
+if( AdrsUtil_IsMyAddressPersonal( aid ) )
+{
+}
+else if( AdrsUtil_IsMyAddressGroup( aid ) )
+{
+ret = ( ("0" == "0") || 
+( ("1" == "0") && ("true" == "true") ) )
+}
+else
+{
+ret = ("0" == "0");
+}
+return ret;
+}
+function AdrsUtil_IsOneTouch( aidx, aid )
+{
+return ( (0 < aidx) && (aidx <= max_onetouch) && (!AdrsUtil_IsMyAddress(aid)) );
+}
+function AdrsUtil_EnableAccessNo( aidx, aid, code )
+{
+return(("true" == code && (aidx > max_onetouch || aidx == 0)) && (!AdrsUtil_IsMyAddress(aid)))
+}
+function AdrsUtil_AvailableBoxAddress( user_box, disp_ui_box, aid )
+{
+return ( "true" == user_box && "true" == disp_ui_box && !AdrsUtil_IsMyAddress(aid) && "false" == "true" );
+}
+function AdrsUtil_CheckFileUserName( protcol, username )
+{
+var ret = false;
+var ret_val;
+if( ( protcol == "6" || protcol == "8" ) &&
+  username == "" )
+{
+alert("사용자명이 등록되어 있지 않습니다. ");
+return ret ;
+}
+if (( "6" == protcol ) && ( "false" == ftpascii ))
+{
+ret_val = StringCheck(username, max_24, true, false, false);
+}
+else if( "7" == protcol )
+{
+ret_val = StringCheck(username, max_128, true, true, true);
+}
+else if ( "" == protcol )
+{
+ret_val = StringCheck(username, max_128, true, true, true);
+}
+else if ( "" == protcol )
+{
+ret_val = StringCheck(username, max_128, true, true, true);
+}
+else
+{
+ret_val = StringCheck(username, max_24, true, true, true);
+}
+if ( 0 == ret_val )
+{
+ret = true;
+ }
+return ret;
+}
+function add_address( AdrsEleString, AdrsNum )
+{
+var adrs_val_str = AdrsEleString;
+var adrs_val_arr = AdrsEleString.split(" ");
+var added = false;
+for ( var i = 0 ; i < adrs_val_arr.length ; i++ )
+{
+if ( "" != adrs_val_arr[i] && AdrsNum == adrs_val_arr[i])
+{
+added = true;
+break;
+}
+}
+if ( false == added )
+{
+if ( adrs_val_arr.length > 0 && "" != adrs_val_arr[adrs_val_arr.length - 1] )
+{
+adrs_val_str += ( " " );
+}
+adrs_val_str += ( AdrsNum + " " );
+}
+return adrs_val_str;
+}
+function remove_address( AdrsEleString, AdrsNum )
+{
+var adrs_val_str = "";
+var adrs_val_arr = AdrsEleString.split(" ");
+for ( var i = 0 ; i < adrs_val_arr.length ; i++ )
+{
+if ( "" != adrs_val_arr[i] && AdrsNum != adrs_val_arr[i] )
+{
+adrs_val_str += ( adrs_val_arr[i] + " " );
+}
+}
+return adrs_val_str;
+}
+//]]>
+</script>
+
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function ComMkup_RuiCommons()
+{
+var title  = "imageRUNNER ";
+if( "true" == "false" )
+{
+title = "imagePRESS Lite ";
+}
+else if( "true" == "false" )
+{
+title = "imagePRESS ";
+}
+else if( "true" == "true" )
+{
+title = "imageRUNNER ADVANCE DX ";
+}
+else if( "true" == "false" )
+{
+title  = "imageRUNNER ADVANCE ";
+}
+else if( "true" == "false" )
+{
+title = "Satera ";
+}
+else if( "true" == "false" )
+{
+title = "i-SENSYS ";
+}
+else if( "true" == "false" )
+{
+title = "i-SENSYS X ";
+}
+else if( "true" == "false" )
+{
+title = "Color imageCLASS X ";
+}
+else if( "true" == "false" )
+{
+title = "imageCLASS X ";
+}
+else if( "true" == "false" )
+{
+title = "imageCLASS ";
+}
+document.writeln('<div id="ruiCommons">');
+document.writeln('<div class="Wrapper">');
+document.writeln('<div id="commonBranding">');
+document.writeln('<h1 id="deviceLogo">');
+if( aapFromAirPrint() )
+{
+document.writeln('<img src="media/favicon.png" width="16" height="16" alt="" title="" \/>');
+document.writeln('<span>');
+document.writeln( title );
+document.writeln('<\/span>');
+}
+else
+{
+document.writeln('<a href="http://192.168.11.227:8000">');
+document.writeln('<img src="media/favicon.png" width="16" height="16" alt="" title="" \/>');
+document.writeln('<span>');
+document.writeln( title );
+document.writeln('<\/span>');
+document.writeln('<\/a>');
+}
+document.writeln('<\/h1>');
+document.writeln('<p id="deviceType">');
+document.writeln('<span class="Supplement">디바이스 종류 : <\/span>');
+document.writeln('<span id="deviceName">iR-ADV C3720 / iR-ADV C3720 /  <\/span>');
+document.writeln('<\/p>');
+document.writeln('<\/div>');
+document.writeln('<div id="commonTools">');
+document.writeln('<fieldset id="moveTools">');
+document.writeln('<legend>이동 <\/legend>');
+document.writeln('<p>');
+if( !aapFromAirPrint() )
+{
+document.writeln('<a href="http://192.168.11.227:8000"><span class="Name">포털로 <\/span><\/a>');
+}
+document.writeln('<\/p>');
+document.writeln('<\/fieldset>');
+if( "true" == "false" )
+{
+document.writeln('<fieldset id="authTools">');
+document.writeln('<legend>인증 <\/legend>');
+if( "false" == "false" )
+{
+document.writeln('<p id="loginUserData">');
+document.writeln('<span class="Supplement">로그인 사용자 : <\/span>');
+document.writeln('<span id="userName">----- <\/span>');
+document.writeln('<\/p>');
+document.writeln('<p>');
+}
+document.writeln('<a href="/logout"><span class="Name">로그아웃 <\/span><\/a>');
+document.writeln('<\/p>');
+document.writeln('<\/fieldset>');
+}
+document.writeln('<\/div>');
+document.writeln('<\/div>');
+document.writeln('<hr \/>');
+document.writeln('<\/div>');
+}
+function aapFromAirPrint()
+{
+return ("true" == "false");
+}
+function ComMkup_ApplicationBranding()
+{
+if( aapFromAirPrint() )
+{
+AirPrint_ApplicationBranding();
+}
+else
+{
+Legacy_ApplicationBranding();
+}
+}
+function AirPrint_ApplicationBranding()
+{
+document.writeln( '<div id="applicationBranding">' );
+document.writeln( '<div class="Wrapper">' );
+document.writeln( '<h1 id="applicationLogo"></h1>' );
+document.writeln( '</div>' );
+document.writeln( '</div>' );
+}
+function Legacy_ApplicationBranding()
+{
+var userModeIcon;
+if("true" == "true")
+{
+userModeIcon = "usermode_icon.png";
+}
+else
+{
+userModeIcon = "listgear_ic2.png";
+}
+var message_tbl =
+{
+9 : { media : "device_icon.png", msg : "상황확인/중지" },
+10 : { media : "device_icon.png", msg : "상황확인/중지" },
+11 : { media : "device_icon.png", msg : "상황확인/중지" },
+13 : { media : "device_icon.png", msg : "상황확인/중지" },
+12 : { media : "device_icon.png", msg : "상황확인/중지" },
+14 : { media : "device_icon.png", msg : "상황확인/중지" },
+45 : { media : "device_icon.png", msg : "상황확인/중지" },
+1 : { media : "device_icon.png", msg : "상황확인/중지" },
+2 : { media : "device_icon.png", msg : "상황확인/중지" },
+7 : { media : "device_icon.png", msg : "상황확인/중지" },
+8 : { media : "device_icon.png", msg : "상황확인/중지" },
+3 : { media : "device_icon.png", msg : "상황확인/중지" },
+4 : { media : "device_icon.png", msg : "상황확인/중지" },
+5 : { media : "device_icon.png", msg : "상황확인/중지" },
+6 : { media : "device_icon.png", msg : "상황확인/중지" },
+16 : { media : "box_icon.png", msg : "수신/저장 파일 이용" },
+17 : { media : "box_icon.png", msg : "수신/저장 파일 이용" },
+18 : { media : "box_icon.png", msg : "수신/저장 파일 이용" },
+19 : { media : "directprint_icon.png", msg : "다이렉트 인쇄" },
+20 : { media : "directprint_icon.png", msg : "다이렉트 인쇄" },
+21 : { media : "directprint_icon.png", msg : "다이렉트 인쇄" },
+22 : { media : "directprint_icon.png", msg : "다이렉트 인쇄" },
+23 : { media : "directprint_icon.png", msg : "다이렉트 인쇄" },
+24 : { media : "address_icon.png", msg : "주소록" },
+25 : { media : userModeIcon, msg : "설정/등록" },
+26 : { media : userModeIcon, msg : "설정/등록" },
+27 : { media : userModeIcon, msg : "설정/등록" },
+28 : { media : userModeIcon, msg : "설정/등록" },
+29 : { media : userModeIcon, msg : "설정/등록" },
+30 : { media : userModeIcon, msg : "설정/등록" },
+31 : { media : userModeIcon, msg : "설정/등록" },
+32 : { media : userModeIcon, msg : "설정/등록" },
+33 : { media : userModeIcon, msg : "설정/등록" },
+34 : { media : userModeIcon, msg : "설정/등록" },
+35 : { media : userModeIcon, msg : "설정/등록" },
+36 : { media : userModeIcon, msg : "설정/등록" },
+37 : { media : userModeIcon, msg : "설정/등록" },
+38 : { media : userModeIcon, msg : "설정/등록" },
+39 : { media : userModeIcon, msg : "설정/등록" },
+40 : { media : userModeIcon, msg : "설정/등록" },
+41 : { media : userModeIcon, msg : "설정/등록" },
+42 : { media : userModeIcon, msg : "설정/등록" },
+43 : { media : userModeIcon, msg : "설정/등록" },
+44 : { media : userModeIcon, msg : "설정/등록" }
+};
+if(( "false" == "true") || ("false" == "true"))
+{
+message_tbl[ 16 ] = { media : "box_fax_icon.png", msg : "팩스/I-팩스 박스" };
+message_tbl[ 17 ] = { media : "box_fax_icon.png", msg : "팩스/I-팩스 박스" };
+message_tbl[ 18 ] = { media : "box_fax_icon.png", msg : "팩스/I-팩스 박스" };
+}
+var target_tbl = message_tbl[ 24 ];
+document.writeln('<div id="applicationBranding">');
+document.writeln('<div class="Wrapper">');
+if( target_tbl )
+{
+document.write('<h1 id="applicationLogo">');
+document.write('<img src="media/' + target_tbl.media );
+document.write('" width="32" height="32" alt="' + target_tbl.msg + '" title="" \/>' );
+document.write('<span class="BrandingName">');
+document.write( target_tbl.msg );
+document.write('<\/span>');
+document.write('<\/h1>');
+document.writeln('<div id="appTools">');
+document.writeln('<a href="mailto:"><span class="Name">관리자에게 메일 <\/span><\/a>');
+document.writeln('<\/div>');
+}
+document.writeln('<\/div>');
+document.writeln('<\/div>');
+document.writeln('<hr \/>');
+}
+function ComMkup_NavTopicPath( obj )
+{
+document.writeln('<div id="navTopicPath">');
+document.writeln('<h4>경로 <\/h4>');
+obj.tpcp_lst_draw();
+document.writeln('<\/div>');
+}
+function ComMkup_ContentHeading( title_name )
+{
+document.writeln('<div id="contentHeading">');
+document.write('<h2 class="PageName">');
+document.write( title_name );
+document.write('<\/h2>');
+document.writeln('<div id="contentHeadingTools">');
+document.writeln('<div id="tmpUpdate" x-ms-format-detection="none">');
+document.writeln( "마지막 업데이트 : 2026 04/01 16:11:49" );
+document.writeln('<\/div>');
+document.writeln('<div id="tmpReload">');
+document.writeln('<a href="javascript:reload_click()"><img src="media/bh_updt.gif" alt="업데이트 " title="업데이트 " height="22" width="22" \/><\/a>');
+document.writeln('<\/div>');
+document.writeln('<\/div>');
+document.writeln('<\/div>');
+}
+function ComMkup_ContentHeadingNoReload( title_name )
+{
+document.writeln('<div id="contentHeading">');
+document.write('<h2 class="PageName">');
+document.write( title_name );
+document.write('<\/h2>');
+document.writeln('<div id="contentHeadingTools">');
+document.writeln('<div id="tmpUpdate" x-ms-format-detection="none">');
+document.writeln( "마지막 업데이트 : 2026 04/01 16:11:49" );
+document.writeln('<\/div>');
+document.writeln('<\/div>');
+document.writeln('<\/div>');
+}
+function ComMkup_TmpFooter()
+{
+document.writeln('<div id="tmpFooter">');
+document.writeln('<hr \/>');
+document.writeln('<div class="GotoTop">');
+document.writeln('<a href="javascript:scrollTo(0,0);"><img src="media/ba_ptp.gif" width="16" height="16" alt="TOP 페이지로 돌아감 " title="TOP 페이지로 돌아감 " \/><\/a>');
+document.writeln('<\/div>');
+document.writeln('<\/div>');
+}
+function ComMkup_NavigationWrapper()
+{
+document.writeln('<div id="navigationWrapper">');
+document.writeln('<div id="navigation">');
+document.writeln('<h2>메뉴 <\/h2>');
+ComIdx_DrawLink();
+document.writeln('<\/div>');
+document.writeln('<\/div>');
+}
+function ComMkup_ApplicationInfo()
+{
+document.writeln('<div id="applicationInfo">');
+document.writeln('<address class="SiteInforLegal">Copyright CANON INC. 2011 All Rights Reserved<\/address>');
+document.writeln('<\/div>');
+}
+function Draw_ContModEditStart( title )
+{
+document.writeln('<div class="ContentModuleEditable">');
+if( null != title )
+{
+document.writeln('<div class="ModuleHeading">');
+document.writeln('<h4>');
+document.writeln( title );
+document.writeln('<\/h4>');
+document.writeln('<\/div>');
+}
+}
+function Draw_ContModEditEnd()
+{
+document.writeln('<\/div>');
+}
+function Draw_ModuleElementeStart( title )
+{
+document.writeln('<div class="ModuleElement">');
+if( null != title )
+{
+document.writeln('<h5>');
+document.writeln( title );
+document.writeln('<\/h5>');
+}
+document.writeln('<table class="PropertyListComponent" rules="groups" >');
+document.writeln('<colgroup>');
+document.writeln('<col class="ItemNameColumn" \/>');
+document.writeln('<col class="ItemValueColumn" \/>');
+document.writeln('<\/colgroup>');
+document.writeln('<thead>');
+document.writeln('<tr>');
+document.writeln('<th>');
+document.writeln('항목 ');
+document.writeln('<\/th>');
+document.writeln('<th>');
+document.writeln('내용 ');
+document.writeln('<\/th>');
+document.writeln('<\/tr>');
+document.writeln('<\/thead>');
+}
+function Draw_ModuleElementeEnd()
+{
+document.writeln('<\/table>');
+document.writeln('<\/div>');
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function ComMkup_ApplicationInfo()
+{
+document.writeln('<div id="applicationInfo">');
+document.writeln('<address class="SiteInforLegal">Copyright CANON INC. 2019 <\/address>');
+document.writeln('<\/div>');
+}
+//]]>
+</script>
+
+
+<form name="TPPATH_SUBMIT_FORM" action="" method="post" target="_self">
+<input type="hidden" name="CorePGTAG" value="24" />
+<input type="hidden" name="AMOD" value="0" />
+<input type="hidden" name="FromTopPage" value="1" />
+<input type="hidden" name="Dummy" value="1775027547749" />
+
+</form>
+<form name="TPPATH_RESET_FORM" action="" method="post" target="_self">
+<input type="hidden" name="PageFlag" value="" />
+<input type="hidden" name="Flag" value="" />
+<input type="hidden" name="BOX_No" value="" />
+<input type="hidden" name="DIDS" value="" />
+<input type="hidden" name="Dummy" value="1775027547749" />
+</form>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function tpcp_tbl()
+{
+this.pack = function( param )
+{
+return ( undefined == param ) ? null : param;
+}
+this.form         = this.pack( arguments[0] );
+this.cgi_str      = this.pack( arguments[1] );
+this.param        = this.pack( arguments[2] );
+this.msg          = this.pack( arguments[3] );
+this.function_str = this.pack( arguments[4] );
+this.event_str    = this.pack( arguments[5] );
+}
+function tpcp_ctrl( obj_tbl )
+{
+this.tpcp_obj_tbl = obj_tbl;//�p�������X�g�I�u�W�F�N�g�e�[�u��
+this.form = document.TPPATH_SUBMIT_FORM ;//��ʑJ�ڗp�t�H�[���I�u�W�F�N�g
+  this.tpcp_exec_link = tpcp_exec_link;
+  this.tpcp_lst_draw = tpcp_lst_draw;
+function tpcp_exec_link(idx)
+{
+if( null != obj_tbl[idx].param )
+{
+var now_time = new Date();
+top.document.location.href
+= obj_tbl[idx].cgi_str + "?" +
+obj_tbl[idx].param +
+"&Dummy=" + now_time.getTime();
+;
+}
+else
+{
+tpcp_submit_form
+= ( null != obj_tbl[idx].form ) ? obj_tbl[idx].form : this.form;
+  tpcp_submit_form.action = obj_tbl[idx].cgi_str;
+  tpcp_submit_form.target = "_top";
+tpcp_submit_form.submit();
+}
+}
+function tpcp_lst_draw()
+{
+  for( i = 0 ; i < this.tpcp_obj_tbl.length ; i++ )
+  {
+if( i == this.tpcp_obj_tbl.length - 1 )
+{
+document.writeln( this.tpcp_obj_tbl[i].msg );
+}
+else
+{
+document.write( '<a href=\"javascript:tpcp_leap_link(' + i + ')\" ' );
+if( null != this.tpcp_obj_tbl[i].function_str )
+{
+document.write( ( null != this.tpcp_obj_tbl[i].event_str )
+? this.tpcp_obj_tbl[i].event_str + "="
+: "onclick=" );
+document.write( '\"javascript:' + this.tpcp_obj_tbl[i].function_str + '\">' );
+}
+else
+{
+document.write( '>' );
+}
+document.write( this.tpcp_obj_tbl[i].msg );
+document.write( '<\/a>' );
+document.writeln( ' > ' );
+}
+}
+}
+}
+//]]>
+</script>
+
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+comidxGlobal = {
+has_reader           : "true",
+has_send             : "true",
+has_fax              : "false",
+has_rmt_cpy_send     : "false",
+disp_copy            : "true",
+disp_box             : "true",
+disp_box_value     : "1",
+disp_sys_fax_box     : "true",
+disp_send            : "true",
+disp_sbox            : "true",
+disp_mem             : "true",
+disp_log             : "true",
+disp_coin            : "false",
+has_ps               : "false",
+has_psk              : "false",
+has_pdf              : "true",
+has_img              : "true",
+has_xps              : "true",
+has_mso              : "false",
+has_faxpkg           : "false",
+has_sendpkg          : "true",
+is_acq_on            : "false",
+has_dfe_ch_main      : "false",
+has_mlib             : "true",
+com_cur_tag          : "24",
+has_airfax_clie      : "false",
+use_usb_host         : "true",
+use_usb_strg_meap    : "false",
+VARIE_PNCHR_DIE_NAME : "false",
+VARIE_BOX_USER       : "true",
+hasMeapLogin         : "false",
+hasBoxAllSetting     : "true",
+smb_use              : "true",
+webdav_use           : "false",
+sbox_smb_open        : "true",
+sbox_webdav_open     : "false",
+has_emailreceiveonly : "false",
+disp_crglog          : "false",
+HasAuth_Device       : "true",
+HasAuth_Network      : "true",
+HasAuth_System       : "true",
+AuthKind             : "1",
+UserType             : "2",
+IsRestrictedUser     : "false",
+AirAuthGenericFlg    : "4",
+AirAuthDeviceFlg     : "8",
+AirAuthNetwkFlg      : "16",
+AirAuthSystemFlg     : "32",
+AuthKindNone         : "1",
+AuthKindCpca         : "2",
+UserTypeAdmin        : "2"
+}
+function ie6LayoutFixListener()
+{
+if(!/MSIE 6\./.test(navigator.userAgent))
+{
+return;
+}
+var appContents = document.getElementById("applicationContents");
+var contents = document.getElementById("contentsWrapper");
+var navigation = document.getElementById("navigationWrapper");
+if( !contents || !navigation )
+{
+return;
+}
+appContents.style.height = ( contents.offsetHeight > navigation.offsetHeight )
+? contents.offsetHeight : navigation.offsetHeight;
+}
+(function() {
+if(!/MSIE 6\./.test(navigator.userAgent))
+{
+return;
+}
+window.attachEvent( "onresize" , ie6LayoutFixListener );
+window.attachEvent( "onload" , ie6LayoutFixListener );
+})();
+(function() {
+if(!/MSIE 8\./.test(navigator.userAgent))
+{
+return;
+}
+function ie8LayoutFixListener()
+{
+document.body.style.visiblity = "visible";
+}
+window.attachEvent( "onload" , ie8LayoutFixListener );
+})();
+function com_index_base_interface()
+{
+this.tbl = null;
+this.createTbl = null;
+}
+function Adrs_NormalAdrsDrawCondition()
+{
+if( "true" == comidxGlobal.disp_send )
+{
+if( "true" == comidxGlobal.has_send || "true" == comidxGlobal.has_fax || "true" == comidxGlobal.has_airfax_clie )
+{
+return true;
+}
+}
+return false;
+}
+var com_index = new function()
+{
+this.checkAuth = function( checkAuthFlg )
+{
+if( null == checkAuthFlg )
+{
+return true;
+}
+if( comidxGlobal.AirAuthGenericFlg & checkAuthFlg ) {
+return true;
+}
+if( comidxGlobal.UserTypeAdmin != comidxGlobal.UserType ) {
+return false;
+}
+var AuthJsonAry = [
+{ "chkflg" : comidxGlobal.AirAuthDeviceFlg, "auth" : comidxGlobal.HasAuth_Device },
+{ "chkflg" : comidxGlobal.AirAuthNetwkFlg,  "auth" : comidxGlobal.HasAuth_Network },
+{ "chkflg" : comidxGlobal.AirAuthSystemFlg, "auth" : comidxGlobal.HasAuth_System }
+];
+for( property in AuthJsonAry ) {
+if( !( AuthJsonAry[property].chkflg & checkAuthFlg ) ) {
+continue;
+}
+if( "true" == AuthJsonAry[property].auth ) {
+return true;
+}
+}
+return false;
+}
+this.getTree = function( key )
+{
+return this.seek_tbl_Top( key );
+}
+this.getCgistr = function( key )
+{
+var foundTable = this.seek_tbl( this.seek_tbl_Top( key ), key );
+if( foundTable )
+{
+return foundTable.cgi_str;
+}
+}
+this.getTopTbl = function( key )
+{
+function findTopTble( tree )
+{
+for( var propaty in tree )
+{
+if( tree[ propaty ].c_func && com_index.checkAuth( tree[ propaty ].auth_flg ) && tree[ propaty ].pgtag_idx )
+{
+return tree[ propaty ];
+}
+if( null != tree[ propaty ].tbl )
+{
+foundCgiStr = findTopTble( tree[ propaty ].tbl );
+if( foundCgiStr )
+{
+return foundCgiStr;
+}
+}
+}
+}
+return findTopTble( this.seek_tbl_Top( key ) );
+}
+this.getTopCgistr = function( key )
+{
+return this.getTopTbl( key ).cgi_str;
+}
+this.getTopCorePgtagstr = function( key )
+{
+return this.getTopTbl( key ).pgtag_idx;
+}
+this.menuapi = function(){};
+this.seek_tbl_Top = function( key )
+{
+var PgtagFunctionTbl = new Array
+(
+{ pgtagMin : 1, pgtagMax : 14,func : com_index.sysmonitor },  
+{ pgtagMin : 45,  pgtagMax : 45,func : com_index.sysmonitor },  
+{ pgtagMin : 16,     pgtagMax : 18,      func : com_index.box },         
+{ pgtagMin : 19,     pgtagMax : 23,     func : com_index.direct },      
+{ pgtagMin : 24,      pgtagMax : 24,      func : com_index.address },     
+{ pgtagMin : 25, pgtagMax : 44, func : com_index.usermode } 
+);
+var targetTBL;
+for( var i=0; i < PgtagFunctionTbl.length; i++ )
+{
+if( PgtagFunctionTbl[i].pgtagMin <= key && key <= PgtagFunctionTbl[i].pgtagMax )
+{
+if( null == PgtagFunctionTbl[i].func.tbl )
+{
+PgtagFunctionTbl[i].func.createTbl();
+}
+return PgtagFunctionTbl[i].func.tbl;
+}
+}
+}
+this.seek_tbl = function( targetTBL, key )
+{
+for( var Draw_Item in targetTBL )
+{
+if( key == targetTBL[ Draw_Item ].pgtag_idx )
+{
+return targetTBL[ Draw_Item ];
+}
+if( null != targetTBL[ Draw_Item ].tbl )
+{
+var foundTbl = this.seek_tbl( targetTBL[ Draw_Item ].tbl , key );
+if( foundTbl )
+{
+return foundTbl;
+}
+}
+}
+return null;
+}
+}
+function ComIdx_DrawLink()
+{
+com_index.menuapi.draw_sub_link_menu();
+}
+com_index.menuapi.draw_list = function( tbl )
+{
+var now_time  = new Date();
+document.writeln('<li class="');
+document.write( ( tbl.pgtag_idx == comidxGlobal.com_cur_tag ) ? 'Selected' : 'Standby' );
+document.write('">')
+document.write('<a href="');
+document.write( tbl.cgi_str + "&Dummy=" + now_time.getTime() );
+document.write('">');
+document.write( tbl.title_str );
+document.write('<\/a>');
+document.writeln('<\/li>');
+}
+com_index.menuapi.draw_sub_link_submenu = function( tbl )
+{
+for( var i=0 ; i<tbl.length ; i++ )
+{
+if( false == tbl[i].c_func )
+{
+continue ;
+}
+if( false == com_index.checkAuth( tbl[i].auth_flg ) )
+{
+continue ;
+}
+com_index.menuapi.draw_list( tbl[i] );
+}
+}
+function getRebootButtunStat()
+{
+if( "true" == comidxGlobal.IsRestrictedUser )
+{
+return false;
+}
+if("true" == comidxGlobal.hasMeapLogin )
+{
+if( "false" == comidxGlobal.HasAuth_Device &&
+"false" == comidxGlobal.HasAuth_Network &&
+"false" == comidxGlobal.HasAuth_System )
+{
+return false;
+}
+}
+else
+{
+if( "true" == "true" )
+{
+if( "true" != "true" )
+{
+return false;
+}
+}
+}
+return true;
+}
+com_index.menuapi.draw_sub_link_menu = function()
+{
+var tbl = com_index.getTree( comidxGlobal.com_cur_tag )
+if( !tbl )
+{
+return;
+}
+if( com_index.usermode.tbl == tbl )
+{
+document.write('<fieldset id="rebootModule">');
+document.write('<legend>');
+document.write('디바이스 재기동 ');
+document.write('<\/legend>');
+document.write('<span class="Supplement">');
+document.write('여기로부터 디바이스를 재기동할 수 있습니다. ');
+document.write('<\/span>');
+if( getRebootButtunStat() )
+{
+document.write('<input type="button" class="ButtonEnable" value="디바이스 재기동 " onclick=\"JavaScript:reboot_click()\" \/>');
+}
+else
+{
+document.write('<input type="button" class="ButtonEnable" value="디바이스 재기동 " onclick=\"JavaScript:reboot_click()\" disabled="disabled" \/>');
+}
+document.write('<br \/>');
+if( "false" == comidxGlobal.IsRestrictedUser )
+{
+document.write('<input type="button" class="ButtonEnable" value="설정 반영 " onclick=\"JavaScript:dynamic_update_click()\" \/>');
+}
+else
+{
+document.write('<input type="button" class="ButtonEnable" value="설정 반영 " onclick=\"JavaScript:dynamic_update_click()\" disabled="disabled" \/>');
+}
+document.write('<\/fieldset>');
+}
+for( var i=0 ; i<tbl.length ; i++ )
+{
+if( false == tbl[i].c_func )
+{
+continue ;
+}
+if( false == com_index.checkAuth( tbl[i].auth_flg ) )
+{
+continue ;
+}
+document.writeln('<ul class="Main">');
+if( null == tbl[i].tbl )
+{
+com_index.menuapi.draw_list( tbl[i] );
+}
+else
+{
+document.write('<li class="MainItem">')
+document.write('<span class="GroupTitle">');
+document.write( tbl[i].title_str );
+document.write('<\/span>');
+document.write('<ul class="Sub">')
+com_index.menuapi.draw_sub_link_submenu( tbl[i].tbl );
+document.write('<\/ul>')
+document.write('<\/li>')
+}
+document.writeln('<\/ul>');
+}
+ie6LayoutFixListener();
+}
+function reboot_click()
+{
+var now_time = new Date();
+document.location.href = "./caboot.cgi?PageFlag=c_rbt.tpl&Flag=Init_Reboot&Token=3854130223472867510&Dummy=" + now_time.getTime();
+}
+function dynamic_update_click()
+{
+var now_time = new Date();
+document.location.href = "./cnwupdt.cgi?PageFlag=c_nwupdt.tpl&Flag=Init_Data&FuncTypeFlag=Init_Request&Token=3854130223472867510&Dummy=" + now_time.getTime();
+}
+com_index.sysmonitor = new com_index_base_interface();
+com_index.sysmonitor.createTbl = function()
+{
+com_index.sysmonitor.tbl = ( function()
+{
+function CpyJobDrawCondition()
+{
+return ( "true" == comidxGlobal.has_reader && "true" == comidxGlobal.disp_copy );
+}
+function SndJobDrawCondition()
+{
+return ( "true" == comidxGlobal.has_send || "true" == comidxGlobal.has_fax || "true" == comidxGlobal.has_airfax_clie );
+}
+function RcvJobDrawCondition()
+{
+return ( "true" == comidxGlobal.has_send || "true" == comidxGlobal.has_fax || "true" == comidxGlobal.has_emailreceiveonly );
+}
+function SvJobDrawCondition()
+{
+if ( "true" != comidxGlobal.has_reader )
+{
+return false;
+}
+if ( "false" == comidxGlobal.disp_mem && "false" == comidxGlobal.disp_sbox )
+{
+return false;
+}
+if ( "false" == comidxGlobal.disp_sbox && "true"  == comidxGlobal.disp_mem )
+{
+if( "false" == comidxGlobal.use_usb_host || "true"  == comidxGlobal.use_usb_strg_meap )
+{
+return false;
+}
+}
+return true;
+}
+function DrawStat_SboxAccess()
+{
+if( "true" == comidxGlobal.disp_sbox )
+{
+if( ( "true" == comidxGlobal.sbox_smb_open && "true" == comidxGlobal.smb_use ) ||
+( "true" == comidxGlobal.sbox_webdav_open && "true" == comidxGlobal.webdav_use ) )
+{
+return true;
+}
+}
+return false;
+}
+function DrawCGI_SboxAccess()
+{
+var cgi_str = "./dsbox.cgi?Flag=Init_Data&CorePGTAG=10&PageFlag=d_sbox.tpl";
+if( "true" == comidxGlobal.disp_sbox )
+{
+if( "true" == comidxGlobal.sbox_smb_open && "true" == comidxGlobal.smb_use )
+{
+cgi_str += "&FuncTypeFlag=SMB";
+}
+else if( "true" == comidxGlobal.sbox_webdav_open && "true" == comidxGlobal.webdav_use )
+{
+cgi_str += "&FuncTypeFlag=WebDAV";
+}
+}
+return cgi_str;
+}
+function GetSboxTitleStr()
+{
+if( "2" == "1" )
+{
+return "고급스페이스 접속 상황 ";
+}
+return "고급박스 접속 상황 ";
+}
+function prtjob_menu_idx_tbl()
+{
+return new Array
+(
+{
+pgtag_idx : "1",
+title_str : "작업 상황 ",
+cgi_str : "./jstatpri.cgi?Flag=Init_Data&CorePGTAG=1",
+c_func : true,
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "2",
+title_str : "작업 이력 ",
+cgi_str : "./jlp.cgi?Flag=Html_Data&LogType=0&CorePGTAG=2",
+c_func : ( "true" == comidxGlobal.disp_log ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+}
+);
+}
+function sndjob_menu_idx_tbl()
+{
+return new Array
+(
+{
+pgtag_idx : "3",
+title_str : "작업 상황 ",
+cgi_str : "./jsl.cgi?Flag=Init_Data&CorePGTAG=3",
+c_func : true,
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "4",
+title_str : "작업 이력 ",
+cgi_str : "./jls.cgi?Flag=Html_Data&CorePGTAG=4",
+c_func : ( "true" == comidxGlobal.has_send && "true" == comidxGlobal.disp_log ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "4",
+title_str : "작업 이력 ",
+cgi_str : "./jlf.cgi?Flag=Html_Data&LogType=TX&CorePGTAG=4",
+c_func : ( "false" == comidxGlobal.has_send && "true" == comidxGlobal.disp_log ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+}
+);
+}
+function rcvjob_menu_idx_tbl()
+{
+return new Array
+(
+{
+pgtag_idx : "5",
+title_str : "작업 상황 ",
+cgi_str : "./jrl.cgi?Flag=Init_Data&CorePGTAG=5",
+c_func : ( "true" == comidxGlobal.has_fax ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "5",
+title_str : "작업 상황 ",
+cgi_str : "./jtl.cgi?CorePGTAG=5",
+c_func : ( "false" == comidxGlobal.has_fax && "false" == comidxGlobal.has_emailreceiveonly ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "6",
+title_str : "작업 이력 ",
+cgi_str : "./jlr.cgi?Flag=Html_Data&CorePGTAG=6",
+c_func : ( ( "true" == comidxGlobal.has_send || "true" == comidxGlobal.has_emailreceiveonly ) && "true" == comidxGlobal.disp_log ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "6",
+title_str : "작업 이력 ",
+cgi_str : "./jlf.cgi?Flag=Html_Data&LogType=RX&CorePGTAG=6",
+c_func : ( "false" == comidxGlobal.has_send && "true" == comidxGlobal.disp_log && "false" == comidxGlobal.has_emailreceiveonly ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+}
+);
+}
+function svjob_menu_idx_tbl()
+{
+return new Array
+(
+{
+pgtag_idx : "7",
+title_str : "작업 상황 ",
+cgi_str : "./jsvl.cgi?Flag=Init_Data&CorePGTAG=7",
+c_func : true,
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "8",
+title_str : "작업 이력 ",
+cgi_str : "./jlsv.cgi?Flag=Html_Data&CorePGTAG=8",
+c_func : ( "true" == comidxGlobal.disp_log ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+}
+);
+}
+return new Array
+(
+{
+pgtag_idx : null,
+title_str : CpyJobDrawCondition() ? "복사/인쇄 " : "인쇄 ",
+cgi_str : null,
+c_func : true,
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : prtjob_menu_idx_tbl()
+},
+{
+pgtag_idx : null,
+title_str : "송신 ",
+cgi_str : null,
+c_func : SndJobDrawCondition(),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : sndjob_menu_idx_tbl()
+},
+{
+pgtag_idx : null,
+title_str : "수신 ",
+cgi_str : null,
+c_func : RcvJobDrawCondition(),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : rcvjob_menu_idx_tbl()
+},
+{
+pgtag_idx : null,
+title_str : "저장 ",
+cgi_str : null,
+c_func : SvJobDrawCondition(),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : svjob_menu_idx_tbl()
+},
+{
+pgtag_idx : "9",
+title_str : "에러 정보 ",
+cgi_str : "./dstatus.cgi?CorePGTAG=9&PageFlag=d_sts2.tpl",
+c_func : true,
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "10",
+title_str : GetSboxTitleStr(),
+cgi_str : DrawCGI_SboxAccess(),
+c_func : DrawStat_SboxAccess(),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "11",
+title_str : "소모품 확인 ",
+cgi_str : "./dstatus.cgi?CorePGTAG=11&PageFlag=d_tops.tpl",
+c_func : true,
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "12",
+title_str : "디바이스 장비 ",
+cgi_str : "./dfeat.cgi?CorePGTAG=12",
+c_func : true,
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "13",
+title_str : "디바이스 정보 ",
+cgi_str : "./dinfo.cgi?CorePGTAG=13",
+c_func : true,
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "14",
+title_str : "카운터 확인 ",
+cgi_str : "./dcounter.cgi?CorePGTAG=14",
+c_func : true,
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "45",
+title_str : "카트리지 로그 ",
+cgi_str : "./dcrglog.cgi?CorePGTAG=45&PageFlag=d_topcl.tpl",
+c_func : ( "true" == comidxGlobal.disp_crglog ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+}
+)
+})();
+}
+com_index.box = new com_index_base_interface();
+function Box_FaxSysBoxDrawCondition()
+{
+if( "false" == comidxGlobal.has_reader )
+{
+return false;
+}
+if( "true" == comidxGlobal.has_send && "true" == comidxGlobal.has_sendpkg )
+{
+return true;
+}
+if( "true" == comidxGlobal.has_fax && "true" == comidxGlobal.has_faxpkg )
+{
+return true;
+}
+return false;
+}
+com_index.box.createTbl = function()
+{
+com_index.box.tbl = ( function()
+{
+return new Array
+(
+{
+pgtag_idx : "16",
+title_str : "박스 ",
+cgi_str : "./bpbl.cgi?CorePGTAG=16&BoxKind=UserBox",
+c_func : ( "true" == comidxGlobal.VARIE_BOX_USER && "1" == comidxGlobal.disp_box_value ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "17",
+title_str : "시스템 박스 ",
+cgi_str : "./bpbl.cgi?CorePGTAG=17&BoxKind=SysBox",
+c_func : Box_FaxSysBoxDrawCondition(),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "18",
+title_str : "팩스박스  ",
+cgi_str : "./bpbl.cgi?CorePGTAG=18&BoxKind=FaxBox",
+c_func : Box_FaxSysBoxDrawCondition(),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+}
+)
+})();
+}
+com_index.direct = new com_index_base_interface();
+com_index.direct.createTbl = function()
+{
+com_index.direct.tbl = ( function()
+{
+return new Array
+(
+{
+pgtag_idx : "19",
+title_str : "PDF 파일 ",
+cgi_str : "./ppdf.cgi?CorePGTAG=19&Type=PDF",
+c_func : ( "true" == comidxGlobal.has_pdf ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "20",
+title_str : ( "true" == "true" ) ? "PS/EPS 파일 " : "PS 파일 ",
+cgi_str : "./ppdf.cgi?CorePGTAG=20&Type=PS",
+c_func : ( "true" == comidxGlobal.has_ps  || "true" == comidxGlobal.has_psk ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "21",
+title_str : "화상 파일 ",
+cgi_str : "./pimg.cgi?CorePGTAG=21",
+c_func : ( "true" == comidxGlobal.has_img ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "22",
+title_str : "XPS 파일 ",
+cgi_str : "./pxps.cgi?CorePGTAG=22",
+c_func : ( "true" == comidxGlobal.has_xps ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "23",
+title_str : "Dummy ",
+cgi_str : "./pmso.cgi?CorePGTAG=23",
+c_func : ( "true" == comidxGlobal.has_mso ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+}
+)
+})();
+}
+com_index.address = new com_index_base_interface();
+com_index.address.createTbl = function()
+{
+com_index.address.tbl = ( function()
+{
+return new Array
+(
+{
+pgtag_idx : "24",
+title_str : "주소 리스트 ",
+cgi_str : "./asublist.cgi?CorePGTAG=24&AMOD=0",
+c_func : Adrs_NormalAdrsDrawCondition(),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+}
+)
+})();
+}
+com_index.usermode = new com_index_base_interface();
+function GetComidxUmdTbl()
+{
+function Stat_SendFaxAirfaxClie()
+{
+return ( "true" == comidxGlobal.has_send || "true" == comidxGlobal.has_fax || "true" == comidxGlobal.has_airfax_clie );
+}
+function DrawStat_FuncCopy()
+{
+if( "true" == comidxGlobal.disp_copy && "true" == comidxGlobal.has_reader )
+{
+if( UmdMenuTbl.MenuBridge( UmdMenuTbl.FucCpyMainTBL ) )
+{
+return true;
+}
+}
+return false;
+}
+function DrawStat_FuncSend()
+{
+if( "true" == comidxGlobal.disp_send )
+{
+if( UmdMenuTbl.MenuBridge( UmdMenuTbl.FucSndMainTBL ) )
+{
+return true;
+}
+}
+return false;
+}
+function DrawStat_FuncRecv()
+{
+if( "true" == comidxGlobal.disp_send )
+{
+if( UmdMenuTbl.MenuBridge( UmdMenuTbl.FucRecMainTBL ) )
+{
+if( "false" == comidxGlobal.has_emailreceiveonly )
+{
+return true;
+}
+}
+}
+return false;
+}
+function DrawStat_FuncRecvOnly()
+{
+if( "true" == comidxGlobal.disp_send )
+{
+if( UmdMenuTbl.MenuBridge( UmdMenuTbl.FucRecMainTBL ) )
+{
+if( "true" == comidxGlobal.has_emailreceiveonly )
+{
+return true;
+}
+}
+}
+return false;
+}
+function DrawStat_FuncSav()
+{
+if( "true" == comidxGlobal.disp_sys_fax_box )
+{
+if( UmdMenuTbl.MenuBridge( UmdMenuTbl.FucSavMainTBL ) )
+{
+return true;
+}
+}
+return false;
+}
+function config_menu_env_tbl()
+{
+return new Array
+(
+{
+pgtag_idx : "25",
+title_str : "용지 설정 ",
+cgi_str : "./cdmenu.cgi?CorePGTAG=25",
+c_func : UmdMenuTbl.MenuBridge( UmdMenuTbl.EnvPapMainTBL ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "26",
+title_str : "표시 설정 ",
+cgi_str : "./cdmenu.cgi?CorePGTAG=26",
+c_func : UmdMenuTbl.MenuBridge( UmdMenuTbl.EnvIndMainTBL ),
+auth_flg : comidxGlobal.AirAuthDeviceFlg | comidxGlobal.AirAuthSystemFlg,
+tbl : null
+},
+{
+pgtag_idx : "27",
+title_str : "타이머/전력 설정 ",
+cgi_str : "./cdmenu.cgi?CorePGTAG=27",
+c_func : UmdMenuTbl.MenuBridge( UmdMenuTbl.EnvTimMainTBL ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "28",
+title_str : "네트워크 설정 ",
+cgi_str : "/NetworkSettings/page/?CorePGTAG=28&Flag=Init_Data&PageFlag=c_envnet.tpl&FuncTypeFlag=NetworkMenu_Page",
+c_func : UmdMenuTbl.MenuBridge( UmdMenuTbl.EnvNetMainTBL ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "29",
+title_str : "외부 인터페이스 ",
+cgi_str : "./cdmenu.cgi?CorePGTAG=29",
+c_func : UmdMenuTbl.MenuBridge( UmdMenuTbl.EnvIntMainTBL ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "30",
+title_str : "음량 설정 ",
+cgi_str : "./cdmenu.cgi?CorePGTAG=30",
+c_func : UmdMenuTbl.MenuBridge( UmdMenuTbl.EnvVolMainTBL ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+}
+)
+}
+function config_menu_mainte_tbl()
+{
+return new Array
+(
+{
+pgtag_idx : "31",
+title_str : "화질 조정 ",
+cgi_str : "./cdmenu.cgi?CorePGTAG=31",
+c_func : UmdMenuTbl.MenuBridge( UmdMenuTbl.AdjMntMainTBL ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "32",
+title_str : "유지보수 ",
+cgi_str : "./cdmenu.cgi?CorePGTAG=32",
+c_func : UmdMenuTbl.MenuBridge( UmdMenuTbl.AdjMntMntMainTBL ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+}
+)
+}
+function config_menu_func_tbl()
+{
+return new Array
+(
+{
+pgtag_idx : "33",
+title_str : "공통 설정 ",
+cgi_str : "./cdmenu.cgi?CorePGTAG=33",
+c_func : UmdMenuTbl.MenuBridge( UmdMenuTbl.FucComMainTBL ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "34",
+title_str : "복사 ",
+cgi_str : "./cdmenu.cgi?CorePGTAG=34",
+c_func : DrawStat_FuncCopy(),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "35",
+title_str : "프린터 ",
+cgi_str : "./cdmenu.cgi?CorePGTAG=35",
+c_func : UmdMenuTbl.MenuBridge( UmdMenuTbl.FucPriMainTBL ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "36",
+title_str : "송신 ",
+cgi_str : "./cdmenu.cgi?CorePGTAG=36",
+c_func : DrawStat_FuncSend(),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "37",
+title_str : "수신/전송 ",
+cgi_str : "./cdmenu.cgi?CorePGTAG=37",
+c_func : DrawStat_FuncRecv(),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "37",
+title_str : "수신 ",
+cgi_str : "./cdmenu.cgi?CorePGTAG=37",
+c_func : DrawStat_FuncRecvOnly(),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "38",
+title_str : "파일 저장/이용 ",
+cgi_str : "./cdmenu.cgi?CorePGTAG=38",
+c_func : DrawStat_FuncSav(),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+}
+)
+}
+function config_menu_manage_tbl()
+{
+return new Array
+(
+{
+pgtag_idx : "40",
+title_str : "사용자 관리 ",
+cgi_str : "./cdmenu.cgi?CorePGTAG=40",
+c_func : UmdMenuTbl.MenuBridge( UmdMenuTbl.MngUsrMainTBL ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "41",
+title_str : "디바이스 관리 ",
+cgi_str : "./cdmenu.cgi?CorePGTAG=41",
+c_func : UmdMenuTbl.MenuBridge( UmdMenuTbl.MngDevMainTBL ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : "42",
+title_str : "라이센스/기타 ",
+cgi_str : "./cdmenu.cgi?CorePGTAG=42",
+c_func : UmdMenuTbl.MenuBridge( UmdMenuTbl.MngLicMainTBL ),
+auth_flg : comidxGlobal.AirAuthSystemFlg,
+tbl : null
+},
+{
+pgtag_idx : "43",
+title_str : "데이터 관리 ",
+cgi_str : "./cdmenu.cgi?CorePGTAG=43",
+c_func : UmdMenuTbl.MenuBridge( UmdMenuTbl.MngDatMainTBL ),
+auth_flg : comidxGlobal.AirAuthSystemFlg,
+tbl : null
+},
+{
+pgtag_idx : "44",
+title_str : "보안 설정 ",
+cgi_str : "./cdmenu.cgi?CorePGTAG=44&Token=3854130223472867510",
+c_func : UmdMenuTbl.MenuBridge( UmdMenuTbl.MngSecMainTBL ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+}
+)
+}
+function DrawStat_AdrsMain()
+{
+if( Adrs_NormalAdrsDrawCondition() )
+{
+if( UmdMenuTbl.MenuBridge( UmdMenuTbl.AdrsMainTBL ) )
+{
+return true;
+}
+}
+return false;
+}
+if( "true" == comidxGlobal.IsRestrictedUser )
+{
+return [
+{
+pgtag_idx : null,
+title_str : "관리 설정 ",
+cgi_str : null,
+c_func : null,
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : [{
+pgtag_idx : "40",
+title_str : "사용자 관리 ",
+cgi_str : "./cdmenu.cgi?CorePGTAG=40",
+c_func : UmdMenuTbl.MenuBridge( UmdMenuTbl.MngUsrMainACQTBL ),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+}
+]
+}
+];
+}
+else
+{
+return new Array
+(
+{
+pgtag_idx : null,
+title_str : "환경 설정 ",
+cgi_str : null,
+c_func : null,
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : config_menu_env_tbl()
+},
+{
+pgtag_idx : null,
+title_str : "조정/유지보수 ",
+cgi_str : null,
+c_func : null,
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : config_menu_mainte_tbl()
+},
+{
+pgtag_idx : null,
+title_str : "기능 설정 ",
+cgi_str : null,
+c_func : null,
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : config_menu_func_tbl()
+},
+{
+pgtag_idx : "39",
+title_str : "수신인 설정 ",
+cgi_str : "./cdmenu.cgi?CorePGTAG=39",
+c_func : DrawStat_AdrsMain(),
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : null
+},
+{
+pgtag_idx : null,
+title_str : "관리 설정 ",
+cgi_str : null,
+c_func : null,
+auth_flg : comidxGlobal.AirAuthGenericFlg,
+tbl : config_menu_manage_tbl()
+}
+)
+}
+}
+com_index.usermode.createTbl = function()
+{
+if( "undefined" == typeof( UmdMenuTbl ) )
+{
+com_index.usermode.tbl = null;
+return;
+}
+com_index.usermode.tbl = UmdMenuTbl.UmdDrawStatCheck( GetComidxUmdTbl() );
+}
+//]]>
+</script>
+
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function CheckBoxChk(form,value)
+{
+if( null == form )
+{
+return ;
+}
+if( 1 == value )
+{
+form.checked = true;
+}
+else
+{
+form.checked = false;
+}
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function RadioChk(form,Name,value){
+var doccnt = 0;
+var i;
+var elm_len = form.elements.length;
+for(i = 0; i < elm_len; i++)
+{
+var elm_ctrl = form.elements[i];
+if( elm_ctrl.value == value &&
+elm_ctrl.name == Name )
+{
+elm_ctrl.checked = true;
+}
+}
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function RadioSelect( Obj , Val )
+{
+if( "undefined" == typeof( Obj ) )
+{
+return;
+}
+if( "undefined" == typeof( Obj.length ) )
+{
+if( Obj.value == Val )
+{
+Obj.checked = true;
+}
+return;
+}
+for( var nCnt=0 ; nCnt<Obj.length ; nCnt++ )
+{
+if( Obj[ nCnt ].value == Val )
+{
+Obj[ nCnt ].checked = true;
+return;
+}
+}
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function DropDownListSelect(obj,value){
+if( null == obj )
+{
+return;
+}
+var i;
+var type = obj.type.toLowerCase();
+if( "hidden" == type )
+{
+return;
+}
+var elm_len = obj.options.length;
+for(i = 0; i < elm_len; i++)
+{
+var elm_ctrl = obj.options[i];
+if( elm_ctrl.value == value)
+{
+return obj.selectedIndex = i;
+}
+}
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function DropDownListSelectEx(obj,value)
+{
+if( null == obj )
+{
+return;
+}
+var i;
+var type = obj.type.toLowerCase();
+if( "hidden" == type )
+{
+return obj.value = value;
+}
+var elm_len = obj.options.length;
+for(i = 0; i < elm_len; i++)
+{
+var elm_ctrl = obj.options[i];
+if( elm_ctrl.value == value)
+{
+return obj.selectedIndex = i;
+}
+}
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function GetDropDownList( Element )
+{
+if( null == Element )
+{
+return null;
+}
+return Element.options[ Element.selectedIndex ].value;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function SetDropDownList( Element , value )
+{
+if( null == Element )
+{
+return null;
+}
+for( i=0 ; i<Element.options.length ; i++ )
+{
+if( Element.options[i].value == value )
+{
+Element.selectedIndex = i;
+return true;
+}
+}
+return false;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function CheckBox_value(obj){
+if( null == obj )
+{
+return;
+}
+if( true == obj.checked )
+{
+return 1;
+}
+else
+{
+return 0;
+}
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function GetCheckBoxStats( Element )
+{
+if( null == Element )
+{
+return null;
+}
+return Element.checked;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function somethingGet(form, Name, Type){
+var doccnt = 0;
+var i;
+var elm_len = form.elements.length;
+for(i = 0; i < elm_len; i++)
+{
+var elm_ctrl = form.elements[i];
+if( null == elm_ctrl.type )
+{
+continue;
+}
+if( elm_ctrl.type.toLowerCase() == Type &&
+elm_ctrl.checked == true &&
+elm_ctrl.name == Name )
+{
+return elm_ctrl.value;
+}
+}
+ return "0";
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function GetRadioVal( Obj )
+{
+if( "undefined" == typeof( Obj ) )
+{
+return null;
+}
+if( "undefined" == typeof( Obj.length ))
+{
+if( true == Obj.checked )
+{
+return Obj.value;
+}
+return null;
+}
+for( nCnt=0 ; nCnt<Obj.length ; nCnt++ )
+{
+if( Obj[ nCnt ].checked == true )
+{
+return Obj[ nCnt ].value
+}
+}
+return null;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function GetRadioVal2( Obj, Val )
+{
+if( "undefined" == typeof( Obj ) )
+{
+return Val;
+}
+if( "undefined" == typeof( Obj.length ))
+{
+if( true == Obj.checked )
+{
+return Obj.value;
+}
+return Val;
+}
+for( nCnt=0 ; nCnt<Obj.length ; nCnt++ )
+{
+if( Obj[ nCnt ].checked == true )
+{
+return Obj[ nCnt ].value
+}
+}
+return Val;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function DropDownList_value(obj){
+if( null == obj )
+{
+return;
+}
+var type = obj.type.toLowerCase();
+if( "hidden" == type )
+{
+return obj.value;
+}
+var cst_idx = obj.selectedIndex;
+return obj.options[cst_idx].value;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function DropDownList_text(obj){
+var type = obj.type.toLowerCase();
+if( null == obj )
+{
+return;
+}
+if( "hidden" == type )
+{
+return obj.value;
+}
+var cst_idx = obj.selectedIndex;
+return obj.options[cst_idx].text;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+function GetAnyValue( Element )
+{
+if( "undefined" == typeof( Element ) )
+{
+return false;
+}
+var getval;
+switch( Element.type )
+{
+case "checkbox" :
+getval = GetCheckBoxStats( Element );
+break;
+case "select-one" :
+getval = GetDropDownList( Element );
+break;
+case "text" : case "password" : case "textarea" : case "hidden" :
+getval = Element.value;
+break;
+default :
+getval = GetRadioVal( Element );
+break;
+}
+return getval;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+function SetAnyValue( Element , SetValue )
+{
+if( "undefined" == typeof( Element ) )
+{
+return;
+}
+switch( Element.type )
+{
+case "checkbox" :
+CheckBoxChk( Element , SetValue );
+break;
+case "select-one" :
+DropDownListSelect( Element , SetValue );
+break;
+case "text" : case "password" : case "textarea" : case "hidden" :
+Element.value = SetValue;
+break;
+default :
+RadioSelect( Element , SetValue );
+break;
+}
+return;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function SetDisabled( obj, val )
+{
+if( !obj )
+{
+return ;
+}
+obj.disabled = val;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function SetDisabledByCBox( cbox, val, disable_arr )
+{
+if( !cbox )
+{
+return;
+}
+for( var i = 0; i < disable_arr.length; i++ )
+{
+if( val == cbox.checked )
+{
+SetDisabled(disable_arr[i],true );
+}
+else
+{
+SetDisabled(disable_arr[i], false );
+}
+}
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function DisableInit_DataTbl( dis_elem, init_elem )
+{
+this.dis_elem = dis_elem;
+this.init_elem = init_elem;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function SetDisableInitByElem( Element, val, di_data )
+{
+if( !Element )
+{
+return;
+}
+for( var i = 0; i < di_data.tbl.length; i++ )
+{
+if( val == GetAnyValue( Element ) )
+{
+if( null != di_data.tbl[i].init_elem )
+{
+SetAnyValue( di_data.tbl[i].dis_elem, di_data.tbl[i].init_elem.value );
+}
+SetDisabled( di_data.tbl[i].dis_elem, true );
+}
+else
+{
+SetDisabled( di_data.tbl[i].dis_elem, false );
+}
+}
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function SetDisabledValue( obj, val, value )
+{
+if( !obj )
+{
+return ;
+}
+obj.disabled = val;
+obj.value = value;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function SetDisabledChecked( obj, val, checked )
+{
+if( !obj )
+{
+return ;
+}
+obj.disabled = val;
+obj.checked = checked;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function RuiArt(obj)
+{
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function Set_toSubmit( form )
+{
+var i, j;
+var elm_len = form.elements.length;
+for(i = 0; i < elm_len; i++)
+{
+var elm_reload = form.elements[i];
+if( -1 == elm_reload.name.indexOf("_Reload"))
+continue;
+for(j = 0; j < elm_len; j++)
+{
+var elm_ctrl = form.elements[j];
+if( elm_reload.name.substr( 0,elm_reload.name.length - "_Reload".length) != elm_ctrl.name )
+continue;
+elm_ctrl.value = elm_reload.value  ;
+break;
+}
+}
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function Set_toReaload( form )
+{
+var i, j;
+var elm_len = form.elements.length;
+for(i = 0; i < elm_len; i++)
+{
+var elm_reload = form.elements[i];
+if( -1 == elm_reload.name.indexOf("_Reload"))
+continue;
+for(j = 0; j < elm_len; j++)
+{
+var elm_ctrl = form.elements[j];
+if( elm_reload.name.substr( 0,elm_reload.name.length - "_Reload".length) != elm_ctrl.name )
+continue;
+elm_reload.value = elm_ctrl.value ;
+break;
+}
+}
+}
+//]]>
+</script>
+<form name="COM_CANCEL_FORM" action="" method="post" target="_self">
+<input type="hidden" name="CorePGTAG" value="24" />
+<input type="hidden" name="AMOD" value="0" />
+<input type="hidden" name="FromTopPage" value="1" />
+<input type="hidden" name="Dummy" value="1775027547749" />
+
+</form>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function Form_Update( form )
+{
+var i, j;
+var cancel_form   = document.COM_CANCEL_FORM ;
+var elm_len       = form.elements.length ;
+var cncl_elm_len  = cancel_form.elements.length ;
+for(i = 0; i < cncl_elm_len; i++)
+{
+var cncl_elm_ctrl = cancel_form.elements[i];
+var elm_ctrl      = form.elements[i];
+if(elm_ctrl.name == cncl_elm_ctrl.name )
+{
+elm_ctrl.value = cncl_elm_ctrl.value  ;
+continue;
+}
+for(j = 0; j < elm_len; j++)
+{
+elm_ctrl = form.elements[j];
+if(elm_ctrl.name != cncl_elm_ctrl.name )
+{
+continue;
+}
+elm_ctrl.value = cncl_elm_ctrl.value ;
+break ;
+}
+if( j >= elm_len )
+{
+alert("internal error! " + cncl_elm_ctrl.name);
+}
+}
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function MyIndexOf(
+sep,
+PgNum,
+start_idx,
+skip_num,
+retStr )
+{
+var nCnt;
+var cur_chk;
+var end_idx = 0;
+if( PgNum.length <= 0 )
+{
+return -1;
+}
+for( nCnt = 0 ; nCnt < skip_num ; nCnt++ )
+{
+if( 0 != nCnt )
+{
+start_idx = end_idx;
+}
+end_idx = PgNum.indexOf( sep, start_idx + 1 );
+if( start_idx < 0 || end_idx < 0 )
+{
+return -1;
+}
+cur_chk = PgNum.slice( start_idx, end_idx );
+retStr[nCnt] = parseInt( cur_chk, 10 );
+}
+return end_idx;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function ComFuncRemoveSpace( str )
+{
+return str.replace( / /g , '');
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function ComFuncMultiplication( a, b )
+{
+if( true == isNaN( a ) || true == isNaN( b ) )
+{
+return str;
+}
+var l_a = new String( a );
+var l_b = new String( b );
+var l_a_dgt_pos = l_a.indexOf( ".", 0 );
+var l_b_dgt_pos = l_b.indexOf( ".", 0 );
+var l_a_dgt = ( -1 != l_a_dgt_pos ) ? ( l_a.length - ( l_a_dgt_pos + 1 ) ) : 0;
+var l_b_dgt = ( -1 != l_b_dgt_pos ) ? ( l_b.length - ( l_b_dgt_pos + 1 ) ) : 0;
+l_a = ( -1 != l_a_dgt_pos ) ? ( l_a.substring( 0, l_a_dgt_pos ) + l_a.substring( l_a_dgt_pos + 1, l_a.length ) ) : l_a;
+l_b = ( -1 != l_b_dgt_pos ) ? ( l_b.substring( 0, l_b_dgt_pos ) + l_b.substring( l_b_dgt_pos + 1, l_b.length ) ) : l_b;
+var l_a_val = parseIntEx( l_a );
+var l_b_val = parseIntEx( l_b );
+var l_calc_val = l_a_val * l_b_val ;
+var l_dgt_val  = l_a_dgt + l_b_dgt;
+return l_calc_val / ( Math.pow( 10, l_dgt_val ) );
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function ComFuncMkPointVal( str, fmt )
+{
+if( true == isNaN( str ) || true == isNaN( fmt ) )
+{
+return str;
+}
+var l_str = new String( str );
+var l_fmt = parseIntEx( fmt );
+if( l_fmt <= 0 || -1 != l_str.indexOf( ".", 0 ) )
+{
+return l_str ;
+}
+var l_calc_str = new String( "0." );
+for( var i = 1 ; i < l_fmt ; i++ )
+{
+l_calc_str += "0";
+}
+l_calc_str += "1";
+l_str = ComFuncMultiplication( l_str, l_calc_str )
+l_str = ComFuncAddPointVal( l_str, l_fmt );
+return l_str;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function ComFuncAddPointVal( str, fmt )
+{
+if( true == isNaN( str ) || true == isNaN( fmt ) )
+{
+return str;
+}
+var l_str = new String( str );
+var l_fmt = parseIntEx( fmt );
+if( l_fmt <= 0 )
+{
+return l_str ;
+}
+if( -1 != l_str.indexOf( ".", 0 ) )
+{
+var l_len = l_str.length - ( l_str.indexOf( ".", 0 ) + 1 );
+if( l_len < l_fmt )
+{
+for( var i = l_len ; i < l_fmt ; i++ )
+{
+l_str += "0";
+}
+}
+else if( l_fmt < l_len )
+{
+l_str = l_str.substring( 0, ( l_str.length - ( l_len - l_fmt ) ) );
+}
+}
+else
+{
+l_str += ".";
+for( var i = 0 ; i < l_fmt ; i++ )
+{
+l_str = l_str + "0";
+}
+}
+return l_str;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function ComFuncDigitProcess( str, significantFigure )
+{
+if( str.length <= 0 )
+{
+return str;
+}
+if( true == isNaN(str) )
+{
+return str;
+}
+var tmpCode = ( null != str.match(/^[\+|\-]/) ) ?str.match(/^[\+|\-]/)[0] :"" ;
+str = str.replace( /^[\+|\-|0]/g, "" );
+var tmpInteger = ( null != str.match(/^[0-9]+/) )  ?str.match(/^[0-9]+/)[0] :"0" ;
+var tmpDecimal = ( null != str.match(/\.[0-9]+$/) )?str.match(/[0-9]+$/)[0] :"" ;
+if( significantFigure < tmpDecimal.length )
+{
+tmpDecimal = tmpDecimal.substring( 0 , significantFigure );
+}
+else
+{
+for( var i = tmpDecimal.length ; i < significantFigure ; i++ )
+{
+tmpDecimal += "0";
+}
+}
+return ( tmpCode + tmpInteger + tmpDecimal );
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function ComFuncMLibData
+(
+MediaType,
+Shape,
+Color,
+Surface,
+Weight
+)
+{
+this.MediaType = MediaType;
+this.Shape     = Shape;
+this.Color     = Color;
+this.Surface   = Surface;
+this.Weight    = Weight;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+var MediaLibTbl_a = new Array
+(
+new ComFuncMLibData
+(
+"27", // MediaType //
+"1", // Shape //
+"1", // Color //
+"8", // Surface //
+"200" // Weight //
+),
+new ComFuncMLibData
+(
+"30", // MediaType //
+"4", // Shape //
+"1", // Color //
+"1", // Surface //
+"90" // Weight //
+),
+new ComFuncMLibData
+(
+"164", // MediaType //
+"1", // Shape //
+"1", // Color //
+"3", // Surface //
+"280" // Weight //
+),
+new ComFuncMLibData
+(
+"163", // MediaType //
+"1", // Shape //
+"1", // Color //
+"3", // Surface //
+"240" // Weight //
+),
+new ComFuncMLibData
+(
+"162", // MediaType //
+"1", // Shape //
+"1", // Color //
+"3", // Surface //
+"200" // Weight //
+),
+new ComFuncMLibData
+(
+"161", // MediaType //
+"1", // Shape //
+"1", // Color //
+"3", // Surface //
+"150" // Weight //
+),
+new ComFuncMLibData
+(
+"160", // MediaType //
+"1", // Shape //
+"1", // Color //
+"3", // Surface //
+"110" // Weight //
+),
+new ComFuncMLibData
+(
+"154", // MediaType //
+"1", // Shape //
+"1", // Color //
+"2", // Surface //
+"280" // Weight //
+),
+new ComFuncMLibData
+(
+"153", // MediaType //
+"1", // Shape //
+"1", // Color //
+"2", // Surface //
+"240" // Weight //
+),
+new ComFuncMLibData
+(
+"152", // MediaType //
+"1", // Shape //
+"1", // Color //
+"2", // Surface //
+"200" // Weight //
+),
+new ComFuncMLibData
+(
+"151", // MediaType //
+"1", // Shape //
+"1", // Color //
+"2", // Surface //
+"150" // Weight //
+),
+new ComFuncMLibData
+(
+"150", // MediaType //
+"1", // Shape //
+"1", // Color //
+"2", // Surface //
+"110" // Weight //
+),
+new ComFuncMLibData
+(
+"17", // MediaType //
+"1", // Shape //
+"1", // Color //
+"9", // Surface //
+"80" // Weight //
+),
+new ComFuncMLibData
+(
+"32", // MediaType //
+"1", // Shape //
+"1", // Color //
+"10", // Surface //
+"90" // Weight //
+),
+new ComFuncMLibData
+(
+"5", // MediaType //
+"1", // Shape //
+"2", // Color //
+"1", // Surface //
+"80" // Weight //
+),
+new ComFuncMLibData
+(
+"20", // MediaType //
+"1", // Shape //
+"1", // Color //
+"7", // Surface //
+"160" // Weight //
+),
+new ComFuncMLibData
+(
+"240", // MediaType //
+"1", // Shape //
+"12", // Color //
+"13", // Surface //
+"170" // Weight //
+),
+new ComFuncMLibData
+(
+"130", // MediaType //
+"1", // Shape //
+"12", // Color //
+"6", // Surface //
+"170" // Weight //
+),
+new ComFuncMLibData
+(
+"140", // MediaType //
+"3", // Shape //
+"1", // Color //
+"1", // Surface //
+"70" // Weight //
+),
+new ComFuncMLibData
+(
+"101", // MediaType //
+"1", // Shape //
+"1", // Color //
+"4", // Surface //
+"100" // Weight //
+),
+new ComFuncMLibData
+(
+"100", // MediaType //
+"1", // Shape //
+"1", // Color //
+"4", // Surface //
+"80" // Weight //
+),
+new ComFuncMLibData
+(
+"4", // MediaType //
+"1", // Shape //
+"1", // Color //
+"4", // Surface //
+"70" // Weight //
+),
+new ComFuncMLibData
+(
+"54", // MediaType //
+"1", // Shape //
+"1", // Color //
+"1", // Surface //
+"280" // Weight //
+),
+new ComFuncMLibData
+(
+"53", // MediaType //
+"1", // Shape //
+"1", // Color //
+"1", // Surface //
+"240" // Weight //
+),
+new ComFuncMLibData
+(
+"52", // MediaType //
+"1", // Shape //
+"1", // Color //
+"1", // Surface //
+"200" // Weight //
+),
+new ComFuncMLibData
+(
+"51", // MediaType //
+"1", // Shape //
+"1", // Color //
+"1", // Surface //
+"170" // Weight //
+),
+new ComFuncMLibData
+(
+"50", // MediaType //
+"1", // Shape //
+"1", // Color //
+"1", // Surface //
+"155" // Weight //
+),
+new ComFuncMLibData
+(
+"39", // MediaType //
+"1", // Shape //
+"1", // Color //
+"1", // Surface //
+"140" // Weight //
+),
+new ComFuncMLibData
+(
+"2", // MediaType //
+"1", // Shape //
+"1", // Color //
+"1", // Surface //
+"110" // Weight //
+),
+new ComFuncMLibData
+(
+"45", // MediaType //
+"1", // Shape //
+"1", // Color //
+"1", // Surface //
+"100" // Weight //
+),
+new ComFuncMLibData
+(
+"33", // MediaType //
+"1", // Shape //
+"1", // Color //
+"1", // Surface //
+"80" // Weight //
+),
+new ComFuncMLibData
+(
+"1", // MediaType //
+"1", // Shape //
+"1", // Color //
+"1", // Surface //
+"70" // Weight //
+),
+new ComFuncMLibData
+(
+"3", // MediaType //
+"1", // Shape //
+"1", // Color //
+"1", // Surface //
+"60" // Weight //
+),
+new ComFuncMLibData
+(
+"44", // MediaType //
+"1", // Shape //
+"1", // Color //
+"1", // Surface //
+"55" // Weight //
+),
+
+new ComFuncMLibData
+(
+null,
+null,
+null,
+null,
+null
+)
+);
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function ComFuncGetMLibData( MediaType )
+{
+var  i = 0;
+for( i = 0 ; null != MediaLibTbl_a[i].MediaType ; i++ )
+{
+if( MediaLibTbl_a[i].MediaType == MediaType )
+{
+break;
+}
+}
+return MediaLibTbl_a[i];
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function ComFuncMLibSptSizeData
+(
+Code,
+Direction
+)
+{
+this.Code = Code;
+this.Direction= Direction;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+var SupportMediaSizeTbl_a = new Array
+(
+new ComFuncMLibSptSizeData
+(
+"1", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"6", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"2", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"2", // code //
+"0" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"7", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"7", // code //
+"0" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"3", // code //
+"0" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"3", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"4", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"11", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"12", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"13", // code //
+"0" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"13", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"60", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"60", // code //
+"0" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"74", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"102", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"10", // code //
+"0" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"62", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"203", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"204", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"210", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"205", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"206", // code //
+"0" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"206", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"208", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"208", // code //
+"0" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"209", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"202", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"61", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"211", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"212", // code //
+"0" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"212", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"214", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"215", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"78", // code //
+"2" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"78", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"14", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"15", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"55", // code //
+"0" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"22", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"23", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"21", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"24", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"193", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"194", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"220", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"213", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"27", // code //
+"1" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"22", // code //
+"0" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"23", // code //
+"0" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"21", // code //
+"0" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"24", // code //
+"0" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"193", // code //
+"0" // direction //
+),
+new ComFuncMLibSptSizeData
+(
+"213", // code //
+"0" // direction //
+),
+
+new ComFuncMLibSptSizeData
+(
+null,
+null
+)
+);
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function ComFuncCheckMLibSptSize( MediaSize )
+{
+var  i = 0;
+for( i = 0 ; null != SupportMediaSizeTbl_a[i].Code ; i++ )
+{
+if( SupportMediaSizeTbl_a[i].Code == MediaSize )
+{
+return true;
+}
+}
+return false;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function ComFuncCompMType( val, cmp )
+{
+if( "false" == "true" )
+{
+return ( eval( val ) == eval( cmp ) ) ? true : false ;
+}
+var MLibTbl_1 = ComFuncGetMLibData( val );
+if( null == MLibTbl_1.MediaType )
+{
+return false ;
+}
+var MLibTbl_2 = ComFuncGetMLibData( cmp );
+if( null == MLibTbl_2.MediaType )
+{
+return false ;
+}
+var l_ret = false;
+if( "1" == MLibTbl_2.Shape )
+{
+l_ret = ( MLibTbl_1.Surface == MLibTbl_2.Surface ) ? true : false ;
+}
+else
+{
+l_ret = ( MLibTbl_1.Shape   == MLibTbl_2.Shape )   ? true : false ;
+}
+return l_ret;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function ComFuncFaxLineDataCtrl()
+{
+function FLineData
+(
+dsp_sts,
+obj,
+type
+)
+{
+this.dsp_sts = dsp_sts;
+this.obj     = obj;
+this.type    = type;
+}
+var FaxLineTbl_a = new Array
+(
+new FLineData( false, null, null ),
+new FLineData( false, null, null ),
+new FLineData( false, null, null ),
+new FLineData( false, null, null ),
+new FLineData( false, null, null ),
+new FLineData( false, null, null ),
+new FLineData( false, null, null ),
+new FLineData( false, null, null )
+);
+this.GetDataSize      = function()
+{
+return FaxLineTbl_a.length;
+}
+this.GetDspLineCount  = _func_GetDspLineCount;
+this.GetDspSts        = _func_GetDspSts;
+this.SetObj           = _func_SetObj;
+this.GetObj           = _func_GetObj;
+this.GetTypeNum       = _func_GetTypeNum;
+this.IsPhycl          = _func_IsPhycl;
+this.IsLogcl          = _func_IsLogcl;
+function _func_GetDspLineCount()
+{
+var dsp_line_cnt = 0;
+for( var i = 0 ; i < FaxLineTbl_a.length ; i++ )
+{
+if( true == FaxLineTbl_a[i].dsp_sts )
+{
+dsp_line_cnt++;
+}
+}
+return dsp_line_cnt;
+}
+function _func_GetDspSts(
+pos 
+)
+{
+if(( pos < 0 ) || ( FaxLineTbl_a.length <= pos ))
+{
+return false;
+}
+return FaxLineTbl_a[pos].dsp_sts;
+}
+function _func_SetObj(
+pos, 
+obj  
+)
+{
+if(( pos < 0 ) || ( FaxLineTbl_a.length <= pos ))
+{
+return false;
+}
+FaxLineTbl_a[pos].obj = obj;
+return true;
+}
+function _func_GetObj(
+pos 
+)
+{
+if(( pos < 0 ) || ( FaxLineTbl_a.length <= pos ))
+{
+return null;
+}
+return FaxLineTbl_a[pos].obj;
+}
+function _func_GetTypeNum(
+pos 
+)
+{
+if(( pos < 0 ) || ( FaxLineTbl_a.length <= pos ))
+{
+return 0;
+}
+if( null == FaxLineTbl_a[pos].type )
+{
+return 0;
+}
+var split_pos = FaxLineTbl_a[pos].type.lastIndexOf( "_" );
+if( -1 == split_pos )
+{
+return 0;
+}
+var num = eval( FaxLineTbl_a[pos].type.substring( split_pos + 1, FaxLineTbl_a[pos].type.length ) );
+return num;
+}
+function _func_IsPhycl(
+pos 
+)
+{
+if(( pos < 0 ) || ( FaxLineTbl_a.length <= pos ))
+{
+return false;
+}
+if( null == FaxLineTbl_a[pos].type )
+{
+return false;
+}
+return ( -1 != FaxLineTbl_a[pos].type.indexOf( "Phycl_" ) ) ? true : false;
+}
+function _func_IsLogcl(
+pos 
+)
+{
+if(( pos < 0 ) || ( FaxLineTbl_a.length <= pos ))
+{
+return false;
+}
+if( null == FaxLineTbl_a[pos].type )
+{
+return false;
+}
+return ( -1 != FaxLineTbl_a[pos].type.indexOf( "Logcl_" ) ) ? true : false;
+}
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function ComFuncElementCtrlObj( propform )
+{
+this.propform = propform;
+this._func_GetCheckBoxFormat = _func_GetCheckBoxFormat;
+this._func_SetCheckBox       = _func_SetCheckBox;
+this._func_GetCheckBox       = _func_GetCheckBox;
+this._func_SetPullDownList   = _func_SetPullDownList;
+this._func_SetRadioButtons   = _func_SetRadioButtons;
+this._func_GetRadioButtons   = _func_GetRadioButtons;
+this.set       = set;
+this.get       = get;
+this.isExist   = isExist;
+this.isEnabled = isEnabled;
+function _func_GetCheckBoxFormat( Element )
+{
+var CheckBoxFormat = Element.value.split('/');
+if( "undefined" == typeof( CheckBoxFormat.length ) ||
+2 != CheckBoxFormat.length )
+{
+return false;
+}
+this.CheckBoxOffValue = CheckBoxFormat[0];
+this.CheckBoxOnValue  = CheckBoxFormat[1];
+return true;
+}
+function _func_SetCheckBox( Element , SetValue )
+{
+if( true == this._func_GetCheckBoxFormat( Element ) &&
+( this.CheckBoxOnValue == SetValue ))
+{
+Element.checked = true;
+return true;
+}
+return false;
+}
+function _func_GetCheckBox( Element )
+{
+if( true == this._func_GetCheckBoxFormat( Element ) )
+{
+return ( Element.checked == true )
+? this.CheckBoxOnValue : this.CheckBoxOffValue ;
+}
+return false;
+}
+function _func_SetPullDownList( Element , SetValue )
+{
+for( i=0 ; i<Element.options.length ; i++ )
+{
+if( Element.options[i].value == SetValue )
+{
+Element.selectedIndex = i;
+return true;
+}
+}
+return false;
+}
+function _func_SetRadioButtons( Element , SetValue )
+{
+if( "undefined" == typeof( Element.length ) )
+{
+if( Element.value == SetValue )
+{
+Element.checked = true;
+return true;
+}
+return false;
+}
+for( var nCnt=0 ; nCnt<Element.length ; nCnt++ )
+{
+if( Element[ nCnt ].value == SetValue )
+{
+Element[ nCnt ].checked = true;
+return true;
+}
+}
+return false;
+}
+function _func_GetRadioButtons( Element , DefaultValue )
+{
+if( "undefined" == typeof( Element.length ))
+{
+if( true == Element.checked )
+{
+return Element.value;
+}
+return DefaultValue;
+}
+for( nCnt=0 ; nCnt<Element.length ; nCnt++ )
+{
+if( Element[ nCnt ].checked == true )
+{
+return Element[ nCnt ].value
+}
+}
+return DefaultValue;
+}
+function set( ElementName , SetValue )
+{
+var Element = this.propform.elements[ ElementName ];
+if( "undefined" == typeof( Element ) )
+{
+return false;
+}
+switch( Element.type )
+{
+case "checkbox" :
+return this._func_SetCheckBox( Element , SetValue );
+case "select-one" :
+return _func_SetPullDownList( Element , SetValue );
+case "text" : case "password" : case "textarea" : case "hidden" :
+Element.value = SetValue;
+return true;
+default :
+return _func_SetRadioButtons( Element , SetValue );
+}
+}
+function get( ElementName , DefaultValue )
+{
+Element = this.propform.elements[ ElementName ];
+if( "undefined" == typeof( Element ) )
+{
+return DefaultValue;
+}
+switch( Element.type )
+{
+case "checkbox" :
+return this._func_GetCheckBox( Element );
+case "select-one" :
+return Element.options[ Element.selectedIndex ].value;
+case "text" : case "password" : case "textarea" : case "hidden" :
+return Element.value ;
+default : 
+return _func_GetRadioButtons( Element , DefaultValue );
+}
+}
+function isExist( ElementName )
+{
+Element = this.propform.elements[ ElementName ];
+if( "undefined" == typeof( Element ) )
+{
+return false;
+}
+return true;
+}
+function isEnabled( ElementName )
+{
+Element = this.propform.elements[ ElementName ];
+if( "undefined" == typeof( Element ) )
+{
+return false;
+}
+if( true == Element.disabled )
+{
+return false;
+}
+return true;
+}
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function ComFuncFormReloadCtrl(
+propform,
+subform,
+surfix)
+{
+var Object = new ComFuncFormMemberCtrl( propform , subform );
+Object.DataTbl = ( function( DataTbl ) 
+{ 
+for( var ObjCnt=0 ; ObjCnt<DataTbl.length ; ObjCnt++ )
+{ 
+var ElementName = DataTbl[ ObjCnt ].SformEle.name;
+if( "undefined" != typeof( subform.elements[ ElementName + surfix ] ) )
+{
+DataTbl[ ObjCnt ].PformEle = null;
+}
+if( -1 != ElementName.indexOf( surfix, 0 ) &&
+ "undefined" != typeof( subform.elements[ ElementName.replace( surfix , "" ) ] ) )
+{
+DataTbl[ ObjCnt ].PformEle = ( "undefined" == typeof( propform.elements[ ElementName.replace( surfix , "" ) ] ) )
+? null : propform.elements[ ElementName.replace( surfix , "" ) ];
+}
+}
+return DataTbl; 
+} )( Object.DataTbl );
+Object.Init_SetValAll = ( function( DataObj ) 
+{
+PformElementName = ( -1 != DataObj.SformEle.name.indexOf( surfix, 0 ) &&
+ "undefined" != typeof( subform.elements[ DataObj.SformEle.name.replace( surfix , "" ) ] ) )
+? DataObj.SformEle.name.replace( surfix , "" ) : DataObj.SformEle.name ;
+return Object.EleCtrl.set( PformElementName , DataObj.SformEle.value );
+} )
+Object.Exec_SetValAll = ( function( DataObj ) 
+{
+PformElementName = ( -1 != DataObj.SformEle.name.indexOf( surfix, 0 ) &&
+ "undefined" != typeof( subform.elements[ DataObj.SformEle.name.replace( surfix , "" ) ] ) )
+? DataObj.SformEle.name.replace( surfix , "" ) : DataObj.SformEle.name ;
+DataObj.SformEle.value =
+Object.EleCtrl.get( PformElementName , DataObj.SformEle.value );
+} )
+return Object;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function ComFuncFormMemberCtrl(
+propform,
+subform )
+{
+this.propform = propform;
+this.subform  = subform;
+this.INIT_FLAG  = "Init_";
+this.EXEC_FLAG  = "Exec_";
+this.CHECK_FLAG = "Check_";
+this.DataTbl = new Array();
+this.DataTbl = _func_MakeDataTbl( this.subform , this.propform );
+this.EleCtrl = new ComFuncElementCtrlObj( this.propform );
+this.MakeDataObj = _func_MakeDataObj;
+this.MakeDataTbl = _func_MakeDataTbl;
+this.UpDateAll= _func_UpDateAll;
+this.GetCmdFuncName= _func_GetCmdFuncName;
+this.GetCmdDrawStat= _func_GetCmdDrawStat;
+this.Init_SetValAll= _func_Init_SetValAll
+this.Exec_SetValAll= _func_Exec_SetValAll
+this.FuncSlctAndFocus = _func_FuncSlctAndFocus;
+this.SetValToPropForm= SetValToPropForm;
+this.SetValToSubForm= SetValToSubForm;
+this.CheckVal= CheckVal;
+function _func_MakeDataObj( SformEle , PformEle )
+{
+this.PformEle = PformEle;
+this.SformEle = SformEle;
+}
+function _func_MakeDataTbl( subform , propform )
+{
+var tmpDataTbl = new Array(); 
+for( subCnt=0 ; subCnt<subform.elements.length ; subCnt++ )
+{
+var ElementName = subform.elements[ subCnt ].name;
+tmpDataTbl[ subCnt ] = ( "undefined" == typeof( propform.elements[ ElementName ] ) )
+? new _func_MakeDataObj( subform.elements[ ElementName ] , null )
+: new _func_MakeDataObj( subform.elements[ ElementName ] , propform.elements[ ElementName ] );
+}
+return tmpDataTbl;
+}
+function _func_GetCmdFuncName( CmdFlag , val_num )
+{
+return ( CmdFlag + this.DataTbl[ val_num ].SformEle.name );
+}
+function _func_GetCmdDrawStat( CmdFlag , val_num )
+{
+if( null == this.DataTbl[ val_num ].PformEle )
+{
+if( this.CHECK_FLAG == CmdFlag )
+{
+return false;
+}
+if( "undefined" == typeof( window[ this.GetCmdFuncName( this.INIT_FLAG , val_num ) ] ) ||
+"undefined" == typeof( window[ this.GetCmdFuncName( this.EXEC_FLAG , val_num ) ] ) )
+{
+return false;
+}
+}
+else if( true == this.DataTbl[ val_num ].PformEle.disabled )
+{
+if( this.CHECK_FLAG == CmdFlag )
+{
+return false;
+}
+}
+return true;
+}
+function _func_UpDateAll( CmdFlag )
+{
+var val_num;
+var Func_name
+for( val_num in this.DataTbl )
+{
+Func_name = this.GetCmdFuncName( CmdFlag , val_num );
+if( false == this.GetCmdDrawStat( CmdFlag , val_num ) )
+{
+continue;
+}
+if( "undefined" != typeof( window[ Func_name ] ))
+{
+if( false == window[ Func_name ]( this.EleCtrl ) )
+{
+if( this.CHECK_FLAG == CmdFlag )
+{
+this.FuncSlctAndFocus( this.DataTbl[ val_num ] );
+return false;
+}
+}
+}
+else
+{
+if( this.INIT_FLAG == CmdFlag )
+{
+this.Init_SetValAll( this.DataTbl[ val_num ] );
+}
+else if( this.EXEC_FLAG == CmdFlag )
+{
+this.Exec_SetValAll( this.DataTbl[ val_num ] );
+}
+}
+}
+return true;
+}
+function _func_Init_SetValAll( DataObj )
+{
+return this.EleCtrl.set( DataObj.SformEle.name , DataObj.SformEle.value );
+}
+function _func_Exec_SetValAll( DataObj )
+{
+DataObj.SformEle.value =
+this.EleCtrl.get( DataObj.SformEle.name , DataObj.SformEle.value );
+}
+function _func_FuncSlctAndFocus( DataObj )
+{
+if( "undefined" != typeof( DataObj.PformEle.focus ) &&
+"undefined" != typeof( DataObj.PformEle.select ) )
+{
+DataObj.PformEle.focus();
+DataObj.PformEle.select();
+}
+}
+function SetValToPropForm()
+{
+return this.UpDateAll( this.INIT_FLAG );
+}
+function SetValToSubForm()
+{
+return this.UpDateAll( this.EXEC_FLAG );
+}
+function CheckVal()
+{
+return this.UpDateAll( this.CHECK_FLAG );
+}
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function MakeDataObj( PformEle , SformEle )
+{
+this.PformEle = PformEle;
+this.SformEle = SformEle;
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function ComFuncCheckBoxCtrlObj()
+{
+this.GetCheckBoxFormat= _func_GetCheckBoxFormat;
+this.PformUpdate=PformUpdate;
+this.SformUpdate=SformUpdate;
+function _func_GetCheckBoxFormat( DataObj )
+{
+var CheckBoxFormat = DataObj.PformEle.value.split('/');
+if( "undefined" == typeof( CheckBoxFormat.length ) ||
+2 != CheckBoxFormat.length )
+{
+return false;
+}
+this.CheckBoxOffValue = CheckBoxFormat[0];
+this.CheckBoxOnValue  = CheckBoxFormat[1];
+return true;
+}
+function PformUpdate( DataObj )
+{
+if( true == this.GetCheckBoxFormat( DataObj )      &&
+( this.CheckBoxOnValue == DataObj.SformEle.value ))
+{
+DataObj.PformEle.checked = true;
+}
+}
+function SformUpdate( DataObj )
+{
+if( true == this.GetCheckBoxFormat( DataObj ) )
+{
+DataObj.SformEle.value = ( DataObj.PformEle.checked == true )
+? this.CheckBoxOnValue : this.CheckBoxOffValue ;
+}
+}
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function ComFuncFormDatCtrl(
+propform,
+subform )
+{
+this.DataTbl = new Array();
+this.DataTbl = _func_MakeDataTbl();
+this.CheckBoxCtrl = new ComFuncCheckBoxCtrlObj();
+var INIT_FLAG  = "Init_";
+var EXEC_FLAG  = "Exec_";
+var CHECK_FLAG = "Check_";
+this.MakeDataTbl = _func_MakeDataTbl;
+this.UpDateAll= _func_UpDateAll;
+this.Init_SetValAll= _func_Init_SetValAll
+this.Exec_SetValAll= _func_Exec_SetValAll
+this.FuncSlctAndFocus = _func_FuncSlctAndFocus;
+this.SetValToPropForm=SetValToPropForm;
+this.SetValToSubForm=SetValToSubForm;
+this.CheckVal=CheckVal;
+function _func_MakeDataTbl()
+{
+var tmpDataTbl = new Array(); 
+var objCnt=0;
+for( subCnt=0 ; subCnt<subform.elements.length ; subCnt++ )
+{
+for( prpCnt=0 ; prpCnt<propform.elements.length ; prpCnt++ )
+{
+if( propform.elements[ prpCnt ].name == subform.elements[ subCnt ].name )
+{
+tmpDataTbl[ objCnt ] = new MakeDataObj( propform.elements[ propform.elements[ prpCnt ].name ],
+subform.elements[ subform.elements[ subCnt ].name ] );
+objCnt++;
+break;
+}
+}
+}
+return tmpDataTbl;
+}
+function _func_UpDateAll( CmdFlag )
+{
+var val_num;
+var Func_name;
+for( val_num in this.DataTbl )
+{
+Func_name = CmdFlag + this.DataTbl[ val_num ].SformEle.name ;
+if( "undefined" != typeof( window[ Func_name ] ) )
+{
+if( false == window[ Func_name ]( this.DataTbl[ val_num ] ) &&
+CHECK_FLAG == CmdFlag )
+{
+this.FuncSlctAndFocus( this.DataTbl[ val_num ] );
+return false;
+}
+}
+else
+{
+if( INIT_FLAG == CmdFlag )
+{
+this.Init_SetValAll( this.DataTbl[ val_num ] );
+}
+else if( EXEC_FLAG == CmdFlag )
+{
+this.Exec_SetValAll( this.DataTbl[ val_num ] );
+}
+}
+}
+return true;
+}
+function _func_Init_SetValAll( DataObj )
+{
+switch( DataObj.PformEle.type )
+{
+case"checkbox":this.CheckBoxCtrl.PformUpdate( DataObj );
+break;
+case"select-one":DropDownListSelect( DataObj.PformEle , DataObj.SformEle.value );
+break;
+case"password":
+case"text":DataObj.PformEle.value = DataObj.SformEle.value ;
+break;
+default:RadioSelect( DataObj.PformEle , DataObj.SformEle.value );
+break;
+}
+}
+function _func_Exec_SetValAll( DataObj )
+{
+switch( DataObj.PformEle.type )
+{
+case"checkbox":this.CheckBoxCtrl.SformUpdate( DataObj );
+break;
+case"select-one":DataObj.SformEle.value = DropDownList_value( DataObj.PformEle );
+break;
+case"text":
+case"password":DataObj.SformEle.value = DataObj.PformEle.value ;
+break;
+default:DataObj.SformEle.value = GetRadioVal( DataObj.PformEle );
+break;
+}
+}
+function _func_FuncSlctAndFocus( DataObj )
+{
+if( "undefined" != typeof( DataObj.PformEle.focus ) )
+{
+DataObj.PformEle.focus();
+DataObj.PformEle.select();
+}
+}
+function SetValToPropForm()
+{
+return this.UpDateAll( INIT_FLAG );
+}
+function SetValToSubForm()
+{
+return this.UpDateAll( EXEC_FLAG );
+}
+function CheckVal()
+{
+return this.UpDateAll( CHECK_FLAG );
+}
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function ListenerCtrlObj( TargetElement , submitButton )
+{
+var self = this;
+var PropatyForm = TargetElement.form;
+var AlreadyChanged = false;
+var TargetDefaultValue = TargetElement.options[ TargetElement.selectedIndex ].value;
+var DefaultDisableElement = new Object();
+function addEventListener( Element , event , ListenerFunc )
+{
+if( TargetElement.attachEvent )
+{
+Element.attachEvent( "on" + event  , ListenerFunc );
+}
+else
+{
+Element.addEventListener( event  , ListenerFunc , false );
+}
+}
+function CheckNameAndTagName()
+{
+switch( PropatyForm.elements[i].tagName )
+{
+case "FIELDSET" :                     
+return false;
+}
+switch( PropatyForm.elements[i].name )
+{
+case TargetElement.name : 
+case submitButton.name  : 
+case "Cancel_Button" :    
+return false;
+}
+return true;
+}
+function MakeOthersToDisable()
+{
+for( i=0 ; i<PropatyForm.elements.length ; i++ )
+{
+if( false == CheckNameAndTagName( PropatyForm.elements[i] ) )
+{
+continue;
+}
+if( true == PropatyForm.elements[i].disabled )
+{
+DefaultDisableElement[ PropatyForm.elements[i].id ] = PropatyForm.elements[i];
+continue;
+}
+PropatyForm.elements[i].disabled = true;
+}
+submitButton.disabled = false;
+AlreadyChanged = true;
+}
+function MakeOthersToEnable()
+{
+for( i=0 ; i<PropatyForm.elements.length ; i++ )
+{
+if( false == CheckNameAndTagName( PropatyForm.elements[i] ) )
+{
+continue;
+}
+if( null != DefaultDisableElement[ PropatyForm.elements[i].id ] )
+{
+continue;
+}
+PropatyForm.elements[i].disabled = false;
+}
+submitButton.disabled = true;
+AlreadyChanged = false;
+}
+function makePulldownToDefault()
+{
+TargetElement.selectedIndex = TargetDefaultValue;
+}
+function pullDownListenerFunc()
+{
+if( TargetDefaultValue == TargetElement.options[ TargetElement.selectedIndex ].value )
+{
+if( true == AlreadyChanged )
+{
+MakeOthersToEnable();
+}
+}
+else
+{
+if( false == AlreadyChanged )
+{
+MakeOthersToDisable();
+}
+}
+}
+function addButtonListenerFunc()
+{
+var oldListenerFunc = submitButton.onclick;
+submitButton.onclick = MakeOthersToEnable;
+addEventListener( submitButton , "click" , oldListenerFunc );
+}
+self.MainFunction = function()
+{
+addEventListener( TargetElement , "change" , pullDownListenerFunc );
+addButtonListenerFunc();
+}
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function ComFunc_AddListener( TargetElement )
+{
+if( null == TargetElement )
+{
+return;
+}
+var submitButton = TargetElement.form.elements[ TargetElement.name + "_Button" ];
+submitButton.disabled = true;
+var ctrlObj = new ListenerCtrlObj( TargetElement , submitButton );
+ctrlObj.MainFunction();
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function ComFunc_UnEscapeHTML( string )
+{
+return string.replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"');
+}
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function SetDefaultValue( obj, val )
+{
+if( !obj )
+{
+return ;
+}
+obj.value = val;
+}
+//]]>
+</script>
+
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+function ssGetAttribute( attr, value )
+{
+return ( null != value ) ? attr + '="' + value + '" ' : '';
+}
+function tagClass_Plane( txt )
+{
+this.txt = txt;
+this.draw = draw;
+function draw()
+{
+document.write( txt );
+}
+}
+function tagClass_TH( name, span )
+{
+this.name = name;
+this.span = ssGetAttribute( 'colspan', span );
+this.draw = draw;
+function draw()
+{
+document.write( '<th ' + this.span + '>' + this.name + '<\/th>' );
+}
+}
+function tagClass_Option( label, val )
+{
+this.label = label;
+this.val = val;
+this.draw = draw;
+function draw()
+{
+document.write( '<option value="' + this.val + '">' );
+document.write( this.label );
+document.write( '<\/option>' );
+}
+}
+function tagClass_Button( label, event, id, alt )
+{
+this.label = label;
+this.event = event;
+this.id  = ssGetAttribute( 'id', id );
+this.alt = ssGetAttribute( 'alt', alt );
+this.draw = draw;
+function draw()
+{
+document.write( '<input type="button" class="ButtonEnable" ' );
+document.write( 'value="' + this.label + '" ' );
+document.write( 'onclick=\'javascript:' + this.event + '\' ' );
+document.write( this.id );
+document.write( this.alt );
+document.write( '\/> ' );
+}
+}
+function tagClass_Text( name, size, maxlen, event )
+{
+this.name = name;
+this.size = size;
+this.maxlen = maxlen;
+this.event = event;
+this.draw = draw;
+this.getName = getName;
+function draw()
+{
+document.write( '<input type="text" class="Text" ' );
+document.write( 'name="' + this.name + '" ' );
+document.write( 'id="' + this.name + '" ' );
+document.write( 'size="' + this.size + '" ' );
+document.write( 'maxlength="' + this.maxlen + '" ' );
+if( null != this.event )
+{
+document.write( this.event );
+}
+document.write( ' \/>' );
+}
+function getName()
+{
+return this.name;
+}
+}
+function tagClass_TextGray( name, size, maxlen, event, grayflg )
+{
+this.name = name;
+this.size = size;
+this.maxlen = maxlen;
+this.event = event;
+this.draw = draw;
+this.getName = getName;
+function draw()
+{
+document.write( '<input type="text" class="Text" ' );
+document.write( 'name="' + this.name + '" ' );
+document.write( 'id="' + this.name + '" ' );
+document.write( 'size="' + this.size + '" ' );
+document.write( 'maxlength="' + this.maxlen + '" ' );
+if( null != this.event )
+{
+document.write( this.event );
+}
+if( "true" == grayflg)
+{
+document.write( 'disabled="disabled" ' );
+}
+document.write( ' \/>' );
+}
+function getName()
+{
+return this.name;
+}
+}
+function tagClass_CheckBox( name, event, val )
+{
+this.name = name;
+this.event = event;
+this.val = val;
+this.draw = draw;
+this.getName = getName;
+function draw()
+{
+document.write( '<input type="checkbox" class="Checkbox" ' );
+document.write( 'name="' + this.name + '" ' );
+document.write( 'id="' + this.name + '" ' );
+if( null != this.event )
+{
+document.write( 'onclick=\'javascript:' + this.event + '\' ' );
+}
+document.write( ' value="' + this.val + '" \/>' );
+}
+function getName()
+{
+return this.name;
+}
+}
+function tagClass_CheckBoxGray( name, event, val, grayflg)
+{
+this.name = name;
+this.event = event;
+this.val = val;
+this.draw = draw;
+this.getName = getName;
+function draw()
+{
+document.write( '<input type="checkbox" class="Checkbox" ' );
+document.write( 'name="' + this.name + '" ' );
+document.write( 'id="' + this.name + '" ' );
+if( null != this.event )
+{
+document.write( 'onclick=\'javascript:' + this.event + '\' ' );
+}
+if( "true" == grayflg)
+{
+document.write( 'disabled="disabled" ' );
+}
+document.write( ' value="' + this.val + '" \/>' );
+}
+function getName()
+{
+return this.name;
+}
+}
+function tagClass_Radio( name, event, val, disflag )
+{
+this.name = name;
+this.event = event;
+this.val = val;
+this.disflag = disflag;
+this.draw = draw;
+function draw()
+{
+document.write( '<input type="radio" class="Radio" ' );
+document.write( 'name="' + this.name + '" ' );
+document.write( 'value="' + this.val + '" ');
+if( null != this.event )
+{
+document.write( 'onclick=\'javascript:' + this.event + '\' ' );
+}
+if( disflag )
+{
+document.write( 'disabled="disabled" ' );
+}
+document.write( '/>' );
+}
+}
+function tagClass_Select( name, size, event, options )
+{
+this.name = name;
+this.size = size;
+this.event = event;
+this.options = options;
+this.draw = draw;
+this.getName = getName;
+function draw()
+{
+document.write( '<select size="' + this.size + '" ');
+document.write( 'name="' + this.name + '" ' );
+document.write( 'id="' + this.name + '" ' );
+if( null != this.event )
+{
+document.write( this.event );
+}
+document.write( ' >' );
+for( var i = 0; i < options.length; i++ )
+{
+options[i].draw();
+}
+document.write( '<\/select>' );
+}
+function getName()
+{
+return this.name;
+}
+}
+function tagClass_SelectGray( name, size, event, options, grayflg )
+{
+this.name = name;
+this.size = size;
+this.event = event;
+this.options = options;
+this.draw = draw;
+this.getName = getName;
+function draw()
+{
+document.write( '<select size="' + this.size + '" ');
+document.write( 'name="' + this.name + '" ' );
+document.write( 'id="' + this.name + '" ' );
+if( null != this.event )
+{
+document.write( this.event );
+}
+if( "true" == grayflg)
+{
+document.write( 'disabled="disabled" ' );
+}
+document.write( ' >' );
+for( var i = 0; i < options.length; i++ )
+{
+options[i].draw();
+}
+document.write( '<\/select>' );
+}
+function getName()
+{
+return this.name;
+}
+}
+function tagClass_Image( src, border, alt, title )
+{
+this.src = src;
+this.border = 'border="' + ((null != border) ? border : '0') + '" ';
+this.alt = 'alt="' + ((null != alt) ? alt : '') + '" ';
+this.title = 'title="' + ((null != title) ? title  : '') + '" ';
+this.draw = draw;
+function draw()
+{
+document.write( '<img src="' + this.src + '" ' + this.alt + this.title + '/>' );
+}
+}
+function tagClass_Link( label, href, cls, event )
+{
+this.label = label;
+this.href = href;
+this.cls = ssGetAttribute( 'class', cls );
+this.event = (null != event) ? event : '';
+this.draw = draw;
+function draw()
+{
+document.write( '<a href="' + this.href + '" ' );
+document.write( this.cls );
+document.write( this.event );
+document.write( ' \/> ' + this.label + '<\/a>' );
+}
+}
+function tagClass_LButton( link, cls )
+{
+this.link = link;
+this.cls = ssGetAttribute( 'class', cls );
+this.draw = draw;
+function draw()
+{
+document.write( '<span ' + this.cls + '>' );
+this.link.draw();
+document.write( '<\/span>' );
+}
+}
+function tagClass_ItemInput( label, cls, obj, str, isDraw, isAuth )
+{
+this.name = obj.getName();
+this.label = label;
+this.cls = ssGetAttribute( 'class', cls );
+this.obj = obj;
+this.str = str;
+this.isDraw = isDraw;
+this.isAuth = com_index.checkAuth( isAuth );
+this.draw = draw;
+function draw()
+{
+if( this.isDraw && this.isAuth )
+{
+document.write( '<tr ' + this.cls + '>' );
+document.write( '<th><label for="' + this.name + '">' + this.label + ':<\/label><\/th>' );
+document.write( '<td>' );
+this.obj.draw();
+if( null != this.str )
+{
+document.write( this.str );
+}
+document.write( '<\/td>' );
+document.write( '<\/tr>' );
+}
+}
+}
+function tagClass_ItemCheckBox( label, cls, chkbox, isDraw, isAuth )
+{
+this.name = chkbox.getName();
+this.label = label;
+this.cls = ssGetAttribute( 'class', cls );
+this.chkbox = chkbox;
+this.isDraw = isDraw;
+this.isAuth = com_index.checkAuth( isAuth );
+this.draw = draw;
+function draw()
+{
+if( this.isDraw && this.isAuth )
+{
+document.write( '<tr ' + this.cls + '><th colspan="2">' );
+this.chkbox.draw();
+document.write( '<label for="' + this.name + '">' + this.label );
+document.write( '<\/label>' );
+document.write( '<\/th><\/tr>' );
+}
+}
+}
+function tagClass_ItemLabel( label, cls, value, isDraw, isAuth )
+{
+this.label = label;
+this.cls = ssGetAttribute( 'class', cls );
+this.value = value;
+this.isDraw = isDraw;
+this.isAuth = com_index.checkAuth( isAuth );
+this.draw = draw;
+function draw()
+{
+if( this.isDraw && this.isAuth )
+{
+document.write( '<tr ' + this.cls + '>' );
+document.write( '<th>' + this.label + ': <\/th>' );
+document.write( '<td>' + this.value + '<\/td>' );
+document.write( '<\/tr>' );
+}
+}
+}
+function tagClass_ItemText( txt, isDraw, isAuth )
+{
+this.txt = txt;
+this.isDraw = isDraw;
+this.isAuth = com_index.checkAuth( isAuth );
+this.draw = draw;
+function draw()
+{
+if( this.isDraw && this.isAuth )
+{
+document.write( '<tr>' );
+document.write( '<th>' + this.txt + '</th>' );
+document.write( '</tr>' );
+}
+}
+}
+function tagClass_ItemLabelWithBtn( label, cls, value, button, isDraw, isAuth )
+{
+this.label = label;
+this.cls = ssGetAttribute( 'class', cls );
+this.value = value;
+this.button = button;
+this.isDraw = isDraw;
+this.isAuth = com_index.checkAuth( isAuth );
+this.draw = draw;
+function draw()
+{
+if( this.isDraw && this.isAuth )
+{
+document.write( '<tr ' + this.cls + '>' );
+document.write( '<th>' + this.label + ': <\/th>' );
+document.write( '<td>' + this.value + '<\/td>' );
+document.write( '<td>' );
+this.button.draw();
+document.write( '<\/td>' );
+document.write( '<\/tr>' );
+}
+}
+}
+function tagClass_ItemKeyCert( keyFlg, name, toUse, cls, certFlg )
+{
+this.imgKey = new tagClass_Image( crkyGetKeyUrl(keyFlg), null, null, null );
+this.name = name;
+this.toUse = toUse;
+this.cls = ssGetAttribute( 'class', cls );
+this.imgCert = new tagClass_Image( crkyGetCertUrl(certFlg, toUse), null, null, null );
+this.draw = draw;
+function draw()
+{
+document.write( '<tr ' + this.cls + '>' );
+document.write( '<td>' );
+this.imgKey.draw();
+document.write( '<\/td>' );
+document.write( '<td>' + this.name + '<\/td>' );
+document.write( '<td>' );
+crkyDrawUseApp( this.toUse );
+document.write( '<\/td>' );
+document.write( '<td>' );
+this.imgCert.draw();
+document.write( '<\/td>' );
+document.write( '<\/tr>' );
+}
+}
+function tagClass_ItemCrt( dest, name, limit, cls )
+{
+this.dest = dest;
+this.name = name;
+this.limit = limit;
+this.cls = ssGetAttribute( 'class', cls );
+this.draw = draw;
+this.getDateMsg = getDateMsg;
+function draw()
+{
+document.write( '<tr ' + this.cls + '>' );
+document.write( '<td>' );
+document.write( '<img src="media/cert.gif" border="0" alt="" title="" \/>' );
+document.write( '<\/td>' );
+document.write( '<td>' + this.dest + '<\/td>' );
+document.write( '<td>' + this.name + '<\/td>' );
+document.write( '<td>' + this.getDateMsg( this.limit ) + '<\/td>' );
+document.write( '<\/tr>' );
+}
+function getDateMsg( str )
+{
+return new Date_Format( str ).Get_Date_and_Time_Str();
+}
+}
+function tagClass_ItemCrl( name, limit, cls )
+{
+this.name = name;
+this.limit = limit;
+this.cls = ssGetAttribute( 'class', cls );
+this.draw = draw;
+this.getDateMsg = getDateMsg;
+function draw()
+{
+document.write( '<tr ' + this.cls + '>' );
+document.write( '<td>' );
+document.write( '<img src="media/invalid_list.gif" border="0" alt="" title="" \/>' );
+document.write( '<\/td>' );
+document.write( '<td>' + this.name + '<\/td>' );
+document.write( '<td>' + this.getDateMsg( this.limit ) + '<\/td>' );
+document.write( '<\/tr>' );
+}
+function getDateMsg( str )
+{
+return new Date_Format( str ).Get_Date_and_Time_Str();
+}
+}
+function tagClass_Leaf( items )
+{
+this.items = items;
+this.draw = draw;
+function draw()
+{
+document.write( '<tbody>' );
+for( var i = 0; i < this.items.length; i++ )
+{
+this.items[i].draw();
+}
+document.write( '</tbody>' );
+}
+}
+function tagClass_NodeHeader( clses, names )
+{
+this.clses = clses;
+this.names = names;
+this.draw = draw;
+function draw()
+{
+document.write( '<colgroup>' );
+for( var i = 0; i < this.clses.length; i++ )
+{
+document.write( '<col class="' + this.clses[i] + '" \/>' );
+}
+document.write( '<\/colgroup>' );
+if( null != this.names )
+{
+document.write( '<thead><tr>' );
+for( var i = 0; i < this.names.length; i++ )
+{
+this.names[i].draw();
+}
+document.write( '<\/tr><\/thead>' );
+}
+}
+}
+function tagClass_NodeData( divs, title, header, leafs, cls, rules )
+{
+this.divs = divs;
+this.title = title;
+this.header = header;
+this.leafs = leafs;
+this.cls = ssGetAttribute( 'class', cls );
+this.rules = ssGetAttribute( 'rules', rules );
+this.draw = draw;
+function draw()
+{
+if( null != this.title )
+{
+document.writeln('<div class="ModuleElement">');
+document.writeln('<tr >');
+document.writeln('<th colspan="2">');
+document.writeln('<h5>');
+document.write( this.title );
+document.writeln('<\/h5>');
+document.writeln('<\/th>');
+document.writeln('<\/tr>');
+document.writeln('<\/div>');
+}
+for( var i = 0; i < this.divs.length; i++ )
+{
+document.write( '<div class="' + this.divs[i] + '">' );
+}
+document.write( '<table ' + this.cls + this.rules + '>' );
+this.header.draw();
+for( var i = 0; i < this.leafs.length; i++ )
+{
+this.leafs[i].draw();
+}
+document.write( '<\/table>' );
+for( var i = 0; i < this.divs.length; i++ )
+{
+document.write( '<\/div>' );
+}
+}
+}
+function tagClass_NodeOperation( cls, buttons )
+{
+this.cls = ssGetAttribute( 'class', cls );
+this.buttons = buttons;
+this.draw = draw;
+function draw()
+{
+document.write( '<div ' + this.cls + '><fieldset>' );
+for( var i = 0; i < buttons.length; i++ )
+{
+this.buttons[i].draw();
+}
+document.write( '<\/fieldset><\/div>' );
+}
+}
+function tagClass_Node( cls, title, operation, data, isDraw )
+{
+this.cls = ssGetAttribute( 'class', cls );
+this.title = title;
+this.operation = operation;
+this.data = data;
+this.isDraw = isDraw;
+this.draw = draw;
+function draw()
+{
+if( this.isDraw )
+{
+document.write( '<div ' + this.cls + '>' );
+if( null != this.title )
+{
+document.write( '<div class="ModuleHeading">' );
+document.write( '<h4>' + this.title + '<\/h4>' );
+document.write( '<\/div>' );
+}
+if( null != this.operation )
+{
+this.operation.draw();
+}
+this.data.draw();
+document.write( '<\/div>' );
+}
+}
+}
+function tagClass_NodePlural( cls, title, operation, data, isDraw )
+{
+this.cls = ssGetAttribute( 'class', cls );
+this.title = title;
+this.operation = operation;
+this.data = data;
+this.isDraw = isDraw;
+this.draw = draw;
+function draw()
+{
+if( this.isDraw )
+{
+document.write( '<div ' + this.cls + '>' );
+if( null != this.title )
+{
+document.write( '<div class="ModuleHeading">' );
+document.write( '<h4>' + this.title + '<\/h4>' );
+document.write( '<\/div>' );
+}
+if( null != this.operation )
+{
+this.operation.draw();
+}
+for( var i = 0; i < data.length; i++ )
+{
+this.data[i].draw();
+}
+document.write( '<\/div>' );
+}
+}
+}
+function tagClass_PageTitle( title, buttons, comments )
+{
+this.title = title;
+this.buttons = buttons;
+this.comments = comments;
+this.draw = draw;
+function draw()
+{
+ComMkup_ContentHeadingNoReload( this.title );
+if( null != this.comments )
+{
+document.write( '<div id="contentInformation">' );
+for( var i = 0; i < this.comments.length; i++ )
+{
+document.write( this.comments[i] + '<\/br>' );
+}
+document.write( '<\/div>' );
+}
+if( null != this.buttons )
+{
+document.write( '<div class="ContentOperation"><fieldset>' );
+for( var i = 0; i < this.buttons.length; i++ )
+{
+this.buttons[i].draw();
+}
+document.write( '</fieldset></div>' );
+}
+}
+}
+//]]>
+</script>
+
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+var sform = document.SUBMIT_FORM;
+if( "" == sform.FILTER_ID.value )
+{
+sform.FILTER_ID.value = "0";
+}
+tpcp_msg_tbl = new Array(
+new tpcp_tbl( null, "./asublist.cgi", "CorePGTAG=24", "주소록 : 주소 리스트 " )
+);
+tpcp_exe_obj = new tpcp_ctrl( tpcp_msg_tbl );
+function tpcp_leap_link(idx)
+{
+tpcp_exe_obj.tpcp_exec_link(idx);
+}
+function select_adrs(a_id)
+{
+sform.AID.value = a_id;
+var now_time = new Date();
+sform.Dummy.value = now_time.getTime();
+sform.action = "./alframe.cgi?";
+sform.submit();
+}
+function reload_click()
+{
+var now_time = new Date();
+sform.Dummy.value = now_time.getTime();
+sform.action = "./asublist.cgi?";
+sform.submit();
+}
+function doOperate()
+{
+var now_time = new Date();
+sform.Dummy.value = now_time.getTime();
+sform.FILTER_ID.value = pform.FILTER_ID.value;
+sform.action = "./asublist.cgi?";
+sform.submit();
+}
+function ComInit_All()
+{
+var FormCtrlObj = new ComFuncFormMemberCtrl( pform , sform );
+FormCtrlObj.SetValToPropForm();
+}
+var AdrsBookList = {1 : { Name : "", AdrsNum : 0 }
+,2 : { Name : "", AdrsNum : 0 }
+,3 : { Name : "", AdrsNum : 0 }
+,4 : { Name : "", AdrsNum : 0 }
+,5 : { Name : "", AdrsNum : 0 }
+,6 : { Name : "", AdrsNum : 0 }
+,7 : { Name : "", AdrsNum : 0 }
+,8 : { Name : "", AdrsNum : 0 }
+,9 : { Name : "", AdrsNum : 0 }
+,10 : { Name : "", AdrsNum : 0 }
+,11 : { Name : "", AdrsNum : 6 }
+,12 : { Name : "", AdrsNum : 0 }
+};
+function Draw_AdrsBookList()
+{
+if( ("0" == sform.FILTER_ID.value) || ("4" == sform.FILTER_ID.value) )
+{
+for( var BookID in AdrsBookList )
+{
+var BookDetail = AdrsBookList[ BookID ];
+document.write('<tr>');
+document.write('<td>');
+document.write('<a href="JavaScript:select_adrs(' + BookID + ')" target="_self">');
+document.write('<img src="media/ad_bk.gif" border="0" width="32" height="28" alt="" title="" \/>');
+document.write('<\/a>');
+document.write('<a href="JavaScript:select_adrs(' + BookID + ')" target="_self">' + AdrsUtil_GetBookName( BookID ) + '<\/a>');
+document.write('<\/td>');
+document.write('<td>' + BookDetail.Name + '<\/td>');
+document.write('<td>' + BookDetail.AdrsNum + '<\/td>');
+document.write('<\/tr>');
+}
+}
+}
+var MyAdrsPersonalList = [  ];
+function Draw_MyAdrsPersonalList()
+{
+for( var i = 0; i < MyAdrsPersonalList.length; i++ )
+{
+if( ("0" == sform.FILTER_ID.value) || (MyAdrsPersonalList[i].Type == sform.FILTER_ID.value) )
+{
+document.write( '<tr>' );
+document.write( '<td>' );
+document.write( '<a href="JavaScript:select_adrs(' + MyAdrsPersonalList[i].AID + ')" target="_self">' );
+document.write( '<img src="media/ad_bk.gif" border="0" width="32" height="28" alt="" title="" \/>' );
+document.write( '<\/a>' );
+document.write( '<a href="JavaScript:select_adrs(' + MyAdrsPersonalList[i].AID + ')" target="_self">' + AdrsUtil_GetBookName( MyAdrsPersonalList[i].AID ) + '<\/a>' );
+document.write( '<\/td>' );
+document.write( '<td>' + MyAdrsPersonalList[i].Name + '<\/td>' );
+document.write( '<td>' + MyAdrsPersonalList[i].AdrsNum + '<\/td>' );
+document.write( '</tr>' );
+}
+}
+}
+var MyAdrsGroupList = [  ];
+function Draw_MyAdrsGroupList()
+{
+for( var i = 0; i < MyAdrsGroupList.length; i++ )
+{
+if( ("0" == sform.FILTER_ID.value) || (MyAdrsGroupList[i].Type == sform.FILTER_ID.value) )
+{
+document.write( '<tr>' );
+document.write( '<td>' );
+document.write( '<a href="JavaScript:select_adrs(' + MyAdrsGroupList[i].AID + ')" target="_self">' );
+document.write( '<img src="media/ad_bk.gif" border="0" width="32" height="28" alt="" title="" \/>' );
+document.write( '<\/a>' );
+document.write( '<a href="JavaScript:select_adrs(' + MyAdrsGroupList[i].AID + ')" target="_self">' + AdrsUtil_GetBookName( MyAdrsGroupList[i].AID ) + '<\/a>' );
+document.write( '<\/td>' );
+document.write( '<td>' + MyAdrsGroupList[i].Name + '<\/td>' );
+document.write( '<td>' + MyAdrsGroupList[i].AdrsNum + '<\/td>' );
+document.write( '</tr>' );
+}
+}
+}
+function Draw_AdrsBookFilterOperation()
+{
+var kindId = "FILTER_ID";
+var kindOptions = [
+new tagClass_Option( "모두 ", "0" )
+];
+var index = 1;
+var cnt = 0;
+for( var item in AdrsBookList )
+{
+cnt++;
+}
+if( 0 < cnt )
+{
+kindOptions[index++] = new tagClass_Option( "주소 리스트 ", "4" );
+}
+if( 0 < MyAdrsPersonalList.length )
+{
+kindOptions[index++] = new tagClass_Option( "개인 주소 리스트 ", "1" );
+}
+if( 0 < MyAdrsGroupList.length )
+{
+kindOptions[index++] = new tagClass_Option( "사용자 그룹 주소 리스트 ", "2" );
+}
+var kindSelect = new tagClass_Select( kindId, 1, null, kindOptions );
+var opButton = new tagClass_Button( "표시 전환 ", "doOperate()", null );
+document.write('<label for="' + kindId + '">종류 :</label>');
+document.write( '&nbsp;' );
+kindSelect.draw();
+document.write( '&nbsp;' );
+opButton.draw();
+}
+//]]>
+</script>
+<div id="container">
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+ComMkup_RuiCommons();
+//]]>
+</script>
+<div id="applications">
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+ComMkup_ApplicationBranding();
+//]]>
+</script>
+<div id="applicationContents">
+<div class="Wrapper">
+<div id="contentsWrapper">
+<div id="contents">
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+ComMkup_NavTopicPath( tpcp_exe_obj );
+//]]>
+</script>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+ComMkup_ContentHeading( "주소 리스트 " );
+//]]>
+</script>
+<div id="subAddressBookList" class="ContentModule">
+<div class="ModuleElement">
+<div class="ElementOperation">
+<fieldset class="FilterOperation">
+<form name="PROP_FORM" action="" onsubmit="javascript:return(false)">
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+Draw_AdrsBookFilterOperation();
+//]]>
+</script>
+</form>
+</fieldset>
+</div>
+<div class="ItemListComponent">
+<table>
+<colgroup>
+<col class="AddressBookNumberColumn" />
+<col class="AdderssBookNameColumn" />
+<col class="DestinationCountColumn" />
+</colgroup>
+<thead>
+<tr>
+<th>주소 리스트 </th>
+<th>주소 리스트명 </th>
+<th>수신인수 </th>
+</tr>
+</thead>
+<tbody>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+Draw_MyAdrsPersonalList();
+Draw_MyAdrsGroupList();
+Draw_AdrsBookList();
+//]]>
+</script>
+</tbody>
+</table>
+          </div>
+          </div>
+</div>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+ComMkup_TmpFooter();
+//]]>
+</script>
+</div>
+</div>
+<hr />
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+ComMkup_NavigationWrapper();
+//]]>
+</script>
+</div>
+</div>
+<hr />
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+ComMkup_ApplicationInfo();
+//]]>
+</script>
+</div>
+</div>
+<script language="JavaScript" type="text/javascript">
+var pform = document.PROP_FORM;
+ComInit_All();
+</script>
+</body>
+</html>

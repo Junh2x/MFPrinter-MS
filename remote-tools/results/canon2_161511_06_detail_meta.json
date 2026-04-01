@@ -1,0 +1,34 @@
+{
+  "url": "http://192.168.11.227:8000/rps/aprop.cgi",
+  "status": 200,
+  "method": "POST",
+  "req_headers": {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0",
+    "Accept-Encoding": "gzip, deflate, zstd",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Connection": "keep-alive",
+    "Origin": "http://192.168.11.227:8000",
+    "Accept-Language": "ko-KR,ko;q=0.9",
+    "Cache-Control": "max-age=0",
+    "Upgrade-Insecure-Requests": "1",
+    "Referer": "http://192.168.11.227:8000/rps/aprop.cgi",
+    "Cookie": "sessionid=b4ee808e6a7cdf02a9860053819dcaee; portalLang=ko; iR=3256097934",
+    "Content-Length": "320",
+    "Content-Type": "application/x-www-form-urlencoded"
+  },
+  "req_body": "AID=11&PageFlag=&AIDX=7&ANAME=JA_TEST_SMB&ANAMEONE=JA_TEST_SMB&AREAD=JA_TEST_SMB&APNO=0&AAD1=192.168.11.99&ACLS=7&APRTCL=7&APATH=scan_test&AUSER=testuser&INPUT_PSWD=0&APWORD=testpass&PASSCHK=1&PASSCHK=&AdrAction=.%2Falframe.cgi%3F&AMOD=1&Dummy=1775027710961&AFCLS=&AFINT=&APNOL=&AFION=1&AUUID=&Token=28198665441586700292",
+  "resp_headers": {
+    "Date": "Wed, 01 Apr 2026 07:14:32 GMT",
+    "Server": "CANON HTTP Server",
+    "X-Frame-Options": "DENY",
+    "X-Content-Type-Options": "nosniff",
+    "X-XSS-Protection": "1; mode=block",
+    "Content-Type": "text/html;charset=UTF-8",
+    "Pragma": "no-cache",
+    "Cache-Control": "no-cache,no-store,max-age=0",
+    "Expires": "Thu, 01 Jan 1970 00:00:00 GMT",
+    "Transfer-Encoding": "chunked",
+    "Connection": "Keep-Alive",
+    "Keep-Alive": "timeout=30"
+  }
+}
