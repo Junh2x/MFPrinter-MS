@@ -154,7 +154,7 @@ def register_smb(session, token_a, slot=5):
         ("APATH", "scan_test"), ("AUSER", "testuser"),
         ("INPUT_PSWD", "0"), ("APWORD", "testpass"),
         ("PASSCHK", "1"), ("PASSCHK", "1"),
-        ("AdrAction", "./aprop.cgi?"), ("AMOD", "1"),
+        ("AdrAction", "./alframe.cgi?"), ("AMOD", "1"),
         ("Dummy", str(int(time.time()*1000))),
         ("AFCLS", ""), ("AFINT", ""), ("APNOL", ""),
         ("AFION", "1"), ("AUUID", ""), ("Token", token_b2),
