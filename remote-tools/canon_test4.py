@@ -65,6 +65,13 @@ def main():
     save("1_portal", r)
     time.sleep(2)
 
+    # Step 1.5: nativetop (iR 쿠키 설정)
+    log("[1.5] 주소록 진입 (nativetop)")
+    r = s.get(f"{BASE}/rps/nativetop.cgi?RUIPNxBundle=&CorePGTAG=PGTAG_ADR_USR&Dummy={dummy()}",
+              timeout=10, headers={"Referer": f"{BASE}/"})
+    log(f"  → {r.status_code}, cookies={dict(s.cookies)}")
+    time.sleep(1)
+
     # Step 2: 주소 리스트
     log("[2] 주소 리스트 (asublist)")
     r = s.get(f"{BASE}/rps/asublist.cgi?CorePGTAG=24&AMOD=0&FromTopPage=1&Dummy={dummy()}",
