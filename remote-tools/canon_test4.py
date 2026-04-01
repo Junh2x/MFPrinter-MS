@@ -43,6 +43,7 @@ def get_hidden_token(html):
 
 def main():
     slot = int(sys.argv[1]) if len(sys.argv) > 1 else 10
+    aid = sys.argv[2] if len(sys.argv) > 2 else "11"
     s = requests.Session()
     s.verify = False
 
@@ -55,7 +56,7 @@ def main():
     }
     s.headers.update(common)
 
-    log(f"=== 캐논 8단계 재현 (슬롯 {slot}) ===")
+    log(f"=== 캐논 8단계 재현 (슬롯 {slot}, AID={aid}) ===")
     dummy = lambda: str(int(time.time() * 1000))
 
     # Step 1: 메인
@@ -93,7 +94,7 @@ def main():
     # Step 3: 주소록 상세 (albody)
     log("[3] 주소록 상세 (albody)")
     r = s.post(f"{BASE}/rps/albody.cgi",
-               data=f"AID=11&FILTER_ID=0&Dummy={dummy()}",
+               data=f"AID={aid}&FILTER_ID=0&Dummy={dummy()}",
                headers={"Content-Type": "application/x-www-form-urlencoded",
                          "Origin": BASE,
                          "Referer": f"{BASE}/rps/alframe.cgi?",
@@ -105,7 +106,7 @@ def main():
 
     # Step 4: 신규 수신지 입력 폼 (이메일 타입)
     log(f"[4] 등록 폼 진입 (AIDX={slot}, ACLS=2)")
-    body4 = f"AMOD=1&AID=11&AIDX={slot}&ACLS=2&AFION=1&AdrAction=.%2Falframe.cgi%3F&Dummy={dummy()}&Token={token_a}"
+    body4 = f"AMOD=1&AID={aid}&AIDX={slot}&ACLS=2&AFION=1&AdrAction=.%2Falframe.cgi%3F&Dummy={dummy()}&Token={token_a}"
     r = s.post(f"{BASE}/rps/aprop.cgi?",
                data=body4,
                headers={"Content-Type": "application/x-www-form-urlencoded",
@@ -121,7 +122,7 @@ def main():
 
     # Step 5: 파일 타입 변경 (Token 비움, DATADIV 포함, 파일 필드 없음)
     log("[5] 파일 타입 변경")
-    body5 = (f"AID=11&PageFlag=&AIDX={slot}&ANAME=&ANAMEONE=&AREAD=&APNO=0&AAD1="
+    body5 = (f"AID={aid}&PageFlag=&AIDX={slot}&ANAME=&ANAMEONE=&AREAD=&APNO=0&AAD1="
              f"&ACLS=7&DATADIV=&AdrAction=.%2Falframe.cgi%3F&AMOD=1"
              f"&Dummy={dummy()}&AFCLS=&AFINT=&APNOL=&AFION=1&AUUID=&Token=")
     r = s.post(f"{BASE}/rps/aprop.cgi?",
@@ -139,7 +140,7 @@ def main():
 
     # Step 6: 파일 설정 저장 (PageFlag=a_rfn_f.tpl, 호스트만 입력, PASSCHK 두번째 비움)
     log("[6] 파일 설정 저장 (설정 클릭)")
-    body6 = (f"AID=11&PageFlag=a_rfn_f.tpl&AIDX={slot}"
+    body6 = (f"AID={aid}&PageFlag=a_rfn_f.tpl&AIDX={slot}"
              f"&ANAME=JA_V4&ANAMEONE=JA_V4&AREAD=JA_V4&APNO=0"
              f"&AAD1=192.168.11.99&ACLS=7&APRTCL=7"
              f"&APATH=&AUSER=&INPUT_PSWD=0&APWORD="
@@ -162,7 +163,7 @@ def main():
 
     # Step 7: 폴더 설정 입력 (같은 Token 재사용, PASSCHK 두번째 비움)
     log("[7] 폴더 설정 입력")
-    body7 = (f"AID=11&PageFlag=&AIDX={slot}"
+    body7 = (f"AID={aid}&PageFlag=&AIDX={slot}"
              f"&ANAME=JA_V4&ANAMEONE=JA_V4&AREAD=JA_V4&APNO=0"
              f"&AAD1=192.168.11.99&ACLS=7&APRTCL=7"
              f"&APATH=scan_folder&AUSER=testuser&INPUT_PSWD=0&APWORD=1234"
@@ -185,7 +186,7 @@ def main():
 
     # Step 8: 최종 제출 (새 Token, PASSCHK 둘 다 1, AdrAction 변경)
     log("[8] 최종 제출 (anewadrs.cgi)")
-    body8 = (f"AID=11&PageFlag=&AIDX={slot}"
+    body8 = (f"AID={aid}&PageFlag=&AIDX={slot}"
              f"&ANAME=JA_V4&ANAMEONE=JA_V4&AREAD=JA_V4&APNO=0"
              f"&AAD1=192.168.11.99&ACLS=7&APRTCL=7"
              f"&APATH=scan_folder&AUSER=testuser&INPUT_PSWD=0&APWORD=1234"
@@ -213,7 +214,7 @@ def main():
     log("\n[9] 최종 목록")
     s.get(f"{BASE}/rps/asublist.cgi?CorePGTAG=24&AMOD=0&FromTopPage=1&Dummy={dummy()}", timeout=10)
     r2 = s.post(f"{BASE}/rps/albody.cgi",
-                data=f"AID=11&FILTER_ID=0&Dummy={dummy()}",
+                data=f"AID={aid}&FILTER_ID=0&Dummy={dummy()}",
                 headers={"Content-Type": "application/x-www-form-urlencoded"}, timeout=10)
     match = re.search(r'var\s+adrsList\s*=\s*\[([^\]]*)\]', r2.text, re.DOTALL)
     if match:
