@@ -23,6 +23,9 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 RESULT_DIR = Path(__file__).parent / "results"
 RESULT_DIR.mkdir(exist_ok=True)
 
+RUN_TS = datetime.now().strftime("%Y%m%d_%H%M%S")
+JSONL_FILE = None  # main()에서 설정
+
 traffic = []
 counter = 0
 lock = threading.Lock()
@@ -113,6 +116,10 @@ class ProxyHandler(BaseHTTPRequestHandler):
 
         traffic.append(entry)
 
+        # 실시간 파일 저장
+        with open(JSONL_FILE, "a", encoding="utf-8") as f:
+            f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+
         # 콘솔 출력
         ts = datetime.now().strftime("%H:%M:%S")
         req_info = ""
@@ -193,16 +200,21 @@ def main():
     target_port = sys.argv[2] if len(sys.argv) > 2 else "80"
     local_port = 9000
 
+    global JSONL_FILE
     target_base = f"http://{target_ip}:{target_port}"
     ProxyHandler.target_base = target_base
     ProxyHandler.target_ip = target_ip
     ProxyHandler.target_port = target_port
     ProxyHandler.local_port = local_port
 
+    ip_safe = target_ip.replace(".", "_")
+    JSONL_FILE = RESULT_DIR / f"proxy_{ip_safe}_{target_port}_{RUN_TS}.jsonl"
+
     print("=" * 60)
     print(f"  복합기 트래픽 로깅 프록시")
     print(f"  대상: {target_base}")
     print(f"  브라우저에서 접속: http://localhost:{local_port}/")
+    print(f"  실시간 로그: {JSONL_FILE}")
     print(f"  종료: Ctrl+C")
     print("=" * 60)
 
