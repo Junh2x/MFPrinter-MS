@@ -30,6 +30,9 @@ lock = threading.Lock()
 
 class ProxyHandler(BaseHTTPRequestHandler):
     target_base = ""
+    target_ip = ""
+    target_port = ""
+    local_port = 9000
 
     def do_REQUEST(self, method):
         global counter
@@ -59,8 +62,22 @@ class ProxyHandler(BaseHTTPRequestHandler):
             self.send_error(502, f"Proxy error: {e}")
             return
 
-        # 응답 본문
+        # 응답 본문 - 텍스트면 URL 치환
         resp_body = r.content
+        ct = r.headers.get("Content-Type", "")
+        if any(t in ct for t in ["text", "json", "xml", "javascript", "html"]):
+            try:
+                text = resp_body.decode("utf-8")
+                # 원본 IP:포트 → localhost:프록시포트로 치환
+                text = text.replace(f"http://{self.target_ip}:{self.target_port}", f"http://localhost:{self.local_port}")
+                text = text.replace(f"https://{self.target_ip}:{self.target_port}", f"http://localhost:{self.local_port}")
+                text = text.replace(f"http://{self.target_ip}", f"http://localhost:{self.local_port}")
+                text = text.replace(f"https://{self.target_ip}", f"http://localhost:{self.local_port}")
+                text = text.replace(f"//{self.target_ip}:{self.target_port}", f"//localhost:{self.local_port}")
+                text = text.replace(f"//{self.target_ip}", f"//localhost:{self.local_port}")
+                resp_body = text.encode("utf-8")
+            except:
+                pass
 
         # 로그 기록
         with lock:
@@ -88,7 +105,6 @@ class ProxyHandler(BaseHTTPRequestHandler):
                 entry["request_body"] = f"<binary {len(body)} bytes>"
 
         # 텍스트 응답이면 본문도 저장
-        ct = r.headers.get("Content-Type", "")
         if any(t in ct for t in ["text", "json", "xml", "javascript", "html"]):
             try:
                 entry["response_body"] = resp_body.decode("utf-8")
@@ -179,6 +195,9 @@ def main():
 
     target_base = f"http://{target_ip}:{target_port}"
     ProxyHandler.target_base = target_base
+    ProxyHandler.target_ip = target_ip
+    ProxyHandler.target_port = target_port
+    ProxyHandler.local_port = local_port
 
     print("=" * 60)
     print(f"  복합기 트래픽 로깅 프록시")
