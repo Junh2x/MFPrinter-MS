@@ -9,6 +9,8 @@
         var protocol=location.protocol;
         var port=location.protocol === "https:" ? 5001 : 5000;
         var URL=protocol+"//"+location.hostname+":"+port+location.pathname+location.search;
+        
+        console.log(URL);
         location.replace(URL);
     </script>
 </html>
