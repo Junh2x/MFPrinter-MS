@@ -156,7 +156,32 @@ def register_smb(session, token_a, slot=5):
         log("[등록] Token B2 추출 실패!")
         return False
 
-    # 3) 실제 등록 POST (Token B2 사용)
+    # 3) 파일 상세 설정 POST ("설정" 버튼) → Token B3
+    detail_data = [
+        ("AID", "11"), ("PageFlag", ""), ("AIDX", str(slot)),
+        ("ANAME", "JA_TEST_SMB"), ("ANAMEONE", "JA_TEST_SMB"), ("AREAD", "JA_TEST_SMB"),
+        ("APNO", "0"), ("AAD1", "192.168.11.99"), ("ACLS", "7"), ("APRTCL", "7"),
+        ("APATH", "scan_test"), ("AUSER", "testuser"),
+        ("INPUT_PSWD", "0"), ("APWORD", "testpass"),
+        ("PASSCHK", "1"), ("PASSCHK", ""),
+        ("AdrAction", "./alframe.cgi?"), ("AMOD", "1"),
+        ("Dummy", str(int(time.time()*1000))),
+        ("AFCLS", ""), ("AFINT", ""), ("APNOL", ""),
+        ("AFION", "1"), ("AUUID", ""), ("Token", token_b2),
+    ]
+    r3 = session.post(f"{BASE}/rps/aprop.cgi", data=detail_data,
+                      headers={"Referer": f"{BASE}/rps/aprop.cgi"},
+                      timeout=TIMEOUT)
+    log(f"[등록] 3단계 상세설정 → {r3.status_code}")
+    save_response("05c_aprop_detail", r3)
+
+    token_b3 = extract_token(r3.text)
+    log(f"[등록] Token B3: {token_b3[:20] if token_b3 else 'None'}...")
+    if not token_b3:
+        log("[등록] Token B3 추출 실패!")
+        return False
+
+    # 4) 실제 등록 POST (Token B3 사용)
     reg_data = [
         ("AID", "11"), ("PageFlag", ""), ("AIDX", str(slot)),
         ("ANAME", "JA_TEST_SMB"), ("ANAMEONE", "JA_TEST_SMB"), ("AREAD", "JA_TEST_SMB"),
@@ -167,16 +192,16 @@ def register_smb(session, token_a, slot=5):
         ("AdrAction", "./aprop.cgi?"), ("AMOD", "1"),
         ("Dummy", str(int(time.time()*1000))),
         ("AFCLS", ""), ("AFINT", ""), ("APNOL", ""),
-        ("AFION", "1"), ("AUUID", ""), ("Token", token_b2),
+        ("AFION", "1"), ("AUUID", ""), ("Token", token_b3),
     ]
-    r3 = session.post(f"{BASE}/rps/anewadrs.cgi", data=reg_data,
+    r4 = session.post(f"{BASE}/rps/anewadrs.cgi", data=reg_data,
                       headers={"Referer": f"{BASE}/rps/aprop.cgi"},
                       timeout=TIMEOUT)
-    log(f"[등록] 3단계 등록POST → {r3.status_code} ({len(r3.content)}B)")
-    save_response("06_register", r3)
+    log(f"[등록] 4단계 등록POST → {r4.status_code} ({len(r4.content)}B)")
+    save_response("06_register", r4)
 
     # 성공/실패 확인
-    if "ERR_SUBMIT_FORM" in r3.text:
+    if "ERR_SUBMIT_FORM" in r4.text:
         log("[등록] 실패: ERR_SUBMIT_FORM 반환")
         return False
     else:
