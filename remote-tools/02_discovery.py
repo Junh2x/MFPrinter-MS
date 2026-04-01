@@ -30,6 +30,7 @@ BRAND_KEYWORDS = {
     "ricoh": ["ricoh", "리코", "im c", "imc", "web image monitor", "savin", "lanier"],
     "canon": ["canon", "캐논", "imagerunner", "ir-adv", "iradv", "remote ui", "meap"],
 }
+# commit
 
 
 def log(msg, color=None):
