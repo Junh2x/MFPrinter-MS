@@ -22,6 +22,7 @@ http://192.168.11.227:8000/rps/asublist.cgi?CorePGTAG=24&AMOD=0&FromTopPage=1&Du
 주소 리스트 조회
 http://192.168.11.227:8000/rps/albody.cgi
 페이로드: AID=1&FILTER_ID=0&Dummy=1775019074136
+쿠키: portalLang=ko; sessionid=43ea476de0f32d3a09758ade3cd9d731; iR=3489871917
 
 리스폰스: 응답 HTML 스크립트 태그 내 변수
 var adrsList = { 3:{tp:2,nm:"김민규 ",ad:"minkyu0430@naver.com ",ot:"김민규 "}
@@ -87,3 +88,16 @@ POST
 사용자명	HOSTNAME_TEST
 송신전에 확인	해제
 
+박스 리스트:
+Request URL
+http://192.168.11.227:8000/rps/bpbl.cgi?CorePGTAG=16&BoxKind=UserBox&Dummy=1775021704332
+Request Method
+GET
+페이로드: CorePGTAG=16&BoxKind=UserBox&Dummy=1775021704332
+
+박스 정보 조회:
+Request URL
+http://192.168.11.227:8000/rps/blogin.cgi
+Request Method
+POST
+페이로드: BOX_No=00&BoxKind=UserBox&Dummy=1775021746449&Cookie=

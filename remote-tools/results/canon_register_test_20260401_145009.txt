@@ -1,0 +1,31 @@
+[14:50:09] [목록 조회] POST http://192.168.11.227:8000/rps/albody.cgi → 200
+[14:50:09]   저장: canon_test_145009_list_addresses_meta.json, canon_test_145009_list_addresses_body.html
+[14:50:09] [목록] adrsList 없음
+[14:50:09]   응답 미리보기: <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="ko" xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-script-type" content="text/javascript" />
+<meta http-equiv="content-style-type" content="text/css" />
+<meta http-equiv= "pragma" content="no-cache" />
+<meta http-equiv="cache-control" content="no-cache,no-st
+[14:50:09] [등록] POST http://192.168.11.227:8000/rps/anewadrs.cgi → 200
+[14:50:09]   응답 크기: 2053B
+[14:50:09]   저장: canon_test_145009_register_smb_meta.json, canon_test_145009_register_smb_body.html
+[14:50:09] [목록 조회] POST http://192.168.11.227:8000/rps/albody.cgi → 200
+[14:50:09]   저장: canon_test_145009_list_addresses_meta.json, canon_test_145009_list_addresses_body.html
+[14:50:09] [목록] adrsList 없음
+[14:50:09]   응답 미리보기: <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="ko" xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-script-type" content="text/javascript" />
+<meta http-equiv="content-style-type" content="text/css" />
+<meta http-equiv= "pragma" content="no-cache" />
+<meta http-equiv="cache-control" content="no-cache,no-st
+[14:50:09] [토큰 취득] GET http://192.168.11.227:8000/rps/asublist.cgi?CorePGTAG=24&AMOD=0&FromTopPage=1&Dummy=9999 → 200
+[14:50:09]   저장: canon_test_145009_get_token_asublist_meta.json, canon_test_145009_get_token_asublist_body.html
+[14:50:09] [토큰] 자동 추출 실패. Token 관련 텍스트 검색:
+[14:50:09] [토큰 2차] GET http://192.168.11.227:8000/rps/aprop.cgi?AMOD=1&AID=11&AIDX=5&ACLS=7&AFION=1 → 200
+[14:50:09]   저장: canon_test_145009_get_token_aprop_meta.json, canon_test_145009_get_token_aprop_body.html
+[14:50:09] [토큰] 2차에서도 Token 관련 텍스트:
