@@ -52,6 +52,8 @@ else:
 
 # 응답 저장
 from pathlib import Path
-(Path(__file__).parent / "results" / "canon_session_test_response.html").write_text(r.text, encoding="utf-8")
-(Path(__file__).parent / "results" / "canon_session_test_body.txt").write_text(r.request.body, encoding="utf-8")
+RESULT_DIR = Path(__file__).parent / "results"
+RESULT_DIR.mkdir(exist_ok=True)
+(RESULT_DIR / "canon_session_test_response.html").write_text(r.text, encoding="utf-8")
+(RESULT_DIR / "canon_session_test_body.txt").write_text(r.request.body, encoding="utf-8")
 print("응답 저장됨")

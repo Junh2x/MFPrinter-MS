@@ -125,6 +125,9 @@ foreach ($e in $entries) {
 }
 
 # Save
-$body7 | Out-File -FilePath ".\remote-tools\results\canon_ps_body.txt" -Encoding utf8
-$r.Content | Out-File -FilePath ".\remote-tools\results\canon_ps_response.html" -Encoding utf8
-Write-Host "`nSaved to results\"
+$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$resultDir = Join-Path $scriptDir "results"
+if (-not (Test-Path $resultDir)) { New-Item -ItemType Directory -Path $resultDir | Out-Null }
+$body7 | Out-File -FilePath (Join-Path $resultDir "canon_ps_body.txt") -Encoding utf8
+$r.Content | Out-File -FilePath (Join-Path $resultDir "canon_ps_response.html") -Encoding utf8
+Write-Host "`nSaved to $resultDir"

@@ -14,11 +14,17 @@ except ImportError:
     print("requests 패키지 필요: pip install requests urllib3")
     sys.exit(1)
 
-RESULT_DIR = Path(__file__).parent / "results"
-RESULT_DIR.mkdir(exist_ok=True)
+REMOTE_TOOLS_DIR = Path(__file__).parent.parent
+RESULT_DIR_CANON = REMOTE_TOOLS_DIR / "canon" / "results"
+RESULT_DIR_RICOH = REMOTE_TOOLS_DIR / "ricoh" / "results"
+RESULT_DIR_SINDOH = REMOTE_TOOLS_DIR / "sindoh" / "results"
+RESULT_DIR_COMMON = REMOTE_TOOLS_DIR / "common" / "results"
+for d in [RESULT_DIR_CANON, RESULT_DIR_RICOH, RESULT_DIR_SINDOH, RESULT_DIR_COMMON]:
+    d.mkdir(parents=True, exist_ok=True)
+
 TIMEOUT = 10
 
-LOG_FILE = RESULT_DIR / f"05_api_test_log_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+LOG_FILE = RESULT_DIR_COMMON / f"05_api_test_log_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
 
 TEST_PREFIX = "JA_TEST_"
 test_results = []
@@ -81,7 +87,7 @@ def test_ricoh(ip, username="admin", password=""):
             try:
                 data = r.json()
                 # JSON 구조 저장
-                json_file = RESULT_DIR / f"ricoh_{ip.replace('.','_')}_addressbook_structure.json"
+                json_file = RESULT_DIR_RICOH / f"ricoh_{ip.replace('.','_')}_addressbook_structure.json"
                 with open(json_file, "w", encoding="utf-8") as f:
                     json.dump(data, f, ensure_ascii=False, indent=2)
                 log(f"  주소록 JSON 구조 저장: {json_file.name}", "green")
@@ -155,7 +161,7 @@ def test_ricoh(ip, username="admin", password=""):
         record_test("문서서버_파일목록", r.status_code < 400,
                     f"status={r.status_code}, size={len(r.content)}B")
         if r.status_code < 400:
-            json_file = RESULT_DIR / f"ricoh_{ip.replace('.','_')}_documents_structure.json"
+            json_file = RESULT_DIR_RICOH / f"ricoh_{ip.replace('.','_')}_documents_structure.json"
             json_file.write_text(r.text, encoding="utf-8")
             log(f"  문서 목록 저장: {json_file.name}", "green")
     except Exception as e:
@@ -168,7 +174,7 @@ def test_ricoh(ip, username="admin", password=""):
         record_test("eSCL_스캔능력", r.status_code == 200,
                     f"status={r.status_code}")
         if r.status_code == 200:
-            caps_file = RESULT_DIR / f"ricoh_{ip.replace('.','_')}_escl_capabilities.xml"
+            caps_file = RESULT_DIR_RICOH / f"ricoh_{ip.replace('.','_')}_escl_capabilities.xml"
             caps_file.write_text(r.text, encoding="utf-8")
     except Exception as e:
         record_test("eSCL_스캔능력", False, str(e))
@@ -197,7 +203,7 @@ def test_canon(ip, username="7654321", password="7654321"):
                 record_test(f"WebDAV_{path}", r.status_code in [200, 207],
                             f"status={r.status_code}")
                 if r.status_code in [200, 207]:
-                    webdav_file = RESULT_DIR / f"canon_{ip.replace('.','_')}_webdav_response.xml"
+                    webdav_file = RESULT_DIR_CANON / f"canon_{ip.replace('.','_')}_webdav_response.xml"
                     webdav_file.write_text(r.text, encoding="utf-8")
                     log(f"  WebDAV 응답 저장: {webdav_file.name}", "green")
             except Exception as e:
@@ -224,7 +230,7 @@ def test_canon(ip, username="7654321", password="7654321"):
                     f"status={r.status_code}, url={r.url}")
 
         # 메인 페이지 HTML 저장
-        html_file = RESULT_DIR / f"canon_{ip.replace('.','_')}_main_page.html"
+        html_file = RESULT_DIR_CANON / f"canon_{ip.replace('.','_')}_main_page.html"
         html_file.write_text(r.text, encoding="utf-8")
     except Exception as e:
         record_test("RemoteUI_접근", False, str(e))
@@ -238,7 +244,7 @@ def test_canon(ip, username="7654321", password="7654321"):
             record_test(f"eSCL_스캔능력({scheme})", r.status_code == 200,
                         f"status={r.status_code}")
             if r.status_code == 200:
-                caps_file = RESULT_DIR / f"canon_{ip.replace('.','_')}_escl_capabilities.xml"
+                caps_file = RESULT_DIR_CANON / f"canon_{ip.replace('.','_')}_escl_capabilities.xml"
                 caps_file.write_text(r.text, encoding="utf-8")
                 break
         except Exception as e:
@@ -264,7 +270,7 @@ def test_sindoh(ip, username="admin", password="admin"):
         record_test("웹인터페이스_접근", r.status_code < 400,
                     f"status={r.status_code}, size={len(r.content)}B, url={r.url}")
 
-        html_file = RESULT_DIR / f"sindoh_{ip.replace('.','_')}_main_page.html"
+        html_file = RESULT_DIR_SINDOH / f"sindoh_{ip.replace('.','_')}_main_page.html"
         html_file.write_text(r.text, encoding="utf-8")
 
         # iframe/frame src 추출
@@ -275,7 +281,7 @@ def test_sindoh(ip, username="admin", password="admin"):
             try:
                 r2 = session.get(frame_url, timeout=TIMEOUT)
                 safe_name = re.sub(r'[^\w]', '_', frame_src)[:50]
-                frame_file = RESULT_DIR / f"sindoh_{ip.replace('.','_')}_frame_{safe_name}.html"
+                frame_file = RESULT_DIR_SINDOH / f"sindoh_{ip.replace('.','_')}_frame_{safe_name}.html"
                 frame_file.write_text(r2.text, encoding="utf-8")
                 log(f"  프레임 저장: {frame_file.name}", "green")
             except:
@@ -291,7 +297,7 @@ def test_sindoh(ip, username="admin", password="admin"):
         record_test("eSCL_스캔능력", r.status_code == 200,
                     f"status={r.status_code}")
         if r.status_code == 200:
-            caps_file = RESULT_DIR / f"sindoh_{ip.replace('.','_')}_escl_capabilities.xml"
+            caps_file = RESULT_DIR_SINDOH / f"sindoh_{ip.replace('.','_')}_escl_capabilities.xml"
             caps_file.write_text(r.text, encoding="utf-8")
     except Exception as e:
         record_test("eSCL_스캔능력", False, str(e))
@@ -315,7 +321,7 @@ def test_sindoh(ip, username="admin", password="admin"):
                 record_test(f"경로탐색_{path}", True, f"status={r.status_code}, size={len(r.content)}B")
                 # 성공한 경로의 응답 저장
                 safe = re.sub(r'[^\w]', '_', path)[:50]
-                resp_file = RESULT_DIR / f"sindoh_{ip.replace('.','_')}{safe}.html"
+                resp_file = RESULT_DIR_SINDOH / f"sindoh_{ip.replace('.','_')}{safe}.html"
                 resp_file.write_text(r.text, encoding="utf-8")
         except:
             pass
@@ -365,8 +371,10 @@ def main():
         symbol = "PASS" if t["success"] else "FAIL"
         log(f"  [{symbol}] {t['test']}: {t['details'][:80]}", color)
 
-    # 결과 저장
-    result_file = RESULT_DIR / f"test_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+    # 결과 저장 (브랜드별 폴더)
+    result_dirs = {"ricoh": RESULT_DIR_RICOH, "canon": RESULT_DIR_CANON, "sindoh": RESULT_DIR_SINDOH}
+    result_dir = result_dirs.get(brand, RESULT_DIR_COMMON)
+    result_file = result_dir / f"test_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
     with open(result_file, "w", encoding="utf-8") as f:
         json.dump(test_results, f, ensure_ascii=False, indent=2)
     log(f"\n결과 저장: {result_file}", "green")
