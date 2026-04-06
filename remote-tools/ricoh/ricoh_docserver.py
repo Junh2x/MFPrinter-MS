@@ -46,7 +46,7 @@ def login(s):
     if "cookieOnOffChecker" not in {c.name for c in s.cookies}:
         s.cookies.set("cookieOnOffChecker", "on", domain=IP)
     log("[0] 초기 쿠키 OK")
-    time.sleep(1)
+    
 
     r = s.get(f"{BASE}/web/guest/ko/websys/webArch/authForm.cgi", timeout=10)
     wim_match = re.search(r'name=["\']wimToken["\'][^>]*value=["\']([^"\']+)', r.text)
@@ -129,7 +129,7 @@ def create_folder(s, wim_token, folder_id, folder_name, password=""):
                timeout=10)
     save("create_1_form", r)
     log(f"[Step1] 생성 폼 진입 → {r.status_code}")
-    time.sleep(1)
+    
 
     # Step 2: 비밀번호 설정 페이지 (폴더명/ID 전달)
     r = s.post(f"{BASE}/web/entry/ko/webdocbox/chPasswordPage.cgi",
@@ -150,7 +150,7 @@ def create_folder(s, wim_token, folder_id, folder_name, password=""):
                timeout=10)
     save("create_2_pw_page", r)
     log(f"[Step2] 비밀번호 페이지 → {r.status_code}")
-    time.sleep(1)
+    
 
     # Step 3: 비밀번호 설정 완료
     pw_b64 = b64(password) if password else ""
@@ -174,7 +174,7 @@ def create_folder(s, wim_token, folder_id, folder_name, password=""):
                timeout=10)
     save("create_3_commit_pw", r)
     log(f"[Step3] 비밀번호 설정 → {r.status_code}")
-    time.sleep(1)
+    
 
     # Step 4: 속성 페이지 (확인/취소 폼)
     r = s.post(f"{BASE}/web/entry/ko/webdocbox/folderPropPage.cgi",
@@ -196,7 +196,7 @@ def create_folder(s, wim_token, folder_id, folder_name, password=""):
                timeout=10)
     save("create_4_prop", r)
     log(f"[Step4] 속성 페이지 → {r.status_code}")
-    time.sleep(1)
+    
 
     # Step 5: 최종 생성 확정 (putFolderProp.cgi)
     r = s.post(f"{BASE}/web/entry/ko/webdocbox/putFolderProp.cgi",
@@ -227,7 +227,7 @@ def create_folder(s, wim_token, folder_id, folder_name, password=""):
 
 
 if __name__ == "__main__":
-    FOLDER_ID = "003"
+    FOLDER_ID = "004"
     FOLDER_NAME = "TEST_FOLDER"
     PASSWORD = "1234"
 
@@ -246,17 +246,17 @@ if __name__ == "__main__":
 
     if not login(s):
         sys.exit(1)
-    time.sleep(1)
+    
 
     log("\n=== 폴더 목록 조회 ===")
     wim_token, folders = list_folders(s)
     if not wim_token:
         log("[FAIL] wimToken 없음")
         sys.exit(1)
-    time.sleep(1)
+    
 
     create_folder(s, wim_token, FOLDER_ID, FOLDER_NAME, PASSWORD)
-    time.sleep(1)
+    
 
     log("\n=== 생성 후 재조회 ===")
     list_folders(s)
