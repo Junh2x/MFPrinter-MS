@@ -42,8 +42,9 @@ def login(s, userid, password):
     """로그인 → wimToken 획득"""
     # 0. 메인 페이지 → 초기 쿠키 (cookieOnOffChecker 등)
     s.get(f"{BASE}/", timeout=10, allow_redirects=True)
-    s.cookies.set("cookieOnOffChecker", "on")
-    log(f"[0] 초기 쿠키 설정 — {dict(s.cookies)}")
+    if "cookieOnOffChecker" not in {c.name for c in s.cookies}:
+        s.cookies.set("cookieOnOffChecker", "on", domain=IP)
+    log(f"[0] 초기 쿠키 설정 OK")
     time.sleep(1)
 
     # 1. 로그인 폼에서 wimToken 가져오기
