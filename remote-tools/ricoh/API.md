@@ -890,3 +890,63 @@ user-agent
 Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
 페이로드: wimToken=534410434&id=&jt=&el=&urlLang=ko&urlProfile=entry&pdfThumbnailURI=&thumbnailURI=&WidthSize=&subdocCount=&targetDocId=002&title=&creator=&useInputParam=false&useSavedParam=&subReturnDsp=3&mode=CREATE&wayTo=&selectedFolderId=002&useSavedPropParam=true&ID=&simpleErrorMessage=&dummy=
 
+폴더 생성 요청:
+Request URL
+http://192.168.11.185/web/entry/ko/webdocbox/putFolderProp.cgi
+Request Method
+POST
+Status Code
+200 OK
+Remote Address
+192.168.11.185:80
+Referrer Policy
+strict-origin-when-cross-origin
+cache-control
+no-cache
+connection
+Keep-Alive
+content-security-policy
+default-src 'self' 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'self'
+content-type
+text/html; charset=UTF-8
+date
+Mon, 06 Apr 2026 08:41:40 GMT
+expires
+Mon, 06 Apr 2026 08:41:40 GMT
+pragma
+no-cache
+server
+Web-Server/3.0
+set-cookie
+cookieOnOffChecker=on; path=/; HttpOnly
+transfer-encoding
+Chunked
+x-frame-options
+SAMEORIGIN
+accept
+text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+accept-encoding
+gzip, deflate
+accept-language
+ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7
+cache-control
+max-age=0
+connection
+keep-alive
+content-length
+203
+content-type
+application/x-www-form-urlencoded
+cookie
+risessionid=084194370038834; cookieOnOffChecker=on; docList_appType=all; docList_filterPropName=; docList_filterPropValue=; docList_rowBlockSize=10; docList_show=thumbnail; docList_orderByProp=creationDate; docList_orderByReq=1; checkboxValue=; wimsesid=108436228
+host
+192.168.11.185
+origin
+http://192.168.11.185
+referer
+http://192.168.11.185/web/entry/ko/webdocbox/folderPropPage.cgi
+upgrade-insecure-requests
+1
+user-agent
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+페이로드: wimToken=534410434&targetFolderId=003&changedFolderName=%EC%83%88+%ED%8F%B4%EB%8D%94+003&mode=CREATE&targetDocId=&selectedFolderId=&title=&useSavedPropParam=true&useInputParam=false&subReturnDsp=3&dummy=
