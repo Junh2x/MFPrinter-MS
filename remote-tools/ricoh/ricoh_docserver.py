@@ -5,7 +5,6 @@ import time
 import base64
 from datetime import datetime
 from pathlib import Path
-from urllib.parse import quote
 import requests
 import urllib3
 urllib3.disable_warnings()
@@ -43,7 +42,6 @@ def get_wim_token(html):
 
 
 def login(s):
-    """로그인 → 세션 확보"""
     s.get(f"{BASE}/", timeout=10, allow_redirects=True)
     if "cookieOnOffChecker" not in {c.name for c in s.cookies}:
         s.cookies.set("cookieOnOffChecker", "on", domain=IP)
@@ -82,25 +80,35 @@ def list_folders(s):
     if wim_token:
         log(f"  wimToken = {wim_token}")
 
-    # 폴더 정보 파싱 시도
-    folders = re.findall(r'folderName["\s:=]+["\']([^"\']+)', r.text)
-    if folders:
-        for f in folders:
-            log(f"  폴더: {f}")
-    else:
-        # 대체 파싱: title이나 id 패턴
-        folder_ids = re.findall(r'targetFolderId["\s:=]+["\']?(\d+)', r.text)
-        folder_names = re.findall(r'<title[^>]*>([^<]*폴더[^<]*)</title>', r.text)
-        if folder_ids:
-            log(f"  폴더 ID: {folder_ids}")
-        if folder_names:
-            log(f"  폴더명: {folder_names}")
+    # 폴더 파싱: <a href="docListPage.cgi?selectedFolderId=N&subReturnDsp=3">폴더이름</a>
+    folders = []
+    # 공유 폴더 + 일반 폴더
+    for m in re.finditer(r'docListPage\.cgi\?selectedFolderId=(\d+)[^>]*>([^<]+)</a>', r.text):
+        fid = m.group(1)
+        fname = m.group(2).strip()
+        folders.append({"id": fid, "name": fname})
 
-    return wim_token, r.text
+    # 폴더 번호 파싱 (테이블 행에서)
+    folder_nums = re.findall(r'<td[^>]*class="listData"[^>]*>(\d{3})</td>', r.text)
+
+    # 비밀번호 여부 파싱
+    has_pw = []
+    for m in re.finditer(r'selectedFolderId.*?(?:iconKey\.gif|---)', r.text, re.DOTALL):
+        has_pw.append("iconKey.gif" in m.group(0))
+
+    if folders:
+        for i, f in enumerate(folders):
+            num = folder_nums[i] if i < len(folder_nums) else "---"
+            pw = "잠금" if (i < len(has_pw) and has_pw[i]) else ""
+            log(f"  [{f['id']}] {num} {f['name']} {pw}")
+    else:
+        log("  폴더 없음")
+
+    return wim_token, folders
 
 
 def create_folder(s, wim_token, folder_id, folder_name, password=""):
-    """문서 서버 폴더 생성 (4단계)"""
+    """문서 서버 폴더 생성 (5단계)"""
     log(f"\n=== 폴더 생성 ===")
     log(f"  ID={folder_id}, 이름={folder_name}, 비밀번호={'***' if password else '없음'}")
 
@@ -116,18 +124,7 @@ def create_folder(s, wim_token, folder_id, folder_name, password=""):
 
     # Step 1: 폴더 생성 폼 진입
     r = s.post(f"{BASE}/web/entry/ko/webdocbox/folderPropPage.cgi",
-               data={
-                   "wimToken": wim_token,
-                   "mode": "CREATE",
-                   "selectedDocIds": "",
-                   "subReturnDsp": "",
-                   "useInputParam": "",
-                   "useSavedPropParam": "false",
-                   "_hour": "",
-                   "_min": "",
-                   "_hour": hour,
-                   "_min": minute,
-               },
+               data=f"wimToken={wim_token}&mode=CREATE&selectedDocIds=&subReturnDsp=&useInputParam=&useSavedPropParam=false&_hour=&_min=&_hour={hour}&_min={minute}",
                headers={**headers, "Referer": f"{BASE}/web/entry/ko/webdocbox/folderListPage.cgi"},
                timeout=10)
     save("create_1_form", r)
@@ -151,7 +148,7 @@ def create_folder(s, wim_token, folder_id, folder_name, password=""):
                },
                headers={**headers, "Referer": f"{BASE}/web/entry/ko/webdocbox/folderPropPage.cgi"},
                timeout=10)
-    save("create_2_password_page", r)
+    save("create_2_pw_page", r)
     log(f"[Step2] 비밀번호 페이지 → {r.status_code}")
     time.sleep(1)
 
@@ -161,27 +158,17 @@ def create_folder(s, wim_token, folder_id, folder_name, password=""):
                data={
                    "wimToken": wim_token,
                    "title": folder_name,
-                   "creator": "",
-                   "dataFormat": "",
-                   "allPages": "false",
-                   "cid": "",
-                   "convBW": "",
-                   "backUp": "",
-                   "backUpFormatStr": "",
-                   "backUpResoStr": "",
+                   "creator": "", "dataFormat": "", "allPages": "false",
+                   "cid": "", "convBW": "", "backUp": "",
+                   "backUpFormatStr": "", "backUpResoStr": "",
                    "targetDocId": folder_id,
                    "oldPassword": "undefined",
                    "newPassword": pw_b64,
                    "confirmation": pw_b64,
-                   "useInputParam": "false",
-                   "useSavedParam": "",
-                   "subReturnDsp": "3",
-                   "mode": "CREATE",
-                   "wayTo": "",
-                   "useSavedPropParam": "true",
-                   "selectedFolderId": "",
-                   "ID": "",
-                   "dummy": "",
+                   "useInputParam": "false", "useSavedParam": "",
+                   "subReturnDsp": "3", "mode": "CREATE", "wayTo": "",
+                   "useSavedPropParam": "true", "selectedFolderId": "",
+                   "ID": "", "dummy": "",
                },
                headers={**headers, "Referer": f"{BASE}/web/entry/ko/webdocbox/chPasswordPage.cgi"},
                timeout=10)
@@ -189,43 +176,53 @@ def create_folder(s, wim_token, folder_id, folder_name, password=""):
     log(f"[Step3] 비밀번호 설정 → {r.status_code}")
     time.sleep(1)
 
-    # Step 4: 폴더 생성 확정
+    # Step 4: 속성 페이지 (확인/취소 폼)
     r = s.post(f"{BASE}/web/entry/ko/webdocbox/folderPropPage.cgi",
                data={
                    "wimToken": wim_token,
-                   "id": "",
-                   "jt": "",
-                   "el": "",
-                   "urlLang": "ko",
-                   "urlProfile": "entry",
-                   "pdfThumbnailURI": "",
-                   "thumbnailURI": "",
-                   "WidthSize": "",
+                   "id": "", "jt": "", "el": "",
+                   "urlLang": "ko", "urlProfile": "entry",
+                   "pdfThumbnailURI": "", "thumbnailURI": "", "WidthSize": "",
                    "subdocCount": "",
                    "targetDocId": folder_id,
-                   "title": "",
-                   "creator": "",
-                   "useInputParam": "false",
-                   "useSavedParam": "",
-                   "subReturnDsp": "3",
-                   "mode": "CREATE",
-                   "wayTo": "",
+                   "title": "", "creator": "",
+                   "useInputParam": "false", "useSavedParam": "",
+                   "subReturnDsp": "3", "mode": "CREATE", "wayTo": "",
                    "selectedFolderId": folder_id,
                    "useSavedPropParam": "true",
-                   "ID": "",
-                   "simpleErrorMessage": "",
-                   "dummy": "",
+                   "ID": "", "simpleErrorMessage": "", "dummy": "",
                },
                headers={**headers, "Referer": f"{BASE}/web/entry/ko/webdocbox/commitChPassword.cgi"},
                timeout=10)
-    save("create_4_confirm", r)
-    log(f"[Step4] 생성 확정 → {r.status_code} ({len(r.content)}B)")
+    save("create_4_prop", r)
+    log(f"[Step4] 속성 페이지 → {r.status_code}")
+    time.sleep(1)
 
-    if folder_name in r.text:
-        log(f"\n>>> 성공! '{folder_name}' 생성 확인됨")
-    else:
-        log(f"\n>>> 생성 완료 (응답에서 '{folder_name}' 미확인 — 목록 재조회로 확인)")
+    # Step 5: 최종 생성 확정 (putFolderProp.cgi)
+    r = s.post(f"{BASE}/web/entry/ko/webdocbox/putFolderProp.cgi",
+               data={
+                   "wimToken": wim_token,
+                   "targetFolderId": folder_id,
+                   "changedFolderName": folder_name,
+                   "mode": "CREATE",
+                   "targetDocId": "",
+                   "selectedFolderId": "",
+                   "title": "",
+                   "useSavedPropParam": "true",
+                   "useInputParam": "false",
+                   "subReturnDsp": "3",
+                   "dummy": "",
+               },
+               headers={**headers, "Referer": f"{BASE}/web/entry/ko/webdocbox/folderPropPage.cgi"},
+               timeout=10)
+    save("create_5_put", r)
+    log(f"[Step5] 생성 확정 → {r.status_code} ({len(r.content)}B)")
 
+    if "ERR" in r.text or "오류" in r.text:
+        log(f"[FAIL] 생성 실패")
+        return False
+
+    log(f"\n>>> 폴더 생성 요청 완료!")
     return True
 
 
@@ -251,18 +248,15 @@ if __name__ == "__main__":
         sys.exit(1)
     time.sleep(1)
 
-    # 폴더 목록 조회
     log("\n=== 폴더 목록 조회 ===")
-    wim_token, _ = list_folders(s)
+    wim_token, folders = list_folders(s)
     if not wim_token:
         log("[FAIL] wimToken 없음")
         sys.exit(1)
     time.sleep(1)
 
-    # 폴더 생성
     create_folder(s, wim_token, FOLDER_ID, FOLDER_NAME, PASSWORD)
     time.sleep(1)
 
-    # 생성 후 재조회
     log("\n=== 생성 후 재조회 ===")
     list_folders(s)
