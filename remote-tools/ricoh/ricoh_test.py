@@ -137,17 +137,15 @@ def add_destination(s, wim_token, reg_no, name, display_name, folder_path, folde
     log(f"  등록번호={reg_no}, 이름={name}, 키표시={display_name}")
     log(f"  폴더={folder_path}, 유저={folder_user}")
 
-    # 추가 폼 페이지 로드 → 위자드 세션 초기화 + wimToken 갱신
-    r = s.get(f"{BASE}/web/entry/ko/address/adrsGetUser.cgi?outputSpecifyModeIn=SETTINGS",
-              headers={"Referer": f"{BASE}/web/entry/ko/address/adrsList.cgi"},
-              timeout=10)
-    save("4b_addform", r)
-    form_token = re.search(r'name=["\']wimToken["\'][^>]*value=["\'](\d+)', r.text)
-    if form_token:
-        wim_token = form_token.group(1)
-        log(f"  추가 폼 wimToken = {wim_token}")
-    else:
-        log(f"  [WARN] 추가 폼에서 wimToken 미발견, 기존 토큰 사용")
+    # 위자드 세션 초기화 (adrsGetUserWizard.cgi)
+    r = s.post(f"{BASE}/web/entry/ko/address/adrsGetUserWizard.cgi",
+               data={"mode": "ADDUSER", "outputSpecifyModeIn": "DEFAULT", "wimToken": wim_token},
+               headers={"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                        "X-Requested-With": "XMLHttpRequest",
+                        "Referer": f"{BASE}/web/entry/ko/address/adrsList.cgi"},
+               timeout=10)
+    save("4b_wizard_init", r)
+    log(f"  위자드 초기화 → {r.status_code} ({len(r.content)}B)")
     time.sleep(1)
 
     headers = {
