@@ -1,0 +1,1959 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="ko" xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-script-type" content="text/javascript" />
+<meta http-equiv="content-style-type" content="text/css" />
+<meta http-equiv= "pragma" content="no-cache" />
+<meta http-equiv="cache-control" content="no-cache,no-store,max-age=0" />
+<meta http-equiv="expires" content="Thu, 01 Jan 1970 00:00:00 GMT" />
+<link rel="shortcut icon" type="image/x-icon" href="media/favicon.ico" />
+<link rel="stylesheet" type="text/css" media="all" href="css/common2.css" />
+<link rel="stylesheet" type="text/css" media="all" href="css/top.css" />
+<link rel="stylesheet" type="text/css" media="all" href="css/empty.css" />
+
+<title>리모트 UI : 고급박스 설정 : iR-ADV&nbsp;C3720 : iR-ADV&nbsp;C3720</title>
+</head>
+<body>
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+var NaviGlobal = {
+HasMeapLogin       : "false",
+HasAuth_Device     : "true",
+HasAuth_Network    : "true",
+HasAuth_System     : "true",
+AuthKind           : "1",
+UserType           : "2",
+AirAuthGenericFlg  : "4",
+AirAuthDeviceFlg   : "8",
+AirAuthNetwkFlg    : "16",
+AirAuthSystemFlg   : "32",
+AuthKindNone       : "1",
+AuthKindCpca       : "2",
+UserTypeAdmin      : "2"
+}
+function Go_NextPage( cgi_str )
+{
+var now_time = new Date();
+cgi_str += "&Dummy=" + now_time.getTime();
+document.location.href = cgi_str;
+}
+function Draw_UserModeMenu( TBL )
+{
+document.write('<div class="ContentModuleListUp">');
+document.write('<div class="ListUpModuleElement">');
+Draw_MainItems( TBL );
+document.write('<\/div>');
+document.write('<\/div>');
+}
+function Auth_Check( auth_flg )
+{
+if( NaviGlobal.AirAuthGenericFlg & auth_flg ) {
+return true;
+}
+if( "false" == NaviGlobal.HasMeapLogin             ||
+NaviGlobal.AuthKindNone == NaviGlobal.AuthKind ||
+NaviGlobal.AuthKindCpca == NaviGlobal.AuthKind ) {
+return true;
+}
+else if( NaviGlobal.UserTypeAdmin != NaviGlobal.UserType ) {
+return false;
+}
+var AuthJsonAry = [
+{ "chkflg" : NaviGlobal.AirAuthDeviceFlg, "auth" : NaviGlobal.HasAuth_Device },
+{ "chkflg" : NaviGlobal.AirAuthNetwkFlg,  "auth" : NaviGlobal.HasAuth_Network },
+{ "chkflg" : NaviGlobal.AirAuthSystemFlg, "auth" : NaviGlobal.HasAuth_System }
+];
+for( property in AuthJsonAry ) {
+if( !( AuthJsonAry[property].chkflg & auth_flg ) ) {
+continue;
+}
+if( "true" == AuthJsonAry[property].auth ) {
+return true;
+}
+}
+return false;
+}
+function Draw_MainItems( TBL )
+{
+document.write('<ul>');
+for( var i=0 ; i<TBL.length ; i++ )
+{
+document.write('<li>');
+if( null != TBL[i].cgi_str )
+{
+if( "function" == typeof( UmdMenuTbl[ TBL[i].cgi_str ] ) )
+{
+document.write('<a href=JavaScript:UmdMenuTbl.' );
+document.write( TBL[i].cgi_str );
+document.write('()>' );
+document.write( TBL[i].title_str );
+document.write('<\/a>');
+}
+else
+{
+document.write('<a href=\'JavaScript:Go_NextPage(' );
+document.write( '"' + TBL[i].cgi_str + '"' );
+document.write(')\'>' );
+document.write( TBL[i].title_str );
+document.write('<\/a>');
+}
+}
+else
+{
+document.write('<span class="GroupTitle">')
+document.write( TBL[i].title_str );
+document.write('<\/span>')
+}
+if( null != TBL[i].tbl )
+{
+Draw_MainItems( TBL[i].tbl );
+}
+document.write('<\/li>');
+}
+document.write('<\/ul>');
+}
+function menu_obj(
+title_str,  
+cgi_str, 
+c_func,   
+auth_flg, 
+tbl)  
+{
+this.title_str  = title_str;
+this.cgi_str = cgi_str;
+this.c_func   = c_func;
+this.auth_flg = auth_flg;
+this.tbl  = tbl;
+}
+//]]>
+</script>
+
+<script language="JavaScript" type="text/javascript">
+//<![CDATA[
+var UmdMenuTbl = new function()
+{
+var umdtblGlobal =
+{
+has_cl4          : "false",           
+has_cb2          : "true",
+has_cbul3        : "false",
+has_send         : "true",           
+has_sendpkg      : "true",
+has_fax          : "false",            
+has_ipfax        : "false",            
+has_ifax_cash    : "true",
+has_ldap         : "true",
+has_clrprt       : "true",     
+has_clr_bwmachine: "false",
+has_signat_time  : "false",    
+has_reader       : "true",         
+has_feeder       : "true",
+has_mutidetect   : "false",
+has_rmt_cpy_recv : "false",   
+has_output_stat  : "0000",
+has_trust_stmp   : "true",
+has_pcam         : "false",
+has_mlib         : "true",
+has_airfax_clie  : "false",
+has_airfax_serv  : "false",
+has_paf          : "true",
+has_pdfa         : "true",
+has_pdf_linear   : "true",
+has_pdf_policy   : "false",
+disp_feedsetting : "true",
+has_shift        : "false",
+has_dfe_ch_main  : "false",
+has_dfe_ch_sub   : "false",
+has_usb_host     : "false",
+has_bdl          : "true",
+has_nw           : "false",
+has_ether        : "true",
+has_appletalk    : "true",
+has_pdl          : "true",
+has_signat_time  : "false",
+has_lips         : "false",
+has_ps           : "false",
+has_rmt_cpy_send : "false",
+has_canon_pcl    : "true",
+has_canon_pdl    : "true",
+has_adobe_ps     : "true",
+has_psk          : "false",
+has_pcl          : "false",
+has_pdf          : "true",
+has_in_pdf       : "true",
+has_xps          : "true",
+has_office : "false",
+has_imaging      : "true",
+has_ks           : "false",
+has_canobureau   : "true",
+has_browser      : "true",
+has_n201         : "false",
+has_n201Ext      : "false",
+has_escp         : "false",
+has_escpExt      : "false",
+has_i5577        : "false",
+has_hpgl         : "false",
+has_hpgl2        : "false",
+has_somepnp      : "true",
+has_faxtype      : "0",
+has_hdddel       : "true",
+has_meap         : "true",
+has_signat_user  : "true",
+has_encrypt      : "true",
+has_vnc          : "true",
+has_ipsec        : "true",
+has_ooxml        : "true",
+has_manypunch    : "false",
+has_remotescan   : "true",
+has_trimer       : "false",
+has_DFD          : "false",
+has_bridge       : "false",
+has_HCS3_stack   : "false",
+has_inseternum   : "0",
+fin_type         : "0",
+has_cryptpdf     : "true",
+has_sign_app     : "true",
+fin_type_yg      : "33",
+fin_type_yg3     : "40",
+dsp_usb_i        : "true",
+dsp_usb_m        : "true",
+disp_send        : "true",
+disp_fax         : "true",
+disp_shutdown    : "true",
+disp_ui_box      : "true",        
+disp_ui_sbox     : "true",        
+disp_ui_mem      : "true",        
+disp_coin        : "false",
+ui_coin_type     : "0",
+disp_faxrecvcall : "true",
+disp_faxtel      : "false",
+disp_voiplowqual : "true",
+JobArcvImage     : "true",   
+JobArcvSboxCon   : "true",   
+country_code     : "12",            
+country_jp       : "1",
+tray_count       : "1",        
+pcam_umdstate    : "0",
+OcrPdf_Opt       : "true",
+SclPdf_Opt       : "true",
+ksize_disp       : "true",
+stat_tstmp       : "false",
+stat_boxbkup     : "true",
+disp_drs         : "false",
+has_acqlicense   : "true",
+is_acq           : "false",
+is_oem           : "false",
+faxType_G4       : "3",
+has_numdisp      : "false",
+has_bkupsnddoc   : "false",
+has_cryptprint   : "true",
+has_netcap       : "false",
+opt_fax : "false",
+disp_stime       : "false",
+ip_fax_num : "0",
+airfax_ipfax_use : "false",
+fax_type_standard: "false",
+has_bind         : "false",
+has_sbox         : "true",
+has_sbox_network : "true",
+disp_sec_print    : "false",
+disp_auth_print   : "true",
+disp_ppa          : "true",
+isSimpleBox           : "true",
+has_foward_use   : "true",
+has_traypap_sensor : "false",
+has_neatstack      : "false",
+has_force_print  : "false",
+has_copy_print_ext : "false",
+has_trust_stampcopy : "false",
+has_trust_stampbox : "false",
+has_trust_stampprt : "false",
+has_trust_stamvalid : "false",
+has_print_crepe_pri : "false",
+has_normal_coat_pri : "false",
+has_df_tray_raise          : "false",
+has_df_jam_recovery        : "true",
+has_scan_noise             : "true",
+has_streak_prevent         : "true",
+has_ltrr_stmt_org          : "true",
+VARIE_PAF_TXT_ORG       : "false",
+VARIE_IMG_COMPOSITION      : "false",
+VARIE_BOX_ALL_SETTING      : "true",
+VARIE_BOX_BACKUP           : "true",
+VARIE_KEY_OFF_FUNC_LMT     : "false",
+VARIE_BOX_USER             : "true",
+VARIE_PRINT_CREPE_PRI      : "false",
+VARIE_COAT_QUALITY_PRI     : "false",
+VARIE_TAB_FORCED_DISCHARGE : "false",
+VARIE_SCAN_COPY_IMG_RESOLUTION : "false",
+VARIE_DEV_PRINT_SIZE_A3    : "true",
+VARIE_DEV_PICTURE_FACE_UP  : "false",
+has_nfc           : "false",
+disp_log   : "true",
+has_userbox   : "false",
+has_mptdeck                : "true",
+disp_driverbypass   : "true",
+has_Ocsp                   : "true",
+has_HasDroplet             : "false",
+has_HasFogMode             : "false",
+has_HasEnvFixLv            : "false",
+has_fixTemp                : "false",
+has_normalSmooth           : "false",
+has_heavySmooth            : "false",
+has_envStickMode           : "false",
+has_lowCurl           : "false",
+has_thickFixMode           : "false",
+has_offset                 : "false",
+has_mpMode1                : "false",
+has_mpMode2                : "false",
+has_lowSlip                : "false",
+has_2tRollerAutoClean      : "false",
+has_whiteLineAdj           : "false",
+has_plainFix               : "false",
+has_plainBackFix           : "false",
+has_SecureBoot             : "true",
+has_CondenseMode           : "false",
+disp_LgcyScp           : "true",
+has_ScanCLSensor           : "false",
+isSendLite                 : "false",
+isSendLite2                : "false",
+has_Linearize              : "true",
+has_TimeStampPDF           : "false",
+has_PaperSetRui           : "false",
+has_box_user           : "true",
+has_ScanBwSensor   : "false", 
+has_dispSendSpc   : "true", 
+has_hotFolder   : "true",
+has_jdf   : "false",
+disp_mix_size   : "true",
+has_anyfax   : "false",
+is_Line5UI   : "false",
+has_emailreceiveonly   : "false",
+has_freesize   : "true",
+has_superfine   : "false",
+has_superimposeimage   : "false",
+isScanToPresetDestEnabled  : "false", 
+has_imageFlow          : "false",  
+has_roller             : "false",  
+has_rotary             : "false",  
+HasMeapLogin       : "false",
+HasAuth_Device     : "true",
+HasAuth_Network    : "true",
+HasAuth_System     : "true",
+AuthKind           : "1",
+UserType           : "2",
+AirAuthGenericFlg  : "4",
+AirAuthDeviceFlg   : "8",
+AirAuthNetwkFlg    : "16",
+AirAuthSystemFlg   : "32",
+AuthKindNone       : "1",
+AuthKindCpca       : "2",
+UserTypeAdmin      : "2",
+PCAM_USE_OFF       : "0",
+PCAM_USE_TL        : "1",
+PCAM_USE_QR        : "2",
+is_lite           : "false",
+has_ddil           : "false",
+stmp_msg_tbl :
+{
+"true" :    
+{
+"true"  : 
+{
+title     : "보안 스탬프/Document Scan Lock 설정 ",
+title_sub : "강제 보안 스탬프/Document Scan Lock ",
+pdlmsg    : "프린터 드라이버 보안 스탬프/Document Scan Lock "
+},
+"false" : 
+{
+title     : "보안 스탬프 설정 ",
+title_sub : "강제 보안 스탬프 ",
+pdlmsg    : "프린터 드라이버 보안 스탬프 "
+}
+},
+"false" :   
+{
+"true"  : 
+{
+title     : "Document Scan Lock 설정 ",
+title_sub : "강제 Document Scan Lock ",
+pdlmsg    : "프린터 드라이버 Document Scan Lock "
+},
+"false" : 
+{
+title     : "",
+title_sub : "",
+pdlmsg    : ""
+}
+}
+},
+has_ftp_print  : "true",
+has_smb_server : "true",
+has_hscom_ena : "false",
+en_smb_com_name : "true",
+en_smb_wgp_name : "true",
+has_aap : "true",
+has_gcp : "false",
+has_ble : "false",
+is_sfp : "false",
+is_reseller : "false",
+disp_genuine_menu : "false",
+has_dup : "true",
+carps2spt : "false",
+isSecPolValid : "false",
+has_forced_discharge : "false"
+};
+var pcam_func_valid = (umdtblGlobal.PCAM_USE_OFF != umdtblGlobal.pcam_umdstate) ? "true" : "false" ;
+function stmp_title()
+{
+return umdtblGlobal.stmp_msg_tbl[umdtblGlobal.has_trust_stmp][pcam_func_valid].title;
+}
+function stmp_title_sub()
+{
+return umdtblGlobal.stmp_msg_tbl[umdtblGlobal.has_trust_stmp][pcam_func_valid].title_sub;
+}
+function stmp_pdl_title()
+{
+return umdtblGlobal.stmp_msg_tbl[umdtblGlobal.has_trust_stmp][pcam_func_valid].pdlmsg;
+}
+function DrawStat_tststmp()
+{
+if( "false" == umdtblGlobal.has_clrprt || "false" == umdtblGlobal.disp_coin )
+{
+if( "true" == umdtblGlobal.has_trust_stmp )
+{
+return true;
+}
+if( "true" == umdtblGlobal.has_pcam && umdtblGlobal.PCAM_USE_OFF != umdtblGlobal.pcam_umdstate )
+{
+return true;
+}
+}
+return false;
+}
+function DrawStat_tststmpCpy()
+{
+if( true == DrawStat_tststmp() )
+{
+if( "true" == umdtblGlobal.has_reader || "true" == umdtblGlobal.has_rmt_cpy_recv )
+{
+return true;
+}
+}
+return false;
+}
+function DrawStat_tststmpBox()
+{
+if( "true" == umdtblGlobal.disp_coin )
+{
+return false;
+}
+if( true == DrawStat_tststmp() )
+{
+return true;
+}
+return false;
+}
+function DrawStat_tststmpPrinter()
+{
+if( true == DrawStat_tststmp() )
+{
+return true;
+}
+return false;
+}
+function DrawStat_tststmpPdl()
+{
+if( "true" == umdtblGlobal.has_force_print )
+{
+return false;
+}
+if( false == DrawStat_tststmp() )
+{
+return false;
+}
+if( "false" == umdtblGlobal.has_pdl && "false" == umdtblGlobal.has_bdl )
+{
+return false;
+}
+if( "true" == umdtblGlobal.stat_tstmp )
+{
+return false;
+}
+return true;
+}
+var forcedStmpTBL = new Array
+(
+new menu_obj
+(
+"복사 ",
+"./cdtststmp.cgi?FuncTypeFlag=Copy_Page&Flag=Init_Copy&PageFlag=c_tstmpl.tpl",
+DrawStat_tststmpCpy(),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"저장파일 이용 ",
+"./cdtststmp.cgi?FuncTypeFlag=Box_Page&Flag=Init_Box&PageFlag=c_tstmpl.tpl",
+DrawStat_tststmpBox(),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"프린터 ",
+"./cdtststmp.cgi?FuncTypeFlag=Prt_Page&Flag=Init_Prt&PageFlag=c_tstmpl.tpl",
+DrawStat_tststmpPrinter(),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+)
+var tststmpTBL = new Array
+(
+new menu_obj
+(
+stmp_title_sub(),
+null,
+null,
+null,
+forcedStmpTBL
+),
+new menu_obj
+(
+stmp_pdl_title(),
+"./cdtststmp.cgi?FuncTypeFlag=Pdl_Page&Flag=Init_Pdl&PageFlag=c_tstmpl.tpl",
+DrawStat_tststmpPdl(),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"QR 코드 인쇄 위치 ",
+"./cdimpqrloc.cgi?Flag=Init_Data&PageFlag=c_qrloc.tpl",
+(umdtblGlobal.PCAM_USE_QR == umdtblGlobal.pcam_umdstate && "false" == umdtblGlobal.has_force_print),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+);
+function DrawStat_tstmp()
+{
+if( "true" == umdtblGlobal.has_TimeStampPDF )
+{
+return true;
+}
+return false;
+}
+var timeStumpTBL = new Array
+(
+new menu_obj
+(
+"라이선스 파일 설치 ",
+"./cdtimestamp.cgi?Flag=InsInit_Data&PageFlag=c_tmsi.tpl",
+DrawStat_tstmp(),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"기본 설정 ",
+"./cdtimestamp.cgi?Flag=Init_Data&PageFlag=c_tms1.tpl&FuncTypeFlag=Basic_Page",
+DrawStat_tstmp(),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"사용제한 ",
+"./cdtimestamp.cgi?Flag=Init_Data&PageFlag=c_tms2.tpl&FuncTypeFlag=Restrict_Page",
+DrawStat_tstmp(),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+)
+function Get_Casset_Auto_Title()
+{
+if( "true" == umdtblGlobal.VARIE_DEV_PRINT_SIZE_A3 &&
+"true" == umdtblGlobal.has_clrprt &&
+"true" == umdtblGlobal.has_reader &&
+"false" == umdtblGlobal.has_clr_bwmachine )
+{
+return "급지 위치 자동 선택/컬러 선택에 의한 급지 위치 자동 선택 ";
+}
+else
+{
+return "급지 위치 자동 선택 ";
+}
+}
+var providePaperTBL = new Array
+(
+new menu_obj
+(
+Get_Casset_Auto_Title(),
+"./cdacs.cgi?Flag=Init_Data&PageFlag=c_acs.tpl&FuncTypeFlag=ACS_Page",
+            null,
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"급지방법 전환 ",
+"./cdpfmsw.cgi?Flag=Init_Data&PageFlag=c_pfms.tpl",
+( "false" == umdtblGlobal.VARIE_DEV_PICTURE_FACE_UP && "true" == umdtblGlobal.has_dup ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"작업 중단 설정 ",
+"./cdacs.cgi?Flag=Init_Data&PageFlag=c_suppap.tpl&FuncTypeFlag=SupPap_Page",
+( "false" == umdtblGlobal.disp_coin ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"인서터 자동 전환 ",
+"./cdacs.cgi?Flag=Init_Data&PageFlag=c_insauto.tpl&FuncTypeFlag=InsAuto_Page",
+( "2" == umdtblGlobal.has_inseternum ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+)
+)
+function DrawStat_priority_PAGE_2()
+{
+if( 2 <= eval( umdtblGlobal.tray_count ) )
+{
+if( ("0" == umdtblGlobal.has_output_stat.charAt(0)   ) &&
+("1" == umdtblGlobal.has_output_stat.charAt(1) ) &&
+("1" == umdtblGlobal.has_output_stat.charAt(2) ) )
+{
+return true;
+}
+}
+return false;
+}
+function DrawStat_priority_PAGE1()
+{
+if( 2 <= eval( umdtblGlobal.tray_count ) )
+{
+var outtray_cnt = 0;
+if( "1" == umdtblGlobal.has_output_stat.charAt(0) )
+{
+outtray_cnt = outtray_cnt + 2;
+}
+if( "1" == umdtblGlobal.has_output_stat.charAt(1) )
+{
+outtray_cnt++;
+}
+if( "1" == umdtblGlobal.has_output_stat.charAt(2) )
+{
+outtray_cnt++;
+}
+if( "1" == umdtblGlobal.has_output_stat.charAt(3) )
+{
+outtray_cnt++;
+}
+if( "0" == umdtblGlobal.has_output_stat.charAt(3) &&
+"true" == umdtblGlobal.has_bridge )
+{
+outtray_cnt=0;
+}
+if( 2 <= outtray_cnt )
+{
+return true;
+}
+}
+return false;
+}
+var dischargePaperTBL = new Array
+(
+new menu_obj
+(
+"배지 트레이 설정 ",
+"./cdtray.cgi?Flag=Init_Data&PageFlag=c_tray.tpl",
+DrawStat_priority_PAGE1(),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"스택커의 배지 트레이 설정 ",
+"./cdtray.cgi?Flag=Init_Data&PageFlag=c_try2.tpl",
+DrawStat_priority_PAGE_2(),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"작업간 시프트 ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_fmout.tpl&FuncTypeFlag=Output_Page",
+( "true" == umdtblGlobal.has_shift ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"작업간 구분종이 ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_fmout.tpl&FuncTypeFlag=Output_Page",
+( "false" == umdtblGlobal.disp_coin ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"부수간 구분종이 ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_fmout.tpl&FuncTypeFlag=Output_Page",
+( "false" == umdtblGlobal.disp_coin ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"스택커 용지걸림 처리후 구분종이 삽입 ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_fmout.tpl&FuncTypeFlag=Output_Page",
+( "true" == umdtblGlobal.has_HCS3_stack ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"배지 트레이의 용지 혼재 ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_fmout.tpl&FuncTypeFlag=Output_Page",
+( "true" == umdtblGlobal.has_traypap_sensor || "true" == umdtblGlobal.has_HCS3_stack ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"스택커 설정 ",
+"./cdstack.cgi?Flag=Init_Data&PageFlag=c_stack.tpl",
+( "true" == umdtblGlobal.has_HCS3_stack ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"외부 피니셔 설정 ",
+"./cdexfin.cgi?Flag=Init_Data&PageFlag=c_exfin.tpl",
+( "true" == umdtblGlobal.has_DFD ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"용지 혼재 시 위치 조정 ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_fmout.tpl&FuncTypeFlag=Output_Page",
+( "true" == umdtblGlobal.has_neatstack && ( "40" == umdtblGlobal.fin_type || "42" == umdtblGlobal.fin_type )),
+null
+),
+new menu_obj
+(
+"잔류 인덱스지 강제 배출 ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_fmout.tpl&FuncTypeFlag=Output_Page",
+( "true" == umdtblGlobal.has_forced_discharge ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"1매 인쇄 작업의 시프트 ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_fmout.tpl&FuncTypeFlag=Output_Page",
+( "true" == umdtblGlobal.has_shift ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+)
+)
+function DrawStat_cpyprtext()
+{
+if( ("false" == umdtblGlobal.has_clrprt || "true" == umdtblGlobal.has_clr_bwmachine || "false" == umdtblGlobal.disp_coin) && "false" == umdtblGlobal.isSendLite2 )
+{
+if( "false" == umdtblGlobal.has_force_print )
+{
+return true;
+}
+}
+return false;
+}
+this.GoImgFormFunc = function()
+{
+if( "false" == umdtblGlobal.JobArcvImage )
+{
+alert("작업 기록 실행중이기 때문에 이 기능은 사용할 수 없습니다. ");
+return;
+}
+Go_NextPage("./blogin.cgi?BOX_No=2000&FormLogin=");
+}
+var printTBL = new Array
+(
+new menu_obj
+(
+"인쇄 우선순위 ",
+"./cdpriority.cgi?PageFlag=c_prio.tpl&Flag=Init_Data",
+null,
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"생산성 우선 설정 ",
+"./prodimagepri.cgi?PageFlag=c_prodimg.tpl&Flag=Init_Data",
+( "true" ==  umdtblGlobal.has_print_crepe_pri || "true" == umdtblGlobal.has_normal_coat_pri ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"자동 컬러선택 흑백 설정시 문자/사진 우선 ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_cpprio.tpl&FuncTypeFlag=CPprio_Page",
+( "true" == umdtblGlobal.has_clrprt && "false" == umdtblGlobal.has_clr_bwmachine && "true" == umdtblGlobal.has_reader ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"리포트 출력의 기본 설정 ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_reppri.tpl&FuncTypeFlag=Rpt2side_Page",
+( "true" == umdtblGlobal.has_dup),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+( ( "true" == umdtblGlobal.VARIE_IMG_COMPOSITION )?"합성 폼 등록 ":"이미지 합성 폼 " ),
+"GoImgFormFunc",
+( "true" == umdtblGlobal.has_userbox && "true" == umdtblGlobal.has_superimposeimage ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"이미지 합성시 화질 우선 ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_fmpri.tpl&FuncTypeFlag=ImgQua_Page",
+( "true" == umdtblGlobal.has_userbox && "true" == umdtblGlobal.has_clrprt && "true" == umdtblGlobal.has_superimposeimage ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"페이지 번호/스탬프 문자열 등록 ",
+"./cpgstmpstr.cgi?Flag=Init_Data&PageFlag=c_str.tpl",
+( "false" == umdtblGlobal.isSendLite2 ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"부수번호 인쇄 옵션 설정 ",
+"./ccpprtext.cgi?Flag=Init_Data&PageFlag=c_cpex.tpl",
+DrawStat_cpyprtext(),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"식별정보의 강제 인쇄 설정 ",
+"./cforcedprt.cgi?Flag=Init_Data&PageFlag=c_forcedprt.tpl",
+( false == false && "false" == umdtblGlobal.has_copy_print_ext && "false" == umdtblGlobal.has_trust_stampcopy && "false" == umdtblGlobal.has_trust_stampbox && "false" == umdtblGlobal.has_trust_stampprt && "false" == umdtblGlobal.has_trust_stamvalid && "false" == umdtblGlobal.isSendLite2 ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+stmp_title(),
+null,
+( "false" == umdtblGlobal.has_force_print ),
+null,
+tststmpTBL
+),
+new menu_obj
+(
+"슬립모드에서 인쇄 예측 복귀 설정 ",
+"./cdsrpd.cgi?Flag=Init_Data&PageFlag=c_srpd.tpl&FuncTypeFlag=SLEEP_RECOVERY_PRINT_PREDIRECTION_Page",
+( false == false ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"중단 작업의 자동 삭제 ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_deljob.tpl&FuncTypeFlag=DelJobOnErr_Page",
+( "0" == umdtblGlobal.ui_coin_type ),
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"2색 컬러시의 지정색 대상 ",
+"./umodecom.cgi?Flag=Init_Data&PageFlag=umodecom.tpl&p_id=TWOCOLOR",
+( "true" == umdtblGlobal.has_clrprt ) && ( "false" == umdtblGlobal.has_clr_bwmachine ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"수퍼파인(1200dpi) 시의 속도/화질 우선 ",
+"./umodecom.cgi?Flag=Init_Data&PageFlag=umodecom.tpl&p_id=SUPERFINE",
+( "true" == umdtblGlobal.has_superfine ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"토너 잔량이 부족한 경우의 조치 ",
+"./umodecom.cgi?Flag=Init_Data&PageFlag=umodecom.tpl&p_id=LOWTONER",
+( "true" == umdtblGlobal.is_reseller),
+umdtblGlobal.AirAuthSystemFlg | umdtblGlobal.AirAuthDeviceFlg,
+null
+)
+);
+function Get_Scan_FaxIFax_OnOff()
+{
+var ret_scan_varie = 0;
+if( "true" == umdtblGlobal.has_fax )
+{
+if( "true" == umdtblGlobal.has_ifax_cash )
+{
+ret_scan_varie = 1;
+}
+else
+{
+ret_scan_varie = 2;
+}
+}
+else if( "true" == umdtblGlobal.has_ifax_cash )
+{
+ret_scan_varie = 3;
+}
+return ret_scan_varie;
+}
+function Get_Scan_CL_Read_FAX_Title()
+{
+var ret_msg = "흑백스캔시 속도/화질 우선 ";
+switch( Get_Scan_FaxIFax_OnOff() )
+{
+case 1:
+if( "true" == umdtblGlobal.has_ScanBwSensor )
+{
+ret_msg = "흑백 스캔시 속도/화질 우선 (팩스/I 팩스 송신시) ";
+}
+else
+{
+ret_msg = "흑백스캔시 속도/화질 우선 ";
+}
+break;
+case 2:
+ret_msg = "흑백 스캔시 속도/화질 우선 (팩스 송신시) ";
+break;
+case 3:
+ret_msg = "흑백 스캔시 속도/화질 우선 (I 팩스 송신시) ";
+break;
+}
+return ret_msg;
+}
+function Get_Scan_CL_Read_OTHER_FAX_Title()
+{
+var ret_msg = "흑백스캔시 속도/화질 우선 ";
+switch( Get_Scan_FaxIFax_OnOff() )
+{
+case 1:
+ret_msg = "흑백 스캔시 속도/화질 우선 (팩스/I 팩스 송신시 이외) ";
+break;
+case 2:
+ret_msg = "흑백 스캔시 속도/화질 우선 (팩스 송신시 이외) ";
+break;
+case 3:
+ret_msg = "흑백 스캔시 속도/화질 우선 (I 팩스 송신시 이외) ";
+break;
+}
+return ret_msg;
+}
+var scanTBL = new Array
+(
+new menu_obj
+(
+"피더 트레이의 상승 타이밍 ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_comm.tpl&FuncTypeFlag=Scan_Page",
+( "true" == umdtblGlobal.has_df_tray_raise && "true" == umdtblGlobal.has_feeder ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"피더 용지걸림 발생시 복구 방법 ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_comm.tpl&FuncTypeFlag=Scan_Page",
+( "true" == umdtblGlobal.has_df_jam_recovery && "true" == umdtblGlobal.has_feeder ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"피더 중송 검지의 기본값 설정 ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_comm.tpl&FuncTypeFlag=Scan_Page",
+( "true" == umdtblGlobal.has_feeder && "true" == umdtblGlobal.has_mutidetect && false == false ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"스캔시 정음 설정 ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_comm.tpl&FuncTypeFlag=Scan_Page",
+( "true" == umdtblGlobal.has_scan_noise && "true" == umdtblGlobal.disp_feedsetting ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"줄무늬 제거 ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_comm.tpl&FuncTypeFlag=Scan_Page",
+( "true" == umdtblGlobal.has_streak_prevent && "true" == umdtblGlobal.disp_feedsetting ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"흑백스캔시 속도/화질 우선 ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_comm.tpl&FuncTypeFlag=Scan_Page",
+( "true" == umdtblGlobal.has_ScanBwSensor && ( "false" == umdtblGlobal.has_fax && "false" == umdtblGlobal.has_ifax_cash ) ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+Get_Scan_CL_Read_FAX_Title(),
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_comm.tpl&FuncTypeFlag=Scan_Page",
+( "true" == umdtblGlobal.has_fax || "true" == umdtblGlobal.has_ifax_cash ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+Get_Scan_CL_Read_OTHER_FAX_Title(),
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_comm.tpl&FuncTypeFlag=Scan_Page",
+( "true" == umdtblGlobal.has_ScanBwSensor && ( "true" == umdtblGlobal.has_fax || "true" == umdtblGlobal.has_ifax_cash ) ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"피더 스캔시 속도/화질 우선 ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_comm.tpl&FuncTypeFlag=Scan_Page",
+( "true" == umdtblGlobal.VARIE_SCAN_COPY_IMG_RESOLUTION && "true" == umdtblGlobal.has_feeder && "true" == umdtblGlobal.has_clrprt ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"컬러 스캔시 속도/화질 우선 ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_comm.tpl&FuncTypeFlag=Scan_Page",
+( "true" == umdtblGlobal.has_ScanCLSensor ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"LTRR/STMT 원고 구별 ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_comm.tpl&FuncTypeFlag=Scan_Page",
+( "true" == umdtblGlobal.has_ltrr_stmt_org && "true" == umdtblGlobal.has_reader ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"리모트 스캔시의 감마값 ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_comm.tpl&FuncTypeFlag=Scan_Page",
+( "true" == umdtblGlobal.has_remotescan ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"피더 사용 시 원고 크기 혼재 기본 설정 ",
+"./cdcommon.cgi?Flag=Init_Data&PageFlag=c_comm.tpl&FuncTypeFlag=Scan_Page",
+( "true" == umdtblGlobal.has_feeder && "true" == umdtblGlobal.disp_mix_size),
+umdtblGlobal.AirAuthGenericFlg,
+null
+)
+);
+function DrawStat_PafSettings()
+{
+if( "true" != umdtblGlobal.has_paf )
+{
+return false;
+}
+return true;
+}
+function GetTitle_PafSettings()
+{
+if( "true" == umdtblGlobal.has_cl4 && "true" == umdtblGlobal.has_clrprt && "false" == umdtblGlobal.has_clr_bwmachine )
+{
+return "고압축/소수색 시 화질레벨 설정 "
+}
+else
+{
+return "고압축시 화질 레벨 "
+}
+}
+function DrawStat_PafTxtSettings()
+{
+if( "true" != umdtblGlobal.VARIE_PAF_TXT_ORG )
+{
+return false;
+}
+if( "true" != umdtblGlobal.has_send || "true" != umdtblGlobal.has_paf )
+{
+return false;
+}
+return true;
+}
+function DrawStat_PdfSmallNumberOfColor()
+{
+if( "false" == umdtblGlobal.has_cl4 )
+{
+return false;
+}
+if( "true" != umdtblGlobal.has_paf )
+{
+return false;
+}
+if( "false" == umdtblGlobal.has_clrprt || "true" == umdtblGlobal.has_clr_bwmachine )
+{
+return false;
+}
+return true;
+}
+function DrawStat_OCRSettings()
+{
+if( "true" == umdtblGlobal.OcrPdf_Opt )
+{
+return true;
+}
+return false;
+}
+function DrawStat_OutLineSettings()
+{
+if( "true" == umdtblGlobal.SclPdf_Opt )
+{
+return true;
+}
+return false;
+}
+var fileTBL = new Array
+(
+new menu_obj
+(
+GetTitle_PafSettings(),
+"./cfilegen.cgi?Flag=Init_Data&PageFlag=c_fpaflevel.tpl&FuncTypeFlag=PafImg_Page",
+DrawStat_PafSettings(),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"문자 원고의 고압축 PDF 설정 ",
+"./cfilegen.cgi?Flag=Init_Data&PageFlag=c_fchrimg.tpl&FuncTypeFlag=ChrImg_Page",
+DrawStat_PafTxtSettings(),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"PDF (소수색) 해상도 설정 ",
+"./cfilegen.cgi?Flag=Init_Data&PageFlag=c_pdfsmallNocolor.tpl&FuncTypeFlag=ChrImg2_Page",
+DrawStat_PdfSmallNumberOfColor(),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"OCR (문자인식) 설정 ",
+"./cfilegen.cgi?Flag=Init_Data&PageFlag=c_focr.tpl&FuncTypeFlag=OCR_Page",
+DrawStat_OCRSettings(),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"아웃라인 설정 ",
+"./cfilegen.cgi?Flag=Init_Data&PageFlag=c_foutline.tpl&FuncTypeFlag=OutLine_Page",
+DrawStat_OutLineSettings(),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"OOXML 설정 ",
+"./cfilegen.cgi?Flag=Init_Data&PageFlag=c_ooxml.tpl&FuncTypeFlag=OOXML_Page",
+( "true" == umdtblGlobal.has_ooxml ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"워드 파일 이미지 설정 ",
+"./cfilegen.cgi?Flag=Init_Data&PageFlag=c_ooxmlword.tpl&FuncTypeFlag=OOXML_BgDisp_Page",
+( "true" == umdtblGlobal.has_ooxml && "true" == umdtblGlobal.OcrPdf_Opt ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"PDF 하한 버전 지정 ",
+"./cfilegen.cgi?Flag=Init_Data&PageFlag=c_pdfver.tpl&FuncTypeFlag=PDFVer_Page",
+null,
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"PDF 형식을 PDF/A로 ",
+"./cfilegen.cgi?Flag=Init_Data&PageFlag=c_apdf.tpl&FuncTypeFlag=PdfA_Page",
+null,
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"웹 표시용으로 PDF 최적화 ",
+"./cfilegen.cgi?Flag=Init_Data&PageFlag=c_adjpdf.tpl&FuncTypeFlag=PdfOptimizeWeb_Page",
+( "true" == umdtblGlobal.has_Linearize ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"암호화 PDF의 256-bit AES 설정 ",
+"./cpdfaes.cgi?Flag=Init_Data&PageFlag=c_pdfaes.tpl",
+( "true" == umdtblGlobal.has_cryptpdf ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"PDF 생성시 스캔된 이미지 회전 ",
+"./umodecom.cgi?Flag=Init_Data&PageFlag=umodecom.tpl&p_id=PDFROTATE",
+( "true" == umdtblGlobal.isSendLite && "true" == umdtblGlobal.has_dispSendSpc ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"타임 스탬프 설정 <span class=\"memo\">*설정 변경은 [설정 반영]을 조작하면 유효하게 됩니다. <\/span>",
+null,
+null,
+null,
+timeStumpTBL
+),
+new menu_obj
+(
+"Rights Management Server 설정 ",
+"./cdadbplsv.cgi?Flag=Init_Data&PageFlag=c_adobe.tpl&FuncTypeFlag=AdobePolicyL_Page",
+( "true" == umdtblGlobal.has_pdf_policy ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+);
+this.FucComMainTBL = new Array
+(
+new menu_obj
+(
+"용지 급지 설정 ",
+null,
+null,
+null,
+providePaperTBL
+),
+new menu_obj
+(
+"용지 배지 설정 ",
+null,
+null,
+null,
+dischargePaperTBL
+),
+new menu_obj
+(
+"인쇄 설정 ",
+null,
+null,
+null,
+printTBL
+),
+new menu_obj
+(
+"스캔 설정 ",
+null,
+( "true" == umdtblGlobal.has_reader ),
+null,
+scanTBL
+),
+new menu_obj
+(
+"파일 생성 ",
+null,
+( "true" == umdtblGlobal.has_reader ),
+null,
+fileTBL
+),
+new menu_obj
+(
+"Document Scan Lock 동작 설정 ",
+"./cdimpdtct.cgi?Flag=Init_Data&PageFlag=c_dimpdt.tpl",
+( "true" == umdtblGlobal.has_pcam && "false" == umdtblGlobal.disp_coin && "false" == umdtblGlobal.has_force_print ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"인증방법 설정 ",
+"./cdauthmethod.cgi?Flag=Init_Data&PageFlag=c_authmethod.tpl",
+( "true" == umdtblGlobal.has_send && "true" == umdtblGlobal.HasMeapLogin ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+);
+this.AdjMntMainTBL = new Array
+(
+new menu_obj
+(
+"퀵 보정 ",
+"./cprtpasquick.cgi?Flag=Init_Data&PageFlag=c_prtpasquick.tpl",
+( "false" == umdtblGlobal.is_Line5UI ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"자동 풀 캘리브레이션 설정 ",
+"./umodecom.cgi?Flag=Init_Data&PageFlag=umodecom.tpl&p_id=CALIBRATION",
+( "true" == umdtblGlobal.has_clrprt &&
+  "true" == umdtblGlobal.is_lite &&
+  "true" == umdtblGlobal.has_ddil ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"인쇄 위치 조정의 샘플 인쇄 ",
+"./cadjposprn.cgi?Flag=Init_Data&PageFlag=c_adjposprn.tpl",
+( "true" ==  umdtblGlobal.is_sfp && "true" == umdtblGlobal.isSendLite2 ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"인쇄 위치 조정 ",
+"./umodecom.cgi?Flag=Init_Data&PageFlag=umodecom.tpl&p_id=ADJPRINTPOS",
+( "true" == umdtblGlobal.is_sfp && "true" == umdtblGlobal.isSendLite2 ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"특수 처리 ",
+"./umodecom.cgi?Flag=Init_Data&PageFlag=umodecom.tpl&p_id=ADJIMGMP",
+( "true" == umdtblGlobal.has_HasDroplet        ||
+  "true" == umdtblGlobal.has_HasEnvFixLv       ||
+  "true" == umdtblGlobal.has_HasFogMode        ||
+  "true" == umdtblGlobal.has_fixTemp           ||
+  "true" == umdtblGlobal.has_normalSmooth      ||
+  "true" == umdtblGlobal.has_heavySmooth       ||
+  "true" == umdtblGlobal.has_envStickMode      ||
+  "true" == umdtblGlobal.has_lowCurl           ||
+  "true" == umdtblGlobal.has_imageFlow         ||
+  "true" == umdtblGlobal.has_roller            ||
+  "true" == umdtblGlobal.has_rotary            ||
+  "true" == umdtblGlobal.has_thickFixMode      ||
+  "true" == umdtblGlobal.has_offset            ||
+  "true" == umdtblGlobal.has_mpMode1           ||
+  "true" == umdtblGlobal.has_mpMode2           ||
+  "true" == umdtblGlobal.has_lowSlip           ||
+  "true" == umdtblGlobal.has_2tRollerAutoClean ||
+  "true" == umdtblGlobal.has_whiteLineAdj      ||
+  "true" == umdtblGlobal.has_plainFix          ||
+  "true" == umdtblGlobal.has_plainBackFix      ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+);
+this.AdjMntMntMainTBL = new Array
+(
+new menu_obj
+(
+"결로 검지시의 처리 ",
+"./ccndmd.cgi?Flag=Init_Data&PageFlag=c_cndmd.tpl",
+( "true" ==  umdtblGlobal.has_CondenseMode ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+)
+);
+this.EnvPapMainTBL = new Array
+(
+new menu_obj
+(
+"용지 설정 ",
+"./cdmtreg.cgi?Flag=Init_Data&PageFlag=c_mtrg.tpl",
+( "true" == umdtblGlobal.has_PaperSetRui ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"용지 설정 ",
+"/dvccom/papersettings/?portalLang=ko&disp=paper_menu",
+( "false" == umdtblGlobal.has_PaperSetRui ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"용지종류의 관리설정 ",
+"/dvccom/paperman/List?portalLang=ko&disp=paper_menu",
+( "true" == umdtblGlobal.has_mlib ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+);
+function GetTitle_UsePGAdr()
+{
+var ret = "개인/사용자 그룹 주소 리스트를 사용 ";
+if( "true" == umdtblGlobal.is_acq )
+{
+ret = "사용자 그룹 주소 리스트 설정 ";
+}
+return ret;
+}
+this.AdrsMainTBL = new Array
+(
+new menu_obj
+(
+"주소록 리스트 (리포트 출력) ",
+"./cdreportprt.cgi?Flag=Init_Data&PageFlag=c_repads.tpl",
+( "true" == umdtblGlobal.has_reader ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"주소록 PIN 번호 ",
+"./cadrs.cgi?Flag=Init_Data&PageFlag=c_adspsw.tpl",
+( "false" == umdtblGlobal.is_acq ),
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"주소록 액세스 번호 관리 ",
+"./cadrs.cgi?Flag=Init_Data&PageFlag=c_adsacs.tpl",
+null,
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"주소록 내보내기 설정 ",
+"./cadrs.cgi?Flag=Init_Data&PageFlag=c_adrexppass.tpl",
+null,
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"LDAP 서버 등록 ",
+"./cldap.cgi?CorePGTAG=39&Flag=Init_Data&PageFlag=c_topll.tpl",
+( "true" == umdtblGlobal.has_ldap ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"LDAP 서버 액세스 시 증명서 확인 설정 ",
+"./clsask.cgi?CorePGTAG=39&Flag=Init_Data&PageFlag=c_lsa.tpl",
+( "true" == umdtblGlobal.has_ldap ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"LDAP 검색 속성의 등록/편집 ",
+"./clsatrb.cgi?CorePGTAG=39&Flag=Init_Data&PageFlag=c_topls.tpl",
+( "true" == umdtblGlobal.has_ldap ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"리모트 주소록 취득 설정 ",
+"./cairadrs.cgi?CorePGTAG=39&Flag=Init_Data&PageFlag=c_airadsget.tpl&FuncTypeFlag=Client_Page",
+( "true" == umdtblGlobal.has_send || "true" == umdtblGlobal.has_fax || "true" == umdtblGlobal.has_airfax_clie ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"리모트 주소록 공개 설정 ",
+"./cairadrs.cgi?CorePGTAG=39&Flag=Init_Data&PageFlag=c_airadsrls.tpl&FuncTypeFlag=Serv_Page",
+( "true" == umdtblGlobal.has_send || "true" == umdtblGlobal.has_fax || "true" == umdtblGlobal.has_airfax_clie ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"팩스 수신인 설정 ",
+"./faxaddr.cgi?CorePGTAG=39&Flag=Init_Data&PageFlag=c_faxaddr.tpl",
+( "0" != umdtblGlobal.ip_fax_num || ("true" == umdtblGlobal.has_airfax_clie && "true" == umdtblGlobal.airfax_ipfax_use) ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+GetTitle_UsePGAdr(),
+"./cusepgadr.cgi?Flag=Init_Data&PageFlag=c_usepgadr.tpl",
+(( "true" == "false" ) &&
+ ( "true" == umdtblGlobal.has_send || "true" == umdtblGlobal.has_fax || "true" == umdtblGlobal.has_airfax_clie )),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+);
+this.EnvIndMainTBL = new Array
+(
+new menu_obj
+(
+"펀처 유닛 다이명칭 편집 ",
+"./cinddie.cgi?Flag=Init_Data&PageFlag=c_inddie.tpl",
+( "true" == "true" && "true" == umdtblGlobal.has_manypunch ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+);
+function DrawStat_usb()
+{
+return true;
+}
+function load_extend_card_setting()
+{
+var excard_setting = new Array(
+""
+
+);
+if( 0 == excard_setting.length || "" == excard_setting[0] )
+{
+return null;
+}
+return ( "./" + excard_setting[0] + "?" );
+}
+this.EnvIntMainTBL = new Array
+(
+new menu_obj
+(
+"USB 설정 ",
+"./cdntwkusb.cgi?Flag=Init_Data&PageFlag=c_nusb.tpl&FuncTypeFlag=Usb_Page",
+DrawStat_usb(),
+umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"확장카드 리포트 출력 ",
+"./cdreportprt.cgi?Flag=Init_Data&PageFlag=c_repint.tpl",
+( "true" == "false" && "false" == umdtblGlobal.has_dfe_ch_main ),
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"확장카드 설정 ",
+load_extend_card_setting(),
+( "true" == "false" && "false" == umdtblGlobal.has_dfe_ch_main ),
+umdtblGlobal.AirAuthDeviceFlg | umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+);
+var tcpip_ipsecTBL = new Array
+(
+new menu_obj
+(
+"IPSec 폴리시 리스트 ",
+"./rnwipsec.cgi?Flag=Init_Data&PageFlag=c_plcyl.tpl&FuncTypeFlag=List_Page",
+( "true" == umdtblGlobal.has_ipsec ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+);
+function DrawStat_BMLinks()
+{
+if( "true" == umdtblGlobal.has_dfe_ch_main )
+{
+return false;
+}
+if( "true" == umdtblGlobal.has_pdl || "true" == umdtblGlobal.has_bdl )
+{
+if( umdtblGlobal.country_jp == umdtblGlobal.country_code )
+{
+if( "false" == umdtblGlobal.is_oem  )
+{
+return true;
+}
+}
+}
+return false;
+}
+var net_tcpipTBL = new Array
+(
+new menu_obj
+(
+"IPv4 설정 ",
+"./rnwntcp.cgi?Flag=Init_Data&PageFlag=c_nip.tpl&FuncTypeFlag=IpAdrs_Page",
+( "false" == umdtblGlobal.has_dfe_ch_main ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"IPv6 설정 ",
+"./rnwipv6.cgi?Flag=Init_Data&PageFlag=c_ipv6.tpl",
+( "false" == umdtblGlobal.has_dfe_ch_main || "true" == umdtblGlobal.VARIE_COKIE_BISCOTTI_EFI ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"WINS 설정 ",
+"./rnwntcp.cgi?Flag=Init_Data&PageFlag=c_nwns.tpl&FuncTypeFlag=Wins_Page",
+( "false" == umdtblGlobal.has_dfe_ch_main ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"SMB 서버 설정 ",
+"./rnwntcp.cgi?Flag=Init_Data&PageFlag=c_nsmb.tpl&FuncTypeFlag=Smb_Page",
+( true == ( ( "true" == umdtblGlobal.has_pdl || "true" == umdtblGlobal.has_bdl )  || "true" == umdtblGlobal.has_fax || "true" == umdtblGlobal.has_send ) && "false" == umdtblGlobal.has_dfe_ch_main && "true" == umdtblGlobal.has_smb_server ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"컴퓨터 이름/워크그룹명 설정 ",
+"./rnwntcp.cgi?Flag=Init_Data&PageFlag=c_nsmbcom.tpl&FuncTypeFlag=SmbCom_Page",
+( true == ( ( "true" == umdtblGlobal.has_pdl || "true" == umdtblGlobal.has_bdl )  || "true" == umdtblGlobal.has_fax || "true" == umdtblGlobal.has_send ) && "false" == umdtblGlobal.has_dfe_ch_main ) && ( "true" == umdtblGlobal.en_smb_com_name || "true" == umdtblGlobal.en_smb_wgp_name ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"LPD 인쇄 설정 ",
+"./rnwntcp.cgi?Flag=Init_Data&PageFlag=c_nlpd.tpl&FuncTypeFlag=Lpd_Page",
+( "false" == umdtblGlobal.has_dfe_ch_main ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"RAW 인쇄 설정 ",
+"./rnwntcp.cgi?Flag=Init_Data&PageFlag=c_nraw.tpl&FuncTypeFlag=Raw_Page",
+( "false" == umdtblGlobal.has_dfe_ch_main ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"SNTP 설정 ",
+"./rnwntcp.cgi?Flag=Init_Data&PageFlag=c_nsnt.tpl&FuncTypeFlag=Sntp_Page",
+( "false" == umdtblGlobal.has_dfe_ch_main ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"FTP 인쇄 설정 ",
+"./rnwntcp.cgi?Flag=Init_Data&PageFlag=c_nfp.tpl&FuncTypeFlag=FtpPrint_Page",
+( "false" == umdtblGlobal.has_dfe_ch_main && "true" == umdtblGlobal.has_ftp_print ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"WSD 설정 ",
+"./rnwntcp.cgi?Flag=Init_Data&PageFlag=c_nwsd.tpl&FuncTypeFlag=Wsd_Page",
+( "false" == umdtblGlobal.has_dfe_ch_main ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"FTP PASV 모드 설정 ",
+"./rnwntcp.cgi?Flag=Init_Data&PageFlag=c_nfpv.tpl&FuncTypeFlag=FtpPasv_Page",
+( "true" == umdtblGlobal.has_send ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"BMLinkS 설정 ",
+"./rnwntcp.cgi?Flag=Init_Data&PageFlag=c_nbml.tpl&FuncTypeFlag=BMLinkS_Page",
+DrawStat_BMLinks(),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"IPP 인쇄 설정 ",
+"./rnwntcp.cgi?Flag=Init_Data&PageFlag=c_nipp.tpl&FuncTypeFlag=Ipp_Page",
+( "false" == umdtblGlobal.has_dfe_ch_main ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"Network Link Scan 설정 ",
+"./rnwntcp.cgi?Flag=Init_Data&PageFlag=c_nnls.tpl&FuncTypeFlag=Nls_Page",
+( "false" == umdtblGlobal.has_dfe_ch_main && "true" == umdtblGlobal.has_aap && "true" == umdtblGlobal.has_reader ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"멀티캐스트 탐색 설정 ",
+"./rnwntcp.cgi?Flag=Init_Data&PageFlag=c_ndsc.tpl&FuncTypeFlag=Discovery_Page",
+( "false" == umdtblGlobal.has_dfe_ch_main ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"HTTP 설정 ",
+"./rnwntcp.cgi?Flag=Init_Data&PageFlag=c_nhtp.tpl&FuncTypeFlag=Http_Page",
+null,
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"WebDAV 서버 설정 ",
+"./rnwnetwork.cgi?Flag=Init_Data&PageFlag=c_nwebdav.tpl&FuncTypeFlag=WebDav_Page",
+( "true" == umdtblGlobal.has_sbox ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"TLS 설정 ",
+"./rnwntssl.cgi?PageFlag=c_sslm.tpl",
+null,
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"프록시 설정 ",
+"./rnwntcp.cgi?Flag=Init_Data&PageFlag=c_npxy.tpl&FuncTypeFlag=Proxy_Page",
+null,
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"인증 관리시 인증 정보 확인 설정 ",
+"./rnwntcp.cgi?Flag=Init_Data&PageFlag=c_npwc.tpl&FuncTypeFlag=UsrPwdChk_Page",
+( "false" == umdtblGlobal.has_dfe_ch_main ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"IPSec 설정 ",
+"./rnwipsec.cgi?Flag=Init_Data&PageFlag=c_ipsec.tpl&FuncTypeFlag=IPsec_Page",
+( "true" == umdtblGlobal.has_ipsec && "false" == umdtblGlobal.has_dfe_ch_main ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+tcpip_ipsecTBL
+),
+new menu_obj
+(
+"SIP 설정 ",
+"./rnwsip.cgi?Flag=Init_Data&PageFlag=c_sip.tpl",
+( "0" != umdtblGlobal.ip_fax_num ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+)
+var net_pfw_ipv4TBL = new Array
+(
+new menu_obj
+(
+"송신 필터 ",
+"./rnwfirewall.cgi?Flag=Init_Data&PageFlag=c_toppil.tpl&FuncTypeFlag=PwfIPv4S_Page",
+null,
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"수신 필터 ",
+"./rnwfirewall.cgi?Flag=Init_Data&PageFlag=c_toppil.tpl&FuncTypeFlag=PwfIPv4R_Page",
+null,
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"ICMP 송수신 설정 ",
+"./rnwicmp.cgi?Flag=Init_Data&PageFlag=c_icmp.tpl&FuncTypeFlag=ICMPv4_Page",
+null,
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+)
+var net_pfw_ipv6TBL = new Array
+(
+new menu_obj
+(
+"송신 필터 ",
+"./rnwfirewall.cgi?Flag=Init_Data&PageFlag=c_toppil.tpl&FuncTypeFlag=PwfIPv6S_Page", 
+null,
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"수신 필터 ",
+"./rnwfirewall.cgi?Flag=Init_Data&PageFlag=c_toppil.tpl&FuncTypeFlag=PwfIPv6R_Page",
+null,
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"ICMP 송수신 설정 ",
+"./rnwicmp.cgi?Flag=Init_Data&PageFlag=c_icmp.tpl&FuncTypeFlag=ICMPv6_Page",
+null,
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+)
+var net_pfw_macTBL = new Array
+(
+new menu_obj
+(
+"송신 필터 ",
+"./rnwfirewallmac.cgi?Flag=Init_Data&PageFlag=c_toppma.tpl&FuncTypeFlag=PwfMacS_Page",
+null,
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"수신 필터 ",
+"./rnwfirewallmac.cgi?Flag=Init_Data&PageFlag=c_toppma.tpl&FuncTypeFlag=PwfMacR_Page",
+null,
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+)
+var net_pfwTBL = new Array
+(
+new menu_obj
+(
+"IPv4 주소 필터 ",
+null,
+null,
+null,
+net_pfw_ipv4TBL
+),
+new menu_obj
+(
+"IPv6 주소 필터 ",
+null,
+null,
+null,
+net_pfw_ipv6TBL
+),
+new menu_obj
+(
+"MAC 주소 필터 ",
+null,
+null,
+null,
+net_pfw_macTBL
+),
+new menu_obj
+(
+"IP 주소 블럭 이력 ",
+"./rnwnetworklog.cgi?Flag=Html_Data&LogType=6",
+null,
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+)
+var net_wlnTBL = new Array
+(
+new menu_obj
+(
+"무선랜 설정 ",
+"./rnwnetwork.cgi?Flag=Init_Data&PageFlag=c_wirelesslaninfo.tpl&FuncTypeFlag=WirelesslanInfo_Page",
+( "true" == "true" ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"다이렉트 접속 설정 ",
+"./rnwnetwork.cgi?Flag=Init_Data&PageFlag=c_dconset.tpl&FuncTypeFlag=DirectConnectSetting_Page",
+( ( "true" == "true" ) || ( "true" == "true" ) ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+),
+new menu_obj
+(
+"다이렉트 접속 정보 ",
+"./rnwnetwork.cgi?Flag=Init_Data&PageFlag=c_dconinfo.tpl&FuncTypeFlag=DirectConnectInfo_Page",
+( ( "true" == "true" ) || ( "true" == "true" ) ),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSystemFlg,
+null
+)
+)
+var CopyOnlyFlg = ( "false" == umdtblGlobal.has_pdl && "false" == umdtblGlobal.has_lips && "false" == umdtblGlobal.has_ps && "false" == umdtblGlobal.has_bdl && "false" == umdtblGlobal.has_fax && "false" == umdtblGlobal.has_send );
+function DrawStat_SMB()
+{
+if( "false" == umdtblGlobal.has_smb_server )
+{
+return false;
+}
+if( "true" == umdtblGlobal.has_dfe_ch_main )
+{
+return false;
+}
+if(( "false" == umdtblGlobal.has_pdl ) &&
+( "false" == umdtblGlobal.has_bdl ) &&
+( "false" == umdtblGlobal.has_fax ) &&
+( "false" == umdtblGlobal.has_send ))
+{
+return false;
+}
+return true;
+}
+this.EnvNetMainTBL = new Array
+(
+new menu_obj
+(
+"리포트 출력 ",
+"./rnwreportprt.cgi?Flag=Init_Data&PageFlag=c_repnet.tpl",
+null,
+umdtblGlobal.AirAuthGenericFlg,
+null
+),
+new menu_obj
+(
+"TCP/IP 설정 ",
+null,
+null,
+null,
+net_tcpipTBL
+),
+new menu_obj
+(
+"Google 클라우드 프린트 설정 ",
+"./rnwnetwork.cgi?Flag=Init_Data&PageFlag=c_ncloud.tpl&FuncTypeFlag=CloudPrint_Page",
+("true" == umdtblGlobal.has_gcp),
+umdtblGlobal.AirAuthNetwkFlg | umdtblGlobal.AirAuthSyst

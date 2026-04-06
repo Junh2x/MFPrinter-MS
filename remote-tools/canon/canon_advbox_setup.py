@@ -96,8 +96,8 @@ def main():
         "WebDav_AuthType": "0",      # WebDAV 인증 타입
         "WebDav_UseSSL": "1",        # WebDAV SSL
         "AutoDelete": "1",           # 자동 삭제
-        "AutoDeleteTime_HH": "00",   # 자동 삭제 시(時)
-        "AutoDeleteTime_MM": "00",   # 자동 삭제 분(分)
+        "AutoDeleteTime_HH": "00",   # 자동 삭제 시
+        "AutoDeleteTime_MM": "00",   # 자동 삭제 분
         "Flag": "Exec_Data",
         "PageFlag": "c_sboxlist.tpl",
         "FuncTypeFlag": "SettingPage",
