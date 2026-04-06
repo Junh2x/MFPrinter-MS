@@ -402,3 +402,191 @@ Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)
 x-requested-with
 XMLHttpRequest
 페이로드: mode=ADDUSER&step=BASE&wimToken=1190376593&entryIndexIn=00010&entryNameIn=123&entryDisplayNameIn=123&entryTagInfoIn=1&entryTagInfoIn=1&entryTagInfoIn=1&entryTagInfoIn=1
+
+주소 수정 폼 진입 (wim token 위자드 세션 초기화):
+Request URL
+http://192.168.11.185/web/entry/ko/address/adrsGetUserWizard.cgi
+Request Method
+POST
+Status Code
+200 OK
+Remote Address
+192.168.11.185:80
+Referrer Policy
+strict-origin-when-cross-origin
+cache-control
+no-cache
+connection
+Keep-Alive
+content-security-policy
+default-src 'self' 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'self'
+content-type
+text/html; charset=UTF-8
+date
+Mon, 06 Apr 2026 06:46:30 GMT
+expires
+Mon, 06 Apr 2026 06:46:30 GMT
+pragma
+no-cache
+server
+Web-Server/3.0
+set-cookie
+cookieOnOffChecker=on; path=/; HttpOnly
+transfer-encoding
+Chunked
+x-frame-options
+SAMEORIGIN
+accept
+text/plain, */*
+accept-encoding
+gzip, deflate
+accept-language
+ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7
+connection
+keep-alive
+content-length
+82
+content-type
+application/x-www-form-urlencoded; charset=UTF-8
+cookie
+risessionid=182946700678666; cookieOnOffChecker=on; wimsesid=612538367
+host
+192.168.11.185
+origin
+http://192.168.11.185
+referer
+http://192.168.11.185/web/entry/ko/address/adrsList.cgi
+user-agent
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+x-requested-with
+XMLHttpRequest
+페이로드: mode=MODUSER&outputSpecifyModeIn=PROGRAMMED&entryIndexIn=00011&wimToken=1190376593
+
+수정(BASE Step) 후 다음 step 진입:
+Request URL
+http://192.168.11.185/web/entry/ko/address/adrsSetUserWizard.cgi
+Request Method
+POST
+Status Code
+200 OK
+Remote Address
+192.168.11.185:80
+Referrer Policy
+strict-origin-when-cross-origin
+connection
+Keep-Alive
+content-security-policy
+default-src 'self' 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'self'
+content-type
+text/plain
+date
+Mon, 06 Apr 2026 06:47:48 GMT
+expires
+Mon, 06 Apr 2026 06:47:48 GMT
+server
+Web-Server/3.0
+set-cookie
+cookieOnOffChecker=on; path=/; HttpOnly
+transfer-encoding
+Chunked
+x-frame-options
+SAMEORIGIN
+accept
+text/plain, */*
+accept-encoding
+gzip, deflate
+accept-language
+ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7
+connection
+keep-alive
+content-length
+181
+content-type
+application/x-www-form-urlencoded; charset=UTF-8
+cookie
+risessionid=182946700678666; cookieOnOffChecker=on; wimsesid=612538367
+host
+192.168.11.185
+origin
+http://192.168.11.185
+referer
+http://192.168.11.185/web/entry/ko/address/adrsList.cgi
+user-agent
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+x-requested-with
+XMLHttpRequest
+
+페이로드: mode=MODUSER&step=BASE&wimToken=1190376593&entryIndexIn=00011&entryNameIn=TEST_RICOH&entryDisplayNameIn=TEST_KEY&entryTagInfoIn=2&entryTagInfoIn=10&entryTagInfoIn=6&entryTagInfoIn=1
+
+주소 삭제:
+Request URL
+http://192.168.11.185/web/entry/ko/address/adrsDeleteEntries.cgi
+Request Method
+POST
+Status Code
+200 OK
+Remote Address
+192.168.11.185:80
+Referrer Policy
+strict-origin-when-cross-origin
+cache-control
+no-cache
+connection
+Keep-Alive
+content-security-policy
+default-src 'self' 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'self'
+content-type
+text/html; charset=UTF-8
+date
+Mon, 06 Apr 2026 06:49:37 GMT
+expires
+Mon, 06 Apr 2026 06:49:37 GMT
+pragma
+no-cache
+server
+Web-Server/3.0
+set-cookie
+cookieOnOffChecker=on; path=/; HttpOnly
+transfer-encoding
+Chunked
+x-frame-options
+SAMEORIGIN
+accept
+text/plain, */*
+accept-encoding
+gzip, deflate
+accept-language
+ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7
+connection
+keep-alive
+content-length
+260
+content-type
+multipart/form-data; boundary=-----------------------------1775458336095
+cookie
+risessionid=182946700678666; cookieOnOffChecker=on; wimsesid=612538367
+host
+192.168.11.185
+origin
+http://192.168.11.185
+referer
+http://192.168.11.185/web/entry/ko/address/adrsList.cgi
+user-agent
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+x-requested-with
+XMLHttpRequest
+페이로드: -------------------------------1775458336095
+Content-Disposition: form-data; name="entryIndex"
+
+12,
+-------------------------------1775458336095
+Content-Disposition: form-data; name="wimToken"
+
+1190376593
+-------------------------------1775458336095--
+
+파싱 페이로드: 
+entryIndex
+12,
+wimToken
+1190376593
