@@ -365,3 +365,70 @@ user-agent
 Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
 페이로드:AID=11&FILTER_ID=0&Dummy=1775453922191
 타겟 값: adrsList 변수 객체
+
+## 고급박스 설정
+Request URL
+http://192.168.11.227:8000/rps/cdsuperbox.cgi
+Request Method
+POST
+Status Code
+200 OK
+Remote Address
+192.168.11.227:8000
+Referrer Policy
+strict-origin-when-cross-origin
+cache-control
+no-cache,no-store,max-age=0
+connection
+Keep-Alive
+content-type
+text/html;charset=UTF-8
+date
+Mon, 06 Apr 2026 08:14:47 GMT
+expires
+Thu, 01 Jan 1970 00:00:00 GMT
+keep-alive
+timeout=30
+pragma
+no-cache
+server
+CANON HTTP Server
+transfer-encoding
+chunked
+x-content-type-options
+nosniff
+x-frame-options
+DENY
+x-xss-protection
+1; mode=block
+accept
+text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+accept-encoding
+gzip, deflate
+accept-language
+ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7
+cache-control
+max-age=0
+connection
+keep-alive
+content-length
+406
+content-type
+application/x-www-form-urlencoded
+cookie
+sessionid=1e7c38f3958d7d4879734ef116f9ad46; portalLang=ko; iR=3458852749
+host
+192.168.11.227:8000
+origin
+http://192.168.11.227:8000
+referer
+http://192.168.11.227:8000/rps/cdsuperbox.cgi?Flag=Init_Data&PageFlag=c_superbox.tpl&FuncTypeFlag=SettingPage&Dummy=1775463308664
+upgrade-insecure-requests
+1
+user-agent
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+
+페이로드:
+OpenOutSide=1&PermitMakeDir=1&ReadOnlyMode=0&PermitManage=0&PermitFileType=0&OperationLogValid=1&Setting_SMB=&Setting_WebDAV=&Setting_DOCLIB=1&WebDav_AuthType=0&WebDav_UseSSL=1&AutoDelete=1&AutoDeleteTime_HH=00&AutoDeleteTime_MM=00&Flag=Exec_Data&PageFlag=c_sboxlist.tpl&FuncTypeFlag=SettingPage&CoreNXAction=.%2Fcdsuperbox.cgi&CoreNXPage=c_superbox.tpl&disp=&Dummy=1775463325904&Token=33774215991742048191
+
+
