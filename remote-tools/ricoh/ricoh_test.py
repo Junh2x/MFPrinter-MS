@@ -40,6 +40,12 @@ def b64(text):
 
 def login(s, userid, password):
     """로그인 → wimToken 획득"""
+    # 0. 메인 페이지 → 초기 쿠키 (cookieOnOffChecker 등)
+    s.get(f"{BASE}/", timeout=10, allow_redirects=True)
+    s.cookies.set("cookieOnOffChecker", "on")
+    log(f"[0] 초기 쿠키 설정 — {dict(s.cookies)}")
+    time.sleep(1)
+
     # 1. 로그인 폼에서 wimToken 가져오기
     r = s.get(f"{BASE}/web/guest/ko/websys/webArch/authForm.cgi", timeout=10)
     save("1_authform", r)
