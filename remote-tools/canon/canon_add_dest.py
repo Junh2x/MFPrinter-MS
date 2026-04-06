@@ -58,7 +58,7 @@ def dummy():
     return str(int(time.time() * 1000))
 
 
-def add_destination(aid, slot, name, host_ip, folder, user, password):
+def add_destination(aid, slot, name, host_ip, folder, user, password, btn_name=None):
     s = requests.Session()
     s.verify = False
     s.headers.update({
@@ -69,8 +69,11 @@ def add_destination(aid, slot, name, host_ip, folder, user, password):
         "Upgrade-Insecure-Requests": "1",
     })
 
+    if btn_name is None:
+        btn_name = name
+
     log(f"=== 캐논 수신지 추가 ===")
-    log(f"  AID={aid}, 슬롯={slot}, 이름={name}")
+    log(f"  AID={aid}, 슬롯={slot}, 이름={name}, 버튼명칭={btn_name}")
     log(f"  호스트={host_ip}, 폴더={folder}, 유저={user}")
 
     # Step 1: 메인 포털 → sessionid, portalLang 쿠키
@@ -158,7 +161,7 @@ def add_destination(aid, slot, name, host_ip, folder, user, password):
 
     # Step 8: aprop (파일 설정 — PageFlag, PASSCHK=1&빈값) → Token B3
     body = (f"AID={aid}&PageFlag=a_rfn_f.tpl&AIDX={slot}"
-            f"&ANAME={name}&ANAMEONE={name}&AREAD={name}&APNO=0"
+            f"&ANAME={name}&ANAMEONE={name}&AREAD={btn_name}&APNO=0"
             f"&AAD1={host_ip}&ACLS=7&APRTCL=7"
             f"&APATH={folder}&AUSER={user}&INPUT_PSWD=0&APWORD={password}"
             f"&PASSCHK=1&PASSCHK="
@@ -180,7 +183,7 @@ def add_destination(aid, slot, name, host_ip, folder, user, password):
 
     # Step 9: aprop (폴더 설정 — PageFlag 없음, Token B3 재사용) → Token B4
     body = (f"AID={aid}&PageFlag=&AIDX={slot}"
-            f"&ANAME={name}&ANAMEONE={name}&AREAD={name}&APNO=0"
+            f"&ANAME={name}&ANAMEONE={name}&AREAD={btn_name}&APNO=0"
             f"&AAD1={host_ip}&ACLS=7&APRTCL=7"
             f"&APATH={folder}&AUSER={user}&INPUT_PSWD=0&APWORD={password}"
             f"&PASSCHK=1&PASSCHK="
@@ -202,7 +205,7 @@ def add_destination(aid, slot, name, host_ip, folder, user, password):
 
     # Step 10: anewadrs.cgi (최종 등록 — PASSCHK 둘 다 1, AdrAction 변경)
     body = (f"AID={aid}&PageFlag=&AIDX={slot}"
-            f"&ANAME={name}&ANAMEONE={name}&AREAD={name}&APNO=0"
+            f"&ANAME={name}&ANAMEONE={name}&AREAD={btn_name}&APNO=0"
             f"&AAD1={host_ip}&ACLS=7&APRTCL=7"
             f"&APATH={folder}&AUSER={user}&INPUT_PSWD=0&APWORD={password}"
             f"&PASSCHK=1&PASSCHK=1"
@@ -294,16 +297,16 @@ def add_destination(aid, slot, name, host_ip, folder, user, password):
 
 
 if __name__ == "__main__":
-    # 기본값
     AID = "11"
     SLOT = 1
-    NAME = "JA_TEST"
-    HOST = "192.168.11.99"
-    FOLDER = "scan"
-    USER = ""
-    PASS = ""
+    NAME = "TEST_NAME"
+    HOST = "192.168.11.98"
+    FOLDER = "TEST_SCAN"
+    USER = "TEST_USER"
+    PASS = "123456"
+    BTN = "TEST_BTN_NAME"
 
-    # 인자 처리: python canon_add_dest.py [slot] [name] [host] [folder] [user] [pass]
+    # 인자: python canon_add_dest.py [slot] [name] [host] [folder] [user] [pass] [btn_name]
     args = sys.argv[1:]
     if len(args) >= 1: SLOT = int(args[0])
     if len(args) >= 2: NAME = args[1]
@@ -311,11 +314,13 @@ if __name__ == "__main__":
     if len(args) >= 4: FOLDER = args[3]
     if len(args) >= 5: USER = args[4]
     if len(args) >= 6: PASS = args[5]
+    if len(args) >= 7: BTN = args[6]
 
     log(f"설정: AID={AID}, SLOT={SLOT}")
-    log(f"  이름={NAME}, 호스트={HOST}, 폴더={FOLDER}")
-    log(f"  유저={USER or '(없음)'}, 패스={'***' if PASS else '(없음)'}")
+    log(f"  이름={NAME}, 버튼명칭={BTN}")
+    log(f"  호스트={HOST}, 폴더={FOLDER}")
+    log(f"  유저={USER}, 패스={'***' if PASS else '(없음)'}")
     log("")
 
-    success = add_destination(AID, SLOT, NAME, HOST, FOLDER, USER, PASS)
+    success = add_destination(AID, SLOT, NAME, HOST, FOLDER, USER, PASS, BTN)
     sys.exit(0 if success else 1)
