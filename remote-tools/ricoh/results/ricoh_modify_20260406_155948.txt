@@ -1,0 +1,14 @@
+[15:59:48] [0] 초기 쿠키 OK
+[15:59:49] [1] wimToken = 806420670
+[15:59:49] [2] 로그인 OK
+[15:59:50] [3] 주소록 wimToken = 1680281995
+[15:59:51] 
+=== 수신지 수정 ===
+[15:59:51]   등록번호=00011, 이름=TEST_RICOH_MOD, 키표시=TEST_KEY_MOD
+[15:59:51]   폴더=\\192.168.11.98\TEST_SCAN_MOD, 유저=TEST_USER_MOD
+[15:59:51]   위자드 초기화 → 200
+[15:59:53] [Step1] BASE → 200 (<html xmlns:axsl="http://localhost" lang="ko"><hea)
+[15:59:53] [Step2] FAX → 200 ([14])
+[15:59:53] [Step3] FOLDER → 200 (<html xmlns:axsl="http://localhost" lang="ko"><hea)
+[15:59:55] [Step4] CONFIRM → 200
+[15:59:55]   응답: <html xmlns:axsl="http://localhost" lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style type="text/css"></style><meta http-equiv="Content-Script-Type" content="te
