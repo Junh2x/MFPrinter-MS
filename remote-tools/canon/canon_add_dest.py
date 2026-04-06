@@ -161,7 +161,7 @@ def add_destination(aid, slot, name, host_ip, folder, user, password, btn_name=N
 
     # Step 8: aprop (파일 설정 — PageFlag, PASSCHK=1&빈값) → Token B3
     body = (f"AID={aid}&PageFlag=a_rfn_f.tpl&AIDX={slot}"
-            f"&ANAME={name}&ANAMEONE={name}&AREAD={btn_name}&APNO=0"
+            f"&ANAME={name}&ANAMEONE={btn_name}&AREAD={name}&APNO=0"
             f"&AAD1={host_ip}&ACLS=7&APRTCL=7"
             f"&APATH={folder}&AUSER={user}&INPUT_PSWD=0&APWORD={password}"
             f"&PASSCHK=1&PASSCHK="
@@ -183,7 +183,7 @@ def add_destination(aid, slot, name, host_ip, folder, user, password, btn_name=N
 
     # Step 9: aprop (폴더 설정 — PageFlag 없음, Token B3 재사용) → Token B4
     body = (f"AID={aid}&PageFlag=&AIDX={slot}"
-            f"&ANAME={name}&ANAMEONE={name}&AREAD={btn_name}&APNO=0"
+            f"&ANAME={name}&ANAMEONE={btn_name}&AREAD={name}&APNO=0"
             f"&AAD1={host_ip}&ACLS=7&APRTCL=7"
             f"&APATH={folder}&AUSER={user}&INPUT_PSWD=0&APWORD={password}"
             f"&PASSCHK=1&PASSCHK="
@@ -205,7 +205,7 @@ def add_destination(aid, slot, name, host_ip, folder, user, password, btn_name=N
 
     # Step 10: anewadrs.cgi (최종 등록 — PASSCHK 둘 다 1, AdrAction 변경)
     body = (f"AID={aid}&PageFlag=&AIDX={slot}"
-            f"&ANAME={name}&ANAMEONE={name}&AREAD={btn_name}&APNO=0"
+            f"&ANAME={name}&ANAMEONE={btn_name}&AREAD={name}&APNO=0"
             f"&AAD1={host_ip}&ACLS=7&APRTCL=7"
             f"&APATH={folder}&AUSER={user}&INPUT_PSWD=0&APWORD={password}"
             f"&PASSCHK=1&PASSCHK=1"
