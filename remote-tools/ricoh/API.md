@@ -288,3 +288,117 @@ XMLHttpRequest
 ## 4
 페이로드: wimToken=1294188988&stepListIn=BASE&stepListIn=FAX&stepListIn=FOLDER&mode=ADDUSER&step=CONFIRM
 응답: [[11,1,'00010','TEST_NAME','','1775456105#06/04/2026 15:15','000-000','','\\\\192.168.0.00\\TEST_SCAN'],[0]]
+
+추가 폼 진입:
+Request URL
+http://192.168.11.185/web/entry/ko/address/adrsGetUserWizard.cgi
+Request Method
+POST
+Status Code
+200 OK
+Remote Address
+192.168.11.185:80
+Referrer Policy
+strict-origin-when-cross-origin
+cache-control
+no-cache
+connection
+Keep-Alive
+content-security-policy
+default-src 'self' 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'self'
+content-type
+text/html; charset=UTF-8
+date
+Mon, 06 Apr 2026 06:42:08 GMT
+expires
+Mon, 06 Apr 2026 06:42:08 GMT
+pragma
+no-cache
+server
+Web-Server/3.0
+set-cookie
+cookieOnOffChecker=on; path=/; HttpOnly
+transfer-encoding
+Chunked
+x-frame-options
+SAMEORIGIN
+accept
+text/plain, */*
+accept-encoding
+gzip, deflate
+accept-language
+ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7
+connection
+keep-alive
+content-length
+60
+content-type
+application/x-www-form-urlencoded; charset=UTF-8
+cookie
+risessionid=182946700678666; cookieOnOffChecker=on; wimsesid=612538367
+host
+192.168.11.185
+origin
+http://192.168.11.185
+referer
+http://192.168.11.185/web/entry/ko/address/adrsList.cgi
+user-agent
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+x-requested-with
+XMLHttpRequest
+페이로드: mode=ADDUSER&outputSpecifyModeIn=DEFAULT&wimToken=1190376593
+
+기본정보 입력 후 폴더 step 진입:
+Request URL
+http://192.168.11.185/web/entry/ko/address/adrsSetUserWizard.cgi
+Request Method
+POST
+Status Code
+200 OK
+Remote Address
+192.168.11.185:80
+Referrer Policy
+strict-origin-when-cross-origin
+connection
+Keep-Alive
+content-security-policy
+default-src 'self' 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'self'
+content-type
+text/plain
+date
+Mon, 06 Apr 2026 06:43:01 GMT
+expires
+Mon, 06 Apr 2026 06:43:01 GMT
+server
+Web-Server/3.0
+set-cookie
+cookieOnOffChecker=on; path=/; HttpOnly
+transfer-encoding
+Chunked
+x-frame-options
+SAMEORIGIN
+accept
+text/plain, */*
+accept-encoding
+gzip, deflate
+accept-language
+ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7
+connection
+keep-alive
+content-length
+168
+content-type
+application/x-www-form-urlencoded; charset=UTF-8
+cookie
+risessionid=182946700678666; cookieOnOffChecker=on; wimsesid=612538367
+host
+192.168.11.185
+origin
+http://192.168.11.185
+referer
+http://192.168.11.185/web/entry/ko/address/adrsList.cgi
+user-agent
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+x-requested-with
+XMLHttpRequest
+페이로드: mode=ADDUSER&step=BASE&wimToken=1190376593&entryIndexIn=00010&entryNameIn=123&entryDisplayNameIn=123&entryTagInfoIn=1&entryTagInfoIn=1&entryTagInfoIn=1&entryTagInfoIn=1
