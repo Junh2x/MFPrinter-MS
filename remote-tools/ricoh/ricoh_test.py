@@ -88,12 +88,12 @@ def login(s, userid, password):
     r = s.get(f"{BASE}/web/entry/ko/address/adrsList.cgi", timeout=10)
     save("3_adrslist_page", r)
 
-    new_token = re.search(r'wimToken["\s:=]+["\']?(\d+)', r.text)
+    new_token = re.search(r'name=["\']wimToken["\'][^>]*value=["\'](\d+)', r.text)
     if new_token:
         wim_token = new_token.group(1)
         log(f"[3] 새 wimToken = {wim_token}")
     else:
-        log(f"[3] 주소록 페이지 접속 OK (wimToken 유지)")
+        log(f"[WARN] 주소록 페이지에서 wimToken 미발견")
 
     return wim_token
 
@@ -146,15 +146,18 @@ def add_destination(s, wim_token, reg_no, name, display_name, folder_path, folde
     url = f"{BASE}/web/entry/ko/address/adrsSetUserWizard.cgi"
 
     # Step 1: BASE (기본 정보)
-    data1 = {
-        "mode": "ADDUSER",
-        "step": "BASE",
-        "wimToken": wim_token,
-        "entryIndexIn": reg_no,
-        "entryNameIn": name,
-        "entryDisplayNameIn": display_name,
-        "entryTagInfoIn": ["2", "10", "6", "1"],
-    }
+    data1 = [
+        ("mode", "ADDUSER"),
+        ("step", "BASE"),
+        ("wimToken", wim_token),
+        ("entryIndexIn", reg_no),
+        ("entryNameIn", name),
+        ("entryDisplayNameIn", display_name),
+        ("entryTagInfoIn", "2"),
+        ("entryTagInfoIn", "10"),
+        ("entryTagInfoIn", "6"),
+        ("entryTagInfoIn", "1"),
+    ]
     r = s.post(url, data=data1, headers=headers, timeout=10)
     save("5_step1_base", r)
     log(f"[Step1] BASE → {r.status_code} ({r.text.strip()})")
@@ -191,12 +194,14 @@ def add_destination(s, wim_token, reg_no, name, display_name, folder_path, folde
     log(f"[Step3] FOLDER → {r.status_code} ({r.text.strip()})")
 
     # Step 4: CONFIRM (확정)
-    data4 = {
-        "wimToken": wim_token,
-        "stepListIn": ["BASE", "FAX", "FOLDER"],
-        "mode": "ADDUSER",
-        "step": "CONFIRM",
-    }
+    data4 = [
+        ("wimToken", wim_token),
+        ("stepListIn", "BASE"),
+        ("stepListIn", "FAX"),
+        ("stepListIn", "FOLDER"),
+        ("mode", "ADDUSER"),
+        ("step", "CONFIRM"),
+    ]
     r = s.post(url, data=data4, headers=headers, timeout=10)
     save("8_step4_confirm", r)
     log(f"[Step4] CONFIRM → {r.status_code}")
