@@ -1,0 +1,5 @@
+[15:28:33] === 리코 테스트 시작 ===
+
+[15:28:33] [FAIL] wimToken 추출 실패
+[15:28:33]   응답 일부: <html>  <head></head>  <body onload='document.form1.submit()'>    <form name='form1' method='POST' action='/web/guest/ko/websys/webArch/message.cgi' target='_top'>      <input type='hidden' name='title' value='MSG_TTL_COOKIEOFF'/>      <input type='hidden' name='messageID' value='MSG_COOKIEOFF'/>      <input type='hidden' name='buttonURL' value='/web/guest/ko/websys/webArch/mainFrame.cgi'/>      <input type='hidden' name='screen' value='all'/>	</form>  </body></html>
+[15:28:33] 로그인 실패. 종료.
