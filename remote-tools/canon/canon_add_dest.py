@@ -223,39 +223,72 @@ def add_destination(aid, slot, name, host_ip, folder, user, password):
     log(f"[10] 등록 응답 OK ({len(r.content)}B)")
 
     # 검증: 목록에서 등록한 이름 확인
-    time.sleep(1)
+    time.sleep(2)
     log("\n=== 등록 검증 ===")
-    s.get(f"{BASE}/rps/asublist.cgi?CorePGTAG=24&AMOD=0&FromTopPage=1&Dummy={dummy()}", timeout=10)
-    s.get(f"{BASE}/rps/alframe.cgi?AID={aid}", timeout=10)
-    r2 = s.post(f"{BASE}/rps/albody.cgi",
-                data=f"AID={aid}&FILTER_ID=0&Dummy={dummy()}",
-                headers={"Content-Type": "application/x-www-form-urlencoded"},
-                timeout=10)
+
+    # 새 세션으로 검증 (등록 세션과 분리)
+    s2 = requests.Session()
+    s2.verify = False
+    s2.headers.update({"User-Agent": UA})
+
+    s2.get(f"{BASE}/", timeout=10)
+    s2.get(f"{BASE}/rps/nativetop.cgi?RUIPNxBundle=&CorePGTAG=PGTAG_ADR_USR&Dummy={dummy()}", timeout=10)
+    s2.get(f"{BASE}/rps/asublist.cgi?CorePGTAG=24&AMOD=0&FromTopPage=1&Dummy={dummy()}", timeout=10)
+    s2.get(f"{BASE}/rps/alframe.cgi?AID={aid}", timeout=10)
+    r2 = s2.post(f"{BASE}/rps/albody.cgi",
+                 data=f"AID={aid}&FILTER_ID=0&Dummy={dummy()}",
+                 headers={"Content-Type": "application/x-www-form-urlencoded"},
+                 timeout=10)
     save("11_verify", r2)
+    log(f"  검증 응답: {r2.status_code} ({len(r2.content)}B)")
 
     found = False
-    match = re.search(r'var\s+adrsList\s*=\s*\[([^\]]*)\]', r2.text, re.DOTALL)
+
+    # 방법1: var adrsList = [...]
+    match = re.search(r'var\s+adrsList\s*=\s*\[(.*?)\];', r2.text, re.DOTALL)
     if match:
-        entries = list(re.finditer(r'\{[^}]*idx:(\d+)[^}]*nm:"([^"]*)"', match.group(1)))
+        for m in re.finditer(r'idx:(\d+)[^}]*nm:"([^"]*)"', match.group(1)):
+            idx, nm = m.group(1), m.group(2).strip()
+            if nm:
+                marker = " <<<" if name in nm else ""
+                log(f"  [{idx}] {nm}{marker}")
+                if name in nm:
+                    found = True
+
+    # 방법2: nm:"..." 패턴 직접 검색
+    if not found:
+        entries = list(re.finditer(r'idx:(\d+)[^}]*nm:"([^"]+)"', r2.text))
         if entries:
-            log(f"AID={aid} 목록:")
             for m in entries:
-                idx = m.group(1)
-                nm = m.group(2).strip()
-                if nm:
-                    marker = " <<<" if name in nm else ""
-                    log(f"  [{idx}] {nm}{marker}")
-                    if name in nm:
-                        found = True
-        else:
-            log("  등록된 수신지 없음")
-    else:
-        log("  목록 파싱 실패")
+                idx, nm = m.group(1), m.group(2).strip()
+                marker = " <<<" if name in nm else ""
+                log(f"  [{idx}] {nm}{marker}")
+                if name in nm:
+                    found = True
+
+    # 방법3: 등록한 이름이 응답 어딘가에 있는지
+    if not found and name in r2.text:
+        log(f"  '{name}'이 응답 HTML에 존재 (정확한 위치 파싱 실패)")
+        found = True
+
+    # 디버그: 파싱 실패 시 응답 내용 일부 출력
+    if not found:
+        log("  목록 파싱 실패 — 디버그 정보:")
+        # var 선언 찾기
+        for m in re.finditer(r'var\s+(\w+)\s*=\s*[\[\{]', r2.text):
+            log(f"    var {m.group(1)} at pos {m.start()}")
+        # 응답 앞부분에서 script 내용 확인
+        scripts = re.findall(r'<script[^>]*>(.*?)</script>', r2.text[:5000], re.DOTALL)
+        for i, sc in enumerate(scripts[:3]):
+            sc_clean = sc.strip()[:200]
+            if sc_clean and 'CacheImage' not in sc_clean:
+                log(f"    script[{i}]: {sc_clean}")
 
     if found:
         log(f"\n>>> 성공! '{name}'이 AID={aid} 목록에 확인됨")
     else:
-        log(f"\n>>> 목록에서 '{name}' 미확인 (등록 응답은 정상)")
+        log(f"\n>>> 목록에서 '{name}' 미확인 (등록 응답은 정상, 검증HTML 확인 필요)")
+        log(f"    저장 파일: {RESULT_DIR}/add_*_11_verify.html")
 
     return True
 
