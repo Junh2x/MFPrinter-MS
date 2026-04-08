@@ -1,0 +1,79 @@
+<Window x:Class="JaScan.Views.Dialogs.ScanBoxAddDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="스캔함 설정" Width="400" Height="480"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="None" AllowsTransparency="True"
+        Background="Transparent" ResizeMode="NoResize">
+
+    <Border Background="White" CornerRadius="8" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- 헤더 -->
+            <Border Grid.Row="0" Padding="14,0" MouseLeftButtonDown="TitleBar_MouseDown"
+                    BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+                <Grid>
+                    <TextBlock Text="스캔함 추가" FontSize="13" FontWeight="SemiBold"
+                               Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+                    <Button Content="✕" Style="{StaticResource IconButton}"
+                            HorizontalAlignment="Right" Click="CloseButton_Click"/>
+                </Grid>
+            </Border>
+
+            <!-- 폼 -->
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="16,14,16,14">
+                    <TextBlock Text="스캔함 이름 *" FontSize="12" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,4"/>
+                    <TextBox x:Name="NameBox" Style="{StaticResource ModernTextBox}" Margin="0,0,0,12"/>
+
+                    <CheckBox x:Name="UsePasswordCheck" Content="비밀번호 사용" Margin="0,0,0,4"/>
+                    <TextBox x:Name="PasswordBox" Style="{StaticResource ModernTextBox}"
+                             IsEnabled="{Binding IsChecked, ElementName=UsePasswordCheck}" Margin="0,0,0,16"/>
+
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Margin="0,0,0,16"/>
+
+                    <!-- 저장 설정 -->
+                    <TextBlock Text="저장 설정" FontSize="13" FontWeight="SemiBold"
+                               Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,12"/>
+
+                    <TextBlock Text="저장 경로" FontSize="12" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,4"/>
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="FolderBox" Grid.Column="0" Style="{StaticResource ModernTextBox}" IsReadOnly="True"/>
+                        <Button Grid.Column="1" Content="📁" Style="{StaticResource SecondaryButton}"
+                                Margin="4,0,0,0" Padding="0" Width="30" Height="30"
+                                Click="BrowseFolder_Click"/>
+                    </Grid>
+
+                    <CheckBox x:Name="NotifyCheck" Content="저장 알림" IsChecked="True" Margin="0,0,0,12"/>
+
+                    <TextBlock Text="파일 삭제 주기" FontSize="12" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,4"/>
+                    <ComboBox x:Name="DeleteCycleCombo" Margin="0,0,0,4" SelectedIndex="3">
+                        <ComboBoxItem Content="사용안함"/>
+                        <ComboBoxItem Content="1일"/>
+                        <ComboBoxItem Content="3일"/>
+                        <ComboBoxItem Content="1주"/>
+                        <ComboBoxItem Content="2주"/>
+                        <ComboBoxItem Content="1개월"/>
+                    </ComboBox>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- 하단 -->
+            <Border Grid.Row="2" Padding="16,10"
+                    BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0">
+                <Button Content="스캔함 추가" Style="{StaticResource PrimaryButton}"
+                        HorizontalAlignment="Stretch"
+                        Click="AddButton_Click"/>
+            </Border>
+        </Grid>
+    </Border>
+</Window>

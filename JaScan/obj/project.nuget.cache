@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "Tp8ulEnyd8A=",
+  "success": true,
+  "projectFilePath": "C:\\Projects\\JA-solution\\JaScan\\JaScan.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\JUN\\.nuget\\packages\\communitytoolkit.mvvm\\8.4.0\\communitytoolkit.mvvm.8.4.0.nupkg.sha512",
+    "C:\\Users\\JUN\\.nuget\\packages\\hardcodet.notifyicon.wpf\\1.1.0\\hardcodet.notifyicon.wpf.1.1.0.nupkg.sha512"
+  ],
+  "logs": []
+}
