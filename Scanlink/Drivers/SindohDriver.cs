@@ -51,41 +51,52 @@ public class SindohDriver : IMfpDriver
 
         try
         {
-            // Step 1: 초기 접속 → 리다이렉트 따라가며 쿠키 수집
             logs.Add($"[신도] 접속: {baseUrl}");
-            await client.GetAsync($"{baseUrl}/");
 
-            // Step 2: SPA 페이지 접속
-            var html = await (await client.GetAsync($"{baseUrl}/wcd/spa_main.html")).Content.ReadAsStringAsync();
-            logs.Add($"[신도] SPA 로드: {html.Length}자");
+            // Step 1: 로그인 페이지 접속 (초기 쿠키 수집)
+            await client.GetAsync($"{baseUrl}/wcd/spa_login.html");
 
-            // Step 3: 관리자 쿠키 설정 (loginState=true, menuType=Admin 등)
-            cookies.Add(uri, new Cookie("loginState", "true"));
-            cookies.Add(uri, new Cookie("menuType", "Admin"));
-            cookies.Add(uri, new Cookie("adm", "AF_ULA"));
-            cookies.Add(uri, new Cookie("box_dsp", "Setting"));
-            cookies.Add(uri, new Cookie("webUI", "new"));
+            // Step 2: 공유 사용자 로그인 → ID 쿠키 획득
+            logs.Add("[신도] 공유 사용자 로그인...");
+            var loginPayload = "func=PSL_LP0_TOP&AuthType=None&TrackType=&ExtSvType=0&PswcForm=&Mode=Public" +
+                "&publicuser=&username=&password=&AuthorityType=&R_ADM=&ExtServ=0&ViewMode=&BrowserMode=&Lang=" +
+                "&trackname=&trackpassword=";
+            var loginReq = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/wcd/ulogin.cgi")
+            {
+                Content = new StringContent(loginPayload, Encoding.UTF8, "application/x-www-form-urlencoded")
+            };
+            loginReq.Headers.Add("Referer", $"{baseUrl}/wcd/spa_login.html");
+            loginReq.Headers.Add("Accept", "*/*");
+            var loginResp = await client.SendAsync(loginReq);
+            var loginHtml = await loginResp.Content.ReadAsStringAsync();
+            logs.Add($"[신도] 로그인 응답: {loginHtml.Length}자");
 
-            // Step 4: 관리자 페이지 접속 → ID 쿠키 획득
-            var adminResp = await client.GetAsync($"{baseUrl}/wcd/a_user.cgi");
-            var adminHtml = await adminResp.Content.ReadAsStringAsync();
-            logs.Add($"[신도] 관리자 페이지: {adminHtml.Length}자");
-
+            // ID 쿠키 확인
             var allCookies = cookies.GetAllCookies();
-            var cookieNames = string.Join(", ", allCookies.Select(c => c.Name));
-            logs.Add($"[신도] 쿠키: {cookieNames}");
-
             var idCookie = allCookies.FirstOrDefault(c => c.Name == "ID");
             if (idCookie == null || string.IsNullOrEmpty(idCookie.Value))
             {
-                logs.Add("[신도][FAIL] ID 쿠키 없음");
-                logs.Add($"[신도] 관리자 응답(앞300자): {adminHtml[..Math.Min(300, adminHtml.Length)]}");
+                logs.Add("[신도][FAIL] 로그인 실패 — ID 쿠키 없음");
                 client.Dispose();
                 return (null, null, baseUrl, logs);
             }
             logs.Add($"[신도] 세션 ID: {idCookie.Value[..Math.Min(10, idCookie.Value.Length)]}...");
 
-            // Step 5: 토큰 추출 — 박스 목록 조회
+            // Step 3: 관리자 모드 쿠키 설정
+            cookies.Add(uri, new Cookie("menuType", "Admin"));
+            cookies.Add(uri, new Cookie("adm", "AF_ULA"));
+            cookies.Add(uri, new Cookie("box_dsp", "Setting"));
+            cookies.Add(uri, new Cookie("webUI", "new"));
+
+            // Step 4: 메인 페이지 접속
+            await client.GetAsync($"{baseUrl}/wcd/spa_main.html");
+
+            // Step 5: 관리자 진입
+            var adminResp = await PostJsonAsync(client, $"{baseUrl}/wcd/a_user.cgi",
+                new { }, $"{baseUrl}/wcd/spa_main.html");
+            logs.Add($"[신도] 관리자 진입: {adminResp.Length}자");
+
+            // Step 6: 토큰 추출 — 박스 목록 조회
             var tokenResp = await PostJsonAsync(client, $"{baseUrl}/wcd/api/AppReqGetUserBoxList",
                 new {
                     BoxListCondition = new {
@@ -96,14 +107,14 @@ public class SindohDriver : IMfpDriver
                     Token = ""
                 }, $"{baseUrl}/wcd/spa_main.html");
 
-            logs.Add($"[신도] 토큰 조회 응답: {tokenResp.Length}자");
+            logs.Add($"[신도] 토큰 조회: {tokenResp.Length}자");
 
             var tokenMatch = Regex.Match(tokenResp, @"""Token""\s*:\s*""([^""]+)""");
             string? token = tokenMatch.Success ? tokenMatch.Groups[1].Value : null;
 
             if (token == null)
             {
-                logs.Add($"[신도][WARN] 토큰 추출 실패, 응답(앞300자): {tokenResp[..Math.Min(300, tokenResp.Length)]}");
+                logs.Add($"[신도][WARN] 토큰 미추출, 응답(앞300자): {tokenResp[..Math.Min(300, tokenResp.Length)]}");
                 token = "";
             }
             else
