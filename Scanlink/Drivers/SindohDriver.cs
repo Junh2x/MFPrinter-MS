@@ -323,6 +323,7 @@ public class SindohDriver : IMfpDriver
                 H_TAB = "",
                 T_NAM = box.Name,
                 S_SER = "Abc",
+                R_SAP = "None",
                 H_BOX = boxNum,
                 H_USR = "",
                 H_BPA = "",
@@ -331,6 +332,7 @@ public class SindohDriver : IMfpDriver
                 H_XTP = "",
                 H_DSP = "Setting",
                 C_PAC = changePw ? "true" : "false",
+                P_CPA = oldPassword ?? "",
                 P_NPA = pw,
                 P_NPA2 = pw,
             }, $"{baseUrl}/wcd/spa_main.html");
