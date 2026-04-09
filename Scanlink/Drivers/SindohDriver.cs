@@ -195,11 +195,11 @@ public class SindohDriver : IMfpDriver
                 Token = token ?? ""
             }, $"{baseUrl}/wcd/spa_main.html");
 
-        // 응답 파싱
+        // 응답 파싱 (BoxID + Name)
         var boxes = new List<ScanBox>();
-        foreach (Match m in Regex.Matches(resp, @"""BoxName""\s*:\s*""([^""]+)"""))
+        foreach (Match m in Regex.Matches(resp, @"""BoxID""\s*:\s*""(\d+)"".*?""Name""\s*:\s*""([^""]+)""", RegexOptions.Singleline))
         {
-            boxes.Add(new ScanBox { Name = m.Groups[1].Value, MfpDeviceId = device.Id });
+            boxes.Add(new ScanBox { Name = m.Groups[2].Value, SlotIndex = int.Parse(m.Groups[1].Value), MfpDeviceId = device.Id });
         }
 
         result.Logs.Add($"[신도] 박스 {boxes.Count}개 조회");
@@ -383,13 +383,14 @@ public class SindohDriver : IMfpDriver
                 Token = token ?? ""
             }, $"{baseUrl}/wcd/spa_main.html");
 
+        result.Logs.Add($"[신도삭제] 목록 응답: {listResp.Length}자");
+        result.Logs.Add($"[신도삭제] 목록 내용(앞500자): {listResp[..Math.Min(500, listResp.Length)]}");
+
         var boxNum = FindBoxNumber(listResp, box.Name);
         if (boxNum == null)
         {
-            result.Logs.Add($"[신도삭제] 박스 '{box.Name}' 찾을 수 없음 (이미 삭제됨)");
-            result.Success = true;
-            result.Message = "삭제 완료 (이미 없음)";
-            return result;
+            result.Logs.Add($"[신도삭제][FAIL] 박스 '{box.Name}' 목록에서 찾을 수 없음");
+            return DriverResult.Fail($"박스 '{box.Name}'을 찾을 수 없습니다.", result.Logs);
         }
         result.Logs.Add($"[신도삭제] 대상 박스 번호: {boxNum}");
 
@@ -450,24 +451,15 @@ public class SindohDriver : IMfpDriver
     // 유틸
     // ──────────────────────────────────────────────
 
-    /// <summary>박스 목록 응답에서 이름으로 BoxNumber 찾기</summary>
+    /// <summary>박스 목록 응답에서 이름으로 BoxID 찾기</summary>
     private static string? FindBoxNumber(string json, string boxName)
     {
-        // "BoxNumber":"N" ... "BoxName":"name" 패턴에서 매칭
-        // 또는 각 박스 블록을 순회
-        var blocks = Regex.Matches(json, @"\{[^{}]*""BoxNumber""\s*:\s*""(\d+)""[^{}]*""BoxName""\s*:\s*""([^""]+)""[^{}]*\}");
+        // "BoxID":"N" ... "Name":"name" 패턴
+        var blocks = Regex.Matches(json, @"""BoxID""\s*:\s*""(\d+)"".*?""Name""\s*:\s*""([^""]+)""", RegexOptions.Singleline);
         foreach (Match m in blocks)
         {
             if (m.Groups[2].Value == boxName)
                 return m.Groups[1].Value;
-        }
-
-        // 역순으로도 시도 (BoxName이 BoxNumber보다 앞에 올 수 있음)
-        blocks = Regex.Matches(json, @"\{[^{}]*""BoxName""\s*:\s*""([^""]+)""[^{}]*""BoxNumber""\s*:\s*""(\d+)""[^{}]*\}");
-        foreach (Match m in blocks)
-        {
-            if (m.Groups[1].Value == boxName)
-                return m.Groups[2].Value;
         }
 
         return null;
