@@ -15,9 +15,21 @@ public partial class ScanBoxListPage : UserControl
     private void OnDataContextChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
     {
         if (e.OldValue is ScanBoxListViewModel oldVm)
+        {
             oldVm.RequestAddScanBoxDialog -= ShowAddDialog;
+            oldVm.DeleteFailed -= ShowDeleteError;
+        }
         if (e.NewValue is ScanBoxListViewModel newVm)
+        {
             newVm.RequestAddScanBoxDialog += ShowAddDialog;
+            newVm.DeleteFailed += ShowDeleteError;
+        }
+    }
+
+    private void ShowDeleteError(string message)
+    {
+        MessageBox.Show(message, "삭제 실패",
+            System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
     }
 
     private void ShowAddDialog()

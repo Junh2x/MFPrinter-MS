@@ -97,5 +97,17 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </ScrollViewer>
+
+        <!-- 삭제 로딩 오버레이 -->
+        <Border Grid.Row="0" Grid.RowSpan="3" Background="#80FFFFFF" CornerRadius="4"
+                Visibility="{Binding IsDeleting, Converter={StaticResource BoolToVis}}">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <ProgressBar IsIndeterminate="True" Width="120" Height="3"
+                             Foreground="{StaticResource PrimaryBrush}" Background="#E8EAF0"
+                             BorderThickness="0"/>
+                <TextBlock Text="삭제 중..." FontSize="12" Margin="10,0,0,0"
+                           Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"/>
+            </StackPanel>
+        </Border>
     </Grid>
 </UserControl>

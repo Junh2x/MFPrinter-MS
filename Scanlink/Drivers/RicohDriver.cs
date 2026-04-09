@@ -389,10 +389,10 @@ public class RicohDriver : IMfpDriver
 
         var now = DateTime.Now;
 
-        // Step 1: 삭제 확인 페이지 (folderDeletePage.cgi)
-        result.Logs.Add("[리코삭제] Step1: 삭제 확인 페이지...");
+        // folderDeletePage.cgi (API.md 기준 단일 요청)
+        result.Logs.Add("[리코삭제] 삭제 요청...");
         var html = await PostFormAsync(client,
-            $"{baseUrl}/web/entry/ko/webdocbox/folderDeletePage.cgi",
+            $"{baseUrl}/web/guest/ko/webdocbox/folderDeletePage.cgi",
             new() {
                 ["wimToken"] = wimToken,
                 ["mode"] = "",
@@ -404,23 +404,15 @@ public class RicohDriver : IMfpDriver
                 ["_min"] = now.ToString("mm"),
                 ["selectedFolderId"] = target.id,
             },
-            $"{baseUrl}/web/entry/ko/webdocbox/folderListPage.cgi");
+            $"{baseUrl}/web/guest/ko/webdocbox/folderListPage.cgi");
 
-        var t = ExtractWimToken(html); if (t != null) wimToken = t;
-        result.Logs.Add($"[리코삭제] Step1 응답: {html.Length}자, wimToken갱신={t != null}");
+        result.Logs.Add($"[리코삭제] 응답: {html.Length}자");
 
-        // Step 2: 삭제 확정 (deleteFolders.cgi)
-        result.Logs.Add("[리코삭제] Step2: 삭제 확정...");
-        html = await PostFormAsync(client,
-            $"{baseUrl}/web/entry/ko/webdocbox/deleteFolders.cgi",
-            new() {
-                ["wimToken"] = wimToken,
-                ["selectedFolderId"] = target.id,
-                ["subReturnDsp"] = "3",
-            },
-            $"{baseUrl}/web/entry/ko/webdocbox/folderDeletePage.cgi");
-
-        result.Logs.Add($"[리코삭제] Step2 응답: {html.Length}자");
+        if (html.Length == 0)
+        {
+            result.Logs.Add("[리코삭제][FAIL] 빈 응답");
+            return DriverResult.Fail("삭제 실패: 서버 응답 없음", result.Logs);
+        }
 
         var errMatch = Regex.Match(html, @"simpleErrorMessage[^>]*value=[""']([^""']+)");
         if (errMatch.Success && !string.IsNullOrWhiteSpace(errMatch.Groups[1].Value))

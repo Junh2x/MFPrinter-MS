@@ -19,6 +19,9 @@ public class ScanBoxListViewModel : ViewModelBase
 
     public bool HasScanBoxes => ScanBoxes.Count > 0;
 
+    private bool _isDeleting;
+    public bool IsDeleting { get => _isDeleting; set => SetProperty(ref _isDeleting, value); }
+
     public ICommand AddScanBoxCommand { get; }
     public ICommand SelectScanBoxCommand { get; }
     public ICommand DeleteScanBoxCommand { get; }
@@ -90,18 +93,30 @@ public class ScanBoxListViewModel : ViewModelBase
     }
 
     /// <summary>스캔함 삭제 (드라이버 호출 포함)</summary>
+    public event Action<string>? DeleteFailed;
+
     private async Task DeleteScanBoxWithDriverAsync(ScanBox box)
     {
+        IsDeleting = true;
+
         var driver = DriverFactory.GetDriver(Device.Brand);
         if (driver != null)
         {
             var result = await driver.DeleteScanBoxAsync(Device, box);
             foreach (var log in result.Logs) AppLogger.Log(log);
             DriverResultReceived?.Invoke(result);
+
+            if (!result.Success)
+            {
+                IsDeleting = false;
+                DeleteFailed?.Invoke(result.Message);
+                return;
+            }
         }
 
         _scanBoxService.RemoveScanBox(box);
         ScanBoxes.Remove(box);
         OnPropertyChanged(nameof(HasScanBoxes));
+        IsDeleting = false;
     }
 }
