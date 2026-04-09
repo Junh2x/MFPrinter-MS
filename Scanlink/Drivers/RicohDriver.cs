@@ -334,10 +334,11 @@ public class RicohDriver : IMfpDriver
             },
             $"{baseUrl}/web/entry/ko/webdocbox/folderPropPage.cgi");
 
-        if (html.Contains("ERR") || html.Contains("오류"))
+        var errMatch = Regex.Match(html, @"simpleErrorMessage[^>]*value=[""']([^""']+)");
+        if (errMatch.Success && !string.IsNullOrWhiteSpace(errMatch.Groups[1].Value))
         {
-            result.Logs.Add("[리코추가][FAIL] 생성 실패");
-            return DriverResult.Fail("폴더 생성 실패", result.Logs);
+            result.Logs.Add($"[리코추가][FAIL] 서버 에러: {errMatch.Groups[1].Value}");
+            return DriverResult.Fail($"생성 실패: {errMatch.Groups[1].Value}", result.Logs);
         }
 
         result.Logs.Add($"[리코추가] 생성 완료! ID={folderId}");
@@ -420,12 +421,12 @@ public class RicohDriver : IMfpDriver
             $"{baseUrl}/web/entry/ko/webdocbox/folderDeletePage.cgi");
 
         result.Logs.Add($"[리코삭제] Step2 응답: {html.Length}자");
-        result.Logs.Add($"[리코삭제] Step2 내용(앞200자): {html[..Math.Min(200, html.Length)]}");
 
-        if (html.Contains("ERR") || html.Contains("오류"))
+        var errMatch = Regex.Match(html, @"simpleErrorMessage[^>]*value=[""']([^""']+)");
+        if (errMatch.Success && !string.IsNullOrWhiteSpace(errMatch.Groups[1].Value))
         {
-            result.Logs.Add("[리코삭제][FAIL] 삭제 실패");
-            return DriverResult.Fail("폴더 삭제 실패", result.Logs);
+            result.Logs.Add($"[리코삭제][FAIL] 서버 에러: {errMatch.Groups[1].Value}");
+            return DriverResult.Fail($"삭제 실패: {errMatch.Groups[1].Value}", result.Logs);
         }
 
         result.Logs.Add("[리코삭제] 삭제 완료");
@@ -505,6 +506,7 @@ public class RicohDriver : IMfpDriver
             $"{baseUrl}/web/entry/ko/webdocbox/folderPropPage.cgi");
         t = ExtractWimToken(html); if (t != null) wimToken = t;
         result.Logs.Add($"[리코수정] Step2 응답: {html.Length}자, wimToken갱신={t != null}");
+        if (html.Length < 500) result.Logs.Add($"[리코수정] Step2 내용: {html}");
 
         // Step 3: 비밀번호 설정
         result.Logs.Add("[리코수정] Step3: 비밀번호 설정...");
@@ -559,12 +561,13 @@ public class RicohDriver : IMfpDriver
             },
             $"{baseUrl}/web/entry/ko/webdocbox/folderPropPage.cgi");
         result.Logs.Add($"[리코수정] Step5 응답: {html.Length}자");
-        result.Logs.Add($"[리코수정] Step5 내용(앞200자): {html[..Math.Min(200, html.Length)]}");
 
-        if (html.Contains("ERR") || html.Contains("오류"))
+        // simpleErrorMessage에 실제 에러 내용이 있는지 확인
+        var errMatch = Regex.Match(html, @"simpleErrorMessage[^>]*value=[""']([^""']+)");
+        if (errMatch.Success && !string.IsNullOrWhiteSpace(errMatch.Groups[1].Value))
         {
-            result.Logs.Add("[리코수정][FAIL] 수정 실패");
-            return DriverResult.Fail("수정 실패", result.Logs);
+            result.Logs.Add($"[리코수정][FAIL] 서버 에러: {errMatch.Groups[1].Value}");
+            return DriverResult.Fail($"수정 실패: {errMatch.Groups[1].Value}", result.Logs);
         }
 
         result.Logs.Add("[리코수정] 수정 완료");
