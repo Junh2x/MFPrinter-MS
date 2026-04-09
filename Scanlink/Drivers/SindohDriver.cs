@@ -392,25 +392,37 @@ public class SindohDriver : IMfpDriver
             result.Logs.Add($"[신도삭제][FAIL] 박스 '{box.Name}' 목록에서 찾을 수 없음");
             return DriverResult.Fail($"박스 '{box.Name}'을 찾을 수 없습니다.", result.Logs);
         }
-        result.Logs.Add($"[신도삭제] 대상 박스 번호: {boxNum}");
+        result.Logs.Add($"[신도삭제] 대상 박스 ID: {boxNum}");
 
-        // Step 1: 삭제 안내 페이지 진입
-        result.Logs.Add("[신도삭제] Step1: 삭제 진입...");
-        await PostJsonAsync(client,
-            $"{baseUrl}/wcd/api/AppReqSetCustomMessage/_005_001_ULU000",
-            new {
-                func = "PSL_F_ULUUser_BOX",
-                h_token = token ?? "",
-                H_TAB = "",
-                H_IPA = "On",
-                H_PID = "-1",
-                H_BID = boxNum,
-                H_DSP = "Delete",
-                T_BID = boxNum,
-            }, $"{baseUrl}/wcd/spa_main.html");
+        var pw = box.Password ?? "";
+        var uri = new Uri(baseUrl);
 
-        // Step 2: 삭제 확인
-        result.Logs.Add("[신도삭제] Step2: 삭제 확인...");
+        // Step 1: 새 토큰 발급
+        result.Logs.Add("[신도삭제] Step1: 토큰 갱신...");
+        var cookies = ((HttpClientHandler)typeof(HttpMessageInvoker)
+            .GetField("_handler", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!
+            .GetValue(client)! as HttpClientHandler)!.CookieContainer;
+        cookies.Add(uri, new Cookie("usr", "F_ULUUserBoxLogin"));
+
+        var tokenResp = await (await client.GetAsync($"{baseUrl}/wcd/token.json?_={DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}")).Content.ReadAsStringAsync();
+        var tokenMatch = Regex.Match(tokenResp, @"""Token""\s*:\s*""([^""]+)""");
+        if (tokenMatch.Success) token = tokenMatch.Groups[1].Value;
+        result.Logs.Add($"[신도삭제] 토큰: {token?[..Math.Min(10, token?.Length ?? 0)]}...");
+
+        // Step 2: 비밀번호 인증 (form-urlencoded)
+        result.Logs.Add("[신도삭제] Step2: 비밀번호 인증...");
+        var authPayload = $"func=PSL_F_ULUUser_BOX&h_token={token}&H_TAB=&H_BID={boxNum}&H_DSP=Delete&H_IPA=On&T_BID={boxNum}&H_BAT=Public&P_BPA={Uri.EscapeDataString(pw)}";
+        var authReq = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/wcd/api/AppReqSetCustomMessage/_005_001_ULU004")
+        {
+            Content = new StringContent(authPayload, Encoding.UTF8, "application/x-www-form-urlencoded")
+        };
+        authReq.Headers.Add("Referer", $"{baseUrl}/wcd/spa_main.html");
+        authReq.Headers.Add("Accept", "application/json, text/javascript, */*; q=0.01");
+        var authResp = await (await client.SendAsync(authReq)).Content.ReadAsStringAsync();
+        result.Logs.Add($"[신도삭제] Step2 응답: {authResp.Length}자");
+
+        // Step 3: 실제 삭제
+        result.Logs.Add("[신도삭제] Step3: 삭제 확정...");
         var resp = await PostJsonAsync(client,
             $"{baseUrl}/wcd/api/AppReqSetCustomMessage/_005_001_ULU003",
             new {
@@ -427,7 +439,7 @@ public class SindohDriver : IMfpDriver
                 H_DCNT = "0",
             }, $"{baseUrl}/wcd/spa_main.html");
 
-        result.Logs.Add($"[신도삭제] 응답: {resp.Length}자");
+        result.Logs.Add($"[신도삭제] Step3 응답: {resp.Length}자");
 
         if (!resp.Contains("\"Ack\"") && !resp.Contains("\"Ok_1\""))
         {
