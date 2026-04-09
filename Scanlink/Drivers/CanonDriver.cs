@@ -37,6 +37,7 @@ public class CanonDriver : IMfpDriver
             CookieContainer = cookies,
             ServerCertificateCustomValidationCallback = (_, _, _, _) => true,
             UseCookies = true,
+            AllowAutoRedirect = false, // 리다이렉트 수동 처리 — Python requests와 동일하게
         };
         var client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(10) };
         client.DefaultRequestHeaders.Add("User-Agent", UserAgent);
@@ -46,6 +47,36 @@ public class CanonDriver : IMfpDriver
         client.DefaultRequestHeaders.Add("Accept-Language", "ko-KR,ko;q=0.9");
         client.DefaultRequestHeaders.Add("Upgrade-Insecure-Requests", "1");
         return (client, cookies);
+    }
+
+    /// <summary>리다이렉트를 수동으로 따라가며 쿠키를 수집 (최대 10회)</summary>
+    private static async Task<HttpResponseMessage> GetWithRedirectAsync(HttpClient client, string url, string? referer = null)
+    {
+        var maxRedirects = 10;
+        var currentUrl = url;
+
+        for (var i = 0; i < maxRedirects; i++)
+        {
+            var req = new HttpRequestMessage(HttpMethod.Get, currentUrl);
+            if (referer != null) req.Headers.Add("Referer", referer);
+
+            var resp = await client.SendAsync(req);
+
+            if ((int)resp.StatusCode is >= 300 and < 400 && resp.Headers.Location != null)
+            {
+                var location = resp.Headers.Location;
+                currentUrl = location.IsAbsoluteUri
+                    ? location.ToString()
+                    : new Uri(new Uri(currentUrl), location).ToString();
+                referer = currentUrl;
+                AppLogger.Log("세션", $"리다이렉트 → {currentUrl}");
+                continue;
+            }
+
+            return resp;
+        }
+
+        return new HttpResponseMessage(System.Net.HttpStatusCode.LoopDetected);
     }
 
     /// <summary>
@@ -76,31 +107,20 @@ public class CanonDriver : IMfpDriver
             {
                 logs.Add($"[세션] 포트 시도: {baseUrl}");
 
-                // Step 1: 포털 접속
-                var r = await client.GetAsync($"{baseUrl}/");
+                // Step 1: 포털 접속 (리다이렉트 수동 추적)
+                var r = await GetWithRedirectAsync(client, $"{baseUrl}/");
                 if (!r.IsSuccessStatusCode) { logs.Add($"[세션] {baseUrl} — HTTP {(int)r.StatusCode}"); continue; }
 
-                // 포털 응답 쿠키 로깅
-                if (r.Headers.TryGetValues("Set-Cookie", out var portalSetCookies))
-                    foreach (var sc in portalSetCookies) logs.Add($"[세션] 포털 Set-Cookie: {sc}");
-
                 var portalCookies = cookies.GetAllCookies();
-                logs.Add($"[세션] 포털 후 쿠키 {portalCookies.Count}개: {string.Join(", ", portalCookies.Select(c => $"{c.Name}(path={c.Path})"))}");
+                logs.Add($"[세션] 포털 후 쿠키 {portalCookies.Count}개: {string.Join(", ", portalCookies.Select(c => c.Name))}");
 
                 // Step 2: nativetop → iR 쿠키
                 var nativeUrl = $"{baseUrl}/rps/nativetop.cgi?RUIPNxBundle=&CorePGTAG=PGTAG_ADR_USR&Dummy={Dummy()}";
-                var req = new HttpRequestMessage(HttpMethod.Get, nativeUrl);
-                req.Headers.Add("Referer", $"{baseUrl}/");
-                var nativeResp = await client.SendAsync(req);
+                var nativeResp = await GetWithRedirectAsync(client, nativeUrl, $"{baseUrl}/");
 
-                // nativetop 응답 쿠키 로깅
                 logs.Add($"[세션] nativetop 응답: HTTP {(int)nativeResp.StatusCode}");
-                if (nativeResp.Headers.TryGetValues("Set-Cookie", out var nativeSetCookies))
-                    foreach (var sc in nativeSetCookies) logs.Add($"[세션] nativetop Set-Cookie: {sc}");
-
-                // GetAllCookies — 경로 무관하게 전체 쿠키 검사
                 var allCookies = cookies.GetAllCookies();
-                logs.Add($"[세션] 전체 쿠키 {allCookies.Count}개: {string.Join(", ", allCookies.Select(c => $"{c.Name}(path={c.Path})"))}");
+                logs.Add($"[세션] 전체 쿠키 {allCookies.Count}개: {string.Join(", ", allCookies.Select(c => c.Name))}");
 
                 var hasIR = allCookies.Any(c => c.Name == "iR");
 
