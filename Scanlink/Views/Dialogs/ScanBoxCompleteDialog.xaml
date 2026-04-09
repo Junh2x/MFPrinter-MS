@@ -1,7 +1,7 @@
 <Window x:Class="Scanlink.Views.Dialogs.ScanBoxCompleteDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="완료" Width="480" Height="520"
+        Title="완료" Width="900" Height="960"
         WindowStartupLocation="CenterOwner"
         WindowStyle="None" AllowsTransparency="True"
         Background="Transparent" ResizeMode="NoResize">
