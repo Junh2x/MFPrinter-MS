@@ -22,8 +22,8 @@ public interface IMfpDriver
     /// <summary>스캔함 추가 (폴더 생성 + 주소록 등록)</summary>
     Task<DriverResult> AddScanBoxAsync(MfpDevice device, ScanBox box);
 
-    /// <summary>스캔함 수정</summary>
-    Task<DriverResult> UpdateScanBoxAsync(MfpDevice device, ScanBox box);
+    /// <summary>스캔함 수정. oldName이 있으면 폴더명도 변경.</summary>
+    Task<DriverResult> UpdateScanBoxAsync(MfpDevice device, ScanBox box, string? oldName = null);
 
     /// <summary>스캔함 삭제 (주소록 삭제)</summary>
     Task<DriverResult> DeleteScanBoxAsync(MfpDevice device, ScanBox box);

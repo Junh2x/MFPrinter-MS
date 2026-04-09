@@ -10,6 +10,9 @@ public partial class DeviceSearchDialog : Window
     private readonly DeviceDiscoveryService _discovery = new();
     private CancellationTokenSource? _cts;
 
+    /// <summary>이미 추가된 기기 IP 목록 (검색 결과에서 제외)</summary>
+    public List<string> ExistingIps { get; set; } = [];
+
     public MfpDevice? SelectedDevice { get; private set; }
 
     public DeviceSearchDialog()
@@ -42,15 +45,20 @@ public partial class DeviceSearchDialog : Window
                 },
                 ct: _cts.Token);
 
-            if (devices.Count > 0)
+            // 이미 추가된 기기 제외
+            var filtered = devices.Where(d => !ExistingIps.Contains(d.Ip)).ToList();
+
+            if (filtered.Count > 0)
             {
                 SearchingPanel.Visibility = Visibility.Collapsed;
-                DeviceList.ItemsSource = devices;
+                DeviceList.ItemsSource = filtered;
                 DeviceList.Visibility = Visibility.Visible;
             }
             else
             {
-                SearchStatusText.Text = "발견된 복합기가 없습니다.";
+                SearchStatusText.Text = devices.Count > 0
+                    ? "모든 복합기가 이미 등록되어 있습니다."
+                    : "발견된 복합기가 없습니다.";
             }
         }
         catch (OperationCanceledException) { }

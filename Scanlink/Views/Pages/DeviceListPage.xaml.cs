@@ -48,7 +48,12 @@ public partial class DeviceListPage : UserControl
 
     private async void ShowAutoSearchDialog()
     {
-        var dialog = new DeviceSearchDialog { Owner = Window.GetWindow(this) };
+        var vm0 = DataContext as DeviceListViewModel;
+        var dialog = new DeviceSearchDialog
+        {
+            Owner = Window.GetWindow(this),
+            ExistingIps = vm0?.Devices.Select(d => d.Ip).ToList() ?? [],
+        };
         if (dialog.ShowDialog() == true && dialog.SelectedDevice != null)
         {
             if (DataContext is DeviceListViewModel vm)

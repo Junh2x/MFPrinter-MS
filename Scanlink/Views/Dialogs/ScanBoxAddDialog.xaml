@@ -54,7 +54,7 @@
                     </Grid>
 
                     <TextBlock Text="파일 삭제 주기" FontSize="12" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,4"/>
-                    <ComboBox x:Name="DeleteCycleCombo" Margin="0,0,0,4" SelectedIndex="3">
+                    <ComboBox x:Name="DeleteCycleCombo" Margin="0,0,0,4" SelectedIndex="0">
                         <ComboBoxItem Content="사용안함"/>
                         <ComboBoxItem Content="1일"/>
                         <ComboBoxItem Content="3일"/>

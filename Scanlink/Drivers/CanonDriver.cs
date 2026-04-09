@@ -734,7 +734,7 @@ public class CanonDriver : IMfpDriver
     // UpdateScanBoxAsync
     // ──────────────────────────────────────────────
 
-    public async Task<DriverResult> UpdateScanBoxAsync(MfpDevice device, ScanBox box)
+    public async Task<DriverResult> UpdateScanBoxAsync(MfpDevice device, ScanBox box, string? oldName = null)
     {
         var result = new DriverResult();
         HttpClient? client = null;
@@ -746,6 +746,32 @@ public class CanonDriver : IMfpDriver
 
         if (box.SlotIndex < 0)
             return DriverResult.Fail("슬롯 번호가 없습니다.", result.Logs);
+
+        // 이름 변경 시 SMB 폴더명도 변경
+        if (oldName != null && oldName != box.Name)
+        {
+            var oldPath = $@"\\{device.Ip}\share\folder\{oldName}";
+            var newPath = $@"\\{device.Ip}\share\folder\{box.Name}";
+            result.Logs.Add($"[수정] 폴더 이름 변경: {oldName} → {box.Name}");
+            try
+            {
+                if (Directory.Exists(oldPath))
+                {
+                    Directory.Move(oldPath, newPath);
+                    result.Logs.Add("[수정] 폴더 이름 변경 완료");
+                }
+                else
+                {
+                    Directory.CreateDirectory(newPath);
+                    result.Logs.Add("[수정] 기존 폴더 없음 → 새 폴더 생성");
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Logs.Add($"[수정][FAIL] 폴더 이름 변경 실패: {ex.Message}");
+                return DriverResult.Fail($"폴더 이름 변경 실패: {ex.Message}", result.Logs);
+            }
+        }
 
         string baseUrl; List<string> sessionLogs;
         (client, baseUrl, sessionLogs) = await InitSessionAsync(device);

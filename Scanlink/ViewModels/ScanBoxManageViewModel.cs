@@ -69,7 +69,7 @@ public class ScanBoxManageViewModel : ViewModelBase
         var driver = DriverFactory.GetDriver(Device.Brand);
         if (driver != null && ScanBox.SlotIndex >= 0)
         {
-            var result = await driver.UpdateScanBoxAsync(Device, ScanBox);
+            var result = await driver.UpdateScanBoxAsync(Device, ScanBox, oldName);
             foreach (var log in result.Logs) AppLogger.Log(log);
 
             if (!result.Success)
