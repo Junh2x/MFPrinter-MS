@@ -250,10 +250,10 @@ public class SindohDriver : IMfpDriver
         result.Logs.Add($"[신도추가] 응답: {resp.Length}자");
         result.Logs.Add($"[신도추가] 응답 내용(앞300자): {resp[..Math.Min(300, resp.Length)]}");
 
-        if (resp.Contains("Error") || resp.Contains("error"))
+        if (!resp.Contains("\"Ack\""))
         {
-            result.Logs.Add("[신도추가][FAIL] 생성 실패");
-            return DriverResult.Fail("박스 생성 실패", result.Logs);
+            result.Logs.Add($"[신도추가][FAIL] 생성 실패: {resp[..Math.Min(300, resp.Length)]}");
+            return DriverResult.Fail($"박스 생성 실패", result.Logs);
         }
 
         result.Logs.Add("[신도추가] 생성 완료");
@@ -331,9 +331,9 @@ public class SindohDriver : IMfpDriver
 
         result.Logs.Add($"[신도수정] 응답: {resp.Length}자");
 
-        if (resp.Contains("Error") || resp.Contains("error"))
+        if (!resp.Contains("\"Ack\""))
         {
-            result.Logs.Add("[신도수정][FAIL] 수정 실패");
+            result.Logs.Add($"[신도수정][FAIL] 수정 실패: {resp[..Math.Min(300, resp.Length)]}");
             return DriverResult.Fail("수정 실패", result.Logs);
         }
 
@@ -422,9 +422,9 @@ public class SindohDriver : IMfpDriver
 
         result.Logs.Add($"[신도삭제] 응답: {resp.Length}자");
 
-        if (resp.Contains("Error") || resp.Contains("error"))
+        if (!resp.Contains("\"Ack\""))
         {
-            result.Logs.Add("[신도삭제][FAIL] 삭제 실패");
+            result.Logs.Add($"[신도삭제][FAIL] 삭제 실패: {resp[..Math.Min(300, resp.Length)]}");
             return DriverResult.Fail("삭제 실패", result.Logs);
         }
 
