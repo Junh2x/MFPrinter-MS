@@ -15,9 +15,15 @@ public partial class ScanBoxManagePage : UserControl
     private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
     {
         if (e.OldValue is ScanBoxManageViewModel oldVm)
+        {
             oldVm.RequestBrowseFolder -= BrowseFolder;
+            oldVm.SaveFailed -= ShowSaveError;
+        }
         if (e.NewValue is ScanBoxManageViewModel newVm)
+        {
             newVm.RequestBrowseFolder += BrowseFolder;
+            newVm.SaveFailed += ShowSaveError;
+        }
     }
 
     private void BrowseFolder()
@@ -30,5 +36,10 @@ public partial class ScanBoxManagePage : UserControl
         };
         if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             vm.LocalFolder = dialog.SelectedPath;
+    }
+
+    private void ShowSaveError(string message)
+    {
+        MessageBox.Show(message, "저장 실패", MessageBoxButton.OK, MessageBoxImage.Error);
     }
 }

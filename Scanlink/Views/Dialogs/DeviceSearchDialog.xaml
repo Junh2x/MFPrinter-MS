@@ -45,22 +45,39 @@
                         <Style TargetType="ListBoxItem">
                             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                             <Setter Property="Padding" Value="0"/>
-                            <Setter Property="Margin" Value="0"/>
+                            <Setter Property="Margin" Value="0,0,0,4"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <Border x:Name="Bd" Padding="10" CornerRadius="5"
+                                                Background="{StaticResource SurfaceBrush}" Cursor="Hand"
+                                                BorderBrush="Transparent" BorderThickness="1.5">
+                                            <ContentPresenter/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+                                            </Trigger>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource PrimaryBrush}"/>
+                                                <Setter TargetName="Bd" Property="Background" Value="#F0F4FA"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
                         </Style>
                     </ListBox.ItemContainerStyle>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Border Padding="10" Margin="0,0,0,4" CornerRadius="5"
-                                    Background="{StaticResource SurfaceBrush}" Cursor="Hand">
-                                <StackPanel>
-                                    <TextBlock Text="{Binding DisplayName}" FontSize="13" FontWeight="SemiBold"
-                                               Foreground="{StaticResource TextPrimaryBrush}"/>
-                                    <TextBlock FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,2,0,0">
-                                        <Run Text="IP:"/>
-                                        <Run Text="{Binding Ip, Mode=OneWay}"/>
-                                    </TextBlock>
-                                </StackPanel>
-                            </Border>
+                            <StackPanel>
+                                <TextBlock Text="{Binding DisplayName}" FontSize="13" FontWeight="SemiBold"
+                                           Foreground="{StaticResource TextPrimaryBrush}"/>
+                                <TextBlock FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,2,0,0">
+                                    <Run Text="IP:"/>
+                                    <Run Text="{Binding Ip, Mode=OneWay}"/>
+                                </TextBlock>
+                            </StackPanel>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>

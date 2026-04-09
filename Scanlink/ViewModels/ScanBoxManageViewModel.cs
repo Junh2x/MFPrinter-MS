@@ -20,13 +20,13 @@ public class ScanBoxManageViewModel : ViewModelBase
     private string _password;
     private string _localFolder;
     private string _deleteCycle;
-    private string _statusMessage = "";
+    private bool _isSaving;
 
     public string Name { get => _name; set => SetProperty(ref _name, value); }
     public string Password { get => _password; set => SetProperty(ref _password, value); }
     public string LocalFolder { get => _localFolder; set => SetProperty(ref _localFolder, value); }
     public string DeleteCycle { get => _deleteCycle; set => SetProperty(ref _deleteCycle, value); }
-    public string StatusMessage { get => _statusMessage; set => SetProperty(ref _statusMessage, value); }
+    public bool IsSaving { get => _isSaving; set => SetProperty(ref _isSaving, value); }
 
     public List<string> DeleteCycles { get; } = ["사용안함", "1일", "3일", "1주", "2주", "1개월"];
 
@@ -58,17 +58,14 @@ public class ScanBoxManageViewModel : ViewModelBase
 
     private async Task SaveAsync()
     {
-        StatusMessage = "저장 중...";
-
+        IsSaving = true;
         var oldName = ScanBox.Name;
 
-        // 모델 업데이트
         ScanBox.Name = Name;
         ScanBox.Password = Password;
         ScanBox.LocalFolder = LocalFolder;
         ScanBox.DeleteCycle = DeleteCycle;
 
-        // 드라이버로 복합기 주소록 수정 (이름/비밀번호 변경)
         var driver = DriverFactory.GetDriver(Device.Brand);
         if (driver != null && ScanBox.SlotIndex >= 0)
         {
@@ -77,17 +74,20 @@ public class ScanBoxManageViewModel : ViewModelBase
 
             if (!result.Success)
             {
-                // 실패 시 원래 이름 복원
                 ScanBox.Name = oldName;
                 Name = oldName;
-                StatusMessage = $"수정 실패: {result.Message}";
+                IsSaving = false;
+                SaveFailed?.Invoke(result.Message);
                 return;
             }
         }
 
         _scanBoxService.UpdateScanBox(ScanBox);
-        StatusMessage = "저장 완료";
+        IsSaving = false;
+        _navigation.NavigateTo(_parentPage);
     }
+
+    public event Action<string>? SaveFailed;
 
     private void OpenFolder()
     {

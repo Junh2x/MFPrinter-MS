@@ -42,18 +42,23 @@
             <TextBlock Text="파일 삭제 주기" FontSize="12" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,4"/>
             <ComboBox ItemsSource="{Binding DeleteCycles}" SelectedItem="{Binding DeleteCycle}" Margin="0,0,0,20"/>
 
-            <!-- 상태 메시지 -->
-            <TextBlock Text="{Binding StatusMessage}" FontSize="11"
-                       Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,8"
-                       Visibility="{Binding StatusMessage, Converter={StaticResource StringToVisibility}}"/>
-
-            <!-- 버튼 -->
+            <!-- 버튼 / 로딩 -->
             <Grid>
-                <Button Content="폴더 열기" Style="{StaticResource SecondaryButton}"
-                        HorizontalAlignment="Left" Command="{Binding OpenFolderCommand}"/>
-                <Button Content="저장" Style="{StaticResource PrimaryButton}"
-                        HorizontalAlignment="Right" Padding="24,0"
-                        Command="{Binding SaveCommand}"/>
+                <Grid x:Name="ButtonPanel" Visibility="{Binding IsSaving, Converter={StaticResource InverseBoolToVis}}">
+                    <Button Content="폴더 열기" Style="{StaticResource SecondaryButton}"
+                            HorizontalAlignment="Left" Command="{Binding OpenFolderCommand}"/>
+                    <Button Content="저장" Style="{StaticResource PrimaryButton}"
+                            HorizontalAlignment="Right" Padding="24,0"
+                            Command="{Binding SaveCommand}"/>
+                </Grid>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center"
+                            Visibility="{Binding IsSaving, Converter={StaticResource BoolToVis}}">
+                    <ProgressBar IsIndeterminate="True" Width="120" Height="3"
+                                 Foreground="{StaticResource PrimaryBrush}" Background="#E8EAF0"
+                                 BorderThickness="0"/>
+                    <TextBlock Text="저장 중..." FontSize="12" Margin="10,0,0,0"
+                               Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"/>
+                </StackPanel>
             </Grid>
         </StackPanel>
     </ScrollViewer>
