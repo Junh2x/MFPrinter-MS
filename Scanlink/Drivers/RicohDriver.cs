@@ -388,37 +388,97 @@ public class RicohDriver : IMfpDriver
         result.Logs.Add($"[리코삭제] 대상 폴더 ID={target.id}");
 
         var now = DateTime.Now;
+        var pw = box.Password ?? "";
+        string html;
 
-        // folderDeletePage.cgi (API.md 기준 단일 요청)
-        result.Logs.Add("[리코삭제] 삭제 요청...");
-        var html = await PostFormAsync(client,
+        // Step 1: 삭제 확인 페이지 진입
+        result.Logs.Add("[리코삭제] Step1: 삭제 페이지 진입...");
+        html = await PostFormAsync(client,
             $"{baseUrl}/web/guest/ko/webdocbox/folderDeletePage.cgi",
             new() {
                 ["wimToken"] = wimToken,
-                ["mode"] = "",
-                ["selectedDocIds"] = "",
-                ["subReturnDsp"] = "",
-                ["useInputParam"] = "",
+                ["mode"] = "", ["selectedDocIds"] = "",
+                ["subReturnDsp"] = "", ["useInputParam"] = "",
                 ["useSavedPropParam"] = "false",
-                ["_hour"] = now.ToString("HH"),
-                ["_min"] = now.ToString("mm"),
+                ["_hour"] = now.ToString("HH"), ["_min"] = now.ToString("mm"),
                 ["selectedFolderId"] = target.id,
             },
             $"{baseUrl}/web/guest/ko/webdocbox/folderListPage.cgi");
+        var t = ExtractWimToken(html); if (t != null) wimToken = t;
+        result.Logs.Add($"[리코삭제] Step1 응답: {html.Length}자");
 
-        result.Logs.Add($"[리코삭제] 응답: {html.Length}자");
+        // Step 2: 비밀번호 인증 페이지 (비밀번호 있는 폴더)
+        if (!string.IsNullOrEmpty(pw))
+        {
+            result.Logs.Add("[리코삭제] Step2: 비밀번호 인증...");
+            html = await PostFormAsync(client,
+                $"{baseUrl}/web/guest/ko/webdocbox/chPasswordPage.cgi",
+                new() {
+                    ["wimToken"] = wimToken, ["mode"] = "AUTHENTICATE",
+                    ["targetFolderId"] = target.id, ["wayTo"] = "DELETEFOLDER",
+                    ["targetDocId"] = target.id, ["useSavedPropParam"] = "true",
+                    ["useInputParam"] = "false", ["subReturnDsp"] = "3", ["dummy"] = "",
+                },
+                $"{baseUrl}/web/guest/ko/webdocbox/folderDeletePage.cgi");
+            t = ExtractWimToken(html); if (t != null) wimToken = t;
+
+            // Step 3: 비밀번호 입력 확정
+            result.Logs.Add("[리코삭제] Step3: 비밀번호 확정...");
+            html = await PostFormAsync(client,
+                $"{baseUrl}/web/guest/ko/webdocbox/commitChPassword.cgi",
+                new() {
+                    ["wimToken"] = wimToken, ["title"] = "", ["creator"] = "",
+                    ["dataFormat"] = "", ["allPages"] = "false",
+                    ["cid"] = "", ["convBW"] = "", ["backUp"] = "",
+                    ["backUpFormatStr"] = "", ["backUpResoStr"] = "",
+                    ["targetDocId"] = target.id, ["oldPassword"] = B64(pw),
+                    ["newPassword"] = "undefined", ["confirmation"] = "undefined",
+                    ["useInputParam"] = "false", ["useSavedParam"] = "",
+                    ["subReturnDsp"] = "3", ["mode"] = "AUTHENTICATE",
+                    ["wayTo"] = "DELETEFOLDER", ["useSavedPropParam"] = "false",
+                    ["selectedFolderId"] = "", ["ID"] = "", ["dummy"] = "",
+                },
+                $"{baseUrl}/web/guest/ko/webdocbox/chPasswordPage.cgi");
+            t = ExtractWimToken(html); if (t != null) wimToken = t;
+
+            // Step 4: 비밀번호 인증 후 삭제 페이지 재진입
+            result.Logs.Add("[리코삭제] Step4: 삭제 페이지 재진입...");
+            html = await PostFormAsync(client,
+                $"{baseUrl}/web/guest/ko/webdocbox/folderDeletePage.cgi",
+                new() {
+                    ["wimToken"] = wimToken,
+                    ["id"] = "", ["jt"] = "", ["el"] = "",
+                    ["urlLang"] = "ko", ["urlProfile"] = "guest",
+                    ["pdfThumbnailURI"] = "", ["thumbnailURI"] = "", ["WidthSize"] = "",
+                    ["subdocCount"] = "", ["targetDocId"] = target.id,
+                    ["title"] = "", ["creator"] = "",
+                    ["useInputParam"] = "false", ["useSavedParam"] = "",
+                    ["subReturnDsp"] = "3", ["mode"] = "AUTHENTICATE",
+                    ["wayTo"] = "DELETEFOLDER", ["selectedFolderId"] = target.id,
+                    ["useSavedPropParam"] = "false",
+                    ["ID"] = "", ["simpleErrorMessage"] = "", ["dummy"] = "",
+                },
+                $"{baseUrl}/web/guest/ko/webdocbox/commitChPassword.cgi");
+            t = ExtractWimToken(html); if (t != null) wimToken = t;
+        }
+
+        // Step 5: 실제 삭제 (deleteDocContentsPage.cgi)
+        result.Logs.Add("[리코삭제] 최종 삭제...");
+        html = await PostFormAsync(client,
+            $"{baseUrl}/web/guest/ko/webdocbox/deleteDocContentsPage.cgi",
+            new() {
+                ["wimToken"] = wimToken,
+                ["selectedDocIds"] = target.id,
+                ["subReturnDsp"] = "3",
+            },
+            $"{baseUrl}/web/guest/ko/webdocbox/folderDeletePage.cgi");
+
+        result.Logs.Add($"[리코삭제] 최종 응답: {html.Length}자");
 
         if (html.Length == 0)
         {
             result.Logs.Add("[리코삭제][FAIL] 빈 응답");
             return DriverResult.Fail("삭제 실패: 서버 응답 없음", result.Logs);
-        }
-
-        var errMatch = Regex.Match(html, @"simpleErrorMessage[^>]*value=[""']([^""']+)");
-        if (errMatch.Success && !string.IsNullOrWhiteSpace(errMatch.Groups[1].Value))
-        {
-            result.Logs.Add($"[리코삭제][FAIL] 서버 에러: {errMatch.Groups[1].Value}");
-            return DriverResult.Fail($"삭제 실패: {errMatch.Groups[1].Value}", result.Logs);
         }
 
         result.Logs.Add("[리코삭제] 삭제 완료");
