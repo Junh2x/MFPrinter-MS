@@ -306,3 +306,36 @@ upgrade-insecure-requests
 1
 user-agent
 Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+
+
+## 박스 생성 Request URL
+http://192.168.11.193/wcd/api/AppReqSetCustomMessage/_005_001_ULU001
+Request Method
+POST
+Status Code
+200 OK
+Remote Address
+192.168.11.193:80
+Referrer Policy
+strict-origin-when-cross-origin
+content-length
+519
+content-type
+text/plain;charset=utf-8
+expires
+Thu, 01 Jan 1970 00:00:00 GMT
+set-cookie
+bv=Chrome/146.0.0.0; pf=PC; uatype=NN; lang=Ko; favmode=false; vm=Html; key=; selno=Ko; InitialTransitionScreen=; loginUserName=; notChange=; access=; param=; hostChange=; sourcePage=1; abbrRedojobingStatus=allow; loginState=true; cou=; box_dsp=Delete; menuType=Public; logoutIF=user.cgi; webUI=new; ID=QXGelzvfD5MPJIHF6dWd9am4hF32yoyf; abbrCheckCookieFlg=true; usr=F_ULU; path=/wcd
+x-frame-options
+SAMEORIGIN
+accept
+application/json, text/javascript, */*; q=0.01
+content-type
+application/x-www-form-urlencoded; charset=UTF-8
+referer
+http://192.168.11.193/wcd/spa_main.html
+user-agent
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+x-requested-with
+XMLHttpRequest
+페이로드: {"func":"PSL_F_ULUUser_CRE","h_token":"34pbziixZVq5afh5gtR0nKaktDbXUxX1","H_TAB":"","H_GNA":"","R_NUM":"Space","T_NAM":"test_name","C_USE":"UsePass","P_PAS":"1234","S_SER":"Abc","S_BTY":"Public","R_SAP":"None","S_GFC":"On","S_SEC":"Off","S_DTP":"false"}
