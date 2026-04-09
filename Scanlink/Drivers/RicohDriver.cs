@@ -472,9 +472,8 @@ public class RicohDriver : IMfpDriver
         result.Logs.Add($"[리코수정] 대상 폴더 ID={target.id}");
 
         var pw = box.Password ?? "";
-        var pwB64 = !string.IsNullOrEmpty(pw) ? B64(pw) : "";
+        var changePw = !string.IsNullOrEmpty(pw);
 
-        // 수정: putFolderProp.cgi (mode=MODIFY)
         string html;
 
         // Step 1: 속성 페이지 진입
@@ -490,66 +489,47 @@ public class RicohDriver : IMfpDriver
             },
             $"{baseUrl}/web/entry/ko/webdocbox/folderListPage.cgi");
         var t = ExtractWimToken(html); if (t != null) wimToken = t;
-        result.Logs.Add($"[리코수정] Step1 응답: {html.Length}자, wimToken갱신={t != null}");
+        result.Logs.Add($"[리코수정] Step1 응답: {html.Length}자");
 
-        // Step 2: 비밀번호 페이지
-        result.Logs.Add("[리코수정] Step2: 비밀번호 페이지...");
-        html = await PostFormAsync(client,
-            $"{baseUrl}/web/entry/ko/webdocbox/chPasswordPage.cgi",
-            new() {
-                ["wimToken"] = wimToken, ["targetFolderId"] = target.id,
-                ["changedFolderName"] = box.Name, ["mode"] = "MODIFY",
-                ["targetDocId"] = target.id, ["selectedFolderId"] = target.id,
-                ["title"] = box.Name, ["useSavedPropParam"] = "true",
-                ["useInputParam"] = "false", ["subReturnDsp"] = "3", ["dummy"] = "",
-            },
-            $"{baseUrl}/web/entry/ko/webdocbox/folderPropPage.cgi");
-        t = ExtractWimToken(html); if (t != null) wimToken = t;
-        result.Logs.Add($"[리코수정] Step2 응답: {html.Length}자, wimToken갱신={t != null}");
-        if (html.Length < 500) result.Logs.Add($"[리코수정] Step2 내용: {html}");
+        // 비밀번호 변경 시에만 비밀번호 단계 실행
+        if (changePw)
+        {
+            var pwB64 = B64(pw);
 
-        // Step 3: 비밀번호 설정
-        result.Logs.Add("[리코수정] Step3: 비밀번호 설정...");
-        html = await PostFormAsync(client,
-            $"{baseUrl}/web/entry/ko/webdocbox/commitChPassword.cgi",
-            new() {
-                ["wimToken"] = wimToken, ["title"] = box.Name,
-                ["creator"] = "", ["dataFormat"] = "", ["allPages"] = "false",
-                ["cid"] = "", ["convBW"] = "", ["backUp"] = "",
-                ["backUpFormatStr"] = "", ["backUpResoStr"] = "",
-                ["targetDocId"] = target.id, ["oldPassword"] = "undefined",
-                ["newPassword"] = pwB64, ["confirmation"] = pwB64,
-                ["useInputParam"] = "false", ["useSavedParam"] = "",
-                ["subReturnDsp"] = "3", ["mode"] = "MODIFY", ["wayTo"] = "",
-                ["useSavedPropParam"] = "true", ["selectedFolderId"] = target.id,
-                ["ID"] = "", ["dummy"] = "",
-            },
-            $"{baseUrl}/web/entry/ko/webdocbox/chPasswordPage.cgi");
-        t = ExtractWimToken(html); if (t != null) wimToken = t;
-        result.Logs.Add($"[리코수정] Step3 응답: {html.Length}자, wimToken갱신={t != null}");
+            result.Logs.Add("[리코수정] 비밀번호 변경 진행...");
+            html = await PostFormAsync(client,
+                $"{baseUrl}/web/entry/ko/webdocbox/chPasswordPage.cgi",
+                new() {
+                    ["wimToken"] = wimToken, ["targetFolderId"] = target.id,
+                    ["changedFolderName"] = box.Name, ["mode"] = "MODIFY",
+                    ["targetDocId"] = target.id, ["selectedFolderId"] = target.id,
+                    ["title"] = box.Name, ["useSavedPropParam"] = "true",
+                    ["useInputParam"] = "false", ["subReturnDsp"] = "3", ["dummy"] = "",
+                },
+                $"{baseUrl}/web/entry/ko/webdocbox/folderPropPage.cgi");
+            t = ExtractWimToken(html); if (t != null) wimToken = t;
 
-        // Step 4: 속성 확인
-        result.Logs.Add("[리코수정] Step4: 속성 확인...");
-        html = await PostFormAsync(client,
-            $"{baseUrl}/web/entry/ko/webdocbox/folderPropPage.cgi",
-            new() {
-                ["wimToken"] = wimToken,
-                ["id"] = "", ["jt"] = "", ["el"] = "",
-                ["urlLang"] = "ko", ["urlProfile"] = "entry",
-                ["pdfThumbnailURI"] = "", ["thumbnailURI"] = "", ["WidthSize"] = "",
-                ["subdocCount"] = "", ["targetDocId"] = target.id,
-                ["title"] = "", ["creator"] = "",
-                ["useInputParam"] = "false", ["useSavedParam"] = "",
-                ["subReturnDsp"] = "3", ["mode"] = "MODIFY", ["wayTo"] = "",
-                ["selectedFolderId"] = target.id, ["useSavedPropParam"] = "true",
-                ["ID"] = "", ["simpleErrorMessage"] = "", ["dummy"] = "",
-            },
-            $"{baseUrl}/web/entry/ko/webdocbox/commitChPassword.cgi");
-        t = ExtractWimToken(html); if (t != null) wimToken = t;
-        result.Logs.Add($"[리코수정] Step4 응답: {html.Length}자, wimToken갱신={t != null}");
+            html = await PostFormAsync(client,
+                $"{baseUrl}/web/entry/ko/webdocbox/commitChPassword.cgi",
+                new() {
+                    ["wimToken"] = wimToken, ["title"] = box.Name,
+                    ["creator"] = "", ["dataFormat"] = "", ["allPages"] = "false",
+                    ["cid"] = "", ["convBW"] = "", ["backUp"] = "",
+                    ["backUpFormatStr"] = "", ["backUpResoStr"] = "",
+                    ["targetDocId"] = target.id, ["oldPassword"] = "undefined",
+                    ["newPassword"] = pwB64, ["confirmation"] = pwB64,
+                    ["useInputParam"] = "false", ["useSavedParam"] = "",
+                    ["subReturnDsp"] = "3", ["mode"] = "MODIFY", ["wayTo"] = "",
+                    ["useSavedPropParam"] = "true", ["selectedFolderId"] = target.id,
+                    ["ID"] = "", ["dummy"] = "",
+                },
+                $"{baseUrl}/web/entry/ko/webdocbox/chPasswordPage.cgi");
+            t = ExtractWimToken(html); if (t != null) wimToken = t;
+            result.Logs.Add("[리코수정] 비밀번호 설정 완료");
+        }
 
-        // Step 5: 최종 수정
-        result.Logs.Add("[리코수정] Step5: 수정 확정...");
+        // 최종 수정 확정 (이름 변경은 여기서)
+        result.Logs.Add("[리코수정] 수정 확정...");
         html = await PostFormAsync(client,
             $"{baseUrl}/web/entry/ko/webdocbox/putFolderProp.cgi",
             new() {
@@ -560,9 +540,8 @@ public class RicohDriver : IMfpDriver
                 ["useInputParam"] = "false", ["subReturnDsp"] = "3", ["dummy"] = "",
             },
             $"{baseUrl}/web/entry/ko/webdocbox/folderPropPage.cgi");
-        result.Logs.Add($"[리코수정] Step5 응답: {html.Length}자");
+        result.Logs.Add($"[리코수정] 확정 응답: {html.Length}자");
 
-        // simpleErrorMessage에 실제 에러 내용이 있는지 확인
         var errMatch = Regex.Match(html, @"simpleErrorMessage[^>]*value=[""']([^""']+)");
         if (errMatch.Success && !string.IsNullOrWhiteSpace(errMatch.Groups[1].Value))
         {
