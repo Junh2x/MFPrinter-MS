@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <Resource Include="Assets\app.ico" />
+    <Resource Include="Assets\ricoh_manual.png" />
   </ItemGroup>
 
 </Project>
