@@ -27,7 +27,7 @@ public partial class ManualConnectDialog : Window
             return;
         }
 
-        ErrorText.Text = "연결 중...";
+        ErrorText.Text = "기기 식별 중...";
         IpTextBox.IsEnabled = false;
 
         try
@@ -42,7 +42,12 @@ public partial class ManualConnectDialog : Window
             }
             else
             {
-                ErrorText.Text = "복합기를 식별할 수 없습니다. IP를 확인하세요.";
+                // SNMP 응답 직접 확인하여 상세 에러
+                var sysDescr = await DeviceDiscoveryService.SnmpGetSysDescrAsync(ip);
+                if (sysDescr != null)
+                    ErrorText.Text = $"지원하지 않는 기기입니다.\nSNMP: {sysDescr}";
+                else
+                    ErrorText.Text = "기기가 응답하지 않습니다. IP를 확인하세요.";
             }
         }
         catch (Exception ex)

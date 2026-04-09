@@ -27,6 +27,7 @@ public partial class DeviceSearchDialog : Window
     {
         SearchingPanel.Visibility = Visibility.Visible;
         DeviceList.Visibility = Visibility.Collapsed;
+        SearchStatusText.Text = "네트워크 스캔 중...";
         _cts = new CancellationTokenSource();
 
         try
@@ -41,23 +42,18 @@ public partial class DeviceSearchDialog : Window
                 },
                 ct: _cts.Token);
 
-            SearchingPanel.Visibility = Visibility.Collapsed;
-            DeviceList.Visibility = Visibility.Visible;
-
             if (devices.Count > 0)
             {
+                SearchingPanel.Visibility = Visibility.Collapsed;
                 DeviceList.ItemsSource = devices;
+                DeviceList.Visibility = Visibility.Visible;
             }
             else
             {
-                SearchStatusText.Text = "검색 완료. 발견된 복합기가 없습니다.";
-                SearchingPanel.Visibility = Visibility.Visible;
+                SearchStatusText.Text = "발견된 복합기가 없습니다.";
             }
         }
-        catch (OperationCanceledException)
-        {
-            // 창 닫힘
-        }
+        catch (OperationCanceledException) { }
         catch (Exception ex)
         {
             SearchStatusText.Text = $"검색 오류: {ex.Message}";

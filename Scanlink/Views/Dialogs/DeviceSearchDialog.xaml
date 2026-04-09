@@ -39,19 +39,37 @@
 
                 <!-- 결과 목록 -->
                 <ListBox x:Name="DeviceList" Visibility="Collapsed"
-                         BorderThickness="0" Background="Transparent" SelectionMode="Single">
+                         BorderThickness="0" Background="Transparent" SelectionMode="Single"
+                         HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="Padding" Value="0"/>
+                            <Setter Property="Margin" Value="0"/>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Border Padding="10" Margin="0,0,0,4" CornerRadius="5"
                                     Background="{StaticResource SurfaceBrush}" Cursor="Hand">
-                                <StackPanel>
-                                    <TextBlock Text="{Binding DisplayName}" FontSize="13" FontWeight="SemiBold"
-                                               Foreground="{StaticResource TextPrimaryBrush}"/>
-                                    <TextBlock FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,2,0,0">
-                                        <Run Text="IP:"/>
-                                        <Run Text="{Binding Ip, Mode=OneWay}"/>
-                                    </TextBlock>
-                                </StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="{Binding DisplayName}" FontSize="13" FontWeight="SemiBold"
+                                                   Foreground="{StaticResource TextPrimaryBrush}"/>
+                                        <TextBlock FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,2,0,0">
+                                            <Run Text="IP:"/>
+                                            <Run Text="{Binding Ip, Mode=OneWay}"/>
+                                        </TextBlock>
+                                    </StackPanel>
+                                    <Border Grid.Column="1" CornerRadius="8" Padding="8,3" VerticalAlignment="Center"
+                                            Background="#EBF4EE">
+                                        <TextBlock Text="연결 가능" FontSize="10" Foreground="#1A7F37"/>
+                                    </Border>
+                                </Grid>
                             </Border>
                         </DataTemplate>
                     </ListBox.ItemTemplate>

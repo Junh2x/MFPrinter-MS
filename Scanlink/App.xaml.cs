@@ -1,4 +1,5 @@
 using System.Windows;
+using Scanlink.Helpers;
 using Scanlink.Services;
 using Scanlink.Views;
 
@@ -12,6 +13,8 @@ public partial class App : Application
     protected override async void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
+
+        AppLogger.Log("APP", "Scanlink 시작");
 
         var authService = new AuthService();
         var authenticated = false;

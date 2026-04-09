@@ -1,11 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "h7yLmFVj0Bw=",
+  "dgSpecHash": "86Y1xe0hF1g=",
   "success": true,
-  "projectFilePath": "C:\\Users\\hyunji\\Desktop\\TEST\\MFPrinter-MS\\Scanlink\\Scanlink.csproj",
+  "projectFilePath": "C:\\Projects\\JA-solution\\Scanlink\\Scanlink.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\hyunji\\.nuget\\packages\\communitytoolkit.mvvm\\8.4.0\\communitytoolkit.mvvm.8.4.0.nupkg.sha512",
-    "C:\\Users\\hyunji\\.nuget\\packages\\hardcodet.notifyicon.wpf\\1.1.0\\hardcodet.notifyicon.wpf.1.1.0.nupkg.sha512"
+    "C:\\Users\\JUN\\.nuget\\packages\\communitytoolkit.mvvm\\8.4.0\\communitytoolkit.mvvm.8.4.0.nupkg.sha512",
+    "C:\\Users\\JUN\\.nuget\\packages\\hardcodet.notifyicon.wpf\\1.1.0\\hardcodet.notifyicon.wpf.1.1.0.nupkg.sha512",
+    "C:\\Users\\JUN\\.nuget\\packages\\microsoft.netcore.app.runtime.win-x64\\9.0.7\\microsoft.netcore.app.runtime.win-x64.9.0.7.nupkg.sha512",
+    "C:\\Users\\JUN\\.nuget\\packages\\microsoft.windowsdesktop.app.runtime.win-x64\\9.0.7\\microsoft.windowsdesktop.app.runtime.win-x64.9.0.7.nupkg.sha512",
+    "C:\\Users\\JUN\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.win-x64\\9.0.7\\microsoft.aspnetcore.app.runtime.win-x64.9.0.7.nupkg.sha512"
   ],
   "logs": []
 }

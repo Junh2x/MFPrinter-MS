@@ -31,9 +31,9 @@ public partial class ScanBoxListPage : UserControl
 
         if (dialog.ShowDialog() == true && dialog.CreatedScanBox != null)
         {
-            var success = await vm.AddScanBoxWithDriverAsync(dialog.CreatedScanBox);
+            var error = await vm.AddScanBoxWithDriverAsync(dialog.CreatedScanBox);
 
-            if (success)
+            if (error == null)
             {
                 var completeDialog = new ScanBoxCompleteDialog
                 {
@@ -44,7 +44,7 @@ public partial class ScanBoxListPage : UserControl
             else
             {
                 MessageBox.Show(
-                    "스캔함 추가에 실패했습니다.\n복합기 연결 상태를 확인하세요.",
+                    error,
                     "스캔함 추가 실패",
                     System.Windows.MessageBoxButton.OK,
                     System.Windows.MessageBoxImage.Error);

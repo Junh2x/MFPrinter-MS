@@ -67,8 +67,8 @@ public class ScanBoxListViewModel : ViewModelBase
         ScanBoxes.CollectionChanged += (_, _) => OnPropertyChanged(nameof(HasScanBoxes));
     }
 
-    /// <summary>스캔함 추가 (드라이버 호출 포함)</summary>
-    public async Task<bool> AddScanBoxWithDriverAsync(ScanBox box)
+    /// <summary>스캔함 추가 (드라이버 호출 포함). 실패 시 에러 메시지 반환.</summary>
+    public async Task<string?> AddScanBoxWithDriverAsync(ScanBox box)
     {
         box.MfpDeviceId = Device.Id;
 
@@ -79,25 +79,25 @@ public class ScanBoxListViewModel : ViewModelBase
             if (!Device.IsConfigured)
             {
                 var setupResult = await driver.SetupAsync(Device);
-                foreach (var log in setupResult.Logs) Debug.WriteLine(log);
+                foreach (var log in setupResult.Logs) AppLogger.Log(log);
                 DriverResultReceived?.Invoke(setupResult);
 
                 if (!setupResult.Success)
-                    return false;
+                    return setupResult.Message;
             }
 
             var result = await driver.AddScanBoxAsync(Device, box);
-            foreach (var log in result.Logs) Debug.WriteLine(log);
+            foreach (var log in result.Logs) AppLogger.Log(log);
             DriverResultReceived?.Invoke(result);
 
             if (!result.Success)
-                return false;
+                return result.Message;
         }
 
         _scanBoxService.AddScanBox(box);
         ScanBoxes.Add(box);
         OnPropertyChanged(nameof(HasScanBoxes));
-        return true;
+        return null; // 성공
     }
 
     /// <summary>스캔함 삭제 (드라이버 호출 포함)</summary>
@@ -107,7 +107,7 @@ public class ScanBoxListViewModel : ViewModelBase
         if (driver != null && box.SlotIndex >= 0)
         {
             var result = await driver.DeleteScanBoxAsync(Device, box);
-            foreach (var log in result.Logs) Debug.WriteLine(log);
+            foreach (var log in result.Logs) AppLogger.Log(log);
             DriverResultReceived?.Invoke(result);
         }
 
