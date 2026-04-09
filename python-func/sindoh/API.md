@@ -307,7 +307,6 @@ upgrade-insecure-requests
 user-agent
 Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
 
-
 ## 박스 생성 Request URL
 http://192.168.11.193/wcd/api/AppReqSetCustomMessage/_005_001_ULU001
 Request Method
