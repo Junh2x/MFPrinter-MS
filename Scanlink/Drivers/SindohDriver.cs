@@ -82,21 +82,10 @@ public class SindohDriver : IMfpDriver
             }
             logs.Add($"[신도] 세션 ID: {idCookie.Value[..Math.Min(10, idCookie.Value.Length)]}...");
 
-            // Step 3: 관리자 모드 쿠키 설정
-            cookies.Add(uri, new Cookie("menuType", "Admin"));
-            cookies.Add(uri, new Cookie("adm", "AF_ULA"));
-            cookies.Add(uri, new Cookie("box_dsp", "Setting"));
-            cookies.Add(uri, new Cookie("webUI", "new"));
-
-            // Step 4: 메인 페이지 접속
+            // Step 3: 메인 페이지 접속
             await client.GetAsync($"{baseUrl}/wcd/spa_main.html");
 
-            // Step 5: 관리자 진입
-            var adminResp = await PostJsonAsync(client, $"{baseUrl}/wcd/a_user.cgi",
-                new { }, $"{baseUrl}/wcd/spa_main.html");
-            logs.Add($"[신도] 관리자 진입: {adminResp.Length}자");
-
-            // Step 6: 토큰 추출 — 박스 목록 조회
+            // Step 4: 토큰 추출 — 박스 목록 조회
             var tokenResp = await PostJsonAsync(client, $"{baseUrl}/wcd/api/AppReqGetUserBoxList",
                 new {
                     BoxListCondition = new {
