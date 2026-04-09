@@ -75,17 +75,6 @@ public class ScanBoxListViewModel : ViewModelBase
         var driver = DriverFactory.GetDriver(Device.Brand);
         if (driver != null)
         {
-            // 최초 연결 시 Setup 실행
-            if (!Device.IsConfigured)
-            {
-                var setupResult = await driver.SetupAsync(Device);
-                foreach (var log in setupResult.Logs) AppLogger.Log(log);
-                DriverResultReceived?.Invoke(setupResult);
-
-                if (!setupResult.Success)
-                    return setupResult.Message;
-            }
-
             var result = await driver.AddScanBoxAsync(Device, box);
             foreach (var log in result.Logs) AppLogger.Log(log);
             DriverResultReceived?.Invoke(result);

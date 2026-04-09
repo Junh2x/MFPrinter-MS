@@ -195,14 +195,21 @@ public class CanonDriver : IMfpDriver
         return entries;
     }
 
-    /// <summary>사용 중인 슬롯 번호 집합</summary>
+    /// <summary>사용 중인 슬롯 번호 집합. adrsList = { 7:{tp:7,nm:"..."}, ... } 형식 파싱.</summary>
     private static HashSet<int> GetUsedSlots(string html)
     {
         var used = new HashSet<int>();
-        foreach (Match m in Regex.Matches(html, @"\{[^}]*idx:(\d+)[^}]*nm:""([^""]*)"""))
+        // adrsList 블록 추출
+        var listMatch = Regex.Match(html, @"var\s+adrsList\s*=\s*\{(.*?)\};", RegexOptions.Singleline);
+        if (!listMatch.Success) return used;
+
+        // N:{...nm:"이름"...} 패턴 매칭
+        foreach (Match m in Regex.Matches(listMatch.Groups[1].Value, @"(\d+)\s*:\s*\{([^}]*)\}"))
         {
-            if (!string.IsNullOrWhiteSpace(m.Groups[2].Value))
-                used.Add(int.Parse(m.Groups[1].Value));
+            var idx = int.Parse(m.Groups[1].Value);
+            var nmMatch = Regex.Match(m.Groups[2].Value, @"nm:""([^""]*)""");
+            if (nmMatch.Success && !string.IsNullOrWhiteSpace(nmMatch.Groups[1].Value))
+                used.Add(idx);
         }
         return used;
     }
@@ -510,10 +517,10 @@ public class CanonDriver : IMfpDriver
         var slot = FindEmptySlot(usedSlots);
         if (slot < 0)
         {
-            result.Logs.Add("[추가][FAIL] 빈 슬롯 없음");
+            result.Logs.Add("[추가][FAIL] 빈 슬롯 없음 (200개 모두 사용중)");
             return DriverResult.Fail("빈 슬롯이 없습니다.", result.Logs);
         }
-        result.Logs.Add($"[추가] 빈 슬롯 선택: {slot} (사용중: {usedSlots.Count}개)");
+        result.Logs.Add($"[추가] 빈 슬롯 선택: {slot} (사용중: {usedSlots.Count}개, 슬롯: {string.Join(",", usedSlots.Order().Take(20))})");
 
 
         // ── 6. aprop (이메일 폼 ACLS=2) → Token B1 ──

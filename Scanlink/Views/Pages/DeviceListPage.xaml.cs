@@ -1,5 +1,7 @@
 using System.Windows;
 using System.Windows.Controls;
+using Scanlink.Core;
+using Scanlink.Helpers;
 using Scanlink.ViewModels;
 using Scanlink.Views.Dialogs;
 
@@ -44,23 +46,48 @@ public partial class DeviceListPage : UserControl
         ShowManualConnectDialog();
     }
 
-    private void ShowAutoSearchDialog()
+    private async void ShowAutoSearchDialog()
     {
         var dialog = new DeviceSearchDialog { Owner = Window.GetWindow(this) };
         if (dialog.ShowDialog() == true && dialog.SelectedDevice != null)
         {
             if (DataContext is DeviceListViewModel vm)
-                vm.AddDevice(dialog.SelectedDevice);
+            {
+                await SetupAndAddDevice(vm, dialog.SelectedDevice);
+            }
         }
     }
 
-    private void ShowManualConnectDialog()
+    private async void ShowManualConnectDialog()
     {
         var dialog = new ManualConnectDialog { Owner = Window.GetWindow(this) };
         if (dialog.ShowDialog() == true && dialog.Device != null)
         {
             if (DataContext is DeviceListViewModel vm)
-                vm.AddDevice(dialog.Device);
+            {
+                await SetupAndAddDevice(vm, dialog.Device);
+            }
         }
+    }
+
+    /// <summary>기기 등록 시 브랜드별 초기 설정 실행 후 추가</summary>
+    private async Task SetupAndAddDevice(DeviceListViewModel vm, Models.MfpDevice device)
+    {
+        var driver = DriverFactory.GetDriver(device.Brand);
+        if (driver != null)
+        {
+            var result = await driver.SetupAsync(device);
+            foreach (var log in result.Logs) AppLogger.Log(log);
+
+            if (!result.Success)
+            {
+                MessageBox.Show(
+                    $"기기 초기 설정 실패:\n{result.Message}",
+                    "오류", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+        }
+
+        vm.AddDevice(device);
     }
 }
