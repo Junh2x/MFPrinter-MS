@@ -109,7 +109,7 @@ public class CanonDriver : IMfpDriver
 
                 // Step 1: 포털 접속 (리다이렉트 수동 추적)
                 var r = await GetWithRedirectAsync(client, $"{baseUrl}/");
-                if (!r.IsSuccessStatusCode) { logs.Add($"[세션] {baseUrl} — HTTP {(int)r.StatusCode}"); continue; }
+                if (!r.IsSuccessStatusCode) { logs.Add($"[세션] {baseUrl} — HTTP {(int)r.StatusCode}"); client.Dispose(); continue; }
 
                 var portalCookies = cookies.GetAllCookies();
                 logs.Add($"[세션] 포털 후 쿠키 {portalCookies.Count}개: {string.Join(", ", portalCookies.Select(c => c.Name))}");
@@ -132,6 +132,7 @@ public class CanonDriver : IMfpDriver
                 }
 
                 logs.Add($"[세션] {baseUrl} — iR 쿠키 미발급");
+                client.Dispose(); // 실패한 세션 즉시 정리
             }
             catch (Exception ex)
             {
@@ -233,8 +234,11 @@ public class CanonDriver : IMfpDriver
     public async Task<DriverResult> ConnectAsync(MfpDevice device)
     {
         var result = new DriverResult();
+        HttpClient? client = null;
         try {
-        var (client, mgmtUrl, logs) = await InitSessionAsync(device);
+        string mgmtUrl;
+        List<string> logs;
+        (client, mgmtUrl, logs) = await InitSessionAsync(device);
         result.Logs.AddRange(logs);
 
         if (client == null)
@@ -248,7 +252,7 @@ public class CanonDriver : IMfpDriver
         } catch (Exception ex) {
             result.Logs.Add($"[연결][ERROR] {ex.Message}");
             return DriverResult.Fail($"연결 오류: {ex.Message}", result.Logs);
-        }
+        } finally { client?.Dispose(); }
     }
 
     // ──────────────────────────────────────────────
@@ -258,11 +262,14 @@ public class CanonDriver : IMfpDriver
     public async Task<DriverResult> SetupAsync(MfpDevice device)
     {
         var result = new DriverResult();
+        HttpClient? client = null;
         try {
 
         result.Logs.Add($"[설정] 캐논 초기 설정 시작: {device.Ip}");
 
-        var (client, baseUrl, sessionLogs) = await InitSessionAsync(device);
+        string baseUrl;
+        List<string> sessionLogs;
+        (client, baseUrl, sessionLogs) = await InitSessionAsync(device);
         result.Logs.AddRange(sessionLogs);
         if (client == null) return DriverResult.Fail("세션 초기화 실패", result.Logs);
 
@@ -367,7 +374,7 @@ public class CanonDriver : IMfpDriver
             result.Success = false;
             result.Message = $"설정 중 오류: {ex.Message}";
             return result;
-        }
+        } finally { client?.Dispose(); }
     }
 
     // ──────────────────────────────────────────────
@@ -377,12 +384,14 @@ public class CanonDriver : IMfpDriver
     public async Task<DriverResult<List<ScanBox>>> GetScanBoxListAsync(MfpDevice device)
     {
         var result = new DriverResult<List<ScanBox>> { Logs = [] };
+        HttpClient? client = null;
         try {
         var aid = device.AddressBookId;
 
         result.Logs.Add($"[조회] 수신지 목록 조회: AID={aid}");
 
-        var (client, baseUrl, sessionLogs) = await InitSessionAsync(device);
+        string baseUrl; List<string> sessionLogs;
+        (client, baseUrl, sessionLogs) = await InitSessionAsync(device);
         result.Logs.AddRange(sessionLogs);
         if (client == null) return DriverResult<List<ScanBox>>.Fail("세션 초기화 실패", result.Logs);
 
@@ -426,7 +435,7 @@ public class CanonDriver : IMfpDriver
             result.Success = false;
             result.Message = $"조회 오류: {ex.Message}";
             return result;
-        }
+        } finally { client?.Dispose(); }
     }
 
     // ──────────────────────────────────────────────
@@ -436,6 +445,7 @@ public class CanonDriver : IMfpDriver
     public async Task<DriverResult> AddScanBoxAsync(MfpDevice device, ScanBox box)
     {
         var result = new DriverResult();
+        HttpClient? client = null;
         try {
         var aid = device.AddressBookId;
         var folderPath = $@"\share\folder\{box.Name}";
@@ -466,7 +476,8 @@ public class CanonDriver : IMfpDriver
         }
 
         // ── 2. 세션 초기화 ──
-        var (client, baseUrl, sessionLogs) = await InitSessionAsync(device);
+        string baseUrl; List<string> sessionLogs;
+        (client, baseUrl, sessionLogs) = await InitSessionAsync(device);
         result.Logs.AddRange(sessionLogs);
         if (client == null) return DriverResult.Fail("세션 초기화 실패", result.Logs);
 
@@ -612,7 +623,7 @@ public class CanonDriver : IMfpDriver
             result.Success = false;
             result.Message = $"스캔함 추가 오류: {ex.Message}";
             return result;
-        }
+        } finally { client?.Dispose(); }
     }
 
     // ──────────────────────────────────────────────
@@ -622,6 +633,7 @@ public class CanonDriver : IMfpDriver
     public async Task<DriverResult> DeleteScanBoxAsync(MfpDevice device, ScanBox box)
     {
         var result = new DriverResult();
+        HttpClient? client = null;
         try {
         var aid = device.AddressBookId;
 
@@ -633,7 +645,8 @@ public class CanonDriver : IMfpDriver
             return DriverResult.Fail("슬롯 번호가 없습니다.", result.Logs);
         }
 
-        var (client, baseUrl, sessionLogs) = await InitSessionAsync(device);
+        string baseUrl; List<string> sessionLogs;
+        (client, baseUrl, sessionLogs) = await InitSessionAsync(device);
         result.Logs.AddRange(sessionLogs);
         if (client == null) return DriverResult.Fail("세션 초기화 실패", result.Logs);
 
@@ -682,7 +695,7 @@ public class CanonDriver : IMfpDriver
             result.Success = false;
             result.Message = $"삭제 오류: {ex.Message}";
             return result;
-        }
+        } finally { client?.Dispose(); }
     }
 
     // ──────────────────────────────────────────────
@@ -692,6 +705,7 @@ public class CanonDriver : IMfpDriver
     public async Task<DriverResult> UpdateScanBoxAsync(MfpDevice device, ScanBox box)
     {
         var result = new DriverResult();
+        HttpClient? client = null;
         try {
         var aid = device.AddressBookId;
         var folderPath = $@"\share\folder\{box.Name}";
@@ -701,7 +715,8 @@ public class CanonDriver : IMfpDriver
         if (box.SlotIndex < 0)
             return DriverResult.Fail("슬롯 번호가 없습니다.", result.Logs);
 
-        var (client, baseUrl, sessionLogs) = await InitSessionAsync(device);
+        string baseUrl; List<string> sessionLogs;
+        (client, baseUrl, sessionLogs) = await InitSessionAsync(device);
         result.Logs.AddRange(sessionLogs);
         if (client == null) return DriverResult.Fail("세션 초기화 실패", result.Logs);
 
@@ -769,6 +784,6 @@ public class CanonDriver : IMfpDriver
             result.Success = false;
             result.Message = $"수정 오류: {ex.Message}";
             return result;
-        }
+        } finally { client?.Dispose(); }
     }
 }
