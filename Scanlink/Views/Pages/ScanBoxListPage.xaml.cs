@@ -32,7 +32,7 @@ public partial class ScanBoxListPage : UserControl
 
         if (dialog.ShowDialog() == true && dialog.CreatedScanBox != null)
         {
-            var completeDialog = new ScanBoxCompleteDialog
+            var completeDialog = new ScanBoxCompleteDialog(vm.Device.Brand)
             {
                 Owner = System.Windows.Window.GetWindow(this)
             };
