@@ -20,35 +20,23 @@ public partial class ScanBoxListPage : UserControl
             newVm.RequestAddScanBoxDialog += ShowAddDialog;
     }
 
-    private async void ShowAddDialog()
+    private void ShowAddDialog()
     {
         if (DataContext is not ScanBoxListViewModel vm) return;
 
         var dialog = new ScanBoxAddDialog(vm.Device)
         {
-            Owner = System.Windows.Window.GetWindow(this)
+            Owner = System.Windows.Window.GetWindow(this),
+            RegisterCallback = vm.AddScanBoxWithDriverAsync,
         };
 
         if (dialog.ShowDialog() == true && dialog.CreatedScanBox != null)
         {
-            var error = await vm.AddScanBoxWithDriverAsync(dialog.CreatedScanBox);
-
-            if (error == null)
+            var completeDialog = new ScanBoxCompleteDialog
             {
-                var completeDialog = new ScanBoxCompleteDialog
-                {
-                    Owner = System.Windows.Window.GetWindow(this)
-                };
-                completeDialog.ShowDialog();
-            }
-            else
-            {
-                MessageBox.Show(
-                    error,
-                    "스캔함 추가 실패",
-                    System.Windows.MessageBoxButton.OK,
-                    System.Windows.MessageBoxImage.Error);
-            }
+                Owner = System.Windows.Window.GetWindow(this)
+            };
+            completeDialog.ShowDialog();
         }
     }
 }

@@ -39,10 +39,13 @@
                         Command="{Binding BrowseFolderCommand}"/>
             </Grid>
 
-            <CheckBox Content="저장 알림" IsChecked="{Binding NotifyOnSave}" Margin="0,0,0,12"/>
-
             <TextBlock Text="파일 삭제 주기" FontSize="12" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,4"/>
             <ComboBox ItemsSource="{Binding DeleteCycles}" SelectedItem="{Binding DeleteCycle}" Margin="0,0,0,20"/>
+
+            <!-- 상태 메시지 -->
+            <TextBlock Text="{Binding StatusMessage}" FontSize="11"
+                       Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,8"
+                       Visibility="{Binding StatusMessage, Converter={StaticResource StringToVisibility}}"/>
 
             <!-- 버튼 -->
             <Grid>

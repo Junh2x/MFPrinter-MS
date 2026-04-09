@@ -697,7 +697,28 @@ public class CanonDriver : IMfpDriver
             return DriverResult.Fail("삭제 실패", result.Logs);
         }
 
-        result.Logs.Add($"[삭제] 삭제 완료! 슬롯={box.SlotIndex}");
+        result.Logs.Add($"[삭제] 주소록 삭제 완료 (슬롯={box.SlotIndex})");
+
+        // SMB 폴더 삭제
+        var uncPath = $@"\\{device.Ip}\share\folder\{box.Name}";
+        result.Logs.Add($"[삭제] SMB 폴더 삭제: {uncPath}");
+        try
+        {
+            if (Directory.Exists(uncPath))
+            {
+                Directory.Delete(uncPath, true);
+                result.Logs.Add("[삭제] SMB 폴더 삭제 완료");
+            }
+            else
+            {
+                result.Logs.Add("[삭제] SMB 폴더 없음 (이미 삭제됨)");
+            }
+        }
+        catch (Exception ex)
+        {
+            result.Logs.Add($"[삭제][WARN] SMB 폴더 삭제 실패: {ex.Message}");
+        }
+
         result.Success = true;
         result.Message = "삭제 완료";
         return result;

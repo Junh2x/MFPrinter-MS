@@ -53,8 +53,6 @@
                                 Click="BrowseFolder_Click"/>
                     </Grid>
 
-                    <CheckBox x:Name="NotifyCheck" Content="저장 알림" IsChecked="True" Margin="0,0,0,12"/>
-
                     <TextBlock Text="파일 삭제 주기" FontSize="12" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,4"/>
                     <ComboBox x:Name="DeleteCycleCombo" Margin="0,0,0,4" SelectedIndex="3">
                         <ComboBoxItem Content="사용안함"/>
@@ -70,9 +68,20 @@
             <!-- 하단 -->
             <Border Grid.Row="2" Padding="16,10"
                     BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0">
-                <Button Content="스캔함 추가" Style="{StaticResource PrimaryButton}"
-                        HorizontalAlignment="Stretch"
-                        Click="AddButton_Click"/>
+                <Grid>
+                    <Button x:Name="AddButton" Content="스캔함 추가" Style="{StaticResource PrimaryButton}"
+                            HorizontalAlignment="Stretch"
+                            Click="AddButton_Click"/>
+                    <!-- 로딩 -->
+                    <StackPanel x:Name="LoadingPanel" Visibility="Collapsed"
+                                Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <ProgressBar IsIndeterminate="True" Width="120" Height="3"
+                                     Foreground="{StaticResource PrimaryBrush}" Background="#E8EAF0"
+                                     BorderThickness="0"/>
+                        <TextBlock Text="등록 중..." FontSize="12" Margin="10,0,0,0"
+                                   Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Grid>
             </Border>
         </Grid>
     </Border>

@@ -17,7 +17,6 @@ public class ScanBox
 
     // 저장 설정
     public string LocalFolder { get; set; } = "";
-    public bool NotifyOnSave { get; set; } = true;
     public string DeleteCycle { get; set; } = "1주";
 
     public DateTime CreatedAt { get; set; } = DateTime.Now;
