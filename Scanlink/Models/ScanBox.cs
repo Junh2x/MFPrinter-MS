@@ -6,7 +6,9 @@ public class ScanBox
     public string Name { get; set; } = "";
     public string Password { get; set; } = "";
     public string MfpDeviceId { get; set; } = "";
-    public string MfpEntryId { get; set; } = "";
+
+    /// <summary>복합기 주소록 내 슬롯 번호</summary>
+    public int SlotIndex { get; set; } = -1;
 
     // 스캔 파일 설정
     public string FileFormat { get; set; } = "PDF";

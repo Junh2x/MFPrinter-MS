@@ -4,18 +4,56 @@ namespace Scanlink.Core;
 
 /// <summary>
 /// 브랜드 공통 복합기 드라이버 인터페이스.
-/// 기능 구현 시 브랜드별로 이 인터페이스를 구현한다.
+/// 각 브랜드별로 이 인터페이스를 구현한다.
 /// </summary>
 public interface IMfpDriver
 {
     MfpBrand Brand { get; }
 
-    // 연결
-    Task<bool> ConnectAsync(string ip, string user = "", string password = "");
+    /// <summary>연결 테스트 및 기기 정보 확인</summary>
+    Task<DriverResult> ConnectAsync(MfpDevice device);
 
-    // 스캔함 관리
-    Task<List<ScanBox>> GetScanBoxListAsync();
-    Task<bool> AddScanBoxAsync(ScanBox box);
-    Task<bool> UpdateScanBoxAsync(ScanBox box);
-    Task<bool> DeleteScanBoxAsync(string boxId);
+    /// <summary>최초 연결 시 기기 설정 (캐논: 고급박스 등)</summary>
+    Task<DriverResult> SetupAsync(MfpDevice device);
+
+    /// <summary>스캔함(수신지) 목록 조회</summary>
+    Task<DriverResult<List<ScanBox>>> GetScanBoxListAsync(MfpDevice device);
+
+    /// <summary>스캔함 추가 (폴더 생성 + 주소록 등록)</summary>
+    Task<DriverResult> AddScanBoxAsync(MfpDevice device, ScanBox box);
+
+    /// <summary>스캔함 수정</summary>
+    Task<DriverResult> UpdateScanBoxAsync(MfpDevice device, ScanBox box);
+
+    /// <summary>스캔함 삭제 (주소록 삭제)</summary>
+    Task<DriverResult> DeleteScanBoxAsync(MfpDevice device, ScanBox box);
+}
+
+/// <summary>드라이버 작업 결과</summary>
+public class DriverResult
+{
+    public bool Success { get; set; }
+    public string Message { get; set; } = "";
+    public List<string> Logs { get; set; } = [];
+
+    public static DriverResult Ok(string message = "") => new() { Success = true, Message = message };
+    public static DriverResult Fail(string message) => new() { Success = false, Message = message };
+
+    public static DriverResult Fail(string message, List<string> logs) =>
+        new() { Success = false, Message = message, Logs = logs };
+}
+
+/// <summary>데이터를 포함하는 드라이버 작업 결과</summary>
+public class DriverResult<T> : DriverResult
+{
+    public T? Data { get; set; }
+
+    public static DriverResult<T> Ok(T data, string message = "") =>
+        new() { Success = true, Data = data, Message = message };
+
+    public new static DriverResult<T> Fail(string message) =>
+        new() { Success = false, Message = message };
+
+    public new static DriverResult<T> Fail(string message, List<string> logs) =>
+        new() { Success = false, Message = message, Logs = logs };
 }

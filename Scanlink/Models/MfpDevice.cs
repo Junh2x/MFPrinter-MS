@@ -27,4 +27,10 @@ public class MfpDevice
     public string BaseUrl { get; set; } = "";
     public ConnectionStatus Status { get; set; } = ConnectionStatus.Disconnected;
     public DateTime AddedAt { get; set; } = DateTime.Now;
+
+    /// <summary>최초 설정 완료 여부 (캐논: 고급박스 설정 등)</summary>
+    public bool IsConfigured { get; set; }
+
+    /// <summary>주소록 ID (캐논: 원터치 AID)</summary>
+    public string AddressBookId { get; set; } = "";
 }
