@@ -258,7 +258,7 @@ public class CanonDriver : IMfpDriver
     }
 
     // ──────────────────────────────────────────────
-    // SetupAsync — 고급박스 설정 + 원터치 AID 검색
+    // SetupAsync — 고급박스 설정 (기기 최초 등록 시 1회)
     // ──────────────────────────────────────────────
 
     public async Task<DriverResult> SetupAsync(MfpDevice device)
@@ -267,53 +267,38 @@ public class CanonDriver : IMfpDriver
         HttpClient? client = null;
         try {
 
-        result.Logs.Add($"[설정] 캐논 초기 설정 시작: {device.Ip}");
+        result.Logs.Add($"[고급박스] 설정 시작: {device.Ip}");
 
-        string baseUrl;
-        List<string> sessionLogs;
+        string baseUrl; List<string> sessionLogs;
         (client, baseUrl, sessionLogs) = await InitSessionAsync(device);
         result.Logs.AddRange(sessionLogs);
         if (client == null) return DriverResult.Fail("세션 초기화 실패", result.Logs);
 
-        // ── 고급박스 설정 ──
-        result.Logs.Add("[설정] 고급박스 설정 페이지 접근...");
+        result.Logs.Add("[고급박스] 설정 페이지 접근...");
         var settingsUrl = $"{baseUrl}/rps/cdsuperbox.cgi?Flag=Init_Data&PageFlag=c_superbox.tpl&FuncTypeFlag=SettingPage&Dummy={Dummy()}";
         var html = await (await client.GetAsync(settingsUrl)).Content.ReadAsStringAsync();
         var token = ExtractTokenFromHidden(html);
         if (token == null)
         {
-            result.Logs.Add("[설정][FAIL] 고급박스 Token 추출 실패");
+            result.Logs.Add("[고급박스][FAIL] Token 추출 실패");
             return DriverResult.Fail("고급박스 Token 추출 실패", result.Logs);
         }
-        result.Logs.Add($"[설정] Token 획득: {token[..Math.Min(15, token.Length)]}...");
+        result.Logs.Add($"[고급박스] Token: {token[..Math.Min(15, token.Length)]}...");
 
         var payload = new Dictionary<string, string>
         {
-            ["OpenOutSide"] = "1",
-            ["PermitMakeDir"] = "1",
-            ["ReadOnlyMode"] = "0",
-            ["PermitManage"] = "0",
-            ["PermitFileType"] = "0",
-            ["OperationLogValid"] = "1",
-            ["Setting_SMB"] = "",
-            ["Setting_WebDAV"] = "",
-            ["Setting_DOCLIB"] = "1",
-            ["WebDav_AuthType"] = "0",
-            ["WebDav_UseSSL"] = "1",
-            ["AutoDelete"] = "1",
-            ["AutoDeleteTime_HH"] = "00",
-            ["AutoDeleteTime_MM"] = "00",
-            ["Flag"] = "Exec_Data",
-            ["PageFlag"] = "c_sboxlist.tpl",
-            ["FuncTypeFlag"] = "SettingPage",
-            ["CoreNXAction"] = "./cdsuperbox.cgi",
-            ["CoreNXPage"] = "c_superbox.tpl",
-            ["disp"] = "",
-            ["Dummy"] = Dummy(),
-            ["Token"] = token,
+            ["OpenOutSide"] = "1", ["PermitMakeDir"] = "1", ["ReadOnlyMode"] = "0",
+            ["PermitManage"] = "0", ["PermitFileType"] = "0", ["OperationLogValid"] = "1",
+            ["Setting_SMB"] = "", ["Setting_WebDAV"] = "", ["Setting_DOCLIB"] = "1",
+            ["WebDav_AuthType"] = "0", ["WebDav_UseSSL"] = "1",
+            ["AutoDelete"] = "1", ["AutoDeleteTime_HH"] = "00", ["AutoDeleteTime_MM"] = "00",
+            ["Flag"] = "Exec_Data", ["PageFlag"] = "c_sboxlist.tpl",
+            ["FuncTypeFlag"] = "SettingPage", ["CoreNXAction"] = "./cdsuperbox.cgi",
+            ["CoreNXPage"] = "c_superbox.tpl", ["disp"] = "",
+            ["Dummy"] = Dummy(), ["Token"] = token,
         };
 
-        result.Logs.Add("[설정] 고급박스 설정 POST...");
+        result.Logs.Add("[고급박스] 설정 POST...");
         var req = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/rps/cdsuperbox.cgi")
         {
             Content = new FormUrlEncodedContent(payload)
@@ -324,20 +309,46 @@ public class CanonDriver : IMfpDriver
 
         if (!resp.IsSuccessStatusCode || respText.Contains("ERR"))
         {
-            result.Logs.Add($"[설정][FAIL] 고급박스 설정 실패: HTTP {(int)resp.StatusCode}");
+            result.Logs.Add($"[고급박스][FAIL] 설정 실패: HTTP {(int)resp.StatusCode}");
             return DriverResult.Fail("고급박스 설정 실패", result.Logs);
         }
-        result.Logs.Add("[설정] 고급박스 설정 완료");
 
+        device.IsConfigured = true;
+        result.Success = true;
+        result.Message = "고급박스 설정 완료";
+        result.Logs.Add("[고급박스] 설정 완료");
+        return result;
 
+        } catch (Exception ex) {
+            result.Logs.Add($"[고급박스][ERROR] {ex.Message}");
+            result.Success = false;
+            result.Message = $"고급박스 설정 오류: {ex.Message}";
+            return result;
+        } finally { client?.Dispose(); }
+    }
 
-        // ── 원터치 AID 검색 ──
-        result.Logs.Add("[설정] 주소록 목록 조회 (원터치 AID 검색)...");
-        html = await (await client.GetAsync(
+    // ──────────────────────────────────────────────
+    // FindAddressBookIdAsync — 원터치 AID 검색 (스캔함 추가 시)
+    // ──────────────────────────────────────────────
+
+    private async Task<DriverResult> FindAddressBookIdAsync(MfpDevice device)
+    {
+        var result = new DriverResult();
+        HttpClient? client = null;
+        try {
+
+        result.Logs.Add("[AID] 원터치 주소록 검색 시작...");
+
+        string baseUrl; List<string> sessionLogs;
+        (client, baseUrl, sessionLogs) = await InitSessionAsync(device);
+        result.Logs.AddRange(sessionLogs);
+        if (client == null) return DriverResult.Fail("세션 초기화 실패", result.Logs);
+
+        var html = await (await client.GetAsync(
             $"{baseUrl}/rps/asublist.cgi?CorePGTAG=24&AMOD=0&Dummy={Dummy()}")).Content.ReadAsStringAsync();
 
         var books = ParseBookNameList(html);
-        result.Logs.Add($"[설정] 주소록 {books.Count}개 발견:");
+        result.Logs.Add($"[AID] 주소록 {books.Count}개 발견:");
         foreach (var (id, name) in books)
             result.Logs.Add($"  [{id}] {name}");
 
@@ -347,35 +358,21 @@ public class CanonDriver : IMfpDriver
         if (oneTouchEntry.Value != null)
         {
             device.AddressBookId = oneTouchEntry.Key.ToString();
-            result.Logs.Add($"[설정] 원터치 AID 발견: {device.AddressBookId} ({oneTouchEntry.Value})");
+            result.Logs.Add($"[AID] 원터치 발견: AID={device.AddressBookId} ({oneTouchEntry.Value})");
         }
         else
         {
-            result.Logs.Add("[설정][WARN] '원터치' 주소록을 찾지 못함. 첫 번째 주소록 사용.");
-            if (books.Count > 0)
-            {
-                var first = books.First();
-                device.AddressBookId = first.Key.ToString();
-                result.Logs.Add($"[설정] 대체 AID: {device.AddressBookId} ({first.Value})");
-            }
-            else
-            {
-                result.Logs.Add("[설정][FAIL] 주소록이 없습니다.");
-                return DriverResult.Fail("주소록을 찾을 수 없습니다.", result.Logs);
-            }
+            device.AddressBookId = "1";
+            result.Logs.Add("[AID] '원터치' 미발견 → 기본값 AID=1");
         }
 
-        device.IsConfigured = true;
         result.Success = true;
-        result.Message = "초기 설정 완료";
-        result.Logs.Add($"[설정] 캐논 초기 설정 완료 (AID={device.AddressBookId})");
+        result.Message = $"AID={device.AddressBookId}";
         return result;
 
         } catch (Exception ex) {
-            result.Logs.Add($"[설정][ERROR] 예외 발생: {ex.Message}");
-            result.Success = false;
-            result.Message = $"설정 중 오류: {ex.Message}";
-            return result;
+            result.Logs.Add($"[AID][ERROR] {ex.Message}");
+            return DriverResult.Fail($"AID 검색 오류: {ex.Message}", result.Logs);
         } finally { client?.Dispose(); }
     }
 
@@ -449,6 +446,16 @@ public class CanonDriver : IMfpDriver
         var result = new DriverResult();
         HttpClient? client = null;
         try {
+
+        // AID 미설정 시 원터치 주소록 검색
+        if (string.IsNullOrEmpty(device.AddressBookId))
+        {
+            var aidResult = await FindAddressBookIdAsync(device);
+            result.Logs.AddRange(aidResult.Logs);
+            if (!aidResult.Success)
+                return DriverResult.Fail(aidResult.Message, result.Logs);
+        }
+
         var aid = device.AddressBookId;
         var folderPath = $@"\share\folder\{box.Name}";
 
@@ -503,10 +510,12 @@ public class CanonDriver : IMfpDriver
 
 
         // ── 5. albody → 빈 슬롯 찾기 ──
+        result.Logs.Add($"[추가] albody 요청: AID={aid}");
         html = await PostFormAsync(client,
             $"{baseUrl}/rps/albody.cgi",
             $"AID={aid}&FILTER_ID=0&Dummy={Dummy()}",
             $"{baseUrl}/rps/alframe.cgi?AID={aid}");
+        result.Logs.Add($"[추가] albody 응답: {html.Length}자, adrsList 포함={html.Contains("adrsList")}");
 
         var usedSlots = GetUsedSlots(html);
         var slot = FindEmptySlot(usedSlots);
