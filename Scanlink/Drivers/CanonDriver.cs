@@ -84,8 +84,8 @@ public class CanonDriver : IMfpDriver
                 if (r.Headers.TryGetValues("Set-Cookie", out var portalSetCookies))
                     foreach (var sc in portalSetCookies) logs.Add($"[세션] 포털 Set-Cookie: {sc}");
 
-                var portalCookies = cookies.GetCookies(new Uri(baseUrl));
-                logs.Add($"[세션] 포털 후 쿠키 {portalCookies.Count}개: {string.Join(", ", portalCookies.Cast<Cookie>().Select(c => c.Name))}");
+                var portalCookies = cookies.GetAllCookies();
+                logs.Add($"[세션] 포털 후 쿠키 {portalCookies.Count}개: {string.Join(", ", portalCookies.Select(c => $"{c.Name}(path={c.Path})"))}");
 
                 // Step 2: nativetop → iR 쿠키
                 var nativeUrl = $"{baseUrl}/rps/nativetop.cgi?RUIPNxBundle=&CorePGTAG=PGTAG_ADR_USR&Dummy={Dummy()}";
@@ -98,10 +98,11 @@ public class CanonDriver : IMfpDriver
                 if (nativeResp.Headers.TryGetValues("Set-Cookie", out var nativeSetCookies))
                     foreach (var sc in nativeSetCookies) logs.Add($"[세션] nativetop Set-Cookie: {sc}");
 
-                var allCookies = cookies.GetCookies(new Uri(baseUrl));
-                logs.Add($"[세션] nativetop 후 쿠키 {allCookies.Count}개: {string.Join(", ", allCookies.Cast<Cookie>().Select(c => c.Name))}");
+                // GetAllCookies — 경로 무관하게 전체 쿠키 검사
+                var allCookies = cookies.GetAllCookies();
+                logs.Add($"[세션] 전체 쿠키 {allCookies.Count}개: {string.Join(", ", allCookies.Select(c => $"{c.Name}(path={c.Path})"))}");
 
-                var hasIR = allCookies.Cast<Cookie>().Any(c => c.Name == "iR");
+                var hasIR = allCookies.Any(c => c.Name == "iR");
 
                 if (hasIR)
                 {
