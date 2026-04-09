@@ -4,6 +4,7 @@ docs/
 /*.md
 !README.md
 
+# 빌드 출력
 publish/
 **/bin/
 **/obj/

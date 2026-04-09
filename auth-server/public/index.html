@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Scanlink Admin</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, 'Segoe UI', sans-serif; background: #f5f6f8; color: #1a1a1a; }
+
+    /* 로그인 */
+    .login-wrap { display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+    .login-box { background: #fff; padding: 40px 32px; border-radius: 12px; width: 360px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+    .login-box h1 { font-size: 22px; color: #1B2A4A; margin-bottom: 6px; }
+    .login-box p { font-size: 13px; color: #888; margin-bottom: 24px; }
+
+    /* 공통 입력 */
+    input, select { width: 100%; height: 38px; padding: 0 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px; font-family: -apple-system, 'Segoe UI', sans-serif; outline: none; }
+    input:focus { border-color: #1B2A4A; }
+    label { display: block; font-size: 12px; font-weight: 600; color: #555; margin-bottom: 4px; }
+
+    /* 버튼 */
+    .btn { height: 38px; padding: 0 20px; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; }
+    .btn-primary { background: #1B2A4A; color: #fff; }
+    .btn-primary:hover { background: #2a3d66; }
+    .btn-danger { background: #e74c3c; color: #fff; }
+    .btn-danger:hover { background: #c0392b; }
+    .btn-secondary { background: #f0f0f0; color: #333; border: 1px solid #ddd; }
+    .btn-secondary:hover { background: #e4e4e4; }
+    .btn-full { width: 100%; }
+
+    /* 대시보드 */
+    .dashboard { display: none; max-width: 800px; margin: 0 auto; padding: 24px 16px; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .header h1 { font-size: 20px; color: #1B2A4A; }
+    .header-actions { display: flex; gap: 8px; }
+
+    /* 테이블 */
+    .table-wrap { background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 1px 6px rgba(0,0,0,0.06); }
+    table { width: 100%; border-collapse: collapse; }
+    th { background: #f8f9fb; text-align: center; padding: 10px 14px; font-size: 11px; color: #888; font-weight: 600; text-transform: uppercase; }
+    td { padding: 12px 14px; font-size: 13px; border-top: 1px solid #f0f0f0; text-align: center; }
+    tr:hover td { background: #fafbfd; }
+    .code { font-family: 'Consolas', monospace; font-weight: 600; letter-spacing: 0.5px; }
+    .empty { text-align: center; padding: 48px; color: #aaa; font-size: 13px; }
+
+    /* 뱃지 */
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+    .badge-active { background: #d4edda; color: #155724; }
+    .badge-expired { background: #f8d7da; color: #721c24; }
+
+    /* 모달 */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 100; justify-content: center; align-items: center; }
+    .modal-overlay.active { display: flex; }
+    .modal { background: #fff; border-radius: 12px; padding: 28px; width: 400px; box-shadow: 0 8px 30px rgba(0,0,0,0.12); }
+    .modal h2 { font-size: 16px; margin-bottom: 18px; color: #1B2A4A; }
+    .modal .field { margin-bottom: 14px; }
+    .modal .actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; }
+
+    /* 복사 토스트 */
+    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #1B2A4A; color: #fff; padding: 10px 24px; border-radius: 8px; font-size: 13px; display: none; z-index: 200; }
+    .toast.show { display: block; }
+
+    .delete-btn { background: none; border: none; color: #ccc; cursor: pointer; font-size: 16px; padding: 2px 6px; border-radius: 4px; }
+    .delete-btn:hover { color: #e74c3c; background: #fef2f2; }
+  </style>
+</head>
+<body>
+
+  <!-- 로그인 -->
+  <div class="login-wrap" id="loginView">
+    <div class="login-box">
+      <h1>Scanlink</h1>
+      <p>관리자 인증</p>
+      <div style="margin-bottom: 14px;">
+        <label>관리자 키</label>
+        <input type="password" id="adminKeyInput" placeholder="관리자 키를 입력하세요">
+      </div>
+      <div id="loginError" style="color:#e74c3c; font-size:12px; margin-bottom:10px; display:none;"></div>
+      <button class="btn btn-primary btn-full" onclick="login()">로그인</button>
+    </div>
+  </div>
+
+  <!-- 대시보드 -->
+  <div class="dashboard" id="dashboardView">
+    <div class="header">
+      <h1>인증코드 관리</h1>
+      <div class="header-actions">
+        <button class="btn btn-primary" onclick="openAddModal()">+ 코드 생성</button>
+        <button class="btn btn-secondary" onclick="logout()">로그아웃</button>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>이름</th>
+            <th>상태</th>
+            <th>코드</th>
+            <th>생성일</th>
+            <th>최근 접속일</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="licenseTableBody">
+          <tr><td colspan="6" class="empty">로딩 중...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 코드 생성 모달 -->
+  <div class="modal-overlay" id="addModal">
+    <div class="modal">
+      <h2>인증코드 생성</h2>
+      <div class="field">
+        <label>이름</label>
+        <input type="text" id="newMemo">
+      </div>
+      <div class="field">
+        <label>코드</label>
+        <input type="text" id="newCode" readonly style="background:#f8f9fb; color:#555; cursor:default;">
+      </div>
+      <div class="field">
+        <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+          <input type="checkbox" id="useExpires" style="width:auto; height:auto; cursor:pointer;" onchange="toggleExpires()">
+          만료일 설정
+        </label>
+        <input type="date" id="newExpires" disabled style="margin-top:6px; opacity:0.4; cursor:default;">
+      </div>
+      <div class="actions">
+        <button class="btn btn-secondary" onclick="closeAddModal()">취소</button>
+        <button class="btn btn-primary" onclick="createLicense()">생성</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+  const API = "/api";
+  let adminKey = "";
+
+  // --- 로그인 ---
+  document.getElementById("adminKeyInput").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") login();
+  });
+
+  function login() {
+    adminKey = document.getElementById("adminKeyInput").value.trim();
+    if (!adminKey) return;
+    fetchLicenses().then((ok) => {
+      if (ok) {
+        sessionStorage.setItem("ak", adminKey);
+        document.getElementById("loginView").style.display = "none";
+        document.getElementById("dashboardView").style.display = "block";
+      }
+    });
+  }
+
+  function logout() {
+    adminKey = "";
+    sessionStorage.removeItem("ak");
+    document.getElementById("dashboardView").style.display = "none";
+    document.getElementById("loginView").style.display = "flex";
+    document.getElementById("adminKeyInput").value = "";
+  }
+
+  // 세션 복원
+  (function restore() {
+    const saved = sessionStorage.getItem("ak");
+    if (saved) {
+      adminKey = saved;
+      document.getElementById("loginView").style.display = "none";
+      document.getElementById("dashboardView").style.display = "block";
+      fetchLicenses();
+    }
+  })();
+
+  // --- API ---
+  async function fetchLicenses() {
+    try {
+      const res = await fetch(`${API}/licenses`, {
+        headers: { "X-Admin-Key": adminKey },
+      });
+      if (!res.ok) {
+        if (res.status === 401) {
+          document.getElementById("loginError").textContent = "관리자 키가 올바르지 않습니다.";
+          document.getElementById("loginError").style.display = "block";
+          return false;
+        }
+        throw new Error("fetch error");
+      }
+      const data = await res.json();
+      renderTable(data.licenses);
+      return true;
+    } catch (e) {
+      console.error(e);
+      return false;
+    }
+  }
+
+  async function createLicense() {
+    const code = document.getElementById("newCode").value.trim();
+    const memo = document.getElementById("newMemo").value.trim();
+    const useExpires = document.getElementById("useExpires").checked;
+    const expiresAt = useExpires ? document.getElementById("newExpires").value || null : null;
+
+    const res = await fetch(`${API}/licenses`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Admin-Key": adminKey },
+      body: JSON.stringify({ code, memo, expiresAt }),
+    });
+
+    if (res.status === 409) {
+      alert("이미 존재하는 코드입니다.");
+      return;
+    }
+
+    const data = await res.json();
+    closeAddModal();
+    showToast(`코드 생성 완료: ${data.code}`);
+    fetchLicenses();
+  }
+
+  async function deleteLicense(id, code) {
+    if (!confirm(`"${code}" 코드를 삭제하시겠습니까?`)) return;
+    await fetch(`${API}/licenses?id=${id}`, {
+      method: "DELETE",
+      headers: { "X-Admin-Key": adminKey },
+    });
+    showToast("삭제 완료");
+    fetchLicenses();
+  }
+
+  // --- 렌더링 ---
+  function renderTable(licenses) {
+    const tbody = document.getElementById("licenseTableBody");
+    if (!licenses.length) {
+      tbody.innerHTML = '<tr><td colspan="6" class="empty">등록된 인증코드가 없습니다.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = licenses
+      .map(
+        (l) => `
+      <tr style="cursor:pointer;" onclick="copyCode('${l.code}')">
+        <td>${l.memo || "-"}</td>
+        <td><span class="badge badge-${badgeClass(l.status)}">${statusLabel(l.status)}</span></td>
+        <td class="code">${l.code}</td>
+        <td>${formatDate(l.createdAt)}</td>
+        <td>${formatDate(l.lastUsedAt)}</td>
+        <td><button class="delete-btn" onclick="event.stopPropagation(); deleteLicense('${l.id}','${l.code}')">&#x2715;</button></td>
+      </tr>`
+      )
+      .join("");
+  }
+
+  function statusLabel(s) {
+    return { pending: "활성화", active: "활성화", expired: "만료", revoked: "만료" }[s] || s;
+  }
+
+  function badgeClass(s) {
+    return (s === "expired" || s === "revoked") ? "expired" : "active";
+  }
+
+  function formatDate(d) {
+    if (!d) return "-";
+    const dt = new Date(d);
+    return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, "0")}-${String(dt.getDate()).padStart(2, "0")}`;
+  }
+
+  function copyCode(code) {
+    navigator.clipboard.writeText(code);
+    showToast("코드가 복사되었습니다.");
+  }
+
+  // --- 모달 ---
+  function generateCode() {
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    let code = "";
+    for (let i = 0; i < 16; i++) {
+      if (i > 0 && i % 4 === 0) code += "-";
+      code += chars[Math.floor(Math.random() * chars.length)];
+    }
+    return code;
+  }
+
+  function toggleExpires() {
+    const checked = document.getElementById("useExpires").checked;
+    const input = document.getElementById("newExpires");
+    input.disabled = !checked;
+    input.style.opacity = checked ? "1" : "0.4";
+    input.style.cursor = checked ? "pointer" : "default";
+    if (!checked) input.value = "";
+  }
+
+  function openAddModal() {
+    document.getElementById("newCode").value = generateCode();
+    document.getElementById("newMemo").value = "";
+    document.getElementById("newExpires").value = "";
+    document.getElementById("useExpires").checked = false;
+    toggleExpires();
+    document.getElementById("addModal").classList.add("active");
+  }
+
+  function closeAddModal() {
+    document.getElementById("addModal").classList.remove("active");
+  }
+
+  document.getElementById("addModal").addEventListener("click", (e) => {
+    if (e.target === document.getElementById("addModal")) closeAddModal();
+  });
+
+  // --- 토스트 ---
+  function showToast(msg) {
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    setTimeout(() => t.classList.remove("show"), 2000);
+  }
+</script>
+</body>
+</html>
