@@ -497,3 +497,14 @@ Status Code
 200 OK
 페이로드: {"func":"PSL_F_ULU_DEL","h_token":"34pbziixZVq5afh5gtR0nKaktDbXUxX1","H_XTP":"true","H_TAB":"","H_BOX":"8","H_USR":"","H_BPA":"","H_NAM":"111111","H_SAV":"0","H_BTY":"User","H_DCNT":"0"}
 리스폰스: {"MFP":{"TemplateName":"cgierror.xsl","MyTab":"false","Message":{"Item":{"@Code":"Ok_1","#text":"Ok_1"}},"NetErrorOccured":"FALSE","VLANSetErr":"false","Redirect":"box_list.xml","Function":"err","MsgMode":"Standard","LangNo":"Ko","ButtonRetry":"false","SystemBack":"false","DialogClose":"false"}}
+
+## 박스 수정
+Request URL
+http://192.168.11.193/wcd/api/AppReqSetCustomMessage/_005_001_ULU002
+Request Method
+POST
+Status Code
+200 OK
+페이로드: {"func":"PSL_F_ULU_SET","h_token":"34pbziixZVq5afh5gtR0nKaktDbXUxX1","H_TAB":"","T_NAM":"000000","S_SER":"Abc","R_SAP":"None","H_BOX":"7","H_USR":"","H_BPA":"","H_BTY":"User","H_BAT":"Public","H_XTP":"","H_DSP":"Setting","C_PAC":"true","P_CPA":"","P_NPA":"1234","P_NPA2":"1234"}
+응답: {"MFP":{"TemplateName":"cgierror.xsl","MyTab":"false","Message":{"Item":{"@Code":"Ok_1","#text":"Ok_1"}},"NetErrorOccured":"FALSE","VLANSetErr":"false","Redirect":"result_move","Function":"err","MsgMode":"Standard","LangNo":"Ko","ButtonRetry":"false","SystemBack":"false","DialogClose":"false"}}
+
