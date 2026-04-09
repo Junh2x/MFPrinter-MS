@@ -37,7 +37,7 @@ public class CanonDriver : IMfpDriver
             CookieContainer = cookies,
             ServerCertificateCustomValidationCallback = (_, _, _, _) => true,
             UseCookies = true,
-            AllowAutoRedirect = false, // 리다이렉트 수동 처리 — Python requests와 동일하게
+            AllowAutoRedirect = true,
         };
         var client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(10) };
         client.DefaultRequestHeaders.Add("User-Agent", UserAgent);
@@ -107,21 +107,15 @@ public class CanonDriver : IMfpDriver
             {
                 logs.Add($"[세션] 포트 시도: {baseUrl}");
 
-                // Step 1: 포털 접속 (리다이렉트 수동 추적)
-                var r = await GetWithRedirectAsync(client, $"{baseUrl}/");
+                var r = await client.GetAsync($"{baseUrl}/");
                 if (!r.IsSuccessStatusCode) { logs.Add($"[세션] {baseUrl} — HTTP {(int)r.StatusCode}"); client.Dispose(); continue; }
 
-                var portalCookies = cookies.GetAllCookies();
-                logs.Add($"[세션] 포털 후 쿠키 {portalCookies.Count}개: {string.Join(", ", portalCookies.Select(c => c.Name))}");
-
-                // Step 2: nativetop → iR 쿠키
                 var nativeUrl = $"{baseUrl}/rps/nativetop.cgi?RUIPNxBundle=&CorePGTAG=PGTAG_ADR_USR&Dummy={Dummy()}";
-                var nativeResp = await GetWithRedirectAsync(client, nativeUrl, $"{baseUrl}/");
+                var req = new HttpRequestMessage(HttpMethod.Get, nativeUrl);
+                req.Headers.Add("Referer", $"{baseUrl}/");
+                await client.SendAsync(req);
 
-                logs.Add($"[세션] nativetop 응답: HTTP {(int)nativeResp.StatusCode}");
                 var allCookies = cookies.GetAllCookies();
-                logs.Add($"[세션] 전체 쿠키 {allCookies.Count}개: {string.Join(", ", allCookies.Select(c => c.Name))}");
-
                 var hasIR = allCookies.Any(c => c.Name == "iR");
 
                 if (hasIR)
@@ -132,11 +126,12 @@ public class CanonDriver : IMfpDriver
                 }
 
                 logs.Add($"[세션] {baseUrl} — iR 쿠키 미발급");
-                client.Dispose(); // 실패한 세션 즉시 정리
+                client.Dispose();
             }
             catch (Exception ex)
             {
                 logs.Add($"[세션] {baseUrl} — 연결 실패: {ex.Message}");
+                client.Dispose();
             }
         }
 
