@@ -20,7 +20,7 @@ public partial class ScanBoxListPage : UserControl
             newVm.RequestAddScanBoxDialog += ShowAddDialog;
     }
 
-    private void ShowAddDialog()
+    private async void ShowAddDialog()
     {
         if (DataContext is not ScanBoxListViewModel vm) return;
 
@@ -31,14 +31,24 @@ public partial class ScanBoxListPage : UserControl
 
         if (dialog.ShowDialog() == true && dialog.CreatedScanBox != null)
         {
-            vm.AddScanBox(dialog.CreatedScanBox);
+            var success = await vm.AddScanBoxWithDriverAsync(dialog.CreatedScanBox);
 
-            // 완료 팝업
-            var completeDialog = new ScanBoxCompleteDialog
+            if (success)
             {
-                Owner = System.Windows.Window.GetWindow(this)
-            };
-            completeDialog.ShowDialog();
+                var completeDialog = new ScanBoxCompleteDialog
+                {
+                    Owner = System.Windows.Window.GetWindow(this)
+                };
+                completeDialog.ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show(
+                    "스캔함 추가에 실패했습니다.\n복합기 연결 상태를 확인하세요.",
+                    "스캔함 추가 실패",
+                    System.Windows.MessageBoxButton.OK,
+                    System.Windows.MessageBoxImage.Error);
+            }
         }
     }
 }

@@ -170,6 +170,7 @@ public class CanonDriver : IMfpDriver
     public async Task<DriverResult> ConnectAsync(MfpDevice device)
     {
         var result = new DriverResult();
+        try {
         var baseUrl = $"http://{device.Ip}:{device.Port}";
 
         var (client, logs) = await InitSessionAsync(baseUrl);
@@ -188,6 +189,10 @@ public class CanonDriver : IMfpDriver
         result.Message = "연결 성공";
         result.Logs.Add($"[연결] {device.Ip}:{device.Port} 연결 성공");
         return result;
+        } catch (Exception ex) {
+            result.Logs.Add($"[연결][ERROR] {ex.Message}");
+            return DriverResult.Fail($"연결 오류: {ex.Message}", result.Logs);
+        }
     }
 
     // ──────────────────────────────────────────────
@@ -198,6 +203,7 @@ public class CanonDriver : IMfpDriver
     {
         var result = new DriverResult();
         var baseUrl = device.BaseUrl;
+        try {
 
         result.Logs.Add($"[설정] 캐논 초기 설정 시작: {device.Ip}");
 
@@ -301,6 +307,13 @@ public class CanonDriver : IMfpDriver
         result.Message = "초기 설정 완료";
         result.Logs.Add($"[설정] 캐논 초기 설정 완료 (AID={device.AddressBookId})");
         return result;
+
+        } catch (Exception ex) {
+            result.Logs.Add($"[설정][ERROR] 예외 발생: {ex.Message}");
+            result.Success = false;
+            result.Message = $"설정 중 오류: {ex.Message}";
+            return result;
+        }
     }
 
     // ──────────────────────────────────────────────
@@ -310,6 +323,7 @@ public class CanonDriver : IMfpDriver
     public async Task<DriverResult<List<ScanBox>>> GetScanBoxListAsync(MfpDevice device)
     {
         var result = new DriverResult<List<ScanBox>> { Logs = [] };
+        try {
         var baseUrl = device.BaseUrl;
         var aid = device.AddressBookId;
 
@@ -354,6 +368,12 @@ public class CanonDriver : IMfpDriver
         result.Data = boxes;
         result.Message = $"{boxes.Count}개 조회";
         return result;
+        } catch (Exception ex) {
+            result.Logs.Add($"[조회][ERROR] {ex.Message}");
+            result.Success = false;
+            result.Message = $"조회 오류: {ex.Message}";
+            return result;
+        }
     }
 
     // ──────────────────────────────────────────────
@@ -363,6 +383,7 @@ public class CanonDriver : IMfpDriver
     public async Task<DriverResult> AddScanBoxAsync(MfpDevice device, ScanBox box)
     {
         var result = new DriverResult();
+        try {
         var baseUrl = device.BaseUrl;
         var aid = device.AddressBookId;
         var folderPath = $@"\share\folder\{box.Name}";
@@ -536,6 +557,12 @@ public class CanonDriver : IMfpDriver
         result.Success = true;
         result.Message = "스캔함 추가 완료";
         return result;
+        } catch (Exception ex) {
+            result.Logs.Add($"[추가][ERROR] {ex.Message}");
+            result.Success = false;
+            result.Message = $"스캔함 추가 오류: {ex.Message}";
+            return result;
+        }
     }
 
     // ──────────────────────────────────────────────
@@ -545,6 +572,7 @@ public class CanonDriver : IMfpDriver
     public async Task<DriverResult> DeleteScanBoxAsync(MfpDevice device, ScanBox box)
     {
         var result = new DriverResult();
+        try {
         var baseUrl = device.BaseUrl;
         var aid = device.AddressBookId;
 
@@ -602,6 +630,12 @@ public class CanonDriver : IMfpDriver
         result.Success = true;
         result.Message = "삭제 완료";
         return result;
+        } catch (Exception ex) {
+            result.Logs.Add($"[삭제][ERROR] {ex.Message}");
+            result.Success = false;
+            result.Message = $"삭제 오류: {ex.Message}";
+            return result;
+        }
     }
 
     // ──────────────────────────────────────────────
@@ -611,6 +645,7 @@ public class CanonDriver : IMfpDriver
     public async Task<DriverResult> UpdateScanBoxAsync(MfpDevice device, ScanBox box)
     {
         var result = new DriverResult();
+        try {
         var baseUrl = device.BaseUrl;
         var aid = device.AddressBookId;
         var folderPath = $@"\share\folder\{box.Name}";
@@ -685,5 +720,11 @@ public class CanonDriver : IMfpDriver
         result.Success = true;
         result.Message = "수정 완료";
         return result;
+        } catch (Exception ex) {
+            result.Logs.Add($"[수정][ERROR] {ex.Message}");
+            result.Success = false;
+            result.Message = $"수정 오류: {ex.Message}";
+            return result;
+        }
     }
 }

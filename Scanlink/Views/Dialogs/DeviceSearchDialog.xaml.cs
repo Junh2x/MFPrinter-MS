@@ -1,17 +1,22 @@
 using System.Windows;
 using System.Windows.Input;
 using Scanlink.Models;
+using Scanlink.Services;
 
 namespace Scanlink.Views.Dialogs;
 
 public partial class DeviceSearchDialog : Window
 {
+    private readonly DeviceDiscoveryService _discovery = new();
+    private CancellationTokenSource? _cts;
+
     public MfpDevice? SelectedDevice { get; private set; }
 
     public DeviceSearchDialog()
     {
         InitializeComponent();
         Loaded += OnLoaded;
+        Closed += (_, _) => _cts?.Cancel();
         DeviceList.SelectionChanged += (_, _) =>
         {
             NextButton.IsEnabled = DeviceList.SelectedItem != null;
@@ -20,20 +25,48 @@ public partial class DeviceSearchDialog : Window
 
     private async void OnLoaded(object sender, RoutedEventArgs e)
     {
-        // TODO: 실제 검색 구현. 지금은 시뮬레이션.
         SearchingPanel.Visibility = Visibility.Visible;
         DeviceList.Visibility = Visibility.Collapsed;
+        _cts = new CancellationTokenSource();
 
-        await Task.Delay(2000);
+        try
+        {
+            var devices = await _discovery.ScanSubnetAsync(
+                progressCallback: (scanned, total) =>
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        SearchStatusText.Text = $"네트워크 스캔 중... ({scanned}/{total})";
+                    });
+                },
+                ct: _cts.Token);
 
-        // 시뮬: 검색 완료 → 빈 결과
-        SearchStatusText.Text = "검색 완료. 발견된 복합기가 없습니다.";
-        SearchingPanel.Visibility = Visibility.Collapsed;
-        DeviceList.Visibility = Visibility.Visible;
+            SearchingPanel.Visibility = Visibility.Collapsed;
+            DeviceList.Visibility = Visibility.Visible;
+
+            if (devices.Count > 0)
+            {
+                DeviceList.ItemsSource = devices;
+            }
+            else
+            {
+                SearchStatusText.Text = "검색 완료. 발견된 복합기가 없습니다.";
+                SearchingPanel.Visibility = Visibility.Visible;
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            // 창 닫힘
+        }
+        catch (Exception ex)
+        {
+            SearchStatusText.Text = $"검색 오류: {ex.Message}";
+        }
     }
 
     private void ManualLink_Click(object sender, MouseButtonEventArgs e)
     {
+        _cts?.Cancel();
         var dialog = new ManualConnectDialog { Owner = this };
         if (dialog.ShowDialog() == true && dialog.Device != null)
         {
@@ -60,6 +93,7 @@ public partial class DeviceSearchDialog : Window
 
     private void CloseButton_Click(object sender, RoutedEventArgs e)
     {
+        _cts?.Cancel();
         DialogResult = false;
         Close();
     }

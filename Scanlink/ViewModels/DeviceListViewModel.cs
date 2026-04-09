@@ -19,7 +19,6 @@ public class DeviceListViewModel : ViewModelBase
     public ICommand SelectDeviceCommand { get; }
     public ICommand RemoveDeviceCommand { get; }
 
-    // View에서 처리할 이벤트
     public event Action? RequestAutoSearchDialog;
     public event Action? RequestManualConnectDialog;
 
@@ -54,45 +53,25 @@ public class DeviceListViewModel : ViewModelBase
         });
 
         Devices.CollectionChanged += (_, _) => OnPropertyChanged(nameof(HasDevices));
-
-        // 더미 데이터 (개발용)
-        LoadDummyData();
     }
 
     public void AddDevice(MfpDevice device)
     {
+        // 중복 IP 방지
+        foreach (var d in Devices)
+        {
+            if (d.Ip == device.Ip)
+            {
+                d.Brand = device.Brand;
+                d.Model = device.Model;
+                d.Port = device.Port;
+                d.BaseUrl = device.BaseUrl;
+                d.Status = device.Status;
+                return;
+            }
+        }
+
         _deviceService.AddDevice(device);
         OnPropertyChanged(nameof(HasDevices));
-    }
-
-    private void LoadDummyData()
-    {
-        _deviceService.AddDevice(new MfpDevice
-        {
-            Ip = "192.168.11.227",
-            Brand = MfpBrand.Canon,
-            Model = "iR-ADV C3530",
-            Port = 8000,
-            BaseUrl = "http://192.168.11.227:8000",
-            Status = ConnectionStatus.Connected,
-        });
-        _deviceService.AddDevice(new MfpDevice
-        {
-            Ip = "192.168.11.185",
-            Brand = MfpBrand.Ricoh,
-            Model = "IM C2010",
-            Port = 80,
-            BaseUrl = "http://192.168.11.185",
-            Status = ConnectionStatus.Connected,
-        });
-        _deviceService.AddDevice(new MfpDevice
-        {
-            Ip = "192.168.11.228",
-            Brand = MfpBrand.Sindoh,
-            Model = "D420",
-            Port = 80,
-            BaseUrl = "http://192.168.11.228",
-            Status = ConnectionStatus.Connected,
-        });
     }
 }
