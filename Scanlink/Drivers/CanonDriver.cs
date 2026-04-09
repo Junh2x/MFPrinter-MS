@@ -42,7 +42,9 @@ public class CanonDriver : IMfpDriver
         client.DefaultRequestHeaders.Add("User-Agent", UserAgent);
         client.DefaultRequestHeaders.Add("Accept",
             "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+        client.DefaultRequestHeaders.Add("Accept-Encoding", "gzip, deflate");
         client.DefaultRequestHeaders.Add("Accept-Language", "ko-KR,ko;q=0.9");
+        client.DefaultRequestHeaders.Add("Upgrade-Insecure-Requests", "1");
         return (client, cookies);
     }
 
@@ -74,15 +76,31 @@ public class CanonDriver : IMfpDriver
             {
                 logs.Add($"[세션] 포트 시도: {baseUrl}");
 
+                // Step 1: 포털 접속
                 var r = await client.GetAsync($"{baseUrl}/");
                 if (!r.IsSuccessStatusCode) { logs.Add($"[세션] {baseUrl} — HTTP {(int)r.StatusCode}"); continue; }
 
+                // 포털 응답 쿠키 로깅
+                if (r.Headers.TryGetValues("Set-Cookie", out var portalSetCookies))
+                    foreach (var sc in portalSetCookies) logs.Add($"[세션] 포털 Set-Cookie: {sc}");
+
+                var portalCookies = cookies.GetCookies(new Uri(baseUrl));
+                logs.Add($"[세션] 포털 후 쿠키 {portalCookies.Count}개: {string.Join(", ", portalCookies.Cast<Cookie>().Select(c => c.Name))}");
+
+                // Step 2: nativetop → iR 쿠키
                 var nativeUrl = $"{baseUrl}/rps/nativetop.cgi?RUIPNxBundle=&CorePGTAG=PGTAG_ADR_USR&Dummy={Dummy()}";
                 var req = new HttpRequestMessage(HttpMethod.Get, nativeUrl);
                 req.Headers.Add("Referer", $"{baseUrl}/");
-                await client.SendAsync(req);
+                var nativeResp = await client.SendAsync(req);
+
+                // nativetop 응답 쿠키 로깅
+                logs.Add($"[세션] nativetop 응답: HTTP {(int)nativeResp.StatusCode}");
+                if (nativeResp.Headers.TryGetValues("Set-Cookie", out var nativeSetCookies))
+                    foreach (var sc in nativeSetCookies) logs.Add($"[세션] nativetop Set-Cookie: {sc}");
 
                 var allCookies = cookies.GetCookies(new Uri(baseUrl));
+                logs.Add($"[세션] nativetop 후 쿠키 {allCookies.Count}개: {string.Join(", ", allCookies.Cast<Cookie>().Select(c => c.Name))}");
+
                 var hasIR = allCookies.Cast<Cookie>().Any(c => c.Name == "iR");
 
                 if (hasIR)
