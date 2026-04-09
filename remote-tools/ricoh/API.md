@@ -1242,3 +1242,309 @@ user-agent
 Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
 
 페이로드: wimToken=322393435&targetFolderId=004&changedFolderName=12345_mod&mode=PROPERTY&targetDocId=&selectedFolderId=&title=&useSavedPropParam=true&useInputParam=false&subReturnDsp=3&dummy=
+
+
+## 문서서버 폴더 삭제 (암호 있는 경우)
+Request URL
+http://192.168.11.185/web/guest/ko/webdocbox/folderDeletePage.cgi
+Request Method
+POST
+Status Code
+200 OK
+Remote Address
+192.168.11.185:80
+Referrer Policy
+strict-origin-when-cross-origin
+cache-control
+no-cache
+connection
+Keep-Alive
+content-security-policy
+default-src 'self' 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'self'
+content-type
+text/html; charset=UTF-8
+date
+Thu, 09 Apr 2026 06:00:47 GMT
+expires
+Thu, 09 Apr 2026 06:00:47 GMT
+pragma
+no-cache
+server
+Web-Server/3.0
+set-cookie
+cookieOnOffChecker=on; path=/; HttpOnly
+transfer-encoding
+Chunked
+x-frame-options
+SAMEORIGIN
+accept
+text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+accept-encoding
+gzip, deflate
+accept-language
+ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7
+cache-control
+max-age=0
+connection
+keep-alive
+content-length
+244
+content-type
+application/x-www-form-urlencoded
+cookie
+risessionid=000536290044437; docList_appType=all; docList_filterPropName=; docList_filterPropValue=; docList_rowBlockSize=10; docList_show=thumbnail; docList_orderByProp=creationDate; docList_orderByReq=1; checkboxValue=; cookieOnOffChecker=on; wimsesid=288237102
+host
+192.168.11.185
+origin
+http://192.168.11.185
+referer
+http://192.168.11.185/web/guest/ko/webdocbox/folderListPage.cgi
+upgrade-insecure-requests
+1
+user-agent
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+페이로드: wimToken=322393435&mode=&selectedDocIds=&subReturnDsp=&useInputParam=&useSavedPropParam=false&_hour=&_min=&_hour=14&_min=03&_hour=14&_min=18&_hour=14&_min=23&_hour=14&_min=41&_hour=14&_min=53&_hour=10&_min=32&selectedFolderId=7&_hour=14&_min=59
+
+## 문서서버 폴더 삭제 (암호 입력)
+Request URL
+http://192.168.11.185/web/guest/ko/webdocbox/chPasswordPage.cgi
+Request Method
+POST
+Status Code
+200 OK
+Remote Address
+192.168.11.185:80
+Referrer Policy
+strict-origin-when-cross-origin
+cache-control
+no-cache
+connection
+Keep-Alive
+content-security-policy
+default-src 'self' 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'self'
+content-type
+text/html; charset=UTF-8
+date
+Thu, 09 Apr 2026 06:00:48 GMT
+expires
+Thu, 09 Apr 2026 06:00:48 GMT
+pragma
+no-cache
+server
+Web-Server/3.0
+set-cookie
+cookieOnOffChecker=on; path=/; HttpOnly
+transfer-encoding
+Chunked
+x-frame-options
+SAMEORIGIN
+accept
+text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+accept-encoding
+gzip, deflate
+accept-language
+ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7
+cache-control
+max-age=0
+connection
+keep-alive
+content-length
+151
+content-type
+application/x-www-form-urlencoded
+cookie
+risessionid=000536290044437; docList_appType=all; docList_filterPropName=; docList_filterPropValue=; docList_rowBlockSize=10; docList_show=thumbnail; docList_orderByProp=creationDate; docList_orderByReq=1; checkboxValue=; cookieOnOffChecker=on; wimsesid=288237102
+host
+192.168.11.185
+origin
+http://192.168.11.185
+referer
+http://192.168.11.185/web/guest/ko/webdocbox/folderDeletePage.cgi
+upgrade-insecure-requests
+1
+user-agent
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+페이로드: wimToken=322393435&mode=AUTHENTICATE&targetFolderId=7&wayTo=DELETEFOLDER&targetDocId=7&useSavedPropParam=true&useInputParam=false&subReturnDsp=3&dummy=
+
+## 문서서버 폴더 수정 비밀번호 입력
+Request URL
+http://192.168.11.185/web/guest/ko/webdocbox/commitChPassword.cgi
+Request Method
+POST
+Status Code
+200 OK
+Remote Address
+192.168.11.185:80
+Referrer Policy
+strict-origin-when-cross-origin
+cache-control
+no-cache
+connection
+Keep-Alive
+content-security-policy
+default-src 'self' 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'self'
+content-type
+text/html; charset=UTF-8
+date
+Thu, 09 Apr 2026 06:02:01 GMT
+expires
+Thu, 09 Apr 2026 06:02:01 GMT
+pragma
+no-cache
+server
+Web-Server/3.0
+set-cookie
+cookieOnOffChecker=on; path=/; HttpOnly
+transfer-encoding
+Chunked
+x-frame-options
+SAMEORIGIN
+accept
+text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+accept-encoding
+gzip, deflate
+accept-language
+ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7
+cache-control
+max-age=0
+connection
+keep-alive
+content-length
+338
+content-type
+application/x-www-form-urlencoded
+cookie
+risessionid=000536290044437; docList_appType=all; docList_filterPropName=; docList_filterPropValue=; docList_rowBlockSize=10; docList_show=thumbnail; docList_orderByProp=creationDate; docList_orderByReq=1; checkboxValue=; cookieOnOffChecker=on; wimsesid=288237102
+host
+192.168.11.185
+origin
+http://192.168.11.185
+referer
+http://192.168.11.185/web/guest/ko/webdocbox/chPasswordPage.cgi
+upgrade-insecure-requests
+1
+user-agent
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+페이로드: wimToken=322393435&title=&creator=&dataFormat=&allPages=false&cid=&convBW=&backUp=&backUpFormatStr=&backUpResoStr=&targetDocId=7&oldPassword=MTIzNA%3D%3D&newPassword=undefined&confirmation=undefined&useInputParam=false&useSavedParam=&subReturnDsp=3&mode=AUTHENTICATE&wayTo=DELETEFOLDER&useSavedPropParam=false&selectedFolderId=&ID=&dummy=
+
+## 문서서버 폴더 삭제 암호입력 후 
+Request URL
+http://192.168.11.185/web/guest/ko/webdocbox/folderDeletePage.cgi
+Request Method
+POST
+Status Code
+200 OK
+Remote Address
+192.168.11.185:80
+Referrer Policy
+strict-origin-when-cross-origin
+cache-control
+no-cache
+connection
+Keep-Alive
+content-security-policy
+default-src 'self' 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'self'
+content-type
+text/html; charset=UTF-8
+date
+Thu, 09 Apr 2026 06:02:02 GMT
+expires
+Thu, 09 Apr 2026 06:02:02 GMT
+pragma
+no-cache
+server
+Web-Server/3.0
+set-cookie
+cookieOnOffChecker=on; path=/; HttpOnly
+transfer-encoding
+Chunked
+x-frame-options
+SAMEORIGIN
+accept
+text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+accept-encoding
+gzip, deflate
+accept-language
+ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7
+cache-control
+max-age=0
+connection
+keep-alive
+content-length
+304
+content-type
+application/x-www-form-urlencoded
+cookie
+risessionid=000536290044437; docList_appType=all; docList_filterPropName=; docList_filterPropValue=; docList_rowBlockSize=10; docList_show=thumbnail; docList_orderByProp=creationDate; docList_orderByReq=1; checkboxValue=; cookieOnOffChecker=on; wimsesid=288237102
+host
+192.168.11.185
+origin
+http://192.168.11.185
+referer
+http://192.168.11.185/web/guest/ko/webdocbox/commitChPassword.cgi
+upgrade-insecure-requests
+1
+user-agent
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+페이로드: wimToken=322393435&id=&jt=&el=&urlLang=ko&urlProfile=guest&pdfThumbnailURI=&thumbnailURI=&WidthSize=&subdocCount=&targetDocId=7&title=&creator=&useInputParam=false&useSavedParam=&subReturnDsp=3&mode=AUTHENTICATE&wayTo=DELETEFOLDER&selectedFolderId=7&useSavedPropParam=false&ID=&simpleErrorMessage=&dummy=
+
+컨텐츠 삭제:
+Request URL
+http://192.168.11.185/web/guest/ko/webdocbox/deleteDocContentsPage.cgi
+Request Method
+POST
+Status Code
+200 OK
+Remote Address
+192.168.11.185:80
+Referrer Policy
+strict-origin-when-cross-origin
+cache-control
+no-cache
+connection
+Keep-Alive
+content-security-policy
+default-src 'self' 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'self'
+content-type
+text/html; charset=UTF-8
+date
+Thu, 09 Apr 2026 06:02:04 GMT
+expires
+Thu, 09 Apr 2026 06:02:04 GMT
+pragma
+no-cache
+server
+Web-Server/3.0
+set-cookie
+cookieOnOffChecker=on; path=/; HttpOnly
+transfer-encoding
+Chunked
+x-frame-options
+SAMEORIGIN
+accept
+text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+accept-encoding
+gzip, deflate
+accept-language
+ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7
+cache-control
+max-age=0
+connection
+keep-alive
+content-length
+50
+content-type
+application/x-www-form-urlencoded
+cookie
+risessionid=000536290044437; docList_appType=all; docList_filterPropName=; docList_filterPropValue=; docList_rowBlockSize=10; docList_show=thumbnail; docList_orderByProp=creationDate; docList_orderByReq=1; checkboxValue=; cookieOnOffChecker=on; wimsesid=288237102
+host
+192.168.11.185
+origin
+http://192.168.11.185
+referer
+http://192.168.11.185/web/guest/ko/webdocbox/folderDeletePage.cgi
+upgrade-insecure-requests
+1
+user-agent
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+페이로드: wimToken=322393435&selectedDocIds=7&subReturnDsp=3
