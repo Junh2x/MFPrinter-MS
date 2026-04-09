@@ -4,16 +4,16 @@
 winexe
 C#
 .cs
-C:\Projects\JA-solution\Scanlink\obj\Debug\net9.0-windows\
+C:\Users\hyunji\Desktop\TEST\MFPrinter-MS\Scanlink\obj\Debug\net9.0-windows\
 Scanlink
 none
 false
 TRACE;DEBUG;NET;NET9_0;NETCOREAPP;WINDOWS;WINDOWS7_0;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NET9_0_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER;WINDOWS7_0_OR_GREATER
-C:\Projects\JA-solution\Scanlink\App.xaml
+C:\Users\hyunji\Desktop\TEST\MFPrinter-MS\Scanlink\App.xaml
 10811403259
 
 331552870717
-212-1678118802
+2121015606107
 Assets\Theme.xaml;Views\AuthWindow.xaml;Views\Dialogs\DeviceSearchDialog.xaml;Views\Dialogs\ManualConnectDialog.xaml;Views\Dialogs\ScanBoxAddDialog.xaml;Views\Dialogs\ScanBoxCompleteDialog.xaml;Views\MainWindow.xaml;Views\Pages\DeviceListPage.xaml;Views\Pages\ScanBoxListPage.xaml;Views\Pages\ScanBoxManagePage.xaml;
 
 False

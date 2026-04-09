@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Scanlink")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6f74e3466b487fc60defdc570cacc3ae2be8b27e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+feff7edf0bcc0f5967862dbc17b43639c0ef8e14")]
 [assembly: System.Reflection.AssemblyProductAttribute("Scanlink")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Scanlink")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
