@@ -734,7 +734,7 @@ public class CanonDriver : IMfpDriver
     // UpdateScanBoxAsync
     // ──────────────────────────────────────────────
 
-    public async Task<DriverResult> UpdateScanBoxAsync(MfpDevice device, ScanBox box, string? oldName = null)
+    public async Task<DriverResult> UpdateScanBoxAsync(MfpDevice device, ScanBox box, string? oldName = null, string? oldPassword = null)
     {
         var result = new DriverResult();
         HttpClient? client = null;

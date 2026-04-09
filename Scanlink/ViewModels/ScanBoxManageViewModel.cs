@@ -59,29 +59,41 @@ public class ScanBoxManageViewModel : ViewModelBase
     private async Task SaveAsync()
     {
         IsSaving = true;
-        var oldName = ScanBox.Name;
 
-        ScanBox.Name = Name;
-        ScanBox.Password = Password;
-        ScanBox.LocalFolder = LocalFolder;
-        ScanBox.DeleteCycle = DeleteCycle;
+        // 원본 백업
+        var oldName = ScanBox.Name;
+        var oldPassword = ScanBox.Password;
+        var oldLocalFolder = ScanBox.LocalFolder;
+        var oldDeleteCycle = ScanBox.DeleteCycle;
 
         var driver = DriverFactory.GetDriver(Device.Brand);
         if (driver != null)
         {
-            var result = await driver.UpdateScanBoxAsync(Device, ScanBox, oldName);
+            // 드라이버에 새 값 전달
+            ScanBox.Name = Name;
+            ScanBox.Password = Password;
+
+            var result = await driver.UpdateScanBoxAsync(Device, ScanBox, oldName, oldPassword);
             foreach (var log in result.Logs) AppLogger.Log(log);
 
             if (!result.Success)
             {
+                // 실패 → 전부 원복
                 ScanBox.Name = oldName;
+                ScanBox.Password = oldPassword;
                 Name = oldName;
+                Password = oldPassword;
                 IsSaving = false;
                 SaveFailed?.Invoke(result.Message);
                 return;
             }
         }
 
+        // 성공 → 로컬 데이터 반영
+        ScanBox.Name = Name;
+        ScanBox.Password = Password;
+        ScanBox.LocalFolder = LocalFolder;
+        ScanBox.DeleteCycle = DeleteCycle;
         _scanBoxService.UpdateScanBox(ScanBox);
         IsSaving = false;
         _navigation.NavigateTo(_parentPage);
