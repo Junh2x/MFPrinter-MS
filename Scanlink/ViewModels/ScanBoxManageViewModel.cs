@@ -67,7 +67,7 @@ public class ScanBoxManageViewModel : ViewModelBase
         ScanBox.DeleteCycle = DeleteCycle;
 
         var driver = DriverFactory.GetDriver(Device.Brand);
-        if (driver != null && ScanBox.SlotIndex >= 0)
+        if (driver != null)
         {
             var result = await driver.UpdateScanBoxAsync(Device, ScanBox, oldName);
             foreach (var log in result.Logs) AppLogger.Log(log);

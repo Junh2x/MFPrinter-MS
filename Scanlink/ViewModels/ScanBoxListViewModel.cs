@@ -93,7 +93,7 @@ public class ScanBoxListViewModel : ViewModelBase
     private async Task DeleteScanBoxWithDriverAsync(ScanBox box)
     {
         var driver = DriverFactory.GetDriver(Device.Brand);
-        if (driver != null && box.SlotIndex >= 0)
+        if (driver != null)
         {
             var result = await driver.DeleteScanBoxAsync(Device, box);
             foreach (var log in result.Logs) AppLogger.Log(log);
