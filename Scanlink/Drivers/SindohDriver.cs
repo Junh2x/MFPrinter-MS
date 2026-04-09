@@ -82,10 +82,16 @@ public class SindohDriver : IMfpDriver
             }
             logs.Add($"[신도] 세션 ID: {idCookie.Value[..Math.Min(10, idCookie.Value.Length)]}...");
 
-            // Step 3: 메인 페이지 접속
+            // Step 3: 공유 사용자 API 라우팅 쿠키
+            cookies.Add(uri, new Cookie("menuType", "Public"));
+            cookies.Add(uri, new Cookie("usr", "F_ULU"));
+            cookies.Add(uri, new Cookie("box_dsp", "Setting"));
+            cookies.Add(uri, new Cookie("webUI", "new"));
+
+            // Step 4: 메인 페이지 접속
             await client.GetAsync($"{baseUrl}/wcd/spa_main.html");
 
-            // Step 4: 토큰 추출 — 박스 목록 조회
+            // Step 5: 토큰 추출 — 박스 목록 조회
             var tokenResp = await PostJsonAsync(client, $"{baseUrl}/wcd/api/AppReqGetUserBoxList",
                 new {
                     BoxListCondition = new {
@@ -229,9 +235,9 @@ public class SindohDriver : IMfpDriver
         var usePass = !string.IsNullOrEmpty(pw) ? "UsePass" : "NoPass";
 
         var resp = await PostJsonAsync(client,
-            $"{baseUrl}/wcd/api/AppReqSetCustomMessage/_005_001_ULA001",
+            $"{baseUrl}/wcd/api/AppReqSetCustomMessage/_005_001_ULU001",
             new {
-                func = "PSL_AF_ULAUser_CRE",
+                func = "PSL_F_ULUUser_CRE",
                 h_token = token ?? "",
                 H_TAB = "",
                 H_GNA = "",
@@ -310,9 +316,9 @@ public class SindohDriver : IMfpDriver
         var changePw = !string.IsNullOrEmpty(pw);
 
         var resp = await PostJsonAsync(client,
-            $"{baseUrl}/wcd/api/AppReqSetCustomMessage/_005_001_ULA002",
+            $"{baseUrl}/wcd/api/AppReqSetCustomMessage/_005_001_ULU002",
             new {
-                func = "PSL_AF_ULA_SET",
+                func = "PSL_F_ULU_SET",
                 h_token = token ?? "",
                 H_TAB = "",
                 T_NAM = box.Name,
@@ -390,9 +396,9 @@ public class SindohDriver : IMfpDriver
         // Step 1: 삭제 안내 페이지 진입
         result.Logs.Add("[신도삭제] Step1: 삭제 진입...");
         await PostJsonAsync(client,
-            $"{baseUrl}/wcd/api/AppReqSetCustomMessage/_005_001_ULA000",
+            $"{baseUrl}/wcd/api/AppReqSetCustomMessage/_005_001_ULU000",
             new {
-                func = "PSL_AF_ULAUser_BOX",
+                func = "PSL_F_ULUUser_BOX",
                 h_token = token ?? "",
                 H_TAB = "",
                 H_IPA = "On",
@@ -405,9 +411,9 @@ public class SindohDriver : IMfpDriver
         // Step 2: 삭제 확인
         result.Logs.Add("[신도삭제] Step2: 삭제 확인...");
         var resp = await PostJsonAsync(client,
-            $"{baseUrl}/wcd/api/AppReqSetCustomMessage/_005_001_ULA003",
+            $"{baseUrl}/wcd/api/AppReqSetCustomMessage/_005_001_ULU003",
             new {
-                func = "PSL_AF_ULA_DEL",
+                func = "PSL_F_ULU_DEL",
                 h_token = token ?? "",
                 H_XTP = "true",
                 H_TAB = "",
