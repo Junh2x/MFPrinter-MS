@@ -10,13 +10,13 @@ public static class DriverFactory
 {
     private static readonly CanonDriver Canon = new();
     private static readonly RicohDriver Ricoh = new();
-    // private static readonly SindohDriver Sindoh = new();
+    private static readonly SindohDriver Sindoh = new();
 
     public static IMfpDriver? GetDriver(MfpBrand brand) => brand switch
     {
         MfpBrand.Canon => Canon,
         MfpBrand.Ricoh => Ricoh,
-        // MfpBrand.Sindoh => Sindoh,
+        MfpBrand.Sindoh => Sindoh,
         _ => null,
     };
 }

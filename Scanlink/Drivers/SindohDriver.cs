@@ -1,0 +1,472 @@
+using System.Net;
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
+using System.Text.RegularExpressions;
+using Scanlink.Core;
+using Scanlink.Helpers;
+using Scanlink.Models;
+
+namespace Scanlink.Drivers;
+
+/// <summary>
+/// 신도리코 복합기 드라이버.
+/// JSON REST API (/wcd/api/) 기반 박스 CRUD.
+/// </summary>
+public class SindohDriver : IMfpDriver
+{
+    public MfpBrand Brand => MfpBrand.Sindoh;
+
+    private const string UserAgent =
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36";
+
+    // ──────────────────────────────────────────────
+    // 세션/토큰
+    // ──────────────────────────────────────────────
+
+    private static (HttpClient client, CookieContainer cookies) CreateClient()
+    {
+        var cookies = new CookieContainer();
+        var handler = new HttpClientHandler
+        {
+            CookieContainer = cookies,
+            ServerCertificateCustomValidationCallback = (_, _, _, _) => true,
+            UseCookies = true,
+            AllowAutoRedirect = true,
+        };
+        var client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(10) };
+        client.DefaultRequestHeaders.Add("User-Agent", UserAgent);
+        client.DefaultRequestHeaders.Add("X-Requested-With", "XMLHttpRequest");
+        return (client, cookies);
+    }
+
+    /// <summary>신도 웹 접속 → 세션 쿠키 + 토큰 획득</summary>
+    private static async Task<(HttpClient? client, string? token, string baseUrl, List<string> logs)>
+        InitSessionAsync(MfpDevice device)
+    {
+        var logs = new List<string>();
+        var baseUrl = string.IsNullOrEmpty(device.BaseUrl) ? $"http://{device.Ip}" : device.BaseUrl;
+        var (client, cookies) = CreateClient();
+
+        try
+        {
+            // SPA 메인 페이지 접속 → 세션 쿠키 획득
+            logs.Add($"[신도] 접속: {baseUrl}");
+            var html = await (await client.GetAsync($"{baseUrl}/wcd/spa_main.html")).Content.ReadAsStringAsync();
+            logs.Add($"[신도] 페이지 로드: {html.Length}자");
+
+            // 관리자 로그인 (a_user.cgi)
+            var loginReq = new HttpRequestMessage(HttpMethod.Get, $"{baseUrl}/wcd/a_user.cgi");
+            loginReq.Headers.Add("Referer", $"{baseUrl}/wcd/spa_main.html");
+            await client.SendAsync(loginReq);
+
+            // 쿠키에서 ID 확인
+            var allCookies = cookies.GetAllCookies();
+            var idCookie = allCookies.FirstOrDefault(c => c.Name == "ID");
+            if (idCookie == null || string.IsNullOrEmpty(idCookie.Value))
+            {
+                logs.Add("[신도][FAIL] ID 쿠키 없음");
+                client.Dispose();
+                return (null, null, baseUrl, logs);
+            }
+            logs.Add($"[신도] 세션 ID: {idCookie.Value[..Math.Min(10, idCookie.Value.Length)]}...");
+
+            // 토큰 추출: 박스 목록 조회로 토큰 획득
+            var tokenReq = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/wcd/api/AppReqGetUserBoxList")
+            {
+                Content = new StringContent(
+                    JsonSerializer.Serialize(new
+                    {
+                        BoxListCondition = new
+                        {
+                            SearchKey = "None",
+                            WellUse = "false",
+                            BoxAttribute = new { Category = "Functional", Type = "User", Attribute = "AllAttribute" },
+                            ObtainCondition = new { Type = "OffsetList", OffsetRange = new { Start = "1", Length = "1" } }
+                        },
+                        Token = ""
+                    }),
+                    Encoding.UTF8, "application/x-www-form-urlencoded")
+            };
+            tokenReq.Headers.Add("Referer", $"{baseUrl}/wcd/spa_main.html");
+            var tokenResp = await client.SendAsync(tokenReq);
+            var tokenJson = await tokenResp.Content.ReadAsStringAsync();
+
+            // Token을 응답이나 쿠키에서 추출
+            var tokenMatch = Regex.Match(tokenJson, @"""Token""\s*:\s*""([^""]+)""");
+            string? token = tokenMatch.Success ? tokenMatch.Groups[1].Value : null;
+
+            // 쿠키에서도 확인
+            if (token == null)
+            {
+                // spa_main.html에서 토큰 추출 시도
+                tokenMatch = Regex.Match(html, @"token[""'\s:=]+([A-Za-z0-9]{20,})");
+                token = tokenMatch.Success ? tokenMatch.Groups[1].Value : null;
+            }
+
+            if (token == null)
+            {
+                logs.Add("[신도][WARN] 토큰 추출 실패, 빈 토큰으로 시도");
+                token = "";
+            }
+            else
+            {
+                logs.Add($"[신도] 토큰: {token[..Math.Min(10, token.Length)]}...");
+            }
+
+            device.BaseUrl = baseUrl;
+            return (client, token, baseUrl, logs);
+        }
+        catch (Exception ex)
+        {
+            logs.Add($"[신도][ERROR] 세션: {ex.Message}");
+            client.Dispose();
+            return (null, null, baseUrl, logs);
+        }
+    }
+
+    private static async Task<string> PostJsonAsync(HttpClient client, string url, object data, string referer)
+    {
+        var json = JsonSerializer.Serialize(data);
+        var req = new HttpRequestMessage(HttpMethod.Post, url)
+        {
+            Content = new StringContent(json, Encoding.UTF8, "application/x-www-form-urlencoded")
+        };
+        req.Headers.Add("Referer", referer);
+        req.Headers.Add("Accept", "application/json, text/javascript, */*; q=0.01");
+        var r = await client.SendAsync(req);
+        return await r.Content.ReadAsStringAsync();
+    }
+
+    // ──────────────────────────────────────────────
+    // ConnectAsync
+    // ──────────────────────────────────────────────
+
+    public async Task<DriverResult> ConnectAsync(MfpDevice device)
+    {
+        var result = new DriverResult();
+        HttpClient? client = null;
+        try {
+        string? token; List<string> logs;
+        (client, token, _, logs) = await InitSessionAsync(device);
+        result.Logs.AddRange(logs);
+        if (client == null) return DriverResult.Fail("연결 실패", result.Logs);
+        device.Status = ConnectionStatus.Connected;
+        result.Success = true;
+        result.Message = "연결 성공";
+        return result;
+        } catch (Exception ex) {
+            result.Logs.Add($"[신도][ERROR] {ex.Message}");
+            return DriverResult.Fail($"연결 오류: {ex.Message}", result.Logs);
+        } finally { client?.Dispose(); }
+    }
+
+    public Task<DriverResult> SetupAsync(MfpDevice device)
+    {
+        device.IsConfigured = true;
+        return Task.FromResult(DriverResult.Ok("신도는 별도 초기 설정 불필요"));
+    }
+
+    // ──────────────────────────────────────────────
+    // GetScanBoxListAsync
+    // ──────────────────────────────────────────────
+
+    public async Task<DriverResult<List<ScanBox>>> GetScanBoxListAsync(MfpDevice device)
+    {
+        var result = new DriverResult<List<ScanBox>> { Logs = [] };
+        HttpClient? client = null;
+        try {
+        string? token; string baseUrl; List<string> loginLogs;
+        (client, token, baseUrl, loginLogs) = await InitSessionAsync(device);
+        result.Logs.AddRange(loginLogs);
+        if (client == null) return DriverResult<List<ScanBox>>.Fail("세션 실패", result.Logs);
+
+        // 박스 목록 조회는 InitSession에서 이미 호출됨, 여기서는 전체 조회
+        var resp = await PostJsonAsync(client, $"{baseUrl}/wcd/api/AppReqGetUserBoxList",
+            new {
+                BoxListCondition = new {
+                    SearchKey = "None", WellUse = "false",
+                    BoxAttribute = new { Category = "Functional", Type = "User", Attribute = "AllAttribute" },
+                    ObtainCondition = new { Type = "OffsetList", OffsetRange = new { Start = "1", Length = "50" } }
+                },
+                Token = token ?? ""
+            }, $"{baseUrl}/wcd/spa_main.html");
+
+        // 응답 파싱
+        var boxes = new List<ScanBox>();
+        foreach (Match m in Regex.Matches(resp, @"""BoxName""\s*:\s*""([^""]+)"""))
+        {
+            boxes.Add(new ScanBox { Name = m.Groups[1].Value, MfpDeviceId = device.Id });
+        }
+
+        result.Logs.Add($"[신도] 박스 {boxes.Count}개 조회");
+        result.Success = true;
+        result.Data = boxes;
+        return result;
+        } catch (Exception ex) {
+            result.Logs.Add($"[신도][ERROR] {ex.Message}");
+            result.Success = false;
+            result.Message = $"조회 오류: {ex.Message}";
+            return result;
+        } finally { client?.Dispose(); }
+    }
+
+    // ──────────────────────────────────────────────
+    // AddScanBoxAsync — 박스 생성
+    // ──────────────────────────────────────────────
+
+    public async Task<DriverResult> AddScanBoxAsync(MfpDevice device, ScanBox box)
+    {
+        var result = new DriverResult();
+        HttpClient? client = null;
+        try {
+
+        result.Logs.Add($"[신도추가] 박스 생성: {box.Name}");
+
+        string? token; string baseUrl; List<string> loginLogs;
+        (client, token, baseUrl, loginLogs) = await InitSessionAsync(device);
+        result.Logs.AddRange(loginLogs);
+        if (client == null) return DriverResult.Fail("세션 실패", result.Logs);
+
+        var pw = box.Password ?? "";
+        var usePass = !string.IsNullOrEmpty(pw) ? "UsePass" : "NoPass";
+
+        var resp = await PostJsonAsync(client,
+            $"{baseUrl}/wcd/api/AppReqSetCustomMessage/_005_001_ULA001",
+            new {
+                func = "PSL_AF_ULAUser_CRE",
+                h_token = token ?? "",
+                H_TAB = "",
+                H_GNA = "",
+                R_NUM = "Space",
+                T_NAM = box.Name,
+                C_USE = usePass,
+                P_PAS = pw,
+                S_SER = "Abc",
+                S_BTY = "Public",
+                R_SAP = "None",
+                S_GFC = "On",
+                S_SEC = "Off",
+                S_DTP = "false",
+            }, $"{baseUrl}/wcd/spa_main.html");
+
+        result.Logs.Add($"[신도추가] 응답: {resp.Length}자");
+        result.Logs.Add($"[신도추가] 응답 내용(앞300자): {resp[..Math.Min(300, resp.Length)]}");
+
+        if (resp.Contains("Error") || resp.Contains("error"))
+        {
+            result.Logs.Add("[신도추가][FAIL] 생성 실패");
+            return DriverResult.Fail("박스 생성 실패", result.Logs);
+        }
+
+        result.Logs.Add("[신도추가] 생성 완료");
+        result.Success = true;
+        result.Message = "스캔함 추가 완료";
+        return result;
+        } catch (Exception ex) {
+            result.Logs.Add($"[신도추가][ERROR] {ex.Message}");
+            result.Success = false;
+            result.Message = $"추가 오류: {ex.Message}";
+            return result;
+        } finally { client?.Dispose(); }
+    }
+
+    // ──────────────────────────────────────────────
+    // UpdateScanBoxAsync — 박스 수정 (이름/비밀번호)
+    // ──────────────────────────────────────────────
+
+    public async Task<DriverResult> UpdateScanBoxAsync(MfpDevice device, ScanBox box, string? oldName = null, string? oldPassword = null)
+    {
+        var result = new DriverResult();
+        HttpClient? client = null;
+        try {
+
+        var searchName = oldName ?? box.Name;
+        result.Logs.Add($"[신도수정] 박스 수정: {searchName} → {box.Name}");
+
+        string? token; string baseUrl; List<string> loginLogs;
+        (client, token, baseUrl, loginLogs) = await InitSessionAsync(device);
+        result.Logs.AddRange(loginLogs);
+        if (client == null) return DriverResult.Fail("세션 실패", result.Logs);
+
+        // 박스 목록에서 대상 번호 찾기
+        var listResp = await PostJsonAsync(client, $"{baseUrl}/wcd/api/AppReqGetUserBoxList",
+            new {
+                BoxListCondition = new {
+                    SearchKey = "None", WellUse = "false",
+                    BoxAttribute = new { Category = "Functional", Type = "User", Attribute = "AllAttribute" },
+                    ObtainCondition = new { Type = "OffsetList", OffsetRange = new { Start = "1", Length = "50" } }
+                },
+                Token = token ?? ""
+            }, $"{baseUrl}/wcd/spa_main.html");
+
+        // BoxNumber 찾기: "BoxName":"searchName" 근처의 "BoxNumber":"N"
+        var boxNum = FindBoxNumber(listResp, searchName);
+        if (boxNum == null)
+        {
+            result.Logs.Add($"[신도수정][FAIL] 박스 '{searchName}' 찾을 수 없음");
+            return DriverResult.Fail($"박스 '{searchName}'을 찾을 수 없습니다.", result.Logs);
+        }
+        result.Logs.Add($"[신도수정] 대상 박스 번호: {boxNum}");
+
+        var pw = box.Password ?? "";
+        var changePw = !string.IsNullOrEmpty(pw);
+
+        var resp = await PostJsonAsync(client,
+            $"{baseUrl}/wcd/api/AppReqSetCustomMessage/_005_001_ULA002",
+            new {
+                func = "PSL_AF_ULA_SET",
+                h_token = token ?? "",
+                H_TAB = "",
+                T_NAM = box.Name,
+                S_SER = "Abc",
+                H_BOX = boxNum,
+                H_USR = "",
+                H_BPA = "",
+                H_BTY = "User",
+                H_BAT = "Public",
+                H_XTP = "",
+                H_DSP = "Setting",
+                C_PAC = changePw ? "true" : "false",
+                P_NPA = pw,
+                P_NPA2 = pw,
+            }, $"{baseUrl}/wcd/spa_main.html");
+
+        result.Logs.Add($"[신도수정] 응답: {resp.Length}자");
+
+        if (resp.Contains("Error") || resp.Contains("error"))
+        {
+            result.Logs.Add("[신도수정][FAIL] 수정 실패");
+            return DriverResult.Fail("수정 실패", result.Logs);
+        }
+
+        result.Logs.Add("[신도수정] 수정 완료");
+        result.Success = true;
+        result.Message = "수정 완료";
+        return result;
+        } catch (Exception ex) {
+            result.Logs.Add($"[신도수정][ERROR] {ex.Message}");
+            result.Success = false;
+            result.Message = $"수정 오류: {ex.Message}";
+            return result;
+        } finally { client?.Dispose(); }
+    }
+
+    // ──────────────────────────────────────────────
+    // DeleteScanBoxAsync — 박스 삭제 (2단계)
+    // ──────────────────────────────────────────────
+
+    public async Task<DriverResult> DeleteScanBoxAsync(MfpDevice device, ScanBox box)
+    {
+        var result = new DriverResult();
+        HttpClient? client = null;
+        try {
+
+        result.Logs.Add($"[신도삭제] 박스 삭제: {box.Name}");
+
+        string? token; string baseUrl; List<string> loginLogs;
+        (client, token, baseUrl, loginLogs) = await InitSessionAsync(device);
+        result.Logs.AddRange(loginLogs);
+        if (client == null) return DriverResult.Fail("세션 실패", result.Logs);
+
+        // 박스 번호 찾기
+        var listResp = await PostJsonAsync(client, $"{baseUrl}/wcd/api/AppReqGetUserBoxList",
+            new {
+                BoxListCondition = new {
+                    SearchKey = "None", WellUse = "false",
+                    BoxAttribute = new { Category = "Functional", Type = "User", Attribute = "AllAttribute" },
+                    ObtainCondition = new { Type = "OffsetList", OffsetRange = new { Start = "1", Length = "50" } }
+                },
+                Token = token ?? ""
+            }, $"{baseUrl}/wcd/spa_main.html");
+
+        var boxNum = FindBoxNumber(listResp, box.Name);
+        if (boxNum == null)
+        {
+            result.Logs.Add($"[신도삭제] 박스 '{box.Name}' 찾을 수 없음 (이미 삭제됨)");
+            result.Success = true;
+            result.Message = "삭제 완료 (이미 없음)";
+            return result;
+        }
+        result.Logs.Add($"[신도삭제] 대상 박스 번호: {boxNum}");
+
+        // Step 1: 삭제 안내 페이지 진입
+        result.Logs.Add("[신도삭제] Step1: 삭제 진입...");
+        await PostJsonAsync(client,
+            $"{baseUrl}/wcd/api/AppReqSetCustomMessage/_005_001_ULA000",
+            new {
+                func = "PSL_AF_ULAUser_BOX",
+                h_token = token ?? "",
+                H_TAB = "",
+                H_IPA = "On",
+                H_PID = "-1",
+                H_BID = boxNum,
+                H_DSP = "Delete",
+                T_BID = boxNum,
+            }, $"{baseUrl}/wcd/spa_main.html");
+
+        // Step 2: 삭제 확인
+        result.Logs.Add("[신도삭제] Step2: 삭제 확인...");
+        var resp = await PostJsonAsync(client,
+            $"{baseUrl}/wcd/api/AppReqSetCustomMessage/_005_001_ULA003",
+            new {
+                func = "PSL_AF_ULA_DEL",
+                h_token = token ?? "",
+                H_XTP = "true",
+                H_TAB = "",
+                H_BOX = boxNum,
+                H_USR = "",
+                H_BPA = "",
+                H_NAM = box.Name,
+                H_SAV = "0",
+                H_BTY = "User",
+                H_DCNT = "0",
+            }, $"{baseUrl}/wcd/spa_main.html");
+
+        result.Logs.Add($"[신도삭제] 응답: {resp.Length}자");
+
+        if (resp.Contains("Error") || resp.Contains("error"))
+        {
+            result.Logs.Add("[신도삭제][FAIL] 삭제 실패");
+            return DriverResult.Fail("삭제 실패", result.Logs);
+        }
+
+        result.Logs.Add("[신도삭제] 삭제 완료");
+        result.Success = true;
+        result.Message = "삭제 완료";
+        return result;
+        } catch (Exception ex) {
+            result.Logs.Add($"[신도삭제][ERROR] {ex.Message}");
+            result.Success = false;
+            result.Message = $"삭제 오류: {ex.Message}";
+            return result;
+        } finally { client?.Dispose(); }
+    }
+
+    // ──────────────────────────────────────────────
+    // 유틸
+    // ──────────────────────────────────────────────
+
+    /// <summary>박스 목록 응답에서 이름으로 BoxNumber 찾기</summary>
+    private static string? FindBoxNumber(string json, string boxName)
+    {
+        // "BoxNumber":"N" ... "BoxName":"name" 패턴에서 매칭
+        // 또는 각 박스 블록을 순회
+        var blocks = Regex.Matches(json, @"\{[^{}]*""BoxNumber""\s*:\s*""(\d+)""[^{}]*""BoxName""\s*:\s*""([^""]+)""[^{}]*\}");
+        foreach (Match m in blocks)
+        {
+            if (m.Groups[2].Value == boxName)
+                return m.Groups[1].Value;
+        }
+
+        // 역순으로도 시도 (BoxName이 BoxNumber보다 앞에 올 수 있음)
+        blocks = Regex.Matches(json, @"\{[^{}]*""BoxName""\s*:\s*""([^""]+)""[^{}]*""BoxNumber""\s*:\s*""(\d+)""[^{}]*\}");
+        foreach (Match m in blocks)
+        {
+            if (m.Groups[1].Value == boxName)
+                return m.Groups[2].Value;
+        }
+
+        return null;
+    }
+}
