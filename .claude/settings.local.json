@@ -2,7 +2,22 @@
   "permissions": {
     "allow": [
       "WebSearch",
-      "WebFetch(domain:raw.githubusercontent.com)"
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(ls -la /c/Projects/JA-solution/remote-tools/common/*.py)",
+      "Bash(python -c \"import ast; ast.parse\\(open\\('common/discovery.py'\\).read\\(\\)\\); print\\('discovery.py OK'\\)\")",
+      "Bash(python -c \"import ast; ast.parse\\(open\\('canon/advbox.py'\\).read\\(\\)\\); print\\('advbox.py OK'\\)\")",
+      "Bash(python -c \"import ast; ast.parse\\(open\\('ricoh/docserver.py'\\).read\\(\\)\\); print\\('docserver.py OK'\\)\")",
+      "Bash(python -c \"import ast; ast.parse\\(open\\('common/discovery.py', encoding='utf-8'\\).read\\(\\)\\); print\\('discovery.py OK'\\)\")",
+      "Bash(python -c \"import ast; ast.parse\\(open\\('canon/advbox.py', encoding='utf-8'\\).read\\(\\)\\); print\\('advbox.py OK'\\)\")",
+      "Bash(python -c \"import ast; ast.parse\\(open\\('ricoh/docserver.py', encoding='utf-8'\\).read\\(\\)\\); print\\('docserver.py OK'\\)\")",
+      "Bash(python -c \"import pysnmp; print\\(pysnmp.__version__\\)\")",
+      "Bash(pip install:*)",
+      "Bash(python:*)",
+      "Bash(powershell:*)",
+      "Bash(dotnet:*)",
+      "Bash(mkdir:*)",
+      "Bash(taskkill /F /IM JaScan.exe)",
+      "Bash(taskkill:*)"
     ]
   }
 }
