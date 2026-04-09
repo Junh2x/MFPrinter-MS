@@ -1,12 +1,16 @@
 using System.Windows.Input;
 using Scanlink.Helpers;
+using Scanlink.Services;
 
 namespace Scanlink.ViewModels;
 
 public class AuthViewModel : ViewModelBase
 {
+    private readonly AuthService _authService = new();
+
     private string _licenseKey = "";
     private string _errorMessage = "";
+    private bool _isVerifying;
 
     public string LicenseKey
     {
@@ -24,25 +28,44 @@ public class AuthViewModel : ViewModelBase
         set => SetProperty(ref _errorMessage, value);
     }
 
+    public bool IsVerifying
+    {
+        get => _isVerifying;
+        set => SetProperty(ref _isVerifying, value);
+    }
+
     public ICommand VerifyCommand { get; }
 
     public event Action? AuthSuccess;
 
     public AuthViewModel()
     {
-        VerifyCommand = new RelayCommand(Verify);
+        VerifyCommand = new RelayCommand(async () => await VerifyAsync(), () => !IsVerifying);
     }
 
-    private void Verify()
+    private async Task VerifyAsync()
     {
         if (string.IsNullOrWhiteSpace(LicenseKey))
         {
-            ErrorMessage = "인증 키를 입력해주세요.";
+            ErrorMessage = "인증 코드를 입력해주세요.";
             return;
         }
 
-        // TODO: 실제 서버 인증 구현
-        // 개발 단계: 아무 값이나 입력하면 통과
-        AuthSuccess?.Invoke();
+        IsVerifying = true;
+        ErrorMessage = "";
+
+        var (valid, message) = await _authService.VerifyAsync(LicenseKey.Trim());
+
+        if (valid)
+        {
+            _authService.SaveToken(LicenseKey.Trim());
+            AuthSuccess?.Invoke();
+        }
+        else
+        {
+            ErrorMessage = message;
+        }
+
+        IsVerifying = false;
     }
 }

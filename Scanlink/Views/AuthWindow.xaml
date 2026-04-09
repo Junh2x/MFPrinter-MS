@@ -34,7 +34,7 @@
                            Foreground="{StaticResource TextSecondaryBrush}"
                            HorizontalAlignment="Center" Margin="0,0,0,32"/>
 
-                <TextBlock Text="인증 키" FontSize="12" FontWeight="Medium"
+                <TextBlock Text="인증 코드" FontSize="12" FontWeight="Medium"
                            Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
                 <TextBox Style="{StaticResource ModernTextBox}"
                          Text="{Binding LicenseKey, UpdateSourceTrigger=PropertyChanged}"

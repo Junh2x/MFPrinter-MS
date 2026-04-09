@@ -1,4 +1,5 @@
 using System.Windows;
+using Scanlink.Services;
 using Scanlink.Views;
 
 namespace Scanlink;
@@ -8,24 +9,41 @@ public partial class App : Application
     private System.Windows.Forms.NotifyIcon? _trayIcon;
     private MainWindow? _mainWindow;
 
-    protected override void OnStartup(StartupEventArgs e)
+    protected override async void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
 
-        // 1. 인증 창
-        var authWindow = new AuthWindow();
-        authWindow.ShowDialog();
-        if (!authWindow.Authenticated)
+        var authService = new AuthService();
+        var authenticated = false;
+
+        // 1. 저장된 토큰으로 자동 인증 시도
+        var savedCode = authService.LoadToken();
+        if (!string.IsNullOrEmpty(savedCode))
         {
-            Shutdown();
-            return;
+            var (valid, _) = await authService.VerifyAsync(savedCode);
+            if (valid)
+                authenticated = true;
+            else
+                authService.ClearToken();
         }
 
-        // 2. 메인 창
+        // 2. 자동 인증 실패 시 인증 창
+        if (!authenticated)
+        {
+            var authWindow = new AuthWindow();
+            authWindow.ShowDialog();
+            if (!authWindow.Authenticated)
+            {
+                Shutdown();
+                return;
+            }
+        }
+
+        // 3. 메인 창
         _mainWindow = new MainWindow();
         _mainWindow.Show();
 
-        // 3. 트레이 아이콘
+        // 4. 트레이 아이콘
         SetupTrayIcon();
     }
 
