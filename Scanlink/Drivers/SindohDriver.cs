@@ -47,66 +47,63 @@ public class SindohDriver : IMfpDriver
         var logs = new List<string>();
         var baseUrl = string.IsNullOrEmpty(device.BaseUrl) ? $"http://{device.Ip}" : device.BaseUrl;
         var (client, cookies) = CreateClient();
+        var uri = new Uri(baseUrl);
 
         try
         {
-            // SPA 메인 페이지 접속 → 세션 쿠키 획득
+            // Step 1: 초기 접속 → 리다이렉트 따라가며 쿠키 수집
             logs.Add($"[신도] 접속: {baseUrl}");
+            await client.GetAsync($"{baseUrl}/");
+
+            // Step 2: SPA 페이지 접속
             var html = await (await client.GetAsync($"{baseUrl}/wcd/spa_main.html")).Content.ReadAsStringAsync();
-            logs.Add($"[신도] 페이지 로드: {html.Length}자");
+            logs.Add($"[신도] SPA 로드: {html.Length}자");
 
-            // 관리자 로그인 (a_user.cgi)
-            var loginReq = new HttpRequestMessage(HttpMethod.Get, $"{baseUrl}/wcd/a_user.cgi");
-            loginReq.Headers.Add("Referer", $"{baseUrl}/wcd/spa_main.html");
-            await client.SendAsync(loginReq);
+            // Step 3: 관리자 쿠키 설정 (loginState=true, menuType=Admin 등)
+            cookies.Add(uri, new Cookie("loginState", "true"));
+            cookies.Add(uri, new Cookie("menuType", "Admin"));
+            cookies.Add(uri, new Cookie("adm", "AF_ULA"));
+            cookies.Add(uri, new Cookie("box_dsp", "Setting"));
+            cookies.Add(uri, new Cookie("webUI", "new"));
 
-            // 쿠키에서 ID 확인
+            // Step 4: 관리자 페이지 접속 → ID 쿠키 획득
+            var adminResp = await client.GetAsync($"{baseUrl}/wcd/a_user.cgi");
+            var adminHtml = await adminResp.Content.ReadAsStringAsync();
+            logs.Add($"[신도] 관리자 페이지: {adminHtml.Length}자");
+
             var allCookies = cookies.GetAllCookies();
+            var cookieNames = string.Join(", ", allCookies.Select(c => c.Name));
+            logs.Add($"[신도] 쿠키: {cookieNames}");
+
             var idCookie = allCookies.FirstOrDefault(c => c.Name == "ID");
             if (idCookie == null || string.IsNullOrEmpty(idCookie.Value))
             {
                 logs.Add("[신도][FAIL] ID 쿠키 없음");
+                logs.Add($"[신도] 관리자 응답(앞300자): {adminHtml[..Math.Min(300, adminHtml.Length)]}");
                 client.Dispose();
                 return (null, null, baseUrl, logs);
             }
             logs.Add($"[신도] 세션 ID: {idCookie.Value[..Math.Min(10, idCookie.Value.Length)]}...");
 
-            // 토큰 추출: 박스 목록 조회로 토큰 획득
-            var tokenReq = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/wcd/api/AppReqGetUserBoxList")
-            {
-                Content = new StringContent(
-                    JsonSerializer.Serialize(new
-                    {
-                        BoxListCondition = new
-                        {
-                            SearchKey = "None",
-                            WellUse = "false",
-                            BoxAttribute = new { Category = "Functional", Type = "User", Attribute = "AllAttribute" },
-                            ObtainCondition = new { Type = "OffsetList", OffsetRange = new { Start = "1", Length = "1" } }
-                        },
-                        Token = ""
-                    }),
-                    Encoding.UTF8, "application/x-www-form-urlencoded")
-            };
-            tokenReq.Headers.Add("Referer", $"{baseUrl}/wcd/spa_main.html");
-            var tokenResp = await client.SendAsync(tokenReq);
-            var tokenJson = await tokenResp.Content.ReadAsStringAsync();
+            // Step 5: 토큰 추출 — 박스 목록 조회
+            var tokenResp = await PostJsonAsync(client, $"{baseUrl}/wcd/api/AppReqGetUserBoxList",
+                new {
+                    BoxListCondition = new {
+                        SearchKey = "None", WellUse = "false",
+                        BoxAttribute = new { Category = "Functional", Type = "User", Attribute = "AllAttribute" },
+                        ObtainCondition = new { Type = "OffsetList", OffsetRange = new { Start = "1", Length = "1" } }
+                    },
+                    Token = ""
+                }, $"{baseUrl}/wcd/spa_main.html");
 
-            // Token을 응답이나 쿠키에서 추출
-            var tokenMatch = Regex.Match(tokenJson, @"""Token""\s*:\s*""([^""]+)""");
+            logs.Add($"[신도] 토큰 조회 응답: {tokenResp.Length}자");
+
+            var tokenMatch = Regex.Match(tokenResp, @"""Token""\s*:\s*""([^""]+)""");
             string? token = tokenMatch.Success ? tokenMatch.Groups[1].Value : null;
 
-            // 쿠키에서도 확인
             if (token == null)
             {
-                // spa_main.html에서 토큰 추출 시도
-                tokenMatch = Regex.Match(html, @"token[""'\s:=]+([A-Za-z0-9]{20,})");
-                token = tokenMatch.Success ? tokenMatch.Groups[1].Value : null;
-            }
-
-            if (token == null)
-            {
-                logs.Add("[신도][WARN] 토큰 추출 실패, 빈 토큰으로 시도");
+                logs.Add($"[신도][WARN] 토큰 추출 실패, 응답(앞300자): {tokenResp[..Math.Min(300, tokenResp.Length)]}");
                 token = "";
             }
             else
