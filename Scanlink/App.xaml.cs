@@ -14,6 +14,15 @@ public partial class App : Application
     {
         base.OnStartup(e);
 
+        // 테스트 모드: dotnet run -- --test-complete
+        if (e.Args.Length > 0 && e.Args[0] == "--test-complete")
+        {
+            var dialog = new Views.Dialogs.ScanBoxCompleteDialog(Models.MfpBrand.Ricoh);
+            dialog.ShowDialog();
+            Shutdown();
+            return;
+        }
+
         AppLogger.Log("APP", "Scanlink 시작");
 
         var authService = new AuthService();
