@@ -1,10 +1,10 @@
-using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using Scanlink.Core;
+using Scanlink.Helpers;
 using Scanlink.Models;
 
 namespace Scanlink.Drivers;
@@ -19,6 +19,9 @@ public class CanonDriver : IMfpDriver
 
     private const string UserAgent =
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36";
+
+    // 캐논 Remote UI가 동작할 수 있는 포트 목록
+    private static readonly int[] CanonMgmtPorts = [8000, 8443, 443, 80];
 
     private static string Dummy() => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
 
@@ -35,7 +38,7 @@ public class CanonDriver : IMfpDriver
             ServerCertificateCustomValidationCallback = (_, _, _, _) => true,
             UseCookies = true,
         };
-        var client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(15) };
+        var client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(10) };
         client.DefaultRequestHeaders.Add("User-Agent", UserAgent);
         client.DefaultRequestHeaders.Add("Accept",
             "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
@@ -43,41 +46,62 @@ public class CanonDriver : IMfpDriver
         return (client, cookies);
     }
 
-    /// <summary>포털 접속 → nativetop → iR 쿠키 획득</summary>
-    private static async Task<(HttpClient? client, List<string> logs)> InitSessionAsync(string baseUrl)
+    /// <summary>
+    /// 캐논 관리 포트를 자동 탐색하여 iR 쿠키가 발급되는 포트로 세션을 초기화한다.
+    /// device.BaseUrl이 이미 올바르면 그대로 사용, 아니면 CanonMgmtPorts를 순회.
+    /// </summary>
+    private static async Task<(HttpClient? client, string mgmtUrl, List<string> logs)> InitSessionAsync(MfpDevice device)
     {
         var logs = new List<string>();
-        var (client, cookies) = CreateClient();
 
-        // Step 1: 포털
-        logs.Add($"[세션] 포털 접속: {baseUrl}/");
-        var r = await client.GetAsync($"{baseUrl}/");
-        if (!r.IsSuccessStatusCode)
+        // 이미 확인된 관리 URL이 있으면 먼저 시도
+        var portsToTry = new List<string>();
+        if (!string.IsNullOrEmpty(device.BaseUrl))
+            portsToTry.Add(device.BaseUrl);
+
+        foreach (var port in CanonMgmtPorts)
         {
-            logs.Add($"[세션][FAIL] 포털 접속 실패: HTTP {(int)r.StatusCode}");
-            return (null, logs);
+            var scheme = port is 443 or 8443 ? "https" : "http";
+            var url = port is 80 or 443 ? $"{scheme}://{device.Ip}" : $"{scheme}://{device.Ip}:{port}";
+            if (!portsToTry.Contains(url))
+                portsToTry.Add(url);
         }
-        logs.Add($"[세션] 포털 OK — 쿠키: {cookies.Count}개");
 
-        await Task.Delay(300);
-
-        // Step 2: nativetop → iR 쿠키
-        logs.Add("[세션] nativetop 요청 (iR 쿠키 획득)...");
-        var nativeUrl = $"{baseUrl}/rps/nativetop.cgi?RUIPNxBundle=&CorePGTAG=PGTAG_ADR_USR&Dummy={Dummy()}";
-        var req = new HttpRequestMessage(HttpMethod.Get, nativeUrl);
-        req.Headers.Add("Referer", $"{baseUrl}/");
-        await client.SendAsync(req);
-
-        var allCookies = cookies.GetCookies(new Uri(baseUrl));
-        var hasIR = allCookies.Cast<Cookie>().Any(c => c.Name == "iR");
-        if (!hasIR)
+        foreach (var baseUrl in portsToTry)
         {
-            logs.Add("[세션][FAIL] iR 쿠키 미발급");
-            return (null, logs);
-        }
-        logs.Add("[세션] iR 쿠키 획득 완료");
+            var (client, cookies) = CreateClient();
+            try
+            {
+                logs.Add($"[세션] 포트 시도: {baseUrl}");
 
-        return (client, logs);
+                var r = await client.GetAsync($"{baseUrl}/");
+                if (!r.IsSuccessStatusCode) { logs.Add($"[세션] {baseUrl} — HTTP {(int)r.StatusCode}"); continue; }
+
+                var nativeUrl = $"{baseUrl}/rps/nativetop.cgi?RUIPNxBundle=&CorePGTAG=PGTAG_ADR_USR&Dummy={Dummy()}";
+                var req = new HttpRequestMessage(HttpMethod.Get, nativeUrl);
+                req.Headers.Add("Referer", $"{baseUrl}/");
+                await client.SendAsync(req);
+
+                var allCookies = cookies.GetCookies(new Uri(baseUrl));
+                var hasIR = allCookies.Cast<Cookie>().Any(c => c.Name == "iR");
+
+                if (hasIR)
+                {
+                    logs.Add($"[세션] iR 쿠키 획득 성공: {baseUrl}");
+                    device.BaseUrl = baseUrl;
+                    return (client, baseUrl, logs);
+                }
+
+                logs.Add($"[세션] {baseUrl} — iR 쿠키 미발급");
+            }
+            catch (Exception ex)
+            {
+                logs.Add($"[세션] {baseUrl} — 연결 실패: {ex.Message}");
+            }
+        }
+
+        logs.Add("[세션][FAIL] 모든 포트에서 iR 쿠키 획득 실패");
+        return (null, "", logs);
     }
 
     // ──────────────────────────────────────────────
@@ -171,23 +195,16 @@ public class CanonDriver : IMfpDriver
     {
         var result = new DriverResult();
         try {
-        var baseUrl = $"http://{device.Ip}:{device.Port}";
-
-        var (client, logs) = await InitSessionAsync(baseUrl);
+        var (client, mgmtUrl, logs) = await InitSessionAsync(device);
         result.Logs.AddRange(logs);
 
         if (client == null)
-        {
-            result.Success = false;
-            result.Message = "연결 실패";
-            return result;
-        }
+            return DriverResult.Fail("연결 실패 — 캐논 관리 포트를 찾을 수 없습니다.", result.Logs);
 
-        device.BaseUrl = baseUrl;
         device.Status = ConnectionStatus.Connected;
         result.Success = true;
         result.Message = "연결 성공";
-        result.Logs.Add($"[연결] {device.Ip}:{device.Port} 연결 성공");
+        result.Logs.Add($"[연결] {device.Ip} 관리 URL: {mgmtUrl}");
         return result;
         } catch (Exception ex) {
             result.Logs.Add($"[연결][ERROR] {ex.Message}");
@@ -202,13 +219,11 @@ public class CanonDriver : IMfpDriver
     public async Task<DriverResult> SetupAsync(MfpDevice device)
     {
         var result = new DriverResult();
-        var baseUrl = device.BaseUrl;
         try {
 
         result.Logs.Add($"[설정] 캐논 초기 설정 시작: {device.Ip}");
 
-        // 세션 초기화
-        var (client, sessionLogs) = await InitSessionAsync(baseUrl);
+        var (client, baseUrl, sessionLogs) = await InitSessionAsync(device);
         result.Logs.AddRange(sessionLogs);
         if (client == null) return DriverResult.Fail("세션 초기화 실패", result.Logs);
 
@@ -266,7 +281,7 @@ public class CanonDriver : IMfpDriver
         }
         result.Logs.Add("[설정] 고급박스 설정 완료");
 
-        await Task.Delay(500);
+
 
         // ── 원터치 AID 검색 ──
         result.Logs.Add("[설정] 주소록 목록 조회 (원터치 AID 검색)...");
@@ -324,22 +339,21 @@ public class CanonDriver : IMfpDriver
     {
         var result = new DriverResult<List<ScanBox>> { Logs = [] };
         try {
-        var baseUrl = device.BaseUrl;
         var aid = device.AddressBookId;
 
         result.Logs.Add($"[조회] 수신지 목록 조회: AID={aid}");
 
-        var (client, sessionLogs) = await InitSessionAsync(baseUrl);
+        var (client, baseUrl, sessionLogs) = await InitSessionAsync(device);
         result.Logs.AddRange(sessionLogs);
         if (client == null) return DriverResult<List<ScanBox>>.Fail("세션 초기화 실패", result.Logs);
 
         // asublist
         await client.GetAsync($"{baseUrl}/rps/asublist.cgi?CorePGTAG=24&AMOD=0&Dummy={Dummy()}");
-        await Task.Delay(300);
+
 
         // alframe + albody
         await client.GetAsync($"{baseUrl}/rps/alframe.cgi?AID={aid}");
-        await Task.Delay(300);
+
 
         var html = await PostFormAsync(client,
             $"{baseUrl}/rps/albody.cgi",
@@ -384,12 +398,11 @@ public class CanonDriver : IMfpDriver
     {
         var result = new DriverResult();
         try {
-        var baseUrl = device.BaseUrl;
         var aid = device.AddressBookId;
         var folderPath = $@"\share\folder\{box.Name}";
 
         result.Logs.Add($"[추가] 스캔함 추가 시작: {box.Name}");
-        result.Logs.Add($"  기기: {device.Ip}:{device.Port}, AID={aid}");
+        result.Logs.Add($"  기기: {device.Ip}, AID={aid}");
         result.Logs.Add($"  폴더: {folderPath}");
 
         // ── 1. SMB 폴더 생성 ──
@@ -414,11 +427,9 @@ public class CanonDriver : IMfpDriver
         }
 
         // ── 2. 세션 초기화 ──
-        var (client, sessionLogs) = await InitSessionAsync(baseUrl);
+        var (client, baseUrl, sessionLogs) = await InitSessionAsync(device);
         result.Logs.AddRange(sessionLogs);
         if (client == null) return DriverResult.Fail("세션 초기화 실패", result.Logs);
-
-        await Task.Delay(300);
 
         // ── 3. asublist → Token A ──
         result.Logs.Add("[추가] asublist → Token A 획득...");
@@ -432,12 +443,12 @@ public class CanonDriver : IMfpDriver
             return DriverResult.Fail("Token A 추출 실패", result.Logs);
         }
         result.Logs.Add($"[추가] Token A = {tokenA[..Math.Min(15, tokenA.Length)]}...");
-        await Task.Delay(300);
+
 
         // ── 4. alframe → AID 컨텍스트 ──
         await client.GetAsync($"{baseUrl}/rps/alframe.cgi?AID={aid}");
         result.Logs.Add("[추가] alframe OK");
-        await Task.Delay(300);
+
 
         // ── 5. albody → 빈 슬롯 찾기 ──
         html = await PostFormAsync(client,
@@ -453,7 +464,7 @@ public class CanonDriver : IMfpDriver
             return DriverResult.Fail("빈 슬롯이 없습니다.", result.Logs);
         }
         result.Logs.Add($"[추가] 빈 슬롯 선택: {slot} (사용중: {usedSlots.Count}개)");
-        await Task.Delay(300);
+
 
         // ── 6. aprop (이메일 폼 ACLS=2) → Token B1 ──
         result.Logs.Add("[추가] aprop (ACLS=2 이메일 폼) → Token B1...");
@@ -468,7 +479,7 @@ public class CanonDriver : IMfpDriver
             return DriverResult.Fail("Token B1 추출 실패", result.Logs);
         }
         result.Logs.Add($"[추가] Token B1 = {tokenB1[..Math.Min(15, tokenB1.Length)]}...");
-        await Task.Delay(300);
+
 
         // ── 7. aprop (파일 타입 변경 ACLS=7, Token 빈값) → Token B2 ──
         result.Logs.Add("[추가] aprop (ACLS=7 파일 타입) → Token B2...");
@@ -485,7 +496,7 @@ public class CanonDriver : IMfpDriver
             return DriverResult.Fail("Token B2 추출 실패", result.Logs);
         }
         result.Logs.Add($"[추가] Token B2 = {tokenB2[..Math.Min(15, tokenB2.Length)]}...");
-        await Task.Delay(300);
+
 
         // ── 8. aprop (파일 설정 PageFlag=a_rfn_f.tpl, PASSCHK=1&빈값) → Token B3 ──
         var pw = box.Password ?? "";
@@ -508,7 +519,7 @@ public class CanonDriver : IMfpDriver
             return DriverResult.Fail("Token B3 추출 실패", result.Logs);
         }
         result.Logs.Add($"[추가] Token B3 = {tokenB3[..Math.Min(15, tokenB3.Length)]}...");
-        await Task.Delay(300);
+
 
         // ── 9. aprop (폴더 설정 PageFlag 없음) → Token B4 ──
         result.Logs.Add("[추가] aprop (폴더 설정) → Token B4...");
@@ -530,7 +541,7 @@ public class CanonDriver : IMfpDriver
             return DriverResult.Fail("Token B4 추출 실패", result.Logs);
         }
         result.Logs.Add($"[추가] Token B4 = {tokenB4[..Math.Min(15, tokenB4.Length)]}...");
-        await Task.Delay(300);
+
 
         // ── 10. anewadrs.cgi (최종 등록) ──
         result.Logs.Add("[추가] anewadrs.cgi (최종 등록)...");
@@ -573,7 +584,6 @@ public class CanonDriver : IMfpDriver
     {
         var result = new DriverResult();
         try {
-        var baseUrl = device.BaseUrl;
         var aid = device.AddressBookId;
 
         result.Logs.Add($"[삭제] 스캔함 삭제 시작: {box.Name} (슬롯={box.SlotIndex})");
@@ -584,19 +594,17 @@ public class CanonDriver : IMfpDriver
             return DriverResult.Fail("슬롯 번호가 없습니다.", result.Logs);
         }
 
-        var (client, sessionLogs) = await InitSessionAsync(baseUrl);
+        var (client, baseUrl, sessionLogs) = await InitSessionAsync(device);
         result.Logs.AddRange(sessionLogs);
         if (client == null) return DriverResult.Fail("세션 초기화 실패", result.Logs);
 
-        await Task.Delay(300);
-
         // asublist
         await client.GetAsync($"{baseUrl}/rps/asublist.cgi?CorePGTAG=24&AMOD=0&FromTopPage=1&Dummy={Dummy()}");
-        await Task.Delay(300);
+
 
         // alframe
         await client.GetAsync($"{baseUrl}/rps/alframe.cgi?AID={aid}");
-        await Task.Delay(300);
+
 
         // albody → Token
         var html = await PostFormAsync(client,
@@ -610,7 +618,7 @@ public class CanonDriver : IMfpDriver
             return DriverResult.Fail("삭제용 Token 추출 실패", result.Logs);
         }
         result.Logs.Add($"[삭제] Token = {token[..Math.Min(15, token.Length)]}...");
-        await Task.Delay(300);
+
 
         // adelete.cgi
         result.Logs.Add("[삭제] adelete.cgi 요청...");
@@ -646,7 +654,6 @@ public class CanonDriver : IMfpDriver
     {
         var result = new DriverResult();
         try {
-        var baseUrl = device.BaseUrl;
         var aid = device.AddressBookId;
         var folderPath = $@"\share\folder\{box.Name}";
 
@@ -655,11 +662,9 @@ public class CanonDriver : IMfpDriver
         if (box.SlotIndex < 0)
             return DriverResult.Fail("슬롯 번호가 없습니다.", result.Logs);
 
-        var (client, sessionLogs) = await InitSessionAsync(baseUrl);
+        var (client, baseUrl, sessionLogs) = await InitSessionAsync(device);
         result.Logs.AddRange(sessionLogs);
         if (client == null) return DriverResult.Fail("세션 초기화 실패", result.Logs);
-
-        await Task.Delay(300);
 
         // Token A
         var html = await (await client.GetAsync(
@@ -669,14 +674,14 @@ public class CanonDriver : IMfpDriver
         if (tokenA == null)
             return DriverResult.Fail("Token A 추출 실패", result.Logs);
         result.Logs.Add($"[수정] Token A = {tokenA[..Math.Min(15, tokenA.Length)]}...");
-        await Task.Delay(300);
+
 
         // alframe + albody
         await client.GetAsync($"{baseUrl}/rps/alframe.cgi?AID={aid}");
-        await Task.Delay(300);
+
         await PostFormAsync(client, $"{baseUrl}/rps/albody.cgi",
             $"AID={aid}&FILTER_ID=0&Dummy={Dummy()}", $"{baseUrl}/rps/alframe.cgi?");
-        await Task.Delay(300);
+
 
         // aprop (수정 폼 AMOD=2) → Token B
         result.Logs.Add("[수정] aprop (AMOD=2 수정 폼) → Token B...");
@@ -689,7 +694,7 @@ public class CanonDriver : IMfpDriver
         if (tokenB == null)
             return DriverResult.Fail("Token B 추출 실패 (수정 폼)", result.Logs);
         result.Logs.Add($"[수정] Token B = {tokenB[..Math.Min(15, tokenB.Length)]}...");
-        await Task.Delay(300);
+
 
         // amodadrs.cgi (최종 수정)
         var pw = box.Password ?? "";
