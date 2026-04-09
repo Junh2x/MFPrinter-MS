@@ -217,3 +217,92 @@ Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)
 x-requested-with
 XMLHttpRequest
 페이로드: {"func":"PSL_AF_ULA_DEL","h_token":"J00IGGjEOucANrp0h2VKBChToEOyu7T0","H_XTP":"true","H_TAB":"","H_BOX":"1","H_USR":"","H_BPA":"","H_NAM":"TEST_NAME1","H_SAV":"0","H_BTY":"User","H_DCNT":"0"}
+
+## 로그인 화면 - 공유 사용자 로그인(/wcd/spa_login.html)
+Request URL
+http://192.168.11.193/wcd/ulogin.cgi
+Request Method
+POST
+Status Code
+200 OK
+Remote Address
+192.168.11.193:80
+Referrer Policy
+strict-origin-when-cross-origin
+content-length
+2007
+content-type
+text/html;charset=utf-8
+expires
+Thu, 01 Jan 1970 00:00:00 GMT
+set-cookie
+ID=4JOm6rLVh7up6ckgh5nDtco8sFTJykMn
+x-frame-options
+SAMEORIGIN
+accept
+*/*
+accept-encoding
+gzip, deflate
+accept-language
+ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7
+connection
+keep-alive
+content-length
+194
+content-type
+application/x-www-form-urlencoded; charset=UTF-8
+cookie
+bv=Chrome/146.0.0.0; pf=PC; uatype=NN; lang=Ko; favmode=false; vm=Html; key=; selno=Ko; InitialTransitionScreen=; loginUserName=; notChange=; access=; param=; hostChange=; sourcePage=1; abbrRedojobingStatus=allow; loginState=true; cou=; box_dsp=Delete; menuType=Public; logoutIF=user.cgi; usr=; ID=VZ5j0nJ4Q2D7IOV65A71bCst1bI21ZLI; abbrCheckCookieFlg=false; webUI=new
+host
+192.168.11.193
+origin
+http://192.168.11.193
+referer
+http://192.168.11.193/wcd/spa_login.html
+user-agent
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
+x-requested-with
+XMLHttpRequest
+페이로드: func=PSL_LP0_TOP&AuthType=None&TrackType=&ExtSvType=0&PswcForm=&Mode=Public&publicuser=&username=&password=&AuthorityType=&R_ADM=&ExtServ=0&ViewMode=&BrowserMode=&Lang=&trackname=&trackpassword=
+
+## 공유 사용자 로그인 후 메인화면 자동 리디렉션
+Request URL
+http://192.168.11.193/wcd/spa_main.html
+Request Method
+GET
+Status Code
+304 Notmod
+Remote Address
+192.168.11.193:80
+Referrer Policy
+strict-origin-when-cross-origin
+content-length
+0
+content-type
+text/html
+expires
+Thu, 01 Jan 1970 00:00:00 GMT
+set-cookie
+key=
+x-frame-options
+SAMEORIGIN
+accept
+text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+accept-encoding
+gzip, deflate
+accept-language
+ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7
+connection
+keep-alive
+cookie
+bv=Chrome/146.0.0.0; pf=PC; uatype=NN; lang=Ko; favmode=false; vm=Html; key=; selno=Ko; InitialTransitionScreen=; loginUserName=; notChange=; access=; param=; hostChange=; sourcePage=1; abbrRedojobingStatus=allow; loginState=true; cou=; box_dsp=Delete; menuType=Public; logoutIF=user.cgi; usr=; abbrCheckCookieFlg=false; webUI=new; ID=4JOm6rLVh7up6ckgh5nDtco8sFTJykMn
+host
+192.168.11.193
+if-modified-since
+Mon, 04 Sep 2023 18:47:35 GMT
+referer
+http://192.168.11.193/wcd/spa_login.html
+upgrade-insecure-requests
+1
+user-agent
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36
