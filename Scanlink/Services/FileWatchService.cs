@@ -76,13 +76,14 @@ public class FileWatchService : IDisposable
 
     private async Task<bool> CheckBoxAsync(IMfpDriver driver, MfpDevice device, ScanBox box)
     {
+        var tag = $"{device.DisplayName}/{box.Name}";
         try
         {
             var result = await driver.GetBoxFilesAsync(device, box);
+
             if (!result.Success || result.Data == null)
             {
-                AppLogger.Log("FileWatch",
-                    $"[{device.DisplayName}/{box.Name}] 조회 실패: {result.Message}");
+                AppLogger.Log("FileWatch", $"[{tag}] 조회 실패: {result.Message}");
                 foreach (var line in result.Logs)
                     AppLogger.Log("FileWatch", $"  └ {line}");
                 return false;
@@ -93,52 +94,36 @@ public class FileWatchService : IDisposable
 
             var currentIds = current.Select(f => f.DocId).ToHashSet();
             var previousIds = previous.Select(f => f.DocId).ToHashSet();
-
             var added = currentIds.Except(previousIds).ToList();
             var removed = previousIds.Except(currentIds).ToList();
 
+            AppLogger.Log("FileWatch", $"[{tag}] 조회 성공: 현재 {current.Count}개, 이전 {previous.Count}개");
+
             if (added.Count > 0 || removed.Count > 0)
             {
-                AppLogger.Log("FileWatch",
-                    $"[{device.DisplayName}/{box.Name}] 차이 발견: 신규 {added.Count}, 삭제 {removed.Count}");
+                AppLogger.Log("FileWatch", $"[{tag}] 차이 발견: 신규 {added.Count}, 삭제 {removed.Count}");
 
                 if (added.Count > 0)
                 {
-                    var addedInfo = current
-                        .Where(f => added.Contains(f.DocId))
+                    var addedInfo = current.Where(f => added.Contains(f.DocId))
                         .Select(f => $"{f.Name}({f.DocId})");
-                    AppLogger.Log("FileWatch",
-                        $"  + 신규: {string.Join(", ", addedInfo)}");
+                    AppLogger.Log("FileWatch", $"  + 신규: {string.Join(", ", addedInfo)}");
                 }
                 if (removed.Count > 0)
                 {
-                    var removedInfo = previous
-                        .Where(f => removed.Contains(f.DocId))
+                    var removedInfo = previous.Where(f => removed.Contains(f.DocId))
                         .Select(f => $"{f.Name}({f.DocId})");
-                    AppLogger.Log("FileWatch",
-                        $"  - 삭제: {string.Join(", ", removedInfo)}");
+                    AppLogger.Log("FileWatch", $"  - 삭제: {string.Join(", ", removedInfo)}");
                 }
-
-                FileListStore.Save(device.Id, box.Id, current);
-            }
-            else if (previous.Count == 0 && current.Count > 0)
-            {
-                // 최초 저장
-                AppLogger.Log("FileWatch",
-                    $"[{device.DisplayName}/{box.Name}] 초기 파일 {current.Count}개 기록");
-                FileListStore.Save(device.Id, box.Id, current);
-            }
-            else if (previous.Count == 0 && current.Count == 0)
-            {
-                // 빈 상태 유지 — 저장 파일이 없으면 빈 목록이라도 생성
-                FileListStore.Save(device.Id, box.Id, current);
             }
 
+            // 현재 상태 저장 (변경 유무와 관계없이)
+            FileListStore.Save(device.Id, box.Id, current);
             return true;
         }
         catch (Exception ex)
         {
-            AppLogger.Error("FileWatch", $"[{device.DisplayName}/{box.Name}] 조회 실패", ex);
+            AppLogger.Error("FileWatch", $"[{tag}] 조회 예외", ex);
             return false;
         }
     }
