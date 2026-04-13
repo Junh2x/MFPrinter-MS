@@ -598,37 +598,66 @@ public class SindohDriver : IMfpDriver
         finally { /* 세션은 캐시에서 관리 */ }
     }
 
-    /// <summary>box_detail.json에서 파일 목록 파싱</summary>
+    /// <summary>box_detail.json에서 파일 목록 파싱. Job.BoxInfoList.BoxJobInfoList.BoxJobInfo 경로</summary>
     private static List<BoxFile> ParseSindohBoxFiles(string json)
     {
         var files = new List<BoxFile>();
-
-        // BoxJobInfo는 파일 1개면 {object}, 여러 개면 [array]
-        // 두 경우 모두 처리
-        var jobRegex = new Regex(
-            @"""BoxJobID""\s*:\s*""(\d+)""[^{}]*?""JobName""\s*:\s*""([^""]*)""[^{}]*?""CreateTime""\s*:\s*\{\s*""Year""\s*:\s*""(\d+)""\s*,\s*""Month""\s*:\s*""(\d+)""\s*,\s*""Day""\s*:\s*""(\d+)""\s*,\s*""Hour""\s*:\s*""(\d+)""\s*,\s*""Minute""\s*:\s*""(\d+)""",
-            RegexOptions.Singleline);
-
-        foreach (Match m in jobRegex.Matches(json))
+        try
         {
-            var file = new BoxFile
+            using var doc = JsonDocument.Parse(json);
+            if (!doc.RootElement.TryGetProperty("MFP", out var mfp)) return files;
+            if (!mfp.TryGetProperty("Job", out var job)) return files;
+            if (!job.TryGetProperty("BoxInfoList", out var boxInfoList)) return files;
+            if (!boxInfoList.TryGetProperty("BoxJobInfoList", out var boxJobInfoList)) return files;
+            if (!boxJobInfoList.TryGetProperty("BoxJobInfo", out var boxJobInfo)) return files;
+
+            // 단일 객체 또는 배열
+            if (boxJobInfo.ValueKind == JsonValueKind.Array)
             {
-                DocId = m.Groups[1].Value,
-                Name = m.Groups[2].Value,
-                PageCount = 1,
-                Size = "",
-            };
-            if (int.TryParse(m.Groups[3].Value, out var y) &&
-                int.TryParse(m.Groups[4].Value, out var mo) &&
-                int.TryParse(m.Groups[5].Value, out var d) &&
-                int.TryParse(m.Groups[6].Value, out var h) &&
-                int.TryParse(m.Groups[7].Value, out var mi))
-            {
-                try { file.ScannedAt = new DateTime(y, mo, d, h, mi, 0); } catch { }
+                foreach (var job2 in boxJobInfo.EnumerateArray())
+                    AddFileFromJson(job2, files);
             }
-            files.Add(file);
+            else if (boxJobInfo.ValueKind == JsonValueKind.Object)
+            {
+                AddFileFromJson(boxJobInfo, files);
+            }
         }
+        catch { /* 파싱 실패 시 빈 목록 */ }
 
         return files;
+    }
+
+    private static void AddFileFromJson(JsonElement job, List<BoxFile> files)
+    {
+        var file = new BoxFile
+        {
+            DocId = job.TryGetProperty("BoxJobID", out var id) ? (id.GetString() ?? "") : "",
+            Name = job.TryGetProperty("JobName", out var n) ? (n.GetString() ?? "") : "",
+            PageCount = 1,
+            Size = "",
+        };
+
+        if (job.TryGetProperty("JobTime", out var jt)
+            && jt.TryGetProperty("CreateTime", out var ct)
+            && ct.TryGetProperty("Year", out var y)
+            && ct.TryGetProperty("Month", out var mo)
+            && ct.TryGetProperty("Day", out var d)
+            && ct.TryGetProperty("Hour", out var h)
+            && ct.TryGetProperty("Minute", out var mi))
+        {
+            try
+            {
+                file.ScannedAt = new DateTime(
+                    int.Parse(y.GetString()!),
+                    int.Parse(mo.GetString()!),
+                    int.Parse(d.GetString()!),
+                    int.Parse(h.GetString()!),
+                    int.Parse(mi.GetString()!), 0);
+            }
+            catch { }
+        }
+
+        if (!string.IsNullOrEmpty(file.DocId))
+            files.Add(file);
     }
 }
