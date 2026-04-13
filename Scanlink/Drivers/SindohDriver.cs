@@ -571,48 +571,63 @@ public class SindohDriver : IMfpDriver
                 }, $"{baseUrl}/wcd/spa_main.html");
             result.Logs.Add($"[신도파일] 진입 응답: {enterResp.Length}자 — 앞200자: {enterResp[..Math.Min(200, enterResp.Length)]}");
 
-            // Step 3: 파일 목록 요청 (box_detail.json) — waitmove 응답 시 polling
-            string detailResp = "";
-            var taskNo = "0";
-            for (var attempt = 0; attempt < 20; attempt++)
+            // Step 3-A: box_detail.json 최초 요청 → waitmsg 엔드포인트로 polling 시작
+            var detailReq = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/wcd/box_detail.json")
             {
-                var body = attempt == 0
-                    ? "waitend=true&TaskNo=0&_="
-                    : $"TaskNo={taskNo}";
+                Content = new StringContent("waitend=true&TaskNo=0&_=", Encoding.UTF8, "application/x-www-form-urlencoded")
+            };
+            detailReq.Headers.Add("Referer", $"{baseUrl}/wcd/spa_main.html");
+            detailReq.Headers.Add("Accept", "application/json, text/javascript, */*; q=0.01");
+            var firstResp = await (await client.SendAsync(detailReq)).Content.ReadAsStringAsync();
+            result.Logs.Add($"[신도파일] box_detail.json 초기 응답: {firstResp.Length}자");
 
-                var detailReq = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/wcd/box_detail.json")
+            var taskNo = "0";
+            var taskMatch = Regex.Match(firstResp, @"""ParamValue""\s*:\s*""([^""]+)""");
+            if (taskMatch.Success) taskNo = taskMatch.Groups[1].Value;
+
+            // Step 3-B: /wcd/waitmsg polling
+            string detailResp = firstResp;
+            var ready = false;
+            for (var attempt = 0; attempt < 30; attempt++)
+            {
+                var waitReq = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/wcd/waitmsg")
                 {
-                    Content = new StringContent(body, Encoding.UTF8, "application/x-www-form-urlencoded")
+                    Content = new StringContent($"TaskNo={taskNo}&_=", Encoding.UTF8, "application/x-www-form-urlencoded")
                 };
-                detailReq.Headers.Add("Referer", $"{baseUrl}/wcd/spa_main.html");
-                detailReq.Headers.Add("Accept", "application/json, text/javascript, */*; q=0.01");
-                detailResp = await (await client.SendAsync(detailReq)).Content.ReadAsStringAsync();
+                waitReq.Headers.Add("Referer", $"{baseUrl}/wcd/spa_main.html");
+                waitReq.Headers.Add("Accept", "application/json, text/javascript, */*; q=0.01");
+                var waitResp = await (await client.SendAsync(waitReq)).Content.ReadAsStringAsync();
+                result.Logs.Add($"[신도파일] waitmsg {attempt + 1}: {waitResp.Length}자");
 
-                result.Logs.Add($"[신도파일] box_detail.json 시도 {attempt + 1}: {detailResp.Length}자");
-
-                // wait 응답이면 대기 후 재시도 (wait.xsl, waitmove.xsl 등)
-                if (Regex.IsMatch(detailResp, @"""TemplateName""\s*:\s*""wait[^""]*"""))
+                // waitend=true → 데이터 준비 완료
+                if (waitResp.Contains("\"waitend\":\"true\""))
                 {
-                    var paramMatch = Regex.Match(detailResp, @"""ParamValue""\s*:\s*""([^""]+)""");
-                    var intervalMatch = Regex.Match(detailResp, @"""Interval""\s*:\s*""(\d+)""");
-                    if (paramMatch.Success) taskNo = paramMatch.Groups[1].Value;
-                    var interval = intervalMatch.Success ? int.Parse(intervalMatch.Groups[1].Value) : 200;
-                    result.Logs.Add($"[신도파일] wait 응답 — TaskNo={taskNo}, {interval}ms 대기 후 재시도");
-                    await Task.Delay(interval);
-                    continue;
-                }
-
-                // Job 데이터가 있으면 완료
-                if (detailResp.Contains("\"Job\":"))
-                {
-                    result.Logs.Add("[신도파일] Job 데이터 수신 완료");
+                    result.Logs.Add("[신도파일] waitend=true — 데이터 준비 완료");
+                    ready = true;
                     break;
                 }
 
-                // 기타 응답
-                result.Logs.Add($"[신도파일] 예상 외 응답 앞300자: {detailResp[..Math.Min(300, detailResp.Length)]}");
-                break;
+                // 계속 wait → Interval만큼 대기
+                var intervalMatch = Regex.Match(waitResp, @"""Interval""\s*:\s*""(\d+)""");
+                var interval = intervalMatch.Success ? int.Parse(intervalMatch.Groups[1].Value) : 200;
+                await Task.Delay(Math.Min(interval, 500));  // 최대 500ms 대기 제한
             }
+
+            if (!ready)
+            {
+                result.Logs.Add("[신도파일] waitmsg 타임아웃");
+                return DriverResult<List<BoxFile>>.Fail("데이터 준비 타임아웃", result.Logs);
+            }
+
+            // Step 3-C: 최종 box_detail.json 요청 — 실제 데이터
+            var finalReq = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/wcd/box_detail.json")
+            {
+                Content = new StringContent($"TaskNo={taskNo}&waitend=true", Encoding.UTF8, "application/x-www-form-urlencoded")
+            };
+            finalReq.Headers.Add("Referer", $"{baseUrl}/wcd/spa_main.html");
+            finalReq.Headers.Add("Accept", "application/json, text/javascript, */*; q=0.01");
+            detailResp = await (await client.SendAsync(finalReq)).Content.ReadAsStringAsync();
+            result.Logs.Add($"[신도파일] 최종 box_detail.json: {detailResp.Length}자");
 
             // 응답 원본 저장 (디버깅)
             try
