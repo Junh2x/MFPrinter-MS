@@ -87,6 +87,9 @@ public class FileWatchService : IDisposable
             {
                 AppLogger.Log("FileWatch",
                     $"[{device.DisplayName}/{box.Name}] 조회 실패: {result.Message}");
+                // 상세 내부 로그도 전부 출력
+                foreach (var line in result.Logs)
+                    AppLogger.Log("FileWatch", $"  └ {line}");
                 return false;
             }
 
