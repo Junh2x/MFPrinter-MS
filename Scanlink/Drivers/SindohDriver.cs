@@ -641,6 +641,16 @@ public class SindohDriver : IMfpDriver
                 result.Logs.Add($"[신도파일] BoxJobInfo 없음. 앞500자: {detailResp[..Math.Min(500, detailResp.Length)]}");
             }
 
+            // 응답의 박스 번호가 요청한 박스와 일치하는지 검증
+            var actualBoxId = ExtractBoxId(detailResp);
+            result.Logs.Add($"[신도파일] 응답의 BoxID={actualBoxId}, 요청={boxNum}");
+            if (actualBoxId != null && actualBoxId != boxNum)
+            {
+                result.Logs.Add($"[신도파일][WARN] 박스 불일치 — 세션 오염, 무효화");
+                InvalidateSession(device.Ip);
+                return DriverResult<List<BoxFile>>.Fail($"박스 불일치 (응답={actualBoxId}, 요청={boxNum})", result.Logs);
+            }
+
             // JSON 파싱
             var files = ParseSindohBoxFiles(detailResp);
             result.Logs.Add($"[신도파일] 파싱된 파일 {files.Count}개");
@@ -660,6 +670,25 @@ public class SindohDriver : IMfpDriver
             result.Message = $"파일 목록 오류: {ex.Message}";
             return result;
         }
+    }
+
+    /// <summary>box_detail.json 응답에서 실제 박스 ID 추출 (Job.BoxInfoList.BoxInfo.BoxID)</summary>
+    private static string? ExtractBoxId(string json)
+    {
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            if (doc.RootElement.TryGetProperty("MFP", out var mfp)
+                && mfp.TryGetProperty("Job", out var job)
+                && job.TryGetProperty("BoxInfoList", out var bil)
+                && bil.TryGetProperty("BoxInfo", out var bi)
+                && bi.TryGetProperty("BoxID", out var id))
+            {
+                return id.GetString();
+            }
+        }
+        catch { }
+        return null;
     }
 
     /// <summary>box_detail.json에서 파일 목록 파싱. Job.BoxInfoList.BoxJobInfoList.BoxJobInfo 경로</summary>

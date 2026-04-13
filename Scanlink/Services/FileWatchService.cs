@@ -41,28 +41,36 @@ public class FileWatchService : IDisposable
     private async Task TickAsync()
     {
         if (!await _lock.WaitAsync(0)) return;
+        var sw = System.Diagnostics.Stopwatch.StartNew();
         try
         {
             var devices = _deviceService.Devices.ToList();
             var boxes = _scanBoxService.ScanBoxes.ToList();
-            var totalBoxes = 0;
-            var failed = 0;
+            var totalBoxes = boxes.Count;
+            var failedCount = 0;
 
-            foreach (var device in devices)
+            // 기기별 병렬 실행 (같은 기기 내 박스는 순차 — 세션 공유)
+            var deviceTasks = devices.Select(async device =>
             {
                 var driver = DriverFactory.GetDriver(device.Brand);
-                if (driver == null) continue;
+                if (driver == null) return 0;
 
                 var deviceBoxes = boxes.Where(b => b.MfpDeviceId == device.Id).ToList();
-                totalBoxes += deviceBoxes.Count;
+                var localFailed = 0;
                 foreach (var box in deviceBoxes)
                 {
                     if (!await CheckBoxAsync(driver, device, box))
-                        failed++;
+                        localFailed++;
                 }
-            }
+                return localFailed;
+            }).ToList();
 
-            AppLogger.Log("FileWatch", $"조회 완료: 기기 {devices.Count}대, 박스 {totalBoxes}개, 실패 {failed}건");
+            var results = await Task.WhenAll(deviceTasks);
+            failedCount = results.Sum();
+
+            sw.Stop();
+            AppLogger.Log("FileWatch",
+                $"조회 완료: 기기 {devices.Count}대, 박스 {totalBoxes}개, 실패 {failedCount}건, 소요 {sw.ElapsedMilliseconds}ms");
         }
         catch (Exception ex)
         {
