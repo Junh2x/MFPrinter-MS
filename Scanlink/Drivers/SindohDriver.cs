@@ -479,9 +479,118 @@ public class SindohDriver : IMfpDriver
         return null;
     }
 
-    /// <summary>신도 파일 목록 — 추후 구현</summary>
-    public Task<DriverResult<List<BoxFile>>> GetBoxFilesAsync(MfpDevice device, ScanBox box)
+    /// <summary>신도 박스 내 파일 목록 조회 (3단계)</summary>
+    public async Task<DriverResult<List<BoxFile>>> GetBoxFilesAsync(MfpDevice device, ScanBox box)
     {
-        return Task.FromResult(DriverResult<List<BoxFile>>.Ok(new List<BoxFile>(), "신도 파일 목록 미구현"));
+        var result = new DriverResult<List<BoxFile>> { Logs = [] };
+        HttpClient? client = null;
+        try
+        {
+            result.Logs.Add($"[신도파일] 박스 '{box.Name}' 파일 목록 조회");
+
+            string? token; string baseUrl; List<string> loginLogs;
+            (client, token, baseUrl, loginLogs) = await InitSessionAsync(device);
+            result.Logs.AddRange(loginLogs);
+            if (client == null || token == null)
+                return DriverResult<List<BoxFile>>.Fail("세션 실패", result.Logs);
+
+            // 박스 번호 찾기
+            var listResp = await PostJsonAsync(client, $"{baseUrl}/wcd/api/AppReqGetUserBoxList",
+                new {
+                    BoxListCondition = new {
+                        SearchKey = "None", WellUse = "false",
+                        BoxAttribute = new { Category = "Functional", Type = "User", Attribute = "AllAttribute" },
+                        ObtainCondition = new { Type = "OffsetList", OffsetRange = new { Start = "1", Length = "50" } }
+                    },
+                    Token = token
+                }, $"{baseUrl}/wcd/spa_main.html");
+
+            var boxNum = FindBoxNumber(listResp, box.Name);
+            if (boxNum == null)
+                return DriverResult<List<BoxFile>>.Fail($"박스 '{box.Name}' 찾을 수 없음", result.Logs);
+
+            result.Logs.Add($"[신도파일] 박스 번호: {boxNum}");
+
+            // Step 1: 파일 관리 쿠키로 전환 (F_ULU → F_UOU)
+            var uri = new Uri(baseUrl);
+            var cookieContainer = (((HttpClientHandler)typeof(HttpMessageInvoker).GetField("_handler",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                !.GetValue(client)!)).CookieContainer;
+            cookieContainer.Add(uri, new Cookie("usr", "F_UOU"));
+
+            // Step 2: 박스 진입 (_105_000_ULU000) — 비밀번호 인증
+            var pw = box.Password ?? "";
+            result.Logs.Add($"[신도파일] 박스 진입 (비밀번호: {(string.IsNullOrEmpty(pw) ? "없음" : "있음")})");
+            await PostJsonAsync(client,
+                $"{baseUrl}/wcd/api/AppReqSetCustomMessage/_105_000_ULU000",
+                new {
+                    func = "PSL_F_UOUUser_BOX",
+                    H_BID = boxNum, T_BID = boxNum, P_BPA = pw,
+                    h_token = token, H_PID = "-1", H_IPA = "On",
+                    H_BAT = "Public", _ = "",
+                }, $"{baseUrl}/wcd/spa_main.html");
+
+            // Step 3: 파일 목록 요청 (box_detail.json)
+            var detailReq = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/wcd/box_detail.json")
+            {
+                Content = new StringContent("waitend=true&TaskNo=0&_=", Encoding.UTF8, "application/x-www-form-urlencoded")
+            };
+            detailReq.Headers.Add("Referer", $"{baseUrl}/wcd/spa_main.html");
+            detailReq.Headers.Add("Accept", "application/json, text/javascript, */*; q=0.01");
+            var detailResp = await (await client.SendAsync(detailReq)).Content.ReadAsStringAsync();
+
+            result.Logs.Add($"[신도파일] 응답: {detailResp.Length}자");
+
+            // JSON 파싱: Job.BoxInfoList.BoxJobInfoList.BoxJobInfo (배열 또는 단일 객체)
+            var files = ParseSindohBoxFiles(detailResp);
+            result.Logs.Add($"[신도파일] 파일 {files.Count}개");
+
+            result.Success = true;
+            result.Data = files;
+            result.Message = $"{files.Count}개 파일";
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Logs.Add($"[신도파일][ERROR] {ex.Message}");
+            result.Success = false;
+            result.Message = $"파일 목록 오류: {ex.Message}";
+            return result;
+        }
+        finally { client?.Dispose(); }
+    }
+
+    /// <summary>box_detail.json에서 파일 목록 파싱</summary>
+    private static List<BoxFile> ParseSindohBoxFiles(string json)
+    {
+        var files = new List<BoxFile>();
+
+        // BoxJobInfo는 파일 1개면 {object}, 여러 개면 [array]
+        // 두 경우 모두 처리
+        var jobRegex = new Regex(
+            @"""BoxJobID""\s*:\s*""(\d+)""[^{}]*?""JobName""\s*:\s*""([^""]*)""[^{}]*?""CreateTime""\s*:\s*\{\s*""Year""\s*:\s*""(\d+)""\s*,\s*""Month""\s*:\s*""(\d+)""\s*,\s*""Day""\s*:\s*""(\d+)""\s*,\s*""Hour""\s*:\s*""(\d+)""\s*,\s*""Minute""\s*:\s*""(\d+)""",
+            RegexOptions.Singleline);
+
+        foreach (Match m in jobRegex.Matches(json))
+        {
+            var file = new BoxFile
+            {
+                DocId = m.Groups[1].Value,
+                Name = m.Groups[2].Value,
+                PageCount = 1,
+                Size = "",
+            };
+            if (int.TryParse(m.Groups[3].Value, out var y) &&
+                int.TryParse(m.Groups[4].Value, out var mo) &&
+                int.TryParse(m.Groups[5].Value, out var d) &&
+                int.TryParse(m.Groups[6].Value, out var h) &&
+                int.TryParse(m.Groups[7].Value, out var mi))
+            {
+                try { file.ScannedAt = new DateTime(y, mo, d, h, mi, 0); } catch { }
+            }
+            files.Add(file);
+        }
+
+        return files;
     }
 }
