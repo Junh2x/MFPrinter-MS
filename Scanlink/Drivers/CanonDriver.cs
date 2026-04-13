@@ -142,17 +142,40 @@ public class CanonDriver : IMfpDriver
         return (ParseBoxList(html), html);
     }
 
-    /// <summary>박스 속성 페이지 (bprop.cgi) → Token 획득</summary>
-    private static async Task<(string? token, string debug)> GetBoxPropTokenAsync(HttpClient client, string baseUrl, string boxNo)
+    /// <summary>박스 진입 (blogin.cgi) — 비밀번호 유무에 따라 다른 페이로드</summary>
+    private static async Task BoxLoginAsync(HttpClient client, string baseUrl, string boxNo, string password)
     {
-        // Step 1: 박스 로그인 (빈 박스는 비밀번호 없이)
-        var loginBody = $"BOX_No={boxNo}&Password=&Dummy={Dummy()}";
-        var loginReq = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/rps/blogin.cgi")
+        string url, body, referer;
+        if (string.IsNullOrEmpty(password))
         {
-            Content = new StringContent(loginBody, Encoding.UTF8, "application/x-www-form-urlencoded")
+            // 비밀번호 없음
+            url = $"{baseUrl}/rps/blogin.cgi";
+            body = $"BOX_No={boxNo}&BoxKind=UserBox&Dummy={Dummy()}&Cookie=";
+            referer = $"{baseUrl}/rps/bpbl.cgi?CorePGTAG=16&BoxKind=UserBox&FromTopPage=1&Dummy={Dummy()}";
+        }
+        else
+        {
+            // 비밀번호 있음
+            url = $"{baseUrl}/rps/blogin.cgi?";
+            body = $"BOX_No={boxNo}&DocID=&PgStart=&PIDS=&Password={Uri.EscapeDataString(password)}" +
+                   $"&URLDirect=&BoxKind=UserBox&CorePGTAG=16&Dummy={Dummy()}";
+            referer = $"{baseUrl}/rps/blogin.cgi";
+        }
+
+        var req = new HttpRequestMessage(HttpMethod.Post, url)
+        {
+            Content = new StringContent(body, Encoding.UTF8, "application/x-www-form-urlencoded")
         };
-        loginReq.Headers.Add("Referer", $"{baseUrl}/rps/bpbl.cgi?CorePGTAG=16&BoxKind=UserBox");
-        await client.SendAsync(loginReq);
+        req.Headers.Add("Referer", referer);
+        req.Headers.Add("Origin", baseUrl);
+        await client.SendAsync(req);
+    }
+
+    /// <summary>박스 속성 페이지 (bprop.cgi) → Token 획득</summary>
+    private static async Task<(string? token, string debug)> GetBoxPropTokenAsync(HttpClient client, string baseUrl, string boxNo, string password = "")
+    {
+        // Step 1: 박스 진입 (blogin.cgi)
+        await BoxLoginAsync(client, baseUrl, boxNo, password);
 
         // Step 2: 박스 속성 페이지 접근 (POST)
         var propBody = $"BOX_No={boxNo}&Dummy={Dummy()}";
@@ -165,21 +188,17 @@ public class CanonDriver : IMfpDriver
 
         var html = await (await client.SendAsync(propReq)).Content.ReadAsStringAsync();
 
-        // Token 추출 시도
+        // Token 추출
         var token = ExtractTokenFromHidden(html);
-
-        // 다른 형식도 시도: Token=NNNN 패턴
         if (token == null)
         {
             var m = Regex.Match(html, @"Token[""'\s=]+(\d{10,})");
             if (m.Success) token = m.Groups[1].Value;
         }
 
-        // 디버깅용 앞부분
         var debug = $"HTML {html.Length}자";
         if (token == null)
         {
-            // Token 관련 문자열 찾기
             var snippet = "";
             var idx = html.IndexOf("Token", StringComparison.OrdinalIgnoreCase);
             if (idx >= 0)
@@ -347,8 +366,8 @@ public class CanonDriver : IMfpDriver
 
             result.Logs.Add($"[추가] 빈 박스 선택: {emptyBox.boxNo}");
 
-            // 박스 속성 페이지 → Token
-            var (token, dbg) = await GetBoxPropTokenAsync(client, baseUrl, emptyBox.boxNo);
+            // 박스 속성 페이지 → Token (빈 박스는 비밀번호 없음)
+            var (token, dbg) = await GetBoxPropTokenAsync(client, baseUrl, emptyBox.boxNo, "");
             result.Logs.Add($"[추가] Token 응답: {dbg}");
             if (token == null)
             {
@@ -406,7 +425,7 @@ public class CanonDriver : IMfpDriver
 
             var boxNo = box.SlotIndex.ToString("D2");
 
-            var (token, dbg) = await GetBoxPropTokenAsync(client, baseUrl, boxNo);
+            var (token, dbg) = await GetBoxPropTokenAsync(client, baseUrl, boxNo, oldPassword ?? "");
             result.Logs.Add($"[수정] Token 응답: {dbg}");
             if (token == null)
                 return DriverResult.Fail("Token 획득 실패", result.Logs);
@@ -487,18 +506,9 @@ public class CanonDriver : IMfpDriver
 
             var boxNo = box.SlotIndex.ToString("D2");
 
-            // 박스 로그인 (blogin.cgi) — 비밀번호 있으면 인증 필요
-            if (!string.IsNullOrEmpty(box.Password))
-            {
-                result.Logs.Add("[파일목록] 박스 로그인 중...");
-                var loginBody = $"BOX_No={boxNo}&Password={Uri.EscapeDataString(box.Password)}&Dummy={Dummy()}";
-                var loginReq = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/rps/blogin.cgi")
-                {
-                    Content = new StringContent(loginBody, Encoding.UTF8, "application/x-www-form-urlencoded")
-                };
-                loginReq.Headers.Add("Referer", $"{baseUrl}/rps/bpbl.cgi?CorePGTAG=16&BoxKind=UserBox");
-                await client.SendAsync(loginReq);
-            }
+            // 박스 진입
+            result.Logs.Add("[파일목록] 박스 진입 중...");
+            await BoxLoginAsync(client, baseUrl, boxNo, box.Password ?? "");
 
             // 파일 목록
             var body = $"BOX_No={boxNo}&DocStart=1&DIDS=&Dummy={Dummy()}";
@@ -547,17 +557,8 @@ public class CanonDriver : IMfpDriver
 
             var boxNo = box.SlotIndex.ToString("D2");
 
-            // 박스 로그인
-            if (!string.IsNullOrEmpty(box.Password))
-            {
-                var loginBody = $"BOX_No={boxNo}&Password={Uri.EscapeDataString(box.Password)}&Dummy={Dummy()}";
-                var loginReq = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/rps/blogin.cgi")
-                {
-                    Content = new StringContent(loginBody, Encoding.UTF8, "application/x-www-form-urlencoded")
-                };
-                loginReq.Headers.Add("Referer", $"{baseUrl}/rps/bpbl.cgi?CorePGTAG=16&BoxKind=UserBox");
-                await client.SendAsync(loginReq);
-            }
+            // 박스 진입
+            await BoxLoginAsync(client, baseUrl, boxNo, box.Password ?? "");
 
             var url = $"{baseUrl}/rps/image.jpg?BOX_No={boxNo}&DocID={docId}&PageNo={pageNo}&Mode=PJPEG&EFLG=true&Dummy={Dummy()}";
             var req = new HttpRequestMessage(HttpMethod.Get, url);
@@ -606,7 +607,7 @@ public class CanonDriver : IMfpDriver
 
             var boxNo = box.SlotIndex.ToString("D2");
 
-            var (token, dbg) = await GetBoxPropTokenAsync(client, baseUrl, boxNo);
+            var (token, dbg) = await GetBoxPropTokenAsync(client, baseUrl, boxNo, box.Password ?? "");
             result.Logs.Add($"[삭제] Token 응답: {dbg}");
             if (token == null)
                 return DriverResult.Fail("Token 획득 실패", result.Logs);
