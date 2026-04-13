@@ -504,6 +504,22 @@ public class SindohDriver : IMfpDriver
     // 유틸
     // ──────────────────────────────────────────────
 
+    /// <summary>
+    /// usr 쿠키를 주어진 값으로 교체. 기존 usr 쿠키(path=/, path=/wcd 모두) 제거 후 새로 추가.
+    /// 서버가 path=/wcd로 설정하기 때문에 path 중복을 피해야 함.
+    /// </summary>
+    private static void ReplaceUsrCookie(CookieContainer cookies, Uri baseUri, Uri wcdUri, string value)
+    {
+        // 기존 usr 쿠키 모두 만료
+        foreach (Cookie c in cookies.GetCookies(wcdUri))
+            if (c.Name == "usr") c.Expired = true;
+        foreach (Cookie c in cookies.GetCookies(baseUri))
+            if (c.Name == "usr") c.Expired = true;
+
+        // path=/wcd 로 재설정 (서버와 동일)
+        cookies.Add(wcdUri, new Cookie("usr", value, "/wcd"));
+    }
+
     /// <summary>박스 목록 응답에서 이름으로 BoxID 찾기</summary>
     private static string? FindBoxNumber(string json, string boxName)
     {
@@ -555,7 +571,8 @@ public class SindohDriver : IMfpDriver
 
             // Step 1: 파일 관리 쿠키로 전환 (F_ULU → F_UOU)
             var uri = new Uri(baseUrl);
-            session.Cookies.Add(uri, new Cookie("usr", "F_UOU"));
+            var wcdUri = new Uri($"{baseUrl}/wcd/");
+            ReplaceUsrCookie(session.Cookies, uri, wcdUri, "F_UOU");
             result.Logs.Add("[신도파일] 쿠키 usr=F_UOU 설정");
 
             // Step 2: 박스 진입 (_105_000_ULU000) — 비밀번호 인증
@@ -803,9 +820,11 @@ public class SindohDriver : IMfpDriver
             if (boxNum == null)
                 return DriverResult<byte[]>.Fail($"박스 '{box.Name}' 찾을 수 없음", result.Logs);
 
-            // Step 1: 쿠키 전환 F_UOU_FileDownload
+            // Step 1: 쿠키 전환 F_UOU_FileDownload (기존 usr 쿠키 모두 만료 후 path=/wcd로 재설정)
             var uri = new Uri(baseUrl);
-            session.Cookies.Add(uri, new Cookie("usr", "F_UOU_FileDownload"));
+            var wcdUri = new Uri($"{baseUrl}/wcd/");
+            ReplaceUsrCookie(session.Cookies, uri, wcdUri, "F_UOU_FileDownload");
+            result.Logs.Add("[신도다운] 쿠키 usr=F_UOU_FileDownload");
 
             // Step 2: 다운로드 요청 (_105_000_ULU004)
             var pw = box.Password ?? "";
@@ -835,22 +854,27 @@ public class SindohDriver : IMfpDriver
                     F_UOU_R_PAG = "MultiPage",
                     R_SPG = "Off",
                 }, $"{baseUrl}/wcd/spa_main.html");
-            result.Logs.Add($"[신도다운] 준비 응답: {prepResp.Length}자");
+            result.Logs.Add($"[신도다운] 준비 응답({prepResp.Length}자): {prepResp[..Math.Min(250, prepResp.Length)]}");
 
-            // Step 3: progress polling (box_detail 대신 progress 엔드포인트)
-            var taskMatch = Regex.Match(prepResp, @"""ParamValue""\s*:\s*""([^""]+)""");
-            var taskNo = taskMatch.Success ? taskMatch.Groups[1].Value : "0";
+            // Step 3: 초기 Interval만큼 대기 후 progress 엔드포인트로 폴링 (본문 없음)
+            var initIntervalMatch = Regex.Match(prepResp, @"""Interval""\s*:\s*""(\d+)""");
+            var initInterval = initIntervalMatch.Success ? int.Parse(initIntervalMatch.Groups[1].Value) : 2500;
+            await Task.Delay(Math.Min(initInterval, 2500));
+
             var ready = false;
-            for (var attempt = 0; attempt < 60; attempt++)
+            string? lastProg = null;
+            for (var attempt = 0; attempt < 30; attempt++)
             {
                 var progReq = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/wcd/progress")
                 {
-                    Content = new StringContent($"TaskNo={taskNo}&_=", Encoding.UTF8, "application/x-www-form-urlencoded")
+                    Content = new StringContent("_=", Encoding.UTF8, "application/x-www-form-urlencoded")
                 };
                 progReq.Headers.Add("Referer", $"{baseUrl}/wcd/spa_main.html");
                 progReq.Headers.Add("Accept", "application/json, text/javascript, */*; q=0.01");
+                progReq.Headers.Add("X-Requested-With", "XMLHttpRequest");
                 var progResp = await (await client.SendAsync(progReq)).Content.ReadAsStringAsync();
-                result.Logs.Add($"[신도다운] progress {attempt + 1}: {progResp.Length}자");
+                lastProg = progResp;
+                result.Logs.Add($"[신도다운] progress {attempt + 1}({progResp.Length}자): {progResp[..Math.Min(200, progResp.Length)]}");
 
                 if (progResp.Contains("\"waitend\":\"true\"") || progResp.Contains("\"RedirectUrl\":\"doc"))
                 {
@@ -860,37 +884,59 @@ public class SindohDriver : IMfpDriver
                 }
 
                 var intervalMatch = Regex.Match(progResp, @"""Interval""\s*:\s*""(\d+)""");
-                var interval = intervalMatch.Success ? int.Parse(intervalMatch.Groups[1].Value) : 500;
-                await Task.Delay(Math.Min(interval, 1000));
+                var interval = intervalMatch.Success ? int.Parse(intervalMatch.Groups[1].Value) : 1500;
+                await Task.Delay(Math.Min(interval, 2500));
             }
 
+            // 폴링이 끝나지 않아도 다운로드 GET을 시도 (폴링이 잘못된 엔드포인트일 수 있음)
             if (!ready)
-            {
-                result.Logs.Add("[신도다운] 타임아웃");
-                return DriverResult<byte[]>.Fail("다운로드 준비 타임아웃", result.Logs);
-            }
+                result.Logs.Add("[신도다운][WARN] 폴링 미완료, PDF GET 직접 시도");
 
-            // Step 4: 실제 PDF GET
+            // Step 4: 실제 PDF GET (PDF가 아니면 대기 후 최대 5회 재시도)
             var pdfUrl = $"{baseUrl}/wcd/doc/{Uri.EscapeDataString(file.Name)}.pdf" +
                 $"?func=PSL_F_UOU_DLD&h_token={token}" +
                 $"&cginame1={Uri.EscapeDataString($"doc/{file.Name}.pdf")}" +
                 $"&cginame2={Uri.EscapeDataString($"doc/{file.Name}.pdf")}" +
                 $"&H_BAK=0&H_TAB=&H_DLV=";
 
-            result.Logs.Add($"[신도다운] PDF 다운로드: {pdfUrl}");
-            var pdfReq = new HttpRequestMessage(HttpMethod.Get, pdfUrl);
-            pdfReq.Headers.Add("Referer", $"{baseUrl}/wcd/spa_contents_frame.tmpl.html");
-            var pdfResp = await client.SendAsync(pdfReq);
+            result.Logs.Add($"[신도다운] PDF GET: {pdfUrl}");
 
-            if (!pdfResp.IsSuccessStatusCode)
-                return DriverResult<byte[]>.Fail($"HTTP {(int)pdfResp.StatusCode}", result.Logs);
+            byte[]? bytes = null;
+            for (var attempt = 0; attempt < 6; attempt++)
+            {
+                var pdfReq = new HttpRequestMessage(HttpMethod.Get, pdfUrl);
+                pdfReq.Headers.Add("Referer", $"{baseUrl}/wcd/spa_contents_frame.tmpl.html");
+                pdfReq.Headers.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+                var pdfResp = await client.SendAsync(pdfReq);
 
-            var bytes = await pdfResp.Content.ReadAsByteArrayAsync();
-            result.Logs.Add($"[신도다운] 완료: {bytes.Length} bytes");
+                if (!pdfResp.IsSuccessStatusCode)
+                {
+                    result.Logs.Add($"[신도다운] GET {attempt + 1}: HTTP {(int)pdfResp.StatusCode}");
+                    ReplaceUsrCookie(session.Cookies, uri, wcdUri, "F_UOU");
+                    return DriverResult<byte[]>.Fail($"HTTP {(int)pdfResp.StatusCode}", result.Logs);
+                }
+
+                var ct = pdfResp.Content.Headers.ContentType?.MediaType ?? "";
+                var data = await pdfResp.Content.ReadAsByteArrayAsync();
+                var isPdf = data.Length >= 4 && data[0] == 0x25 && data[1] == 0x50 && data[2] == 0x44 && data[3] == 0x46; // %PDF
+                result.Logs.Add($"[신도다운] GET {attempt + 1}: CT={ct}, {data.Length}bytes, PDF헤더={isPdf}");
+
+                if (isPdf || ct == "application/octet-stream")
+                {
+                    bytes = data;
+                    break;
+                }
+
+                await Task.Delay(1500);
+            }
 
             // 쿠키 복원 (F_UOU로)
-            session.Cookies.Add(uri, new Cookie("usr", "F_UOU"));
+            ReplaceUsrCookie(session.Cookies, uri, wcdUri, "F_UOU");
 
+            if (bytes == null)
+                return DriverResult<byte[]>.Fail("PDF 응답 수신 실패 (서버가 PDF 반환 안함)", result.Logs);
+
+            result.Logs.Add($"[신도다운] 완료: {bytes.Length} bytes");
             result.Success = true;
             result.Data = bytes;
             result.Message = $"{bytes.Length} bytes";
