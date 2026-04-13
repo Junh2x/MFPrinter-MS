@@ -49,6 +49,8 @@ public class FileWatchService : IDisposable
         {
             var devices = _deviceService.Devices.ToList();
             var boxes = _scanBoxService.ScanBoxes.ToList();
+            var totalBoxes = 0;
+            var failed = 0;
 
             foreach (var device in devices)
             {
@@ -56,11 +58,15 @@ public class FileWatchService : IDisposable
                 if (driver == null) continue;
 
                 var deviceBoxes = boxes.Where(b => b.MfpDeviceId == device.Id).ToList();
+                totalBoxes += deviceBoxes.Count;
                 foreach (var box in deviceBoxes)
                 {
-                    await CheckBoxAsync(driver, device, box);
+                    if (!await CheckBoxAsync(driver, device, box))
+                        failed++;
                 }
             }
+
+            AppLogger.Log("FileWatch", $"조회 완료: 기기 {devices.Count}대, 박스 {totalBoxes}개, 실패 {failed}건");
         }
         catch (Exception ex)
         {
@@ -72,23 +78,27 @@ public class FileWatchService : IDisposable
         }
     }
 
-    private async Task CheckBoxAsync(IMfpDriver driver, MfpDevice device, ScanBox box)
+    private async Task<bool> CheckBoxAsync(IMfpDriver driver, MfpDevice device, ScanBox box)
     {
         try
         {
             var result = await driver.GetBoxFilesAsync(device, box);
-            if (!result.Success || result.Data == null) return;
+            if (!result.Success || result.Data == null)
+            {
+                AppLogger.Log("FileWatch",
+                    $"[{device.DisplayName}/{box.Name}] 조회 실패: {result.Message}");
+                return false;
+            }
 
             var currentIds = result.Data.Select(f => f.DocId).ToHashSet();
             var key = $"{device.Id}/{box.Id}";
 
             if (!_snapshot.TryGetValue(key, out var prevIds))
             {
-                // 최초 관측: 기록만 (변경 로그 출력 안 함)
                 _snapshot[key] = currentIds;
                 AppLogger.Log("FileWatch",
                     $"[{device.DisplayName}/{box.Name}] 초기 파일 {currentIds.Count}개");
-                return;
+                return true;
             }
 
             var added = currentIds.Except(prevIds).ToList();
@@ -110,10 +120,12 @@ public class FileWatchService : IDisposable
             }
 
             _snapshot[key] = currentIds;
+            return true;
         }
         catch (Exception ex)
         {
             AppLogger.Error("FileWatch", $"[{device.DisplayName}/{box.Name}] 조회 실패", ex);
+            return false;
         }
     }
 
