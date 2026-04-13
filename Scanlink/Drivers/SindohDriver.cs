@@ -21,6 +21,32 @@ public class SindohDriver : IMfpDriver
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36";
 
     // ──────────────────────────────────────────────
+    // 세션 캐시 (기기별 재사용)
+    // ──────────────────────────────────────────────
+
+    private sealed class SindohSession
+    {
+        public required HttpClient Client { get; init; }
+        public required string Token { get; set; }
+        public required string BaseUrl { get; init; }
+        public DateTime LastUsed { get; set; } = DateTime.UtcNow;
+    }
+
+    private static readonly System.Collections.Concurrent.ConcurrentDictionary<string, SindohSession> _sessions = new();
+
+    public static void DisposeAllSessions()
+    {
+        foreach (var ip in _sessions.Keys.ToList())
+            InvalidateSession(ip);
+    }
+
+    private static void InvalidateSession(string deviceIp)
+    {
+        if (_sessions.TryRemove(deviceIp, out var old))
+            old.Client.Dispose();
+    }
+
+    // ──────────────────────────────────────────────
     // 세션/토큰
     // ──────────────────────────────────────────────
 
@@ -40,12 +66,20 @@ public class SindohDriver : IMfpDriver
         return (client, cookies);
     }
 
-    /// <summary>신도 웹 접속 → 세션 쿠키 + 토큰 획득</summary>
+    /// <summary>신도 웹 접속 → 세션 쿠키 + 토큰 획득. 캐시된 세션 우선 재사용.</summary>
     private static async Task<(HttpClient? client, string? token, string baseUrl, List<string> logs)>
         InitSessionAsync(MfpDevice device)
     {
         var logs = new List<string>();
         var baseUrl = string.IsNullOrEmpty(device.BaseUrl) ? $"http://{device.Ip}" : device.BaseUrl;
+
+        // 캐시 재사용
+        if (_sessions.TryGetValue(device.Ip, out var cached))
+        {
+            cached.LastUsed = DateTime.UtcNow;
+            return (cached.Client, cached.Token, cached.BaseUrl, logs);
+        }
+
         var (client, cookies) = CreateClient();
         var uri = new Uri(baseUrl);
 
@@ -118,6 +152,10 @@ public class SindohDriver : IMfpDriver
             }
 
             device.BaseUrl = baseUrl;
+
+            // 캐시에 저장 (실패 시까지 재사용)
+            _sessions[device.Ip] = new SindohSession { Client = client, Token = token ?? "", BaseUrl = baseUrl };
+
             return (client, token, baseUrl, logs);
         }
         catch (Exception ex)
@@ -161,7 +199,7 @@ public class SindohDriver : IMfpDriver
         } catch (Exception ex) {
             result.Logs.Add($"[신도][ERROR] {ex.Message}");
             return DriverResult.Fail($"연결 오류: {ex.Message}", result.Logs);
-        } finally { client?.Dispose(); }
+        } finally { /* 세션은 캐시에서 관리 */ }
     }
 
     public Task<DriverResult> SetupAsync(MfpDevice device)
@@ -211,7 +249,7 @@ public class SindohDriver : IMfpDriver
             result.Success = false;
             result.Message = $"조회 오류: {ex.Message}";
             return result;
-        } finally { client?.Dispose(); }
+        } finally { /* 세션은 캐시에서 관리 */ }
     }
 
     // ──────────────────────────────────────────────
@@ -271,7 +309,7 @@ public class SindohDriver : IMfpDriver
             result.Success = false;
             result.Message = $"추가 오류: {ex.Message}";
             return result;
-        } finally { client?.Dispose(); }
+        } finally { /* 세션은 캐시에서 관리 */ }
     }
 
     // ──────────────────────────────────────────────
@@ -354,7 +392,7 @@ public class SindohDriver : IMfpDriver
             result.Success = false;
             result.Message = $"수정 오류: {ex.Message}";
             return result;
-        } finally { client?.Dispose(); }
+        } finally { /* 세션은 캐시에서 관리 */ }
     }
 
     // ──────────────────────────────────────────────
@@ -458,7 +496,7 @@ public class SindohDriver : IMfpDriver
             result.Success = false;
             result.Message = $"삭제 오류: {ex.Message}";
             return result;
-        } finally { client?.Dispose(); }
+        } finally { /* 세션은 캐시에서 관리 */ }
     }
 
     // ──────────────────────────────────────────────
@@ -557,7 +595,7 @@ public class SindohDriver : IMfpDriver
             result.Message = $"파일 목록 오류: {ex.Message}";
             return result;
         }
-        finally { client?.Dispose(); }
+        finally { /* 세션은 캐시에서 관리 */ }
     }
 
     /// <summary>box_detail.json에서 파일 목록 파싱</summary>

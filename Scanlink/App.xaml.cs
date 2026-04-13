@@ -115,8 +115,9 @@ public partial class App : Application
             _trayIcon.Visible = false;
             _trayIcon.Dispose();
         }
-        // 캐논 세션 명시적 로그아웃 + 정리
+        // 세션 정리
         Scanlink.Drivers.CanonDriver.DisposeAllSessions();
+        Scanlink.Drivers.SindohDriver.DisposeAllSessions();
         base.OnExit(e);
     }
 }
