@@ -876,7 +876,12 @@ public class SindohDriver : IMfpDriver
                 lastProg = progResp;
                 result.Logs.Add($"[신도다운] progress {attempt + 1}({progResp.Length}자): {progResp[..Math.Min(200, progResp.Length)]}");
 
-                if (progResp.Contains("\"waitend\":\"true\"") || progResp.Contains("\"RedirectUrl\":\"doc"))
+                // 준비 완료 시그널: ReadyToDownload / UserCgiName:doc/... / waitend / 빈 응답(작업 종료)
+                if (progResp.Length == 0
+                    || progResp.Contains("ReadyToDownload")
+                    || progResp.Contains("\"UserCgiName\"")
+                    || progResp.Contains("\"waitend\":\"true\"")
+                    || progResp.Contains("\"RedirectUrl\":\"doc"))
                 {
                     result.Logs.Add("[신도다운] 준비 완료");
                     ready = true;
