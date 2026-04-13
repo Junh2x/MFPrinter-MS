@@ -66,7 +66,7 @@ public class ScanBoxManageViewModel : ViewModelBase
         var oldLocalFolder = ScanBox.LocalFolder;
         var oldDeleteCycle = ScanBox.DeleteCycle;
 
-        var driver = DriverFactory.GetDriver(Device.Brand);
+        var driver = DriverFactory.GetDriver(Device);
         if (driver != null)
         {
             // 드라이버에 새 값 전달

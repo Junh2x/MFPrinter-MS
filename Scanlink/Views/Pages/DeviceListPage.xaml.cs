@@ -78,7 +78,7 @@ public partial class DeviceListPage : UserControl
     /// <summary>기기 등록 시 브랜드별 초기 설정 실행 후 추가</summary>
     private async Task SetupAndAddDevice(DeviceListViewModel vm, Models.MfpDevice device)
     {
-        var driver = DriverFactory.GetDriver(device.Brand);
+        var driver = DriverFactory.GetDriver(device);
         if (driver != null)
         {
             var result = await driver.SetupAsync(device);

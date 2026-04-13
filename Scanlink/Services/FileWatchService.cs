@@ -54,7 +54,7 @@ public class FileWatchService : IDisposable
             // 기기별 병렬 실행 (같은 기기 내 박스는 순차 — 세션 공유)
             var deviceTasks = devices.Select(async device =>
             {
-                var driver = DriverFactory.GetDriver(device.Brand);
+                var driver = DriverFactory.GetDriver(device);
                 if (driver == null) return 0;
 
                 var deviceBoxes = boxes.Where(b => b.MfpDeviceId == device.Id).ToList();

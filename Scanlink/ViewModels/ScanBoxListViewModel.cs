@@ -75,7 +75,7 @@ public class ScanBoxListViewModel : ViewModelBase
     {
         box.MfpDeviceId = Device.Id;
 
-        var driver = DriverFactory.GetDriver(Device.Brand);
+        var driver = DriverFactory.GetDriver(Device);
         if (driver != null)
         {
             var result = await driver.AddScanBoxAsync(Device, box);
@@ -99,7 +99,7 @@ public class ScanBoxListViewModel : ViewModelBase
     {
         IsDeleting = true;
 
-        var driver = DriverFactory.GetDriver(Device.Brand);
+        var driver = DriverFactory.GetDriver(Device);
         if (driver != null)
         {
             var result = await driver.DeleteScanBoxAsync(Device, box);
