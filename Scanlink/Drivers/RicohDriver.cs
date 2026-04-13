@@ -111,26 +111,53 @@ public class RicohDriver : IMfpDriver
         }
     }
 
-    /// <summary>폴더 목록 조회 → (wimToken, folders)</summary>
-    private static async Task<(string? wimToken, List<(string id, string name)> folders)>
-        ListFoldersAsync(HttpClient client, string baseUrl, List<string> logs)
+    /// <summary>
+    /// 기기별 WIM 프로필 캐시 (entry=관리자, guest=사용자).
+    /// 모델에 따라 지원 프로필이 달라 (예: IM C2010=entry, D430=guest) 자동 감지 후 기억.
+    /// </summary>
+    private static readonly System.Collections.Concurrent.ConcurrentDictionary<string, string> _profileCache = new();
+
+    /// <summary>
+    /// 폴더 목록 조회 → (profile, wimToken, folders).
+    /// 캐시된 프로필 우선, 없으면 entry → guest 순으로 시도하며 wimToken/folder가 유효한 응답을 채택.
+    /// </summary>
+    private static async Task<(string profile, string? wimToken, List<(string id, string name)> folders)>
+        ListFoldersAsync(HttpClient client, string baseUrl, string deviceIp, List<string> logs)
     {
-        var req = new HttpRequestMessage(HttpMethod.Get,
-            $"{baseUrl}/web/entry/ko/webdocbox/folderListPage.cgi");
-        req.Headers.Add("Referer", $"{baseUrl}/web/entry/ko/websys/webArch/topPage.cgi");
-        var html = await (await client.SendAsync(req)).Content.ReadAsStringAsync();
+        var cached = _profileCache.TryGetValue(deviceIp, out var cp) ? cp : null;
+        var candidates = cached != null ? new[] { cached } : new[] { "entry", "guest" };
 
-        var wimToken = ExtractWimToken(html);
-
-        var folders = new List<(string id, string name)>();
-        foreach (Match m in Regex.Matches(html,
-            @"docListPage\.cgi\?selectedFolderId=(\d+)[^>]*>([^<]+)</a>"))
+        foreach (var profile in candidates)
         {
-            folders.Add((m.Groups[1].Value, m.Groups[2].Value.Trim()));
+            var req = new HttpRequestMessage(HttpMethod.Get,
+                $"{baseUrl}/web/{profile}/ko/webdocbox/folderListPage.cgi");
+            req.Headers.Add("Referer", $"{baseUrl}/web/{profile}/ko/websys/webArch/topPage.cgi");
+            var html = await (await client.SendAsync(req)).Content.ReadAsStringAsync();
+            var wimToken = ExtractWimToken(html);
+
+            var folders = new List<(string id, string name)>();
+            foreach (Match m in Regex.Matches(html,
+                @"docListPage\.cgi\?selectedFolderId=(\d+)[^>]*>([^<]+)</a>"))
+            {
+                folders.Add((m.Groups[1].Value, m.Groups[2].Value.Trim()));
+            }
+
+            // folderListPage 응답으로 판정: wimToken 있음 AND (folder 리스트 발견 OR 최소한 폴더 테이블 마커 존재)
+            var isFolderPage = wimToken != null
+                && (folders.Count > 0 || html.Contains("folderList_add") || html.Contains("folderListFormSubmit"));
+
+            if (isFolderPage)
+            {
+                _profileCache[deviceIp] = profile;
+                logs.Add($"[리코] profile={profile}, 폴더 {folders.Count}개: {string.Join(", ", folders.Select(f => f.name))}");
+                return (profile, wimToken, folders);
+            }
+
+            logs.Add($"[리코] profile={profile} 불일치 — 다음 후보 시도 (wimToken={(wimToken != null)}, 폴더={folders.Count})");
         }
 
-        logs.Add($"[리코] 폴더 {folders.Count}개: {string.Join(", ", folders.Select(f => f.name))}");
-        return (wimToken, folders);
+        logs.Add("[리코][FAIL] 프로필 감지 실패 — entry/guest 모두 유효한 folderListPage 반환 안 함");
+        return ("entry", null, new List<(string id, string name)>());
     }
 
     /// <summary>빈 폴더 ID 찾기 (001~200 중 사용 안 된 번호)</summary>
@@ -209,7 +236,7 @@ public class RicohDriver : IMfpDriver
         result.Logs.AddRange(loginLogs);
         if (client == null) return DriverResult<List<ScanBox>>.Fail("로그인 실패", result.Logs);
 
-        var (_, folders) = await ListFoldersAsync(client, baseUrl, result.Logs);
+        var (_, _, folders) = await ListFoldersAsync(client, baseUrl, device.Ip, result.Logs);
 
         var boxes = folders.Select(f => new ScanBox
         {
@@ -247,35 +274,38 @@ public class RicohDriver : IMfpDriver
         if (client == null || wimToken == null)
             return DriverResult.Fail("로그인 실패", result.Logs);
 
-        // 폴더 목록 → wimToken 갱신 + 빈 ID 찾기
-        var (newToken, folders) = await ListFoldersAsync(client, baseUrl, result.Logs);
+        // 폴더 목록 → profile 감지 + wimToken 갱신 + 빈 ID 찾기
+        var (profile, newToken, folders) = await ListFoldersAsync(client, baseUrl, device.Ip, result.Logs);
         if (newToken != null) wimToken = newToken;
+        if (newToken == null)
+            return DriverResult.Fail("폴더 목록 접근 실패 (프로필 감지 불가)", result.Logs);
 
         var folderId = FindEmptyFolderId(folders);
         if (string.IsNullOrEmpty(folderId))
             return DriverResult.Fail("빈 폴더 번호가 없습니다.", result.Logs);
 
-        result.Logs.Add($"[리코추가] 폴더 ID={folderId}, 이름={box.Name}");
+        result.Logs.Add($"[리코추가] 폴더 ID={folderId}, 이름={box.Name}, profile={profile}");
 
         var now = DateTime.Now;
         var pw = box.Password ?? "";
         var pwB64 = !string.IsNullOrEmpty(pw) ? B64(pw) : "";
+        var wb = $"{baseUrl}/web/{profile}/ko/webdocbox";
 
         // Step 1: 폴더 생성 폼 진입
         result.Logs.Add("[리코추가] Step1: 생성 폼...");
-        await PostFormAsync(client,
-            $"{baseUrl}/web/entry/ko/webdocbox/folderPropPage.cgi",
+        var s1 = await PostFormAsync(client, $"{wb}/folderPropPage.cgi",
             new() {
                 ["wimToken"] = wimToken, ["mode"] = "CREATE", ["selectedDocIds"] = "",
                 ["subReturnDsp"] = "", ["useInputParam"] = "", ["useSavedPropParam"] = "false",
                 ["_hour"] = now.ToString("HH"), ["_min"] = now.ToString("mm"),
             },
-            $"{baseUrl}/web/entry/ko/webdocbox/folderListPage.cgi");
+            $"{wb}/folderListPage.cgi");
+        var t1 = ExtractWimToken(s1); if (t1 != null) wimToken = t1;
+        result.Logs.Add($"[리코추가] Step1 응답: {s1.Length}자");
 
         // Step 2: 비밀번호 페이지
         result.Logs.Add("[리코추가] Step2: 비밀번호 페이지...");
-        await PostFormAsync(client,
-            $"{baseUrl}/web/entry/ko/webdocbox/chPasswordPage.cgi",
+        var s2 = await PostFormAsync(client, $"{wb}/chPasswordPage.cgi",
             new() {
                 ["wimToken"] = wimToken, ["targetFolderId"] = folderId,
                 ["changedFolderName"] = box.Name, ["mode"] = "CREATE",
@@ -283,12 +313,13 @@ public class RicohDriver : IMfpDriver
                 ["title"] = box.Name, ["useSavedPropParam"] = "true",
                 ["useInputParam"] = "false", ["subReturnDsp"] = "3", ["dummy"] = "",
             },
-            $"{baseUrl}/web/entry/ko/webdocbox/folderPropPage.cgi");
+            $"{wb}/folderPropPage.cgi");
+        var t2 = ExtractWimToken(s2); if (t2 != null) wimToken = t2;
+        result.Logs.Add($"[리코추가] Step2 응답: {s2.Length}자");
 
         // Step 3: 비밀번호 설정
         result.Logs.Add("[리코추가] Step3: 비밀번호 설정...");
-        await PostFormAsync(client,
-            $"{baseUrl}/web/entry/ko/webdocbox/commitChPassword.cgi",
+        var s3 = await PostFormAsync(client, $"{wb}/commitChPassword.cgi",
             new() {
                 ["wimToken"] = wimToken, ["title"] = box.Name,
                 ["creator"] = "", ["dataFormat"] = "", ["allPages"] = "false",
@@ -301,16 +332,17 @@ public class RicohDriver : IMfpDriver
                 ["useSavedPropParam"] = "true", ["selectedFolderId"] = "",
                 ["ID"] = "", ["dummy"] = "",
             },
-            $"{baseUrl}/web/entry/ko/webdocbox/chPasswordPage.cgi");
+            $"{wb}/chPasswordPage.cgi");
+        var t3 = ExtractWimToken(s3); if (t3 != null) wimToken = t3;
+        result.Logs.Add($"[리코추가] Step3 응답: {s3.Length}자");
 
         // Step 4: 속성 페이지
         result.Logs.Add("[리코추가] Step4: 속성 확인...");
-        await PostFormAsync(client,
-            $"{baseUrl}/web/entry/ko/webdocbox/folderPropPage.cgi",
+        var s4 = await PostFormAsync(client, $"{wb}/folderPropPage.cgi",
             new() {
                 ["wimToken"] = wimToken,
                 ["id"] = "", ["jt"] = "", ["el"] = "",
-                ["urlLang"] = "ko", ["urlProfile"] = "entry",
+                ["urlLang"] = "ko", ["urlProfile"] = profile,
                 ["pdfThumbnailURI"] = "", ["thumbnailURI"] = "", ["WidthSize"] = "",
                 ["subdocCount"] = "", ["targetDocId"] = folderId,
                 ["title"] = "", ["creator"] = "",
@@ -319,12 +351,13 @@ public class RicohDriver : IMfpDriver
                 ["selectedFolderId"] = folderId, ["useSavedPropParam"] = "true",
                 ["ID"] = "", ["simpleErrorMessage"] = "", ["dummy"] = "",
             },
-            $"{baseUrl}/web/entry/ko/webdocbox/commitChPassword.cgi");
+            $"{wb}/commitChPassword.cgi");
+        var t4 = ExtractWimToken(s4); if (t4 != null) wimToken = t4;
+        result.Logs.Add($"[리코추가] Step4 응답: {s4.Length}자");
 
         // Step 5: 최종 생성
         result.Logs.Add("[리코추가] Step5: 생성 확정...");
-        var html = await PostFormAsync(client,
-            $"{baseUrl}/web/entry/ko/webdocbox/putFolderProp.cgi",
+        var html = await PostFormAsync(client, $"{wb}/putFolderProp.cgi",
             new() {
                 ["wimToken"] = wimToken, ["targetFolderId"] = folderId,
                 ["changedFolderName"] = box.Name, ["mode"] = "CREATE",
@@ -332,13 +365,24 @@ public class RicohDriver : IMfpDriver
                 ["title"] = "", ["useSavedPropParam"] = "true",
                 ["useInputParam"] = "false", ["subReturnDsp"] = "3", ["dummy"] = "",
             },
-            $"{baseUrl}/web/entry/ko/webdocbox/folderPropPage.cgi");
+            $"{wb}/folderPropPage.cgi");
+        result.Logs.Add($"[리코추가] Step5 응답: {html.Length}자");
 
         var errMatch = Regex.Match(html, @"simpleErrorMessage[^>]*value=[""']([^""']+)");
         if (errMatch.Success && !string.IsNullOrWhiteSpace(errMatch.Groups[1].Value))
         {
             result.Logs.Add($"[리코추가][FAIL] 서버 에러: {errMatch.Groups[1].Value}");
             return DriverResult.Fail($"생성 실패: {errMatch.Groups[1].Value}", result.Logs);
+        }
+
+        // 생성 검증: 폴더 목록 재조회 후 대상 이름이 실제 존재하는지 확인
+        var (_, _, afterFolders) = await ListFoldersAsync(client, baseUrl, device.Ip, result.Logs);
+        var created = afterFolders.Any(f => f.name == box.Name);
+        if (!created)
+        {
+            result.Logs.Add($"[리코추가][FAIL] 서버에 폴더 '{box.Name}' 미생성 — Step 응답 요약");
+            result.Logs.Add($"  └ Step5 앞 400자: {html[..Math.Min(400, html.Length)]}");
+            return DriverResult.Fail("생성 검증 실패 (서버에 폴더가 추가되지 않음)", result.Logs);
         }
 
         result.Logs.Add($"[리코추가] 생성 완료! ID={folderId}");
@@ -372,8 +416,8 @@ public class RicohDriver : IMfpDriver
         if (client == null || wimToken == null)
             return DriverResult.Fail("로그인 실패", result.Logs);
 
-        // 폴더 목록에서 해당 폴더 ID 찾기
-        var (newToken, folders) = await ListFoldersAsync(client, baseUrl, result.Logs);
+        // 폴더 목록 → profile 감지 + 대상 ID 찾기
+        var (profile, newToken, folders) = await ListFoldersAsync(client, baseUrl, device.Ip, result.Logs);
         if (newToken != null) wimToken = newToken;
 
         var target = folders.FirstOrDefault(f => f.name == box.Name);
@@ -385,16 +429,16 @@ public class RicohDriver : IMfpDriver
             return result;
         }
 
-        result.Logs.Add($"[리코삭제] 대상 폴더 ID={target.id}");
+        result.Logs.Add($"[리코삭제] 대상 폴더 ID={target.id}, profile={profile}");
 
         var now = DateTime.Now;
         var pw = box.Password ?? "";
+        var wb = $"{baseUrl}/web/{profile}/ko/webdocbox";
         string html;
 
         // Step 1: 삭제 확인 페이지 진입
         result.Logs.Add("[리코삭제] Step1: 삭제 페이지 진입...");
-        html = await PostFormAsync(client,
-            $"{baseUrl}/web/guest/ko/webdocbox/folderDeletePage.cgi",
+        html = await PostFormAsync(client, $"{wb}/folderDeletePage.cgi",
             new() {
                 ["wimToken"] = wimToken,
                 ["mode"] = "", ["selectedDocIds"] = "",
@@ -403,7 +447,7 @@ public class RicohDriver : IMfpDriver
                 ["_hour"] = now.ToString("HH"), ["_min"] = now.ToString("mm"),
                 ["selectedFolderId"] = target.id,
             },
-            $"{baseUrl}/web/guest/ko/webdocbox/folderListPage.cgi");
+            $"{wb}/folderListPage.cgi");
         var t = ExtractWimToken(html); if (t != null) wimToken = t;
         result.Logs.Add($"[리코삭제] Step1 응답: {html.Length}자");
 
@@ -411,21 +455,19 @@ public class RicohDriver : IMfpDriver
         if (!string.IsNullOrEmpty(pw))
         {
             result.Logs.Add("[리코삭제] Step2: 비밀번호 인증...");
-            html = await PostFormAsync(client,
-                $"{baseUrl}/web/guest/ko/webdocbox/chPasswordPage.cgi",
+            html = await PostFormAsync(client, $"{wb}/chPasswordPage.cgi",
                 new() {
                     ["wimToken"] = wimToken, ["mode"] = "AUTHENTICATE",
                     ["targetFolderId"] = target.id, ["wayTo"] = "DELETEFOLDER",
                     ["targetDocId"] = target.id, ["useSavedPropParam"] = "true",
                     ["useInputParam"] = "false", ["subReturnDsp"] = "3", ["dummy"] = "",
                 },
-                $"{baseUrl}/web/guest/ko/webdocbox/folderDeletePage.cgi");
+                $"{wb}/folderDeletePage.cgi");
             t = ExtractWimToken(html); if (t != null) wimToken = t;
 
             // Step 3: 비밀번호 입력 확정
             result.Logs.Add("[리코삭제] Step3: 비밀번호 확정...");
-            html = await PostFormAsync(client,
-                $"{baseUrl}/web/guest/ko/webdocbox/commitChPassword.cgi",
+            html = await PostFormAsync(client, $"{wb}/commitChPassword.cgi",
                 new() {
                     ["wimToken"] = wimToken, ["title"] = "", ["creator"] = "",
                     ["dataFormat"] = "", ["allPages"] = "false",
@@ -438,17 +480,16 @@ public class RicohDriver : IMfpDriver
                     ["wayTo"] = "DELETEFOLDER", ["useSavedPropParam"] = "false",
                     ["selectedFolderId"] = "", ["ID"] = "", ["dummy"] = "",
                 },
-                $"{baseUrl}/web/guest/ko/webdocbox/chPasswordPage.cgi");
+                $"{wb}/chPasswordPage.cgi");
             t = ExtractWimToken(html); if (t != null) wimToken = t;
 
             // Step 4: 비밀번호 인증 후 삭제 페이지 재진입
             result.Logs.Add("[리코삭제] Step4: 삭제 페이지 재진입...");
-            html = await PostFormAsync(client,
-                $"{baseUrl}/web/guest/ko/webdocbox/folderDeletePage.cgi",
+            html = await PostFormAsync(client, $"{wb}/folderDeletePage.cgi",
                 new() {
                     ["wimToken"] = wimToken,
                     ["id"] = "", ["jt"] = "", ["el"] = "",
-                    ["urlLang"] = "ko", ["urlProfile"] = "guest",
+                    ["urlLang"] = "ko", ["urlProfile"] = profile,
                     ["pdfThumbnailURI"] = "", ["thumbnailURI"] = "", ["WidthSize"] = "",
                     ["subdocCount"] = "", ["targetDocId"] = target.id,
                     ["title"] = "", ["creator"] = "",
@@ -458,20 +499,19 @@ public class RicohDriver : IMfpDriver
                     ["useSavedPropParam"] = "false",
                     ["ID"] = "", ["simpleErrorMessage"] = "", ["dummy"] = "",
                 },
-                $"{baseUrl}/web/guest/ko/webdocbox/commitChPassword.cgi");
+                $"{wb}/commitChPassword.cgi");
             t = ExtractWimToken(html); if (t != null) wimToken = t;
         }
 
         // Step 5: 실제 삭제 (deleteDocContentsPage.cgi)
         result.Logs.Add("[리코삭제] 최종 삭제...");
-        html = await PostFormAsync(client,
-            $"{baseUrl}/web/guest/ko/webdocbox/deleteDocContentsPage.cgi",
+        html = await PostFormAsync(client, $"{wb}/deleteDocContentsPage.cgi",
             new() {
                 ["wimToken"] = wimToken,
                 ["selectedDocIds"] = target.id,
                 ["subReturnDsp"] = "3",
             },
-            $"{baseUrl}/web/guest/ko/webdocbox/folderDeletePage.cgi");
+            $"{wb}/folderDeletePage.cgi");
 
         result.Logs.Add($"[리코삭제] 최종 응답: {html.Length}자");
 
@@ -513,25 +553,25 @@ public class RicohDriver : IMfpDriver
         if (client == null || wimToken == null)
             return DriverResult.Fail("로그인 실패", result.Logs);
 
-        // 폴더 목록에서 대상 찾기
-        var (newToken, folders) = await ListFoldersAsync(client, baseUrl, result.Logs);
+        // 폴더 목록 → profile 감지 + 대상 찾기
+        var (profile, newToken, folders) = await ListFoldersAsync(client, baseUrl, device.Ip, result.Logs);
         if (newToken != null) wimToken = newToken;
 
         var target = folders.FirstOrDefault(f => f.name == searchName);
         if (target == default)
             return DriverResult.Fail($"폴더 '{searchName}'을 찾을 수 없습니다.", result.Logs);
 
-        result.Logs.Add($"[리코수정] 대상 폴더 ID={target.id}");
+        result.Logs.Add($"[리코수정] 대상 폴더 ID={target.id}, profile={profile}");
 
         var now = DateTime.Now;
         var pw = box.Password ?? "";
         var changePw = !string.IsNullOrEmpty(pw);
+        var wb = $"{baseUrl}/web/{profile}/ko/webdocbox";
         string html;
 
-        // Step 1: 수정 페이지 진입 (mode=PROPERTY, /web/guest/ko/)
+        // Step 1: 수정 페이지 진입 (mode=PROPERTY)
         result.Logs.Add("[리코수정] Step1: 속성 페이지 진입...");
-        html = await PostFormAsync(client,
-            $"{baseUrl}/web/guest/ko/webdocbox/folderPropPage.cgi",
+        html = await PostFormAsync(client, $"{wb}/folderPropPage.cgi",
             new() {
                 ["wimToken"] = wimToken, ["mode"] = "PROPERTY",
                 ["selectedDocIds"] = "", ["subReturnDsp"] = "",
@@ -539,14 +579,13 @@ public class RicohDriver : IMfpDriver
                 ["_hour"] = now.ToString("HH"), ["_min"] = now.ToString("mm"),
                 ["selectedFolderId"] = target.id,
             },
-            $"{baseUrl}/web/guest/ko/webdocbox/folderListPage.cgi");
+            $"{wb}/folderListPage.cgi");
         var t = ExtractWimToken(html); if (t != null) wimToken = t;
         result.Logs.Add($"[리코수정] Step1 응답: {html.Length}자");
 
         // Step 2: 비밀번호 변경 페이지 (mode=PROPERTY)
         result.Logs.Add("[리코수정] Step2: 비밀번호 페이지...");
-        html = await PostFormAsync(client,
-            $"{baseUrl}/web/guest/ko/webdocbox/chPasswordPage.cgi",
+        html = await PostFormAsync(client, $"{wb}/chPasswordPage.cgi",
             new() {
                 ["wimToken"] = wimToken, ["targetFolderId"] = target.id,
                 ["changedFolderName"] = box.Name, ["mode"] = "PROPERTY",
@@ -554,15 +593,14 @@ public class RicohDriver : IMfpDriver
                 ["title"] = box.Name, ["useSavedPropParam"] = "true",
                 ["useInputParam"] = "false", ["subReturnDsp"] = "3", ["dummy"] = "",
             },
-            $"{baseUrl}/web/guest/ko/webdocbox/folderPropPage.cgi");
+            $"{wb}/folderPropPage.cgi");
         t = ExtractWimToken(html); if (t != null) wimToken = t;
         result.Logs.Add($"[리코수정] Step2 응답: {html.Length}자");
 
         // Step 3: 비밀번호 저장 (oldPassword 빈값)
         var pwB64 = changePw ? B64(pw) : "";
         result.Logs.Add("[리코수정] Step3: 비밀번호 저장...");
-        html = await PostFormAsync(client,
-            $"{baseUrl}/web/guest/ko/webdocbox/commitChPassword.cgi",
+        html = await PostFormAsync(client, $"{wb}/commitChPassword.cgi",
             new() {
                 ["wimToken"] = wimToken, ["title"] = box.Name,
                 ["creator"] = "", ["dataFormat"] = "", ["allPages"] = "false",
@@ -576,14 +614,13 @@ public class RicohDriver : IMfpDriver
                 ["useSavedPropParam"] = "true", ["selectedFolderId"] = "",
                 ["ID"] = "", ["dummy"] = "",
             },
-            $"{baseUrl}/web/guest/ko/webdocbox/chPasswordPage.cgi");
+            $"{wb}/chPasswordPage.cgi");
         t = ExtractWimToken(html); if (t != null) wimToken = t;
         result.Logs.Add($"[리코수정] Step3 응답: {html.Length}자");
 
         // Step 4: 최종 저장 (mode=PROPERTY)
         result.Logs.Add("[리코수정] Step4: 수정 확정...");
-        html = await PostFormAsync(client,
-            $"{baseUrl}/web/guest/ko/webdocbox/putFolderProp.cgi",
+        html = await PostFormAsync(client, $"{wb}/putFolderProp.cgi",
             new() {
                 ["wimToken"] = wimToken, ["targetFolderId"] = target.id,
                 ["changedFolderName"] = box.Name, ["mode"] = "PROPERTY",
@@ -591,7 +628,7 @@ public class RicohDriver : IMfpDriver
                 ["title"] = "", ["useSavedPropParam"] = "true",
                 ["useInputParam"] = "false", ["subReturnDsp"] = "3", ["dummy"] = "",
             },
-            $"{baseUrl}/web/guest/ko/webdocbox/folderPropPage.cgi");
+            $"{wb}/folderPropPage.cgi");
         result.Logs.Add($"[리코수정] Step4 응답: {html.Length}자");
 
         var errMatch = Regex.Match(html, @"simpleErrorMessage[^>]*value=[""']([^""']+)");
