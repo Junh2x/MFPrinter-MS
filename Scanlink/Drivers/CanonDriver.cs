@@ -35,12 +35,26 @@ public class CanonDriver : IMfpDriver
     }
 
     private static readonly System.Collections.Concurrent.ConcurrentDictionary<string, CanonSession> _sessions = new();
-    private static readonly TimeSpan SessionTtl = TimeSpan.FromMinutes(2);
 
+    /// <summary>앱 종료 시 모든 세션 로그아웃 + 정리</summary>
+    public static void DisposeAllSessions()
+    {
+        foreach (var ip in _sessions.Keys.ToList())
+            InvalidateSession(ip);
+    }
+
+    /// <summary>캐논 서버에 명시적 로그아웃 + 로컬 세션 제거</summary>
     private static void InvalidateSession(string deviceIp)
     {
-        if (_sessions.TryRemove(deviceIp, out var old))
-            old.Client.Dispose();
+        if (!_sessions.TryRemove(deviceIp, out var old)) return;
+        try
+        {
+            // 캐논 서버에 로그아웃 신호 (fire-and-forget)
+            var req = new HttpRequestMessage(HttpMethod.Get, $"{old.BaseUrl}/rps/logout.cgi?Dummy={Dummy()}");
+            _ = old.Client.SendAsync(req);
+        }
+        catch { /* 로그아웃 실패해도 무시 */ }
+        old.Client.Dispose();
     }
 
     // ──────────────────────────────────────────────
@@ -72,16 +86,11 @@ public class CanonDriver : IMfpDriver
     {
         var logs = new List<string>();
 
-        // 캐시 확인 (TTL 내면 재사용)
+        // 캐시 확인 (TTL 없이 실패 전까지 재사용)
         if (_sessions.TryGetValue(device.Ip, out var cached))
         {
-            if (DateTime.UtcNow - cached.LastUsed < SessionTtl)
-            {
-                cached.LastUsed = DateTime.UtcNow;
-                return (cached.Client, cached.BaseUrl, logs);
-            }
-            // 만료 → 정리
-            InvalidateSession(device.Ip);
+            cached.LastUsed = DateTime.UtcNow;
+            return (cached.Client, cached.BaseUrl, logs);
         }
 
         var portsToTry = new List<string>();
@@ -571,8 +580,7 @@ public class CanonDriver : IMfpDriver
             if (boxNoMatch.Success && boxNoMatch.Groups[1].Value != boxNo)
             {
                 result.Logs.Add($"[파일목록][WARN] 응답의 박스 번호 불일치: 요청={boxNo}, 응답={boxNoMatch.Groups[1].Value}");
-                InvalidateSession(device.Ip); // 세션 오염 → 무효화
-                return DriverResult<List<BoxFile>>.Fail("세션 불일치", result.Logs);
+                return DriverResult<List<BoxFile>>.Fail("박스 번호 불일치", result.Logs);
             }
 
             var files = ParseBoxFiles(html);

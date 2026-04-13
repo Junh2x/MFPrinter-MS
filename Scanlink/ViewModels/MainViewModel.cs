@@ -43,8 +43,8 @@ public class MainViewModel : ViewModelBase
         // 초기 페이지
         _navigation.NavigateTo(DeviceListVm);
 
-        // 파일 감시 서비스 (5초 간격, 백그라운드)
-        _fileWatchService = new FileWatchService(_deviceService, _scanBoxService, TimeSpan.FromSeconds(5));
+        // 파일 감시 서비스 (10초 간격, 백그라운드)
+        _fileWatchService = new FileWatchService(_deviceService, _scanBoxService, TimeSpan.FromSeconds(10));
         _fileWatchService.Start();
     }
 

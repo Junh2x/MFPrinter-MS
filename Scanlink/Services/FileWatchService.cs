@@ -1,4 +1,3 @@
-using System.Collections.Concurrent;
 using Scanlink.Core;
 using Scanlink.Helpers;
 using Scanlink.Models;
@@ -7,7 +6,8 @@ namespace Scanlink.Services;
 
 /// <summary>
 /// 백그라운드에서 일정 간격으로 모든 기기의 모든 스캔함 내 파일 목록을
-/// 조회하고 변경 사항을 로그에 기록.
+/// 조회하고, 이전에 저장된 목록과 비교하여 차이가 있으면 로그로 출력.
+/// 파일 목록은 %LocalAppData%\Scanlink\filelists\ 에 영속 저장.
 /// </summary>
 public class FileWatchService : IDisposable
 {
@@ -16,16 +16,13 @@ public class FileWatchService : IDisposable
     private readonly System.Threading.Timer _timer;
     private readonly SemaphoreSlim _lock = new(1, 1);
 
-    // 이전 조회 상태: (deviceId, boxId) → DocId 집합
-    private readonly ConcurrentDictionary<string, HashSet<string>> _snapshot = new();
-
     public TimeSpan Interval { get; }
 
     public FileWatchService(DeviceService deviceService, ScanBoxService scanBoxService, TimeSpan? interval = null)
     {
         _deviceService = deviceService;
         _scanBoxService = scanBoxService;
-        Interval = interval ?? TimeSpan.FromSeconds(5);
+        Interval = interval ?? TimeSpan.FromSeconds(10);
         _timer = new System.Threading.Timer(async _ => await TickAsync(), null, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
     }
 
@@ -43,7 +40,6 @@ public class FileWatchService : IDisposable
 
     private async Task TickAsync()
     {
-        // 중복 실행 방지 (이전 주기가 아직 끝나지 않았으면 건너뜀)
         if (!await _lock.WaitAsync(0)) return;
         try
         {
@@ -87,42 +83,57 @@ public class FileWatchService : IDisposable
             {
                 AppLogger.Log("FileWatch",
                     $"[{device.DisplayName}/{box.Name}] 조회 실패: {result.Message}");
-                // 상세 내부 로그도 전부 출력
                 foreach (var line in result.Logs)
                     AppLogger.Log("FileWatch", $"  └ {line}");
                 return false;
             }
 
-            var currentIds = result.Data.Select(f => f.DocId).ToHashSet();
-            var key = $"{device.Id}/{box.Id}";
+            var current = result.Data;
+            var previous = FileListStore.Load(device.Id, box.Id);
 
-            if (!_snapshot.TryGetValue(key, out var prevIds))
-            {
-                _snapshot[key] = currentIds;
-                AppLogger.Log("FileWatch",
-                    $"[{device.DisplayName}/{box.Name}] 초기 파일 {currentIds.Count}개");
-                return true;
-            }
+            var currentIds = current.Select(f => f.DocId).ToHashSet();
+            var previousIds = previous.Select(f => f.DocId).ToHashSet();
 
-            var added = currentIds.Except(prevIds).ToList();
-            var removed = prevIds.Except(currentIds).ToList();
+            var added = currentIds.Except(previousIds).ToList();
+            var removed = previousIds.Except(currentIds).ToList();
 
-            if (added.Count > 0)
-            {
-                var addedNames = result.Data
-                    .Where(f => added.Contains(f.DocId))
-                    .Select(f => $"{f.Name}({f.DocId})");
-                AppLogger.Log("FileWatch",
-                    $"[{device.DisplayName}/{box.Name}] 신규 파일 {added.Count}개: {string.Join(", ", addedNames)}");
-            }
-
-            if (removed.Count > 0)
+            if (added.Count > 0 || removed.Count > 0)
             {
                 AppLogger.Log("FileWatch",
-                    $"[{device.DisplayName}/{box.Name}] 삭제된 파일 {removed.Count}개: {string.Join(", ", removed)}");
+                    $"[{device.DisplayName}/{box.Name}] 차이 발견: 신규 {added.Count}, 삭제 {removed.Count}");
+
+                if (added.Count > 0)
+                {
+                    var addedInfo = current
+                        .Where(f => added.Contains(f.DocId))
+                        .Select(f => $"{f.Name}({f.DocId})");
+                    AppLogger.Log("FileWatch",
+                        $"  + 신규: {string.Join(", ", addedInfo)}");
+                }
+                if (removed.Count > 0)
+                {
+                    var removedInfo = previous
+                        .Where(f => removed.Contains(f.DocId))
+                        .Select(f => $"{f.Name}({f.DocId})");
+                    AppLogger.Log("FileWatch",
+                        $"  - 삭제: {string.Join(", ", removedInfo)}");
+                }
+
+                FileListStore.Save(device.Id, box.Id, current);
+            }
+            else if (previous.Count == 0 && current.Count > 0)
+            {
+                // 최초 저장
+                AppLogger.Log("FileWatch",
+                    $"[{device.DisplayName}/{box.Name}] 초기 파일 {current.Count}개 기록");
+                FileListStore.Save(device.Id, box.Id, current);
+            }
+            else if (previous.Count == 0 && current.Count == 0)
+            {
+                // 빈 상태 유지 — 저장 파일이 없으면 빈 목록이라도 생성
+                FileListStore.Save(device.Id, box.Id, current);
             }
 
-            _snapshot[key] = currentIds;
             return true;
         }
         catch (Exception ex)
