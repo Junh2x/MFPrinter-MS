@@ -571,26 +571,74 @@ public class SindohDriver : IMfpDriver
                 }, $"{baseUrl}/wcd/spa_main.html");
             result.Logs.Add($"[신도파일] 진입 응답: {enterResp.Length}자 — 앞200자: {enterResp[..Math.Min(200, enterResp.Length)]}");
 
-            // Step 3: 파일 목록 요청 (box_detail.json)
-            var detailReq = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/wcd/box_detail.json")
+            // Step 3: 파일 목록 요청 (box_detail.json) — waitmove 응답 시 polling
+            string detailResp = "";
+            var taskNo = "0";
+            for (var attempt = 0; attempt < 20; attempt++)
             {
-                Content = new StringContent("waitend=true&TaskNo=0&_=", Encoding.UTF8, "application/x-www-form-urlencoded")
-            };
-            detailReq.Headers.Add("Referer", $"{baseUrl}/wcd/spa_main.html");
-            detailReq.Headers.Add("Accept", "application/json, text/javascript, */*; q=0.01");
-            var detailResp = await (await client.SendAsync(detailReq)).Content.ReadAsStringAsync();
+                var body = attempt == 0
+                    ? "waitend=true&TaskNo=0&_="
+                    : $"TaskNo={taskNo}";
 
-            result.Logs.Add($"[신도파일] box_detail.json 응답: {detailResp.Length}자");
-            // 응답 내용 일부 로그 (BoxJobInfo 관련 부분)
+                var detailReq = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/wcd/box_detail.json")
+                {
+                    Content = new StringContent(body, Encoding.UTF8, "application/x-www-form-urlencoded")
+                };
+                detailReq.Headers.Add("Referer", $"{baseUrl}/wcd/spa_main.html");
+                detailReq.Headers.Add("Accept", "application/json, text/javascript, */*; q=0.01");
+                detailResp = await (await client.SendAsync(detailReq)).Content.ReadAsStringAsync();
+
+                result.Logs.Add($"[신도파일] box_detail.json 시도 {attempt + 1}: {detailResp.Length}자");
+
+                // waitmove 응답이면 대기 후 재시도
+                if (detailResp.Contains("\"TemplateName\":\"waitmove"))
+                {
+                    // ParamValue와 Interval 추출
+                    var paramMatch = Regex.Match(detailResp, @"""ParamValue""\s*:\s*""([^""]+)""");
+                    var intervalMatch = Regex.Match(detailResp, @"""Interval""\s*:\s*""(\d+)""");
+                    if (paramMatch.Success) taskNo = paramMatch.Groups[1].Value;
+                    var interval = intervalMatch.Success ? int.Parse(intervalMatch.Groups[1].Value) : 100;
+                    result.Logs.Add($"[신도파일] waitmove — TaskNo={taskNo}, {interval}ms 대기");
+                    await Task.Delay(interval);
+                    continue;
+                }
+
+                // Job 데이터가 있으면 완료
+                if (detailResp.Contains("\"Job\":"))
+                {
+                    result.Logs.Add("[신도파일] Job 데이터 수신 완료");
+                    break;
+                }
+
+                // 기타 응답
+                result.Logs.Add($"[신도파일] 예상 외 응답 앞300자: {detailResp[..Math.Min(300, detailResp.Length)]}");
+                break;
+            }
+
+            // 응답 원본 저장 (디버깅)
+            try
+            {
+                var debugDir = System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "logs");
+                System.IO.Directory.CreateDirectory(debugDir);
+                var debugPath = System.IO.Path.Combine(debugDir, $"sindoh_box_detail_{box.Name}_{DateTime.Now:HHmmss}.json");
+                await System.IO.File.WriteAllTextAsync(debugPath, detailResp);
+                result.Logs.Add($"[신도파일] 응답 저장: {debugPath}");
+            }
+            catch (Exception ex)
+            {
+                result.Logs.Add($"[신도파일] 응답 저장 실패: {ex.Message}");
+            }
+
             var boxJobIdx = detailResp.IndexOf("BoxJobInfo", StringComparison.OrdinalIgnoreCase);
             if (boxJobIdx >= 0)
             {
                 var snippet = detailResp.Substring(boxJobIdx, Math.Min(500, detailResp.Length - boxJobIdx));
-                result.Logs.Add($"[신도파일] BoxJobInfo 위치: {boxJobIdx}, 내용: {snippet}");
+                result.Logs.Add($"[신도파일] BoxJobInfo 위치: {boxJobIdx}");
+                result.Logs.Add($"[신도파일] BoxJobInfo 내용: {snippet}");
             }
             else
             {
-                result.Logs.Add($"[신도파일] BoxJobInfo 문자열 없음. 응답 앞500자: {detailResp[..Math.Min(500, detailResp.Length)]}");
+                result.Logs.Add($"[신도파일] BoxJobInfo 없음. 앞500자: {detailResp[..Math.Min(500, detailResp.Length)]}");
             }
 
             // JSON 파싱
