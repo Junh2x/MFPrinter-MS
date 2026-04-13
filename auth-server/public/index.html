@@ -120,7 +120,7 @@
       </div>
       <div class="field">
         <label>코드</label>
-        <input type="text" id="newCode" readonly style="background:#f8f9fb; color:#555; cursor:default;">
+        <input type="text" id="newCode" placeholder="인증 코드를 입력하세요">
       </div>
       <div class="field">
         <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
@@ -207,6 +207,11 @@
     const useExpires = document.getElementById("useExpires").checked;
     const expiresAt = useExpires ? document.getElementById("newExpires").value || null : null;
 
+    if (!code) {
+      alert("인증 코드를 입력하세요.");
+      return;
+    }
+
     const res = await fetch(`${API}/licenses`, {
       method: "POST",
       headers: { "Content-Type": "application/json", "X-Admin-Key": adminKey },
@@ -276,16 +281,6 @@
   }
 
   // --- 모달 ---
-  function generateCode() {
-    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-    let code = "";
-    for (let i = 0; i < 16; i++) {
-      if (i > 0 && i % 4 === 0) code += "-";
-      code += chars[Math.floor(Math.random() * chars.length)];
-    }
-    return code;
-  }
-
   function toggleExpires() {
     const checked = document.getElementById("useExpires").checked;
     const input = document.getElementById("newExpires");
@@ -296,7 +291,7 @@
   }
 
   function openAddModal() {
-    document.getElementById("newCode").value = generateCode();
+    document.getElementById("newCode").value = "";
     document.getElementById("newMemo").value = "";
     document.getElementById("newExpires").value = "";
     document.getElementById("useExpires").checked = false;
