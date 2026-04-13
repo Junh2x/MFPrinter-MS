@@ -767,4 +767,139 @@ public class SindohDriver : IMfpDriver
         if (!string.IsNullOrEmpty(file.DocId))
             files.Add(file);
     }
+
+    // ──────────────────────────────────────────────
+    // DownloadFileAsync — 박스 내 파일 PDF 다운로드
+    // ──────────────────────────────────────────────
+
+    public async Task<DriverResult<byte[]>> DownloadFileAsync(MfpDevice device, ScanBox box, BoxFile file)
+    {
+        var result = new DriverResult<byte[]> { Logs = [] };
+        try
+        {
+            result.Logs.Add($"[신도다운] 파일 다운로드: {file.Name} (박스={box.Name})");
+
+            HttpClient? client; string? token; string baseUrl; List<string> loginLogs;
+            (client, token, baseUrl, loginLogs) = await InitSessionAsync(device);
+            result.Logs.AddRange(loginLogs);
+            if (client == null || token == null)
+                return DriverResult<byte[]>.Fail("세션 실패", result.Logs);
+
+            if (!_sessions.TryGetValue(device.Ip, out var session))
+                return DriverResult<byte[]>.Fail("세션 캐시 없음", result.Logs);
+
+            // 박스 번호 찾기
+            var listResp = await PostJsonAsync(client, $"{baseUrl}/wcd/api/AppReqGetUserBoxList",
+                new {
+                    BoxListCondition = new {
+                        SearchKey = "None", WellUse = "false",
+                        BoxAttribute = new { Category = "Functional", Type = "User", Attribute = "AllAttribute" },
+                        ObtainCondition = new { Type = "OffsetList", OffsetRange = new { Start = "1", Length = "50" } }
+                    },
+                    Token = token
+                }, $"{baseUrl}/wcd/spa_main.html");
+
+            var boxNum = FindBoxNumber(listResp, box.Name);
+            if (boxNum == null)
+                return DriverResult<byte[]>.Fail($"박스 '{box.Name}' 찾을 수 없음", result.Logs);
+
+            // Step 1: 쿠키 전환 F_UOU_FileDownload
+            var uri = new Uri(baseUrl);
+            session.Cookies.Add(uri, new Cookie("usr", "F_UOU_FileDownload"));
+
+            // Step 2: 다운로드 요청 (_105_000_ULU004)
+            var pw = box.Password ?? "";
+            result.Logs.Add("[신도다운] 다운로드 준비 요청 (ULU004)...");
+            var prepResp = await PostJsonAsync(client,
+                $"{baseUrl}/wcd/api/AppReqSetCustomMessage/_105_000_ULU004",
+                new {
+                    H_TAB = "",
+                    func = "PSL_F_UOU_DWN",
+                    h_token = token,
+                    H_BOX = boxNum,
+                    H_BPA = pw,
+                    H_BTY = "User",
+                    H_PID = "-1",
+                    H_DTY = "FileDownload",
+                    H_XTP = "Thumbnail",
+                    H_FMT = "CompactPdf",
+                    H_JLS = "@1@",
+                    H_JNL = $"\t{file.Name}\t",
+                    H_JOR = "@1@",
+                    H_DCN = "1",
+                    C_GFA = "On",
+                    F_UOU_S_FOR = "CompactPdf",
+                    S_OUT = "Off",
+                    S_LRP = "Off",
+                    S_PDA = "Off",
+                    F_UOU_R_PAG = "MultiPage",
+                    R_SPG = "Off",
+                }, $"{baseUrl}/wcd/spa_main.html");
+            result.Logs.Add($"[신도다운] 준비 응답: {prepResp.Length}자");
+
+            // Step 3: progress polling (box_detail 대신 progress 엔드포인트)
+            var taskMatch = Regex.Match(prepResp, @"""ParamValue""\s*:\s*""([^""]+)""");
+            var taskNo = taskMatch.Success ? taskMatch.Groups[1].Value : "0";
+            var ready = false;
+            for (var attempt = 0; attempt < 60; attempt++)
+            {
+                var progReq = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/wcd/progress")
+                {
+                    Content = new StringContent($"TaskNo={taskNo}&_=", Encoding.UTF8, "application/x-www-form-urlencoded")
+                };
+                progReq.Headers.Add("Referer", $"{baseUrl}/wcd/spa_main.html");
+                progReq.Headers.Add("Accept", "application/json, text/javascript, */*; q=0.01");
+                var progResp = await (await client.SendAsync(progReq)).Content.ReadAsStringAsync();
+                result.Logs.Add($"[신도다운] progress {attempt + 1}: {progResp.Length}자");
+
+                if (progResp.Contains("\"waitend\":\"true\"") || progResp.Contains("\"RedirectUrl\":\"doc"))
+                {
+                    result.Logs.Add("[신도다운] 준비 완료");
+                    ready = true;
+                    break;
+                }
+
+                var intervalMatch = Regex.Match(progResp, @"""Interval""\s*:\s*""(\d+)""");
+                var interval = intervalMatch.Success ? int.Parse(intervalMatch.Groups[1].Value) : 500;
+                await Task.Delay(Math.Min(interval, 1000));
+            }
+
+            if (!ready)
+            {
+                result.Logs.Add("[신도다운] 타임아웃");
+                return DriverResult<byte[]>.Fail("다운로드 준비 타임아웃", result.Logs);
+            }
+
+            // Step 4: 실제 PDF GET
+            var pdfUrl = $"{baseUrl}/wcd/doc/{Uri.EscapeDataString(file.Name)}.pdf" +
+                $"?func=PSL_F_UOU_DLD&h_token={token}" +
+                $"&cginame1={Uri.EscapeDataString($"doc/{file.Name}.pdf")}" +
+                $"&cginame2={Uri.EscapeDataString($"doc/{file.Name}.pdf")}" +
+                $"&H_BAK=0&H_TAB=&H_DLV=";
+
+            result.Logs.Add($"[신도다운] PDF 다운로드: {pdfUrl}");
+            var pdfReq = new HttpRequestMessage(HttpMethod.Get, pdfUrl);
+            pdfReq.Headers.Add("Referer", $"{baseUrl}/wcd/spa_contents_frame.tmpl.html");
+            var pdfResp = await client.SendAsync(pdfReq);
+
+            if (!pdfResp.IsSuccessStatusCode)
+                return DriverResult<byte[]>.Fail($"HTTP {(int)pdfResp.StatusCode}", result.Logs);
+
+            var bytes = await pdfResp.Content.ReadAsByteArrayAsync();
+            result.Logs.Add($"[신도다운] 완료: {bytes.Length} bytes");
+
+            // 쿠키 복원 (F_UOU로)
+            session.Cookies.Add(uri, new Cookie("usr", "F_UOU"));
+
+            result.Success = true;
+            result.Data = bytes;
+            result.Message = $"{bytes.Length} bytes";
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Logs.Add($"[신도다운][ERROR] {ex.Message}");
+            return DriverResult<byte[]>.Fail($"다운로드 오류: {ex.Message}", result.Logs);
+        }
+    }
 }

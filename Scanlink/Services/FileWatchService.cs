@@ -1,4 +1,6 @@
+using System.IO;
 using Scanlink.Core;
+using Scanlink.Drivers;
 using Scanlink.Helpers;
 using Scanlink.Models;
 
@@ -119,6 +121,10 @@ public class FileWatchService : IDisposable
                     var addedInfo = current.Where(f => added.Contains(f.DocId))
                         .Select(f => $"{f.Name}({f.DocId})");
                     AppLogger.Log("FileWatch", $"  + 신규: {string.Join(", ", addedInfo)}");
+
+                    // 신규 파일 자동 다운로드 (현재 신도만 지원)
+                    var newFiles = current.Where(f => added.Contains(f.DocId)).ToList();
+                    await DownloadNewFilesAsync(driver, device, box, newFiles);
                 }
                 if (removed.Count > 0)
                 {
@@ -136,6 +142,54 @@ public class FileWatchService : IDisposable
         {
             AppLogger.Error("FileWatch", $"[{tag}] 조회 예외", ex);
             return false;
+        }
+    }
+
+    /// <summary>신규 파일을 스캔함 로컬 경로에 자동 다운로드</summary>
+    private async Task DownloadNewFilesAsync(IMfpDriver driver, MfpDevice device, ScanBox box, List<BoxFile> newFiles)
+    {
+        if (string.IsNullOrEmpty(box.LocalFolder))
+        {
+            AppLogger.Log("FileWatch", $"[{device.DisplayName}/{box.Name}] 로컬 경로 미설정 — 다운로드 스킵");
+            return;
+        }
+
+        // 현재 신도만 다운로드 구현됨
+        if (driver is not SindohDriver sindoh) return;
+
+        try
+        {
+            if (!Directory.Exists(box.LocalFolder))
+                Directory.CreateDirectory(box.LocalFolder);
+        }
+        catch (Exception ex)
+        {
+            AppLogger.Error("FileWatch", $"로컬 폴더 생성 실패: {box.LocalFolder}", ex);
+            return;
+        }
+
+        foreach (var file in newFiles)
+        {
+            try
+            {
+                AppLogger.Log("FileWatch", $"[{device.DisplayName}/{box.Name}] 다운로드 시작: {file.Name}");
+                var dlResult = await sindoh.DownloadFileAsync(device, box, file);
+                if (!dlResult.Success || dlResult.Data == null)
+                {
+                    AppLogger.Log("FileWatch", $"  └ 실패: {dlResult.Message}");
+                    foreach (var line in dlResult.Logs)
+                        AppLogger.Log("FileWatch", $"    └ {line}");
+                    continue;
+                }
+
+                var localPath = Path.Combine(box.LocalFolder, $"{file.Name}.pdf");
+                await File.WriteAllBytesAsync(localPath, dlResult.Data);
+                AppLogger.Log("FileWatch", $"  └ 저장 완료: {localPath} ({dlResult.Data.Length} bytes)");
+            }
+            catch (Exception ex)
+            {
+                AppLogger.Error("FileWatch", $"다운로드/저장 실패: {file.Name}", ex);
+            }
         }
     }
 
