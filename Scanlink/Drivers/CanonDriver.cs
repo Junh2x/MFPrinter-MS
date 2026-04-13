@@ -24,6 +24,26 @@ public class CanonDriver : IMfpDriver
     private static string Dummy() => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
 
     // ──────────────────────────────────────────────
+    // 세션 캐시 (기기별, TTL 기반)
+    // ──────────────────────────────────────────────
+
+    private sealed class CanonSession
+    {
+        public required HttpClient Client { get; init; }
+        public required string BaseUrl { get; init; }
+        public DateTime LastUsed { get; set; } = DateTime.UtcNow;
+    }
+
+    private static readonly System.Collections.Concurrent.ConcurrentDictionary<string, CanonSession> _sessions = new();
+    private static readonly TimeSpan SessionTtl = TimeSpan.FromMinutes(2);
+
+    private static void InvalidateSession(string deviceIp)
+    {
+        if (_sessions.TryRemove(deviceIp, out var old))
+            old.Client.Dispose();
+    }
+
+    // ──────────────────────────────────────────────
     // 세션
     // ──────────────────────────────────────────────
 
@@ -47,10 +67,22 @@ public class CanonDriver : IMfpDriver
         return (client, cookies);
     }
 
-    /// <summary>캐논 관리 포트 자동 탐색 → iR 쿠키 획득</summary>
+    /// <summary>캐논 관리 포트 자동 탐색 → iR 쿠키 획득. 캐시된 세션을 우선 재사용.</summary>
     private static async Task<(HttpClient? client, string baseUrl, List<string> logs)> InitSessionAsync(MfpDevice device)
     {
         var logs = new List<string>();
+
+        // 캐시 확인 (TTL 내면 재사용)
+        if (_sessions.TryGetValue(device.Ip, out var cached))
+        {
+            if (DateTime.UtcNow - cached.LastUsed < SessionTtl)
+            {
+                cached.LastUsed = DateTime.UtcNow;
+                return (cached.Client, cached.BaseUrl, logs);
+            }
+            // 만료 → 정리
+            InvalidateSession(device.Ip);
+        }
 
         var portsToTry = new List<string>();
         if (!string.IsNullOrEmpty(device.BaseUrl))
@@ -89,6 +121,7 @@ public class CanonDriver : IMfpDriver
                 {
                     logs.Add($"[세션] iR 쿠키 획득: {baseUrl}");
                     device.BaseUrl = baseUrl;
+                    _sessions[device.Ip] = new CanonSession { Client = client, BaseUrl = baseUrl };
                     return (client, baseUrl, logs);
                 }
 
@@ -268,7 +301,7 @@ public class CanonDriver : IMfpDriver
             result.Logs.Add($"[연결][ERROR] {ex.Message}");
             return DriverResult.Fail($"연결 오류: {ex.Message}", result.Logs);
         }
-        finally { client?.Dispose(); }
+        finally { /* 세션은 캐시에서 관리, 여기서 dispose 안 함 */ }
     }
 
     // ──────────────────────────────────────────────
@@ -322,7 +355,7 @@ public class CanonDriver : IMfpDriver
             result.Message = $"조회 오류: {ex.Message}";
             return result;
         }
-        finally { client?.Dispose(); }
+        finally { /* 세션은 캐시에서 관리, 여기서 dispose 안 함 */ }
     }
 
     // ──────────────────────────────────────────────
@@ -400,7 +433,7 @@ public class CanonDriver : IMfpDriver
             result.Message = $"추가 오류: {ex.Message}";
             return result;
         }
-        finally { client?.Dispose(); }
+        finally { /* 세션은 캐시에서 관리, 여기서 dispose 안 함 */ }
     }
 
     // ──────────────────────────────────────────────
@@ -453,7 +486,7 @@ public class CanonDriver : IMfpDriver
             result.Message = $"수정 오류: {ex.Message}";
             return result;
         }
-        finally { client?.Dispose(); }
+        finally { /* 세션은 캐시에서 관리, 여기서 dispose 안 함 */ }
     }
 
     // ──────────────────────────────────────────────
@@ -538,10 +571,8 @@ public class CanonDriver : IMfpDriver
             if (boxNoMatch.Success && boxNoMatch.Groups[1].Value != boxNo)
             {
                 result.Logs.Add($"[파일목록][WARN] 응답의 박스 번호 불일치: 요청={boxNo}, 응답={boxNoMatch.Groups[1].Value}");
-                result.Success = true;
-                result.Data = new List<BoxFile>();
-                result.Message = "세션 불일치, 빈 목록으로 처리";
-                return result;
+                InvalidateSession(device.Ip); // 세션 오염 → 무효화
+                return DriverResult<List<BoxFile>>.Fail("세션 불일치", result.Logs);
             }
 
             var files = ParseBoxFiles(html);
@@ -555,11 +586,11 @@ public class CanonDriver : IMfpDriver
         catch (Exception ex)
         {
             result.Logs.Add($"[파일목록][ERROR] {ex.Message}");
+            InvalidateSession(device.Ip); // 세션 오류 시 캐시 무효화
             result.Success = false;
             result.Message = $"파일 목록 조회 오류: {ex.Message}";
             return result;
         }
-        finally { client?.Dispose(); }
     }
 
     // ──────────────────────────────────────────────
@@ -606,7 +637,7 @@ public class CanonDriver : IMfpDriver
             result.Message = $"다운로드 오류: {ex.Message}";
             return result;
         }
-        finally { client?.Dispose(); }
+        finally { /* 세션은 캐시에서 관리, 여기서 dispose 안 함 */ }
     }
 
     // ──────────────────────────────────────────────
@@ -659,6 +690,6 @@ public class CanonDriver : IMfpDriver
             result.Message = $"삭제 오류: {ex.Message}";
             return result;
         }
-        finally { client?.Dispose(); }
+        finally { /* 세션은 캐시에서 관리, 여기서 dispose 안 함 */ }
     }
 }
