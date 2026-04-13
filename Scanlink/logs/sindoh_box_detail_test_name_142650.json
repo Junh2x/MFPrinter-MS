@@ -1,0 +1,1 @@
+{"MFP":{"TemplateName":"cgierror.xsl","MyTab":"false","Message":{"Item":{"@Code":"Err_1","#text":"UnknownError"},"ErrorDescription":"raise"},"NetErrorOccured":"FALSE","VLANSetErr":"false","Redirect":"./top_menu.xml","Function":"err","MsgMode":"Standard","LangNo":"En","ButtonRetry":"false","SystemBack":"false","DialogClose":"false"}}

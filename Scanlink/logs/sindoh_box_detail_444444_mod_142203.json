@@ -1,0 +1,1 @@
+{"MFP":{"TemplateName":"wait.xsl","Function":"err","LangNo":"En","RedirectUrl":"waitmsg","Interval":"100","MyTab":"false","NoMessage":"false","Message":{"Item":{"@Code":"DeviceExportExec"}},"CgiAction":"waitmsg","CgiIdentity":"void","CancelDisp":"false","ParamName":"TaskNo","ParamValue":"0"}}
