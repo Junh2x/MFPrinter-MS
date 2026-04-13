@@ -29,6 +29,7 @@ public class SindohDriver : IMfpDriver
         public required HttpClient Client { get; init; }
         public required string Token { get; set; }
         public required string BaseUrl { get; init; }
+        public required CookieContainer Cookies { get; init; }
         public DateTime LastUsed { get; set; } = DateTime.UtcNow;
     }
 
@@ -154,7 +155,7 @@ public class SindohDriver : IMfpDriver
             device.BaseUrl = baseUrl;
 
             // 캐시에 저장 (실패 시까지 재사용)
-            _sessions[device.Ip] = new SindohSession { Client = client, Token = token ?? "", BaseUrl = baseUrl };
+            _sessions[device.Ip] = new SindohSession { Client = client, Token = token ?? "", BaseUrl = baseUrl, Cookies = cookies };
 
             return (client, token, baseUrl, logs);
         }
@@ -521,16 +522,19 @@ public class SindohDriver : IMfpDriver
     public async Task<DriverResult<List<BoxFile>>> GetBoxFilesAsync(MfpDevice device, ScanBox box)
     {
         var result = new DriverResult<List<BoxFile>> { Logs = [] };
-        HttpClient? client = null;
         try
         {
             result.Logs.Add($"[신도파일] 박스 '{box.Name}' 파일 목록 조회");
 
-            string? token; string baseUrl; List<string> loginLogs;
+            HttpClient? client; string? token; string baseUrl; List<string> loginLogs;
             (client, token, baseUrl, loginLogs) = await InitSessionAsync(device);
             result.Logs.AddRange(loginLogs);
             if (client == null || token == null)
                 return DriverResult<List<BoxFile>>.Fail("세션 실패", result.Logs);
+
+            // 캐시된 쿠키 컨테이너 가져오기
+            if (!_sessions.TryGetValue(device.Ip, out var session))
+                return DriverResult<List<BoxFile>>.Fail("세션 캐시 없음", result.Logs);
 
             // 박스 번호 찾기
             var listResp = await PostJsonAsync(client, $"{baseUrl}/wcd/api/AppReqGetUserBoxList",
@@ -551,15 +555,13 @@ public class SindohDriver : IMfpDriver
 
             // Step 1: 파일 관리 쿠키로 전환 (F_ULU → F_UOU)
             var uri = new Uri(baseUrl);
-            var cookieContainer = (((HttpClientHandler)typeof(HttpMessageInvoker).GetField("_handler",
-                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-                !.GetValue(client)!)).CookieContainer;
-            cookieContainer.Add(uri, new Cookie("usr", "F_UOU"));
+            session.Cookies.Add(uri, new Cookie("usr", "F_UOU"));
+            result.Logs.Add("[신도파일] 쿠키 usr=F_UOU 설정");
 
             // Step 2: 박스 진입 (_105_000_ULU000) — 비밀번호 인증
             var pw = box.Password ?? "";
             result.Logs.Add($"[신도파일] 박스 진입 (비밀번호: {(string.IsNullOrEmpty(pw) ? "없음" : "있음")})");
-            await PostJsonAsync(client,
+            var enterResp = await PostJsonAsync(client,
                 $"{baseUrl}/wcd/api/AppReqSetCustomMessage/_105_000_ULU000",
                 new {
                     func = "PSL_F_UOUUser_BOX",
@@ -567,6 +569,7 @@ public class SindohDriver : IMfpDriver
                     h_token = token, H_PID = "-1", H_IPA = "On",
                     H_BAT = "Public", _ = "",
                 }, $"{baseUrl}/wcd/spa_main.html");
+            result.Logs.Add($"[신도파일] 진입 응답: {enterResp.Length}자 — 앞200자: {enterResp[..Math.Min(200, enterResp.Length)]}");
 
             // Step 3: 파일 목록 요청 (box_detail.json)
             var detailReq = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/wcd/box_detail.json")
@@ -577,11 +580,24 @@ public class SindohDriver : IMfpDriver
             detailReq.Headers.Add("Accept", "application/json, text/javascript, */*; q=0.01");
             var detailResp = await (await client.SendAsync(detailReq)).Content.ReadAsStringAsync();
 
-            result.Logs.Add($"[신도파일] 응답: {detailResp.Length}자");
+            result.Logs.Add($"[신도파일] box_detail.json 응답: {detailResp.Length}자");
+            // 응답 내용 일부 로그 (BoxJobInfo 관련 부분)
+            var boxJobIdx = detailResp.IndexOf("BoxJobInfo", StringComparison.OrdinalIgnoreCase);
+            if (boxJobIdx >= 0)
+            {
+                var snippet = detailResp.Substring(boxJobIdx, Math.Min(500, detailResp.Length - boxJobIdx));
+                result.Logs.Add($"[신도파일] BoxJobInfo 위치: {boxJobIdx}, 내용: {snippet}");
+            }
+            else
+            {
+                result.Logs.Add($"[신도파일] BoxJobInfo 문자열 없음. 응답 앞500자: {detailResp[..Math.Min(500, detailResp.Length)]}");
+            }
 
-            // JSON 파싱: Job.BoxInfoList.BoxJobInfoList.BoxJobInfo (배열 또는 단일 객체)
+            // JSON 파싱
             var files = ParseSindohBoxFiles(detailResp);
-            result.Logs.Add($"[신도파일] 파일 {files.Count}개");
+            result.Logs.Add($"[신도파일] 파싱된 파일 {files.Count}개");
+            foreach (var f in files)
+                result.Logs.Add($"  - {f.Name} ({f.DocId})");
 
             result.Success = true;
             result.Data = files;
@@ -591,11 +607,11 @@ public class SindohDriver : IMfpDriver
         catch (Exception ex)
         {
             result.Logs.Add($"[신도파일][ERROR] {ex.Message}");
+            result.Logs.Add($"[신도파일][STACK] {ex.StackTrace}");
             result.Success = false;
             result.Message = $"파일 목록 오류: {ex.Message}";
             return result;
         }
-        finally { /* 세션은 캐시에서 관리 */ }
     }
 
     /// <summary>box_detail.json에서 파일 목록 파싱. Job.BoxInfoList.BoxJobInfoList.BoxJobInfo 경로</summary>

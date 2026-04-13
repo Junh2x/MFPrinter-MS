@@ -98,6 +98,9 @@ public class FileWatchService : IDisposable
             var removed = previousIds.Except(currentIds).ToList();
 
             AppLogger.Log("FileWatch", $"[{tag}] 조회 성공: 현재 {current.Count}개, 이전 {previous.Count}개");
+            // 드라이버 내부 로그도 항상 출력 (상세 디버깅)
+            foreach (var line in result.Logs)
+                AppLogger.Log("FileWatch", $"  └ {line}");
 
             if (added.Count > 0 || removed.Count > 0)
             {
