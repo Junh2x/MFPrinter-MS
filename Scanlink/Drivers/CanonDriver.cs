@@ -496,15 +496,28 @@ public class CanonDriver : IMfpDriver
         {
             result.Logs.Add($"[파일목록] 박스 {box.SlotIndex}: {box.Name}");
 
-            if (box.SlotIndex < 0)
-                return DriverResult<List<BoxFile>>.Fail("박스 번호가 없습니다.", result.Logs);
-
             string baseUrl; List<string> logs;
             (client, baseUrl, logs) = await InitSessionAsync(device);
             result.Logs.AddRange(logs);
             if (client == null) return DriverResult<List<BoxFile>>.Fail("세션 실패", result.Logs);
 
-            var boxNo = box.SlotIndex.ToString("D2");
+            // SlotIndex 없으면 이름으로 박스 번호 조회
+            string boxNo;
+            if (box.SlotIndex >= 0)
+            {
+                boxNo = box.SlotIndex.ToString("D2");
+            }
+            else
+            {
+                result.Logs.Add("[파일목록] SlotIndex 없음, 이름으로 박스 번호 조회...");
+                var (allBoxes, _) = await GetBoxListAsync(client, baseUrl);
+                var found = allBoxes.FirstOrDefault(b => b.name == box.Name);
+                if (found.boxNo == null)
+                    return DriverResult<List<BoxFile>>.Fail($"'{box.Name}' 박스를 찾을 수 없습니다.", result.Logs);
+                boxNo = found.boxNo;
+                box.SlotIndex = int.Parse(boxNo);
+                result.Logs.Add($"[파일목록] 박스 번호 찾음: {boxNo}");
+            }
 
             // 박스 진입
             result.Logs.Add("[파일목록] 박스 진입 중...");
