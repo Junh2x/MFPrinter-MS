@@ -143,13 +143,51 @@ public class CanonDriver : IMfpDriver
     }
 
     /// <summary>박스 속성 페이지 (bprop.cgi) → Token 획득</summary>
-    private static async Task<string?> GetBoxPropTokenAsync(HttpClient client, string baseUrl, string boxNo)
+    private static async Task<(string? token, string debug)> GetBoxPropTokenAsync(HttpClient client, string baseUrl, string boxNo)
     {
-        var url = $"{baseUrl}/rps/bprop.cgi?BOX_No={boxNo}&Dummy={Dummy()}";
-        var req = new HttpRequestMessage(HttpMethod.Get, url);
-        req.Headers.Add("Referer", $"{baseUrl}/rps/bpbl.cgi?CorePGTAG=16&BoxKind=UserBox");
-        var html = await (await client.SendAsync(req)).Content.ReadAsStringAsync();
-        return ExtractTokenFromHidden(html);
+        // Step 1: 박스 로그인 (빈 박스는 비밀번호 없이)
+        var loginBody = $"BOX_No={boxNo}&Password=&Dummy={Dummy()}";
+        var loginReq = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/rps/blogin.cgi")
+        {
+            Content = new StringContent(loginBody, Encoding.UTF8, "application/x-www-form-urlencoded")
+        };
+        loginReq.Headers.Add("Referer", $"{baseUrl}/rps/bpbl.cgi?CorePGTAG=16&BoxKind=UserBox");
+        await client.SendAsync(loginReq);
+
+        // Step 2: 박스 속성 페이지 접근 (POST)
+        var propBody = $"BOX_No={boxNo}&Dummy={Dummy()}";
+        var propReq = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/rps/bprop.cgi")
+        {
+            Content = new StringContent(propBody, Encoding.UTF8, "application/x-www-form-urlencoded")
+        };
+        propReq.Headers.Add("Referer", $"{baseUrl}/rps/blogin.cgi");
+        propReq.Headers.Add("Origin", baseUrl);
+
+        var html = await (await client.SendAsync(propReq)).Content.ReadAsStringAsync();
+
+        // Token 추출 시도
+        var token = ExtractTokenFromHidden(html);
+
+        // 다른 형식도 시도: Token=NNNN 패턴
+        if (token == null)
+        {
+            var m = Regex.Match(html, @"Token[""'\s=]+(\d{10,})");
+            if (m.Success) token = m.Groups[1].Value;
+        }
+
+        // 디버깅용 앞부분
+        var debug = $"HTML {html.Length}자";
+        if (token == null)
+        {
+            // Token 관련 문자열 찾기
+            var snippet = "";
+            var idx = html.IndexOf("Token", StringComparison.OrdinalIgnoreCase);
+            if (idx >= 0)
+                snippet = html.Substring(idx, Math.Min(200, html.Length - idx));
+            debug += $" | Token 스니펫: {snippet}";
+        }
+
+        return (token, debug);
     }
 
     /// <summary>박스 속성 업데이트 (이름/비밀번호)</summary>
@@ -310,7 +348,8 @@ public class CanonDriver : IMfpDriver
             result.Logs.Add($"[추가] 빈 박스 선택: {emptyBox.boxNo}");
 
             // 박스 속성 페이지 → Token
-            var token = await GetBoxPropTokenAsync(client, baseUrl, emptyBox.boxNo);
+            var (token, dbg) = await GetBoxPropTokenAsync(client, baseUrl, emptyBox.boxNo);
+            result.Logs.Add($"[추가] Token 응답: {dbg}");
             if (token == null)
             {
                 result.Logs.Add("[추가][FAIL] Token 획득 실패");
@@ -367,7 +406,8 @@ public class CanonDriver : IMfpDriver
 
             var boxNo = box.SlotIndex.ToString("D2");
 
-            var token = await GetBoxPropTokenAsync(client, baseUrl, boxNo);
+            var (token, dbg) = await GetBoxPropTokenAsync(client, baseUrl, boxNo);
+            result.Logs.Add($"[수정] Token 응답: {dbg}");
             if (token == null)
                 return DriverResult.Fail("Token 획득 실패", result.Logs);
             result.Logs.Add($"[수정] Token = {token[..Math.Min(15, token.Length)]}...");
@@ -566,7 +606,8 @@ public class CanonDriver : IMfpDriver
 
             var boxNo = box.SlotIndex.ToString("D2");
 
-            var token = await GetBoxPropTokenAsync(client, baseUrl, boxNo);
+            var (token, dbg) = await GetBoxPropTokenAsync(client, baseUrl, boxNo);
+            result.Logs.Add($"[삭제] Token 응답: {dbg}");
             if (token == null)
                 return DriverResult.Fail("Token 획득 실패", result.Logs);
             result.Logs.Add($"[삭제] Token = {token[..Math.Min(15, token.Length)]}...");
