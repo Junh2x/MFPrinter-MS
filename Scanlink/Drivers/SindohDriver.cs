@@ -590,15 +590,14 @@ public class SindohDriver : IMfpDriver
 
                 result.Logs.Add($"[신도파일] box_detail.json 시도 {attempt + 1}: {detailResp.Length}자");
 
-                // waitmove 응답이면 대기 후 재시도
-                if (detailResp.Contains("\"TemplateName\":\"waitmove"))
+                // wait 응답이면 대기 후 재시도 (wait.xsl, waitmove.xsl 등)
+                if (Regex.IsMatch(detailResp, @"""TemplateName""\s*:\s*""wait[^""]*"""))
                 {
-                    // ParamValue와 Interval 추출
                     var paramMatch = Regex.Match(detailResp, @"""ParamValue""\s*:\s*""([^""]+)""");
                     var intervalMatch = Regex.Match(detailResp, @"""Interval""\s*:\s*""(\d+)""");
                     if (paramMatch.Success) taskNo = paramMatch.Groups[1].Value;
-                    var interval = intervalMatch.Success ? int.Parse(intervalMatch.Groups[1].Value) : 100;
-                    result.Logs.Add($"[신도파일] waitmove — TaskNo={taskNo}, {interval}ms 대기");
+                    var interval = intervalMatch.Success ? int.Parse(intervalMatch.Groups[1].Value) : 200;
+                    result.Logs.Add($"[신도파일] wait 응답 — TaskNo={taskNo}, {interval}ms 대기 후 재시도");
                     await Task.Delay(interval);
                     continue;
                 }
