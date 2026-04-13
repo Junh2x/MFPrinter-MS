@@ -94,21 +94,19 @@ public class FileWatchService : IDisposable
             var added = currentIds.Except(prevIds).ToList();
             var removed = prevIds.Except(currentIds).ToList();
 
-            if (added.Count > 0 || removed.Count > 0)
+            if (added.Count > 0)
             {
-                if (added.Count > 0)
-                {
-                    var addedNames = result.Data
-                        .Where(f => added.Contains(f.DocId))
-                        .Select(f => $"{f.Name}({f.DocId})");
-                    AppLogger.Log("FileWatch",
-                        $"[{device.DisplayName}/{box.Name}] 신규 파일 {added.Count}개: {string.Join(", ", addedNames)}");
-                }
-                if (removed.Count > 0)
-                {
-                    AppLogger.Log("FileWatch",
-                        $"[{device.DisplayName}/{box.Name}] 삭제된 파일 {removed.Count}개: {string.Join(", ", removed)}");
-                }
+                var addedNames = result.Data
+                    .Where(f => added.Contains(f.DocId))
+                    .Select(f => $"{f.Name}({f.DocId})");
+                AppLogger.Log("FileWatch",
+                    $"[{device.DisplayName}/{box.Name}] 신규 파일 {added.Count}개: {string.Join(", ", addedNames)}");
+            }
+
+            if (removed.Count > 0)
+            {
+                AppLogger.Log("FileWatch",
+                    $"[{device.DisplayName}/{box.Name}] 삭제된 파일 {removed.Count}개: {string.Join(", ", removed)}");
             }
 
             _snapshot[key] = currentIds;

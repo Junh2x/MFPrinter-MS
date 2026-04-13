@@ -520,6 +520,17 @@ public class CanonDriver : IMfpDriver
             var html = await (await client.SendAsync(req)).Content.ReadAsStringAsync();
             result.Logs.Add($"[파일목록] 응답: {html.Length}자");
 
+            // 응답이 실제로 조회한 박스의 것인지 검증 (BOX_No=XX 값이 응답에 있어야 함)
+            var boxNoMatch = Regex.Match(html, @"BOX_No[""']?[\s:=]+[""']?(\d{2})");
+            if (boxNoMatch.Success && boxNoMatch.Groups[1].Value != boxNo)
+            {
+                result.Logs.Add($"[파일목록][WARN] 응답의 박스 번호 불일치: 요청={boxNo}, 응답={boxNoMatch.Groups[1].Value}");
+                result.Success = true;
+                result.Data = new List<BoxFile>();
+                result.Message = "세션 불일치, 빈 목록으로 처리";
+                return result;
+            }
+
             var files = ParseBoxFiles(html);
             result.Logs.Add($"[파일목록] 파일 {files.Count}개");
 
