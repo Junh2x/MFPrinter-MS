@@ -478,4 +478,10 @@ public class SindohDriver : IMfpDriver
 
         return null;
     }
+
+    /// <summary>신도 파일 목록 — 추후 구현</summary>
+    public Task<DriverResult<List<BoxFile>>> GetBoxFilesAsync(MfpDevice device, ScanBox box)
+    {
+        return Task.FromResult(DriverResult<List<BoxFile>>.Ok(new List<BoxFile>(), "신도 파일 목록 미구현"));
+    }
 }

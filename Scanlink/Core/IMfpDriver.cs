@@ -27,6 +27,9 @@ public interface IMfpDriver
 
     /// <summary>스캔함 삭제 (주소록 삭제)</summary>
     Task<DriverResult> DeleteScanBoxAsync(MfpDevice device, ScanBox box);
+
+    /// <summary>스캔함 내 파일 목록 조회 (지원 안 하는 브랜드는 빈 리스트 반환)</summary>
+    Task<DriverResult<List<BoxFile>>> GetBoxFilesAsync(MfpDevice device, ScanBox box);
 }
 
 /// <summary>드라이버 작업 결과</summary>

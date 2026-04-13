@@ -613,4 +613,10 @@ public class RicohDriver : IMfpDriver
             return result;
         } finally { client?.Dispose(); }
     }
+
+    /// <summary>리코 파일 목록 — 추후 구현</summary>
+    public Task<DriverResult<List<BoxFile>>> GetBoxFilesAsync(MfpDevice device, ScanBox box)
+    {
+        return Task.FromResult(DriverResult<List<BoxFile>>.Ok(new List<BoxFile>(), "리코 파일 목록 미구현"));
+    }
 }

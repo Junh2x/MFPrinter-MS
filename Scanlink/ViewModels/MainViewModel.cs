@@ -9,6 +9,7 @@ public class MainViewModel : ViewModelBase
     private readonly NavigationService _navigation;
     private readonly DeviceService _deviceService;
     private readonly ScanBoxService _scanBoxService;
+    private readonly FileWatchService _fileWatchService;
 
     private string _currentPageName = "devices";
 
@@ -41,6 +42,10 @@ public class MainViewModel : ViewModelBase
 
         // 초기 페이지
         _navigation.NavigateTo(DeviceListVm);
+
+        // 파일 감시 서비스 (5초 간격, 백그라운드)
+        _fileWatchService = new FileWatchService(_deviceService, _scanBoxService, TimeSpan.FromSeconds(5));
+        _fileWatchService.Start();
     }
 
     private void Navigate(object? param)
