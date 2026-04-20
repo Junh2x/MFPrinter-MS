@@ -167,7 +167,7 @@ public class SindohDriver : IMfpDriver
         }
     }
 
-    private static async Task<string> PostJsonAsync(HttpClient client, string url, object data, string referer)
+    private static async Task<string> PostJsonAsync(HttpClient client, string url, object data, string referer, List<string>? logs = null)
     {
         var json = JsonSerializer.Serialize(data);
         var req = new HttpRequestMessage(HttpMethod.Post, url)
@@ -176,8 +176,28 @@ public class SindohDriver : IMfpDriver
         };
         req.Headers.Add("Referer", referer);
         req.Headers.Add("Accept", "application/json, text/javascript, */*; q=0.01");
+
+        if (logs != null)
+        {
+            logs.Add($"[HTTP→] POST {url}");
+            logs.Add($"[HTTP→] Referer: {referer}");
+            logs.Add($"[HTTP→] Body: {json}");
+        }
+
         var r = await client.SendAsync(req);
-        return await r.Content.ReadAsStringAsync();
+        var body = await r.Content.ReadAsStringAsync();
+
+        if (logs != null)
+        {
+            logs.Add($"[HTTP←] {(int)r.StatusCode} {r.ReasonPhrase} / {body.Length}자");
+            foreach (var h in r.Headers)
+                logs.Add($"[HTTP←] {h.Key}: {string.Join(", ", h.Value)}");
+            foreach (var h in r.Content.Headers)
+                logs.Add($"[HTTP←] {h.Key}: {string.Join(", ", h.Value)}");
+            logs.Add($"[HTTP←] Body: {body}");
+        }
+
+        return body;
     }
 
     // ──────────────────────────────────────────────
@@ -290,7 +310,7 @@ public class SindohDriver : IMfpDriver
                 S_GFC = "On",
                 S_SEC = "Off",
                 S_DTP = "false",
-            }, $"{baseUrl}/wcd/spa_main.html");
+            }, $"{baseUrl}/wcd/spa_main.html", result.Logs);
 
         result.Logs.Add($"[신도추가] 응답: {resp.Length}자");
         result.Logs.Add($"[신도추가] 응답 내용(앞300자): {resp[..Math.Min(300, resp.Length)]}");
