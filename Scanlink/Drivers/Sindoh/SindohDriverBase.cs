@@ -1,0 +1,95 @@
+using System.Net;
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
+using Scanlink.Core;
+using Scanlink.Models;
+
+namespace Scanlink.Drivers.Sindoh;
+
+/// <summary>
+/// 신도리코 복합기 드라이버의 공통 기반.
+/// 모델별 드라이버는 이 클래스를 상속하고 플로우만 구현한다.
+///
+/// 공유 유틸:
+///   - HTTP 클라이언트 생성 (신도 표준 헤더, XMLHttpRequest)
+///   - JSON POST 헬퍼 (요청/응답 전체를 로그로 덤프하는 옵션)
+///   - usr 쿠키 경로별 교체 로직
+/// </summary>
+public abstract class SindohDriverBase : IMfpDriver
+{
+    public MfpBrand Brand => MfpBrand.Sindoh;
+
+    protected const string UserAgent =
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36";
+
+    protected static (HttpClient client, CookieContainer cookies) CreateClient()
+    {
+        var cookies = new CookieContainer();
+        var handler = new HttpClientHandler
+        {
+            CookieContainer = cookies,
+            ServerCertificateCustomValidationCallback = (_, _, _, _) => true,
+            UseCookies = true,
+            AllowAutoRedirect = true,
+        };
+        var client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(10) };
+        client.DefaultRequestHeaders.Add("User-Agent", UserAgent);
+        client.DefaultRequestHeaders.Add("X-Requested-With", "XMLHttpRequest");
+        return (client, cookies);
+    }
+
+    /// <summary>
+    /// POST JSON. 로그는 URL 한 줄 + 상태/길이 한 줄만 기록(상세 덤프는 호출부에서 필요 시 추가).
+    /// </summary>
+    protected static async Task<string> PostJsonAsync(HttpClient client, string url, object data, string referer, List<string>? logs = null)
+    {
+        var json = JsonSerializer.Serialize(data);
+        var req = new HttpRequestMessage(HttpMethod.Post, url)
+        {
+            Content = new StringContent(json, Encoding.UTF8, "application/x-www-form-urlencoded")
+        };
+        req.Headers.Add("Referer", referer);
+        req.Headers.Add("Accept", "application/json, text/javascript, */*; q=0.01");
+
+        logs?.Add($"[HTTP→] 요청 ({url})");
+
+        var r = await client.SendAsync(req);
+        var body = await r.Content.ReadAsStringAsync();
+
+        logs?.Add($"[HTTP←] 응답 {(int)r.StatusCode} {r.ReasonPhrase} ({body.Length}자)");
+
+        return body;
+    }
+
+    /// <summary>
+    /// usr 쿠키를 주어진 값으로 교체. 기존 usr 쿠키(path=/, path=/wcd 모두) 제거 후 새로 추가.
+    /// 서버가 path=/wcd로 설정하기 때문에 path 중복을 피해야 함.
+    /// </summary>
+    protected static void ReplaceUsrCookie(CookieContainer cookies, Uri baseUri, Uri wcdUri, string value)
+    {
+        foreach (Cookie c in cookies.GetCookies(wcdUri))
+            if (c.Name == "usr") c.Expired = true;
+        foreach (Cookie c in cookies.GetCookies(baseUri))
+            if (c.Name == "usr") c.Expired = true;
+
+        cookies.Add(wcdUri, new Cookie("usr", value, "/wcd"));
+    }
+
+    // IMfpDriver — 파생이 구현
+    public abstract Task<DriverResult> ConnectAsync(MfpDevice device);
+    public abstract Task<DriverResult<List<ScanBox>>> GetScanBoxListAsync(MfpDevice device);
+    public abstract Task<DriverResult> AddScanBoxAsync(MfpDevice device, ScanBox box);
+    public abstract Task<DriverResult> UpdateScanBoxAsync(MfpDevice device, ScanBox box, string? oldName = null, string? oldPassword = null);
+    public abstract Task<DriverResult> DeleteScanBoxAsync(MfpDevice device, ScanBox box);
+    public abstract Task<DriverResult<List<BoxFile>>> GetBoxFilesAsync(MfpDevice device, ScanBox box);
+    public abstract Task<DriverResult<byte[]>> DownloadFileAsync(MfpDevice device, ScanBox box, BoxFile file);
+    public abstract void DisposeSessions();
+
+    /// <summary>신도는 별도 초기 설정이 필요 없음. 필요한 모델은 오버라이드.</summary>
+    public virtual Task<DriverResult> SetupAsync(MfpDevice device)
+    {
+        device.IsConfigured = true;
+        return Task.FromResult(DriverResult.Ok("신도는 별도 초기 설정 불필요"));
+    }
+}

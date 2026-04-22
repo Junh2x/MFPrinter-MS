@@ -6,25 +6,18 @@ using Scanlink.Core;
 using Scanlink.Helpers;
 using Scanlink.Models;
 
-namespace Scanlink.Drivers;
+namespace Scanlink.Drivers.Canon;
 
 /// <summary>
-/// 캐논 복합기 드라이버 — 박스 기능 사용.
+/// 캐논 복합기 기본 드라이버 — 현재 대부분의 캐논 모델(iR-ADV 등)에 적용되는 플로우.
 /// 박스는 00~99 고정. 이름/비밀번호 설정으로 사용 여부 관리.
 /// </summary>
-public class CanonDriver : IMfpDriver
+public sealed class CanonDefaultDriver : CanonDriverBase
 {
-    public MfpBrand Brand => MfpBrand.Canon;
-
-    private const string UserAgent =
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36";
-
     private static readonly int[] CanonMgmtPorts = [8000, 8443, 443, 80];
 
-    private static string Dummy() => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
-
     // ──────────────────────────────────────────────
-    // 세션 캐시 (기기별, TTL 기반)
+    // 세션 캐시 (기기별, TTL 없이 실패 전까지 재사용)
     // ──────────────────────────────────────────────
 
     private sealed class CanonSession
@@ -36,8 +29,7 @@ public class CanonDriver : IMfpDriver
 
     private static readonly System.Collections.Concurrent.ConcurrentDictionary<string, CanonSession> _sessions = new();
 
-    /// <summary>앱 종료 시 모든 세션 로그아웃 + 정리</summary>
-    public static void DisposeAllSessions()
+    public override void DisposeSessions()
     {
         foreach (var ip in _sessions.Keys.ToList())
             InvalidateSession(ip);
@@ -49,7 +41,6 @@ public class CanonDriver : IMfpDriver
         if (!_sessions.TryRemove(deviceIp, out var old)) return;
         try
         {
-            // 캐논 서버에 로그아웃 신호 (fire-and-forget)
             var req = new HttpRequestMessage(HttpMethod.Get, $"{old.BaseUrl}/rps/logout.cgi?Dummy={Dummy()}");
             _ = old.Client.SendAsync(req);
         }
@@ -61,32 +52,11 @@ public class CanonDriver : IMfpDriver
     // 세션
     // ──────────────────────────────────────────────
 
-    private static (HttpClient client, CookieContainer cookies) CreateClient()
-    {
-        var cookies = new CookieContainer();
-        var handler = new HttpClientHandler
-        {
-            CookieContainer = cookies,
-            ServerCertificateCustomValidationCallback = (_, _, _, _) => true,
-            UseCookies = true,
-            AllowAutoRedirect = true,
-        };
-        var client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(10) };
-        client.DefaultRequestHeaders.Add("User-Agent", UserAgent);
-        client.DefaultRequestHeaders.Add("Accept",
-            "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
-        client.DefaultRequestHeaders.Add("Accept-Encoding", "gzip, deflate");
-        client.DefaultRequestHeaders.Add("Accept-Language", "ko-KR,ko;q=0.9");
-        client.DefaultRequestHeaders.Add("Upgrade-Insecure-Requests", "1");
-        return (client, cookies);
-    }
-
-    /// <summary>캐논 관리 포트 자동 탐색 → iR 쿠키 획득. 캐시된 세션을 우선 재사용.</summary>
+    /// <summary>캐논 관리 포트 자동 탐색 → iR 쿠키 획득. 캐시된 세션 우선 재사용.</summary>
     private static async Task<(HttpClient? client, string baseUrl, List<string> logs)> InitSessionAsync(MfpDevice device)
     {
         var logs = new List<string>();
 
-        // 캐시 확인 (TTL 없이 실패 전까지 재사용)
         if (_sessions.TryGetValue(device.Ip, out var cached))
         {
             cached.LastUsed = DateTime.UtcNow;
@@ -158,11 +128,9 @@ public class CanonDriver : IMfpDriver
         return m.Success ? m.Groups[1].Value : null;
     }
 
-    /// <summary>박스 목록 HTML 파싱 → List of (boxNo, name, docCount)</summary>
     private static List<(string boxNo, string name, int docCount)> ParseBoxList(string html)
     {
         var boxes = new List<(string, string, int)>();
-        // 패턴: <span class="BoxNumber"><a href="javascript:box_documents('NN')">NN</a></span></td><td>NAME</td><td>COUNT</td>
         var rx = new Regex(
             @"BoxNumber[^<]*<a[^>]*box_documents\('(\d{2})'\)[^>]*>\d{2}</a></span></td>\s*<td>([^<]*)</td>\s*<td>(\d+)</td>",
             RegexOptions.Singleline);
@@ -173,7 +141,6 @@ public class CanonDriver : IMfpDriver
         return boxes;
     }
 
-    /// <summary>박스 목록 조회</summary>
     private static async Task<(List<(string boxNo, string name, int docCount)> boxes, string html)>
         GetBoxListAsync(HttpClient client, string baseUrl)
     {
@@ -184,20 +151,17 @@ public class CanonDriver : IMfpDriver
         return (ParseBoxList(html), html);
     }
 
-    /// <summary>박스 진입 (blogin.cgi) — 비밀번호 유무에 따라 다른 페이로드</summary>
     private static async Task BoxLoginAsync(HttpClient client, string baseUrl, string boxNo, string password)
     {
         string url, body, referer;
         if (string.IsNullOrEmpty(password))
         {
-            // 비밀번호 없음
             url = $"{baseUrl}/rps/blogin.cgi";
             body = $"BOX_No={boxNo}&BoxKind=UserBox&Dummy={Dummy()}&Cookie=";
             referer = $"{baseUrl}/rps/bpbl.cgi?CorePGTAG=16&BoxKind=UserBox&FromTopPage=1&Dummy={Dummy()}";
         }
         else
         {
-            // 비밀번호 있음
             url = $"{baseUrl}/rps/blogin.cgi?";
             body = $"BOX_No={boxNo}&DocID=&PgStart=&PIDS=&Password={Uri.EscapeDataString(password)}" +
                    $"&URLDirect=&BoxKind=UserBox&CorePGTAG=16&Dummy={Dummy()}";
@@ -213,13 +177,10 @@ public class CanonDriver : IMfpDriver
         await client.SendAsync(req);
     }
 
-    /// <summary>박스 속성 페이지 (bprop.cgi) → Token 획득</summary>
     private static async Task<(string? token, string debug)> GetBoxPropTokenAsync(HttpClient client, string baseUrl, string boxNo, string password = "")
     {
-        // Step 1: 박스 진입 (blogin.cgi)
         await BoxLoginAsync(client, baseUrl, boxNo, password);
 
-        // Step 2: 박스 속성 페이지 접근 (POST)
         var propBody = $"BOX_No={boxNo}&Dummy={Dummy()}";
         var propReq = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/rps/bprop.cgi")
         {
@@ -230,7 +191,6 @@ public class CanonDriver : IMfpDriver
 
         var html = await (await client.SendAsync(propReq)).Content.ReadAsStringAsync();
 
-        // Token 추출
         var token = ExtractTokenFromHidden(html);
         if (token == null)
         {
@@ -251,7 +211,6 @@ public class CanonDriver : IMfpDriver
         return (token, debug);
     }
 
-    /// <summary>박스 속성 업데이트 (이름/비밀번호)</summary>
     private static async Task<string> SetBoxPropAsync(
         HttpClient client, string baseUrl, string boxNo, string name, string password, string token)
     {
@@ -286,14 +245,12 @@ public class CanonDriver : IMfpDriver
     // ConnectAsync
     // ──────────────────────────────────────────────
 
-    public async Task<DriverResult> ConnectAsync(MfpDevice device)
+    public override async Task<DriverResult> ConnectAsync(MfpDevice device)
     {
         var result = new DriverResult();
-        HttpClient? client = null;
         try
         {
-            string baseUrl; List<string> logs;
-            (client, baseUrl, logs) = await InitSessionAsync(device);
+            var (client, baseUrl, logs) = await InitSessionAsync(device);
             result.Logs.AddRange(logs);
 
             if (client == null)
@@ -310,31 +267,18 @@ public class CanonDriver : IMfpDriver
             result.Logs.Add($"[연결][ERROR] {ex.Message}");
             return DriverResult.Fail($"연결 오류: {ex.Message}", result.Logs);
         }
-        finally { /* 세션은 캐시에서 관리, 여기서 dispose 안 함 */ }
-    }
-
-    // ──────────────────────────────────────────────
-    // SetupAsync — 박스 방식은 별도 설정 불필요
-    // ──────────────────────────────────────────────
-
-    public Task<DriverResult> SetupAsync(MfpDevice device)
-    {
-        device.IsConfigured = true;
-        return Task.FromResult(DriverResult.Ok("캐논 박스는 별도 초기 설정 불필요"));
     }
 
     // ──────────────────────────────────────────────
     // GetScanBoxListAsync
     // ──────────────────────────────────────────────
 
-    public async Task<DriverResult<List<ScanBox>>> GetScanBoxListAsync(MfpDevice device)
+    public override async Task<DriverResult<List<ScanBox>>> GetScanBoxListAsync(MfpDevice device)
     {
         var result = new DriverResult<List<ScanBox>> { Logs = [] };
-        HttpClient? client = null;
         try
         {
-            string baseUrl; List<string> logs;
-            (client, baseUrl, logs) = await InitSessionAsync(device);
+            var (client, baseUrl, logs) = await InitSessionAsync(device);
             result.Logs.AddRange(logs);
             if (client == null) return DriverResult<List<ScanBox>>.Fail("세션 실패", result.Logs);
 
@@ -364,27 +308,23 @@ public class CanonDriver : IMfpDriver
             result.Message = $"조회 오류: {ex.Message}";
             return result;
         }
-        finally { /* 세션은 캐시에서 관리, 여기서 dispose 안 함 */ }
     }
 
     // ──────────────────────────────────────────────
-    // AddScanBoxAsync — 빈 박스에 이름/비밀번호 설정
+    // AddScanBoxAsync
     // ──────────────────────────────────────────────
 
-    public async Task<DriverResult> AddScanBoxAsync(MfpDevice device, ScanBox box)
+    public override async Task<DriverResult> AddScanBoxAsync(MfpDevice device, ScanBox box)
     {
         var result = new DriverResult();
-        HttpClient? client = null;
         try
         {
             result.Logs.Add($"[추가] 박스 추가: {box.Name}");
 
-            string baseUrl; List<string> logs;
-            (client, baseUrl, logs) = await InitSessionAsync(device);
+            var (client, baseUrl, logs) = await InitSessionAsync(device);
             result.Logs.AddRange(logs);
             if (client == null) return DriverResult.Fail("세션 실패", result.Logs);
 
-            // 빈 박스 찾기
             var (boxes, _) = await GetBoxListAsync(client, baseUrl);
             if (boxes.Count == 0)
             {
@@ -399,7 +339,6 @@ public class CanonDriver : IMfpDriver
                 return DriverResult.Fail("빈 박스가 없습니다.", result.Logs);
             }
 
-            // 이름 중복 확인
             if (boxes.Any(b => b.name == box.Name))
             {
                 result.Logs.Add($"[추가][FAIL] '{box.Name}' 이름 중복");
@@ -408,7 +347,6 @@ public class CanonDriver : IMfpDriver
 
             result.Logs.Add($"[추가] 빈 박스 선택: {emptyBox.boxNo}");
 
-            // 박스 속성 페이지 → Token (빈 박스는 비밀번호 없음)
             var (token, dbg) = await GetBoxPropTokenAsync(client, baseUrl, emptyBox.boxNo, "");
             result.Logs.Add($"[추가] Token 응답: {dbg}");
             if (token == null)
@@ -418,7 +356,6 @@ public class CanonDriver : IMfpDriver
             }
             result.Logs.Add($"[추가] Token = {token[..Math.Min(15, token.Length)]}...");
 
-            // 박스 속성 설정 (이름+비밀번호)
             var pw = box.Password ?? "";
             var respHtml = await SetBoxPropAsync(client, baseUrl, emptyBox.boxNo, box.Name, pw, token);
             result.Logs.Add($"[추가] 설정 응답: {respHtml.Length}자");
@@ -442,17 +379,15 @@ public class CanonDriver : IMfpDriver
             result.Message = $"추가 오류: {ex.Message}";
             return result;
         }
-        finally { /* 세션은 캐시에서 관리, 여기서 dispose 안 함 */ }
     }
 
     // ──────────────────────────────────────────────
     // UpdateScanBoxAsync
     // ──────────────────────────────────────────────
 
-    public async Task<DriverResult> UpdateScanBoxAsync(MfpDevice device, ScanBox box, string? oldName = null, string? oldPassword = null)
+    public override async Task<DriverResult> UpdateScanBoxAsync(MfpDevice device, ScanBox box, string? oldName = null, string? oldPassword = null)
     {
         var result = new DriverResult();
-        HttpClient? client = null;
         try
         {
             result.Logs.Add($"[수정] 박스 수정: {oldName ?? box.Name} → {box.Name} (슬롯={box.SlotIndex})");
@@ -460,8 +395,7 @@ public class CanonDriver : IMfpDriver
             if (box.SlotIndex < 0)
                 return DriverResult.Fail("박스 번호가 없습니다.", result.Logs);
 
-            string baseUrl; List<string> logs;
-            (client, baseUrl, logs) = await InitSessionAsync(device);
+            var (client, baseUrl, logs) = await InitSessionAsync(device);
             result.Logs.AddRange(logs);
             if (client == null) return DriverResult.Fail("세션 실패", result.Logs);
 
@@ -495,20 +429,16 @@ public class CanonDriver : IMfpDriver
             result.Message = $"수정 오류: {ex.Message}";
             return result;
         }
-        finally { /* 세션은 캐시에서 관리, 여기서 dispose 안 함 */ }
     }
 
     // ──────────────────────────────────────────────
-    // GetBoxFilesAsync — 박스 내 파일 목록 조회
+    // GetBoxFilesAsync
     // ──────────────────────────────────────────────
 
-    /// <summary>박스 내 파일 목록 HTML 파싱</summary>
     private static List<BoxFile> ParseBoxFiles(string html)
     {
         var files = new List<BoxFile>();
 
-        // <a href="javascript:doc_pages('NNNN')">...NAME...</a>
-        // 그 뒤로 <td>SIZE...</td><td>PAGES</td><td>DATE</td>
         var rx = new Regex(
             @"doc_pages\('(\d+)'\)[^>]*>\s*([^<]+)\s*</a>\s*</td>\s*<td>\s*([^<\s]+)[^<]*(?:<img[^>]*>)?\s*</td>\s*<td>\s*(\d+)\s*</td>\s*<td>\s*([^<]+)\s*</td>",
             RegexOptions.Singleline);
@@ -529,21 +459,17 @@ public class CanonDriver : IMfpDriver
         return files;
     }
 
-    /// <summary>박스 내 파일 목록 조회</summary>
-    public async Task<DriverResult<List<BoxFile>>> GetBoxFilesAsync(MfpDevice device, ScanBox box)
+    public override async Task<DriverResult<List<BoxFile>>> GetBoxFilesAsync(MfpDevice device, ScanBox box)
     {
         var result = new DriverResult<List<BoxFile>> { Logs = [] };
-        HttpClient? client = null;
         try
         {
             result.Logs.Add($"[파일목록] 박스 {box.SlotIndex}: {box.Name}");
 
-            string baseUrl; List<string> logs;
-            (client, baseUrl, logs) = await InitSessionAsync(device);
+            var (client, baseUrl, logs) = await InitSessionAsync(device);
             result.Logs.AddRange(logs);
             if (client == null) return DriverResult<List<BoxFile>>.Fail("세션 실패", result.Logs);
 
-            // SlotIndex 없으면 이름으로 박스 번호 조회
             string boxNo;
             if (box.SlotIndex >= 0)
             {
@@ -561,11 +487,9 @@ public class CanonDriver : IMfpDriver
                 result.Logs.Add($"[파일목록] 박스 번호 찾음: {boxNo}");
             }
 
-            // 박스 진입
             result.Logs.Add("[파일목록] 박스 진입 중...");
             await BoxLoginAsync(client, baseUrl, boxNo, box.Password ?? "");
 
-            // 파일 목록
             var body = $"BOX_No={boxNo}&DocStart=1&DIDS=&Dummy={Dummy()}";
             var req = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/rps/bcomdocs.cgi")
             {
@@ -575,7 +499,6 @@ public class CanonDriver : IMfpDriver
             var html = await (await client.SendAsync(req)).Content.ReadAsStringAsync();
             result.Logs.Add($"[파일목록] 응답: {html.Length}자");
 
-            // 응답이 실제로 조회한 박스의 것인지 검증 (BOX_No=XX 값이 응답에 있어야 함)
             var boxNoMatch = Regex.Match(html, @"BOX_No[""']?[\s:=]+[""']?(\d{2})");
             if (boxNoMatch.Success && boxNoMatch.Groups[1].Value != boxNo)
             {
@@ -594,7 +517,7 @@ public class CanonDriver : IMfpDriver
         catch (Exception ex)
         {
             result.Logs.Add($"[파일목록][ERROR] {ex.Message}");
-            InvalidateSession(device.Ip); // 세션 오류 시 캐시 무효화
+            InvalidateSession(device.Ip);
             result.Success = false;
             result.Message = $"파일 목록 조회 오류: {ex.Message}";
             return result;
@@ -602,25 +525,21 @@ public class CanonDriver : IMfpDriver
     }
 
     // ──────────────────────────────────────────────
-    // DownloadBoxFileAsync — 박스 내 파일 다운로드 (JPG)
+    // DownloadBoxFilePageAsync — 박스 내 파일 페이지 단위 JPG 다운로드
+    // (IMfpDriver 인터페이스 외: 캐논 전용 API)
     // ──────────────────────────────────────────────
 
-    /// <summary>박스 내 파일의 한 페이지를 JPG 바이트로 다운로드</summary>
     public async Task<DriverResult<byte[]>> DownloadBoxFilePageAsync(
         MfpDevice device, ScanBox box, string docId, int pageNo)
     {
         var result = new DriverResult<byte[]> { Logs = [] };
-        HttpClient? client = null;
         try
         {
-            string baseUrl; List<string> logs;
-            (client, baseUrl, logs) = await InitSessionAsync(device);
+            var (client, baseUrl, logs) = await InitSessionAsync(device);
             result.Logs.AddRange(logs);
             if (client == null) return DriverResult<byte[]>.Fail("세션 실패", result.Logs);
 
             var boxNo = box.SlotIndex.ToString("D2");
-
-            // 박스 진입
             await BoxLoginAsync(client, baseUrl, boxNo, box.Password ?? "");
 
             var url = $"{baseUrl}/rps/image.jpg?BOX_No={boxNo}&DocID={docId}&PageNo={pageNo}&Mode=PJPEG&EFLG=true&Dummy={Dummy()}";
@@ -645,17 +564,15 @@ public class CanonDriver : IMfpDriver
             result.Message = $"다운로드 오류: {ex.Message}";
             return result;
         }
-        finally { /* 세션은 캐시에서 관리, 여기서 dispose 안 함 */ }
     }
 
     // ──────────────────────────────────────────────
     // DeleteScanBoxAsync — 박스 이름/비밀번호 초기화
     // ──────────────────────────────────────────────
 
-    public async Task<DriverResult> DeleteScanBoxAsync(MfpDevice device, ScanBox box)
+    public override async Task<DriverResult> DeleteScanBoxAsync(MfpDevice device, ScanBox box)
     {
         var result = new DriverResult();
-        HttpClient? client = null;
         try
         {
             result.Logs.Add($"[삭제] 박스 초기화: {box.Name} (슬롯={box.SlotIndex})");
@@ -663,8 +580,7 @@ public class CanonDriver : IMfpDriver
             if (box.SlotIndex < 0)
                 return DriverResult.Fail("박스 번호가 없습니다.", result.Logs);
 
-            string baseUrl; List<string> logs;
-            (client, baseUrl, logs) = await InitSessionAsync(device);
+            var (client, baseUrl, logs) = await InitSessionAsync(device);
             result.Logs.AddRange(logs);
             if (client == null) return DriverResult.Fail("세션 실패", result.Logs);
 
@@ -676,7 +592,6 @@ public class CanonDriver : IMfpDriver
                 return DriverResult.Fail("Token 획득 실패", result.Logs);
             result.Logs.Add($"[삭제] Token = {token[..Math.Min(15, token.Length)]}...");
 
-            // 이름/비밀번호 빈값으로 초기화
             var respHtml = await SetBoxPropAsync(client, baseUrl, boxNo, "", "", token);
             result.Logs.Add($"[삭제] 응답: {respHtml.Length}자");
 
@@ -698,6 +613,5 @@ public class CanonDriver : IMfpDriver
             result.Message = $"삭제 오류: {ex.Message}";
             return result;
         }
-        finally { /* 세션은 캐시에서 관리, 여기서 dispose 안 함 */ }
     }
 }

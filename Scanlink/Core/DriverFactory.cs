@@ -1,73 +1,50 @@
-using Scanlink.Drivers;
+using Scanlink.Drivers.Canon;
+using Scanlink.Drivers.Ricoh;
+using Scanlink.Drivers.Sindoh;
 using Scanlink.Models;
 
 namespace Scanlink.Core;
 
 /// <summary>
-/// 기기별 드라이버를 반환하는 팩토리.
+/// 드라이버 해석 진입점. 모든 Brand/Model 매핑은 <see cref="DriverRegistry"/> 에 등록되어 있고,
+/// 이 Factory는 외부 호출부를 위한 얇은 래퍼.
 ///
-/// Brand(표시용 제조사)와 DriverKind(실제 API 구현)을 분리한다.
-/// 대부분 Brand → 동일 DriverKind로 매핑되지만, OEM 리브랜드 제품처럼
-/// 내부 인터페이스가 다른 경우 <see cref="Overrides"/>에 모델 규칙을 추가하면 된다.
+/// 정적 생성자에서 기본 매핑을 등록:
+///   - 각 브랜드의 기본 드라이버 (매핑되지 않은 모델에 적용)
+///   - 특정 모델별 오버라이드 (예: 신도 D430은 Ricoh 드라이버 사용 — 같은 인스턴스 공유)
 ///
-/// 예) 신도 D430은 Ricoh WIM 펌웨어 → Sindoh 브랜드 + Ricoh 드라이버
+/// 새로운 모델 전용 드라이버 추가:
+///   1) Drivers/{Brand}/{Brand}{Model}Driver.cs 구현
+///   2) 아래 정적 생성자에 DriverRegistry.RegisterModel 한 줄 추가
 /// </summary>
 public static class DriverFactory
 {
-    private static readonly CanonDriver Canon = new();
-    private static readonly RicohDriver Ricoh = new();
-    private static readonly SindohDriver Sindoh = new();
+    static DriverFactory() => RegisterDefaults();
 
-    /// <summary>
-    /// Brand 기본 매핑에서 벗어나는 예외 케이스.
-    /// (Brand, Model 부분 일치 패턴) → 실제로 써야 하는 DriverKind.
-    /// 새 모델 추가 시 여기에 한 줄만 더하면 됨.
-    /// </summary>
-    private static readonly (MfpBrand Brand, string ModelPattern, DriverKind Driver)[] Overrides =
+    /// <summary>기본 드라이버 및 모델 오버라이드를 레지스트리에 등록.
+    /// 앱 시작 시 static ctor에서 1회 호출됨. 테스트에서는 상태 초기화용으로 재호출 가능.</summary>
+    internal static void RegisterDefaults()
     {
-        (MfpBrand.Sindoh, "D430", DriverKind.Ricoh),
-    };
+        DriverRegistry.Clear();
 
-    public static IMfpDriver? GetDriver(MfpDevice device)
-    {
-        var kind = ResolveDriverKind(device);
-        return kind switch
-        {
-            DriverKind.Canon => Canon,
-            DriverKind.Ricoh => Ricoh,
-            DriverKind.Sindoh => Sindoh,
-            _ => null,
-        };
+        // 브랜드 기본 드라이버 (싱글톤) — 인스턴스를 만들어 레지스트리와 공유
+        var canon = new CanonDefaultDriver();
+        var ricoh = new RicohDefaultDriver();
+        var sindoh = new SindohDefaultDriver();
+
+        DriverRegistry.RegisterDefault(MfpBrand.Canon, canon);
+        DriverRegistry.RegisterDefault(MfpBrand.Ricoh, ricoh);
+        DriverRegistry.RegisterDefault(MfpBrand.Sindoh, sindoh);
+
+        // 모델별 오버라이드
+        // 신도 D430은 Ricoh WIM 펌웨어 기반 — 동일 Ricoh 인스턴스 재사용 (세션/캐시 공유)
+        DriverRegistry.RegisterModel(MfpBrand.Sindoh, @"D430", ricoh);
+
+        // 향후 예시:
+        // DriverRegistry.RegisterModel(MfpBrand.Sindoh, @"D420", new SindohD420Driver());
+        // DriverRegistry.RegisterModel(MfpBrand.Canon,  @"iR-ADV\sC3[0-9]+", new CanonGen3Driver());
     }
 
-    /// <summary>기기의 실제 드라이버 종류를 결정. 오버라이드 우선, 없으면 브랜드 기본.</summary>
-    public static DriverKind ResolveDriverKind(MfpDevice device)
-    {
-        foreach (var (brand, pattern, driver) in Overrides)
-        {
-            if (device.Brand == brand
-                && !string.IsNullOrEmpty(device.Model)
-                && device.Model.Contains(pattern, StringComparison.OrdinalIgnoreCase))
-            {
-                return driver;
-            }
-        }
-        return DefaultKindForBrand(device.Brand);
-    }
-
-    private static DriverKind DefaultKindForBrand(MfpBrand brand) => brand switch
-    {
-        MfpBrand.Canon => DriverKind.Canon,
-        MfpBrand.Ricoh => DriverKind.Ricoh,
-        MfpBrand.Sindoh => DriverKind.Sindoh,
-        _ => DriverKind.Unknown,
-    };
-}
-
-public enum DriverKind
-{
-    Unknown,
-    Canon,
-    Ricoh,
-    Sindoh,
+    /// <summary>기기에 맞는 드라이버 반환. 매핑이 없으면 null.</summary>
+    public static IMfpDriver? GetDriver(MfpDevice device) => DriverRegistry.Resolve(device);
 }

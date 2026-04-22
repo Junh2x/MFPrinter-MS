@@ -30,6 +30,12 @@ public interface IMfpDriver
 
     /// <summary>스캔함 내 파일 목록 조회 (지원 안 하는 브랜드는 빈 리스트 반환)</summary>
     Task<DriverResult<List<BoxFile>>> GetBoxFilesAsync(MfpDevice device, ScanBox box);
+
+    /// <summary>스캔함 내 파일 1개 다운로드 (바이트 배열). 지원하지 않는 드라이버는 실패 반환.</summary>
+    Task<DriverResult<byte[]>> DownloadFileAsync(MfpDevice device, ScanBox box, BoxFile file);
+
+    /// <summary>앱 종료 시 드라이버가 보유한 모든 세션 정리</summary>
+    void DisposeSessions();
 }
 
 /// <summary>드라이버 작업 결과</summary>

@@ -1,4 +1,5 @@
 using System.Windows;
+using Scanlink.Core;
 using Scanlink.Helpers;
 using Scanlink.Services;
 using Scanlink.Views;
@@ -115,9 +116,8 @@ public partial class App : Application
             _trayIcon.Visible = false;
             _trayIcon.Dispose();
         }
-        // 세션 정리
-        Scanlink.Drivers.CanonDriver.DisposeAllSessions();
-        Scanlink.Drivers.SindohDriver.DisposeAllSessions();
+        // 세션 정리 — 레지스트리에 등록된 모든 드라이버가 자체적으로 처리
+        DriverRegistry.DisposeAllSessions();
         base.OnExit(e);
     }
 }

@@ -1,6 +1,5 @@
 using System.IO;
 using Scanlink.Core;
-using Scanlink.Drivers;
 using Scanlink.Helpers;
 using Scanlink.Models;
 
@@ -71,8 +70,12 @@ public class FileWatchService : IDisposable
             failedCount = results.Sum();
 
             sw.Stop();
-            AppLogger.Log("FileWatch",
-                $"조회 완료: 기기 {devices.Count}대, 박스 {totalBoxes}개, 실패 {failedCount}건, 소요 {sw.ElapsedMilliseconds}ms");
+            // 실패가 없을 때는 조용히 넘어감 (자동 폴링이라 스팸 방지). 실패나 시간 초과만 눈에 띄게.
+            if (failedCount > 0 || sw.ElapsedMilliseconds > 5000)
+            {
+                AppLogger.Log("FileWatch",
+                    $"조회 완료: 기기 {devices.Count}대, 박스 {totalBoxes}개, 실패 {failedCount}건, 소요 {sw.ElapsedMilliseconds}ms");
+            }
         }
         catch (Exception ex)
         {
@@ -107,14 +110,11 @@ public class FileWatchService : IDisposable
             var added = currentIds.Except(previousIds).ToList();
             var removed = previousIds.Except(currentIds).ToList();
 
-            AppLogger.Log("FileWatch", $"[{tag}] 조회 성공: 현재 {current.Count}개, 이전 {previous.Count}개");
-            // 드라이버 내부 로그도 항상 출력 (상세 디버깅)
-            foreach (var line in result.Logs)
-                AppLogger.Log("FileWatch", $"  └ {line}");
-
+            // 자동 폴링이라 변경이 없을 때는 조용히 넘어감. 변경이 있을 때만 한 줄 요약.
             if (added.Count > 0 || removed.Count > 0)
             {
-                AppLogger.Log("FileWatch", $"[{tag}] 차이 발견: 신규 {added.Count}, 삭제 {removed.Count}");
+                AppLogger.Log("FileWatch",
+                    $"[{tag}] 현재 {current.Count}개 (신규 {added.Count}, 삭제 {removed.Count})");
 
                 if (added.Count > 0)
                 {
@@ -122,12 +122,10 @@ public class FileWatchService : IDisposable
                         .Select(f => $"{f.Name}({f.DocId})");
                     AppLogger.Log("FileWatch", $"  + 신규: {string.Join(", ", addedInfo)}");
 
-                    // 신규 파일 자동 다운로드 — 현재 신도만 지원
-                    if (driver is SindohDriver sindoh)
-                    {
-                        var newFiles = current.Where(f => added.Contains(f.DocId)).ToList();
-                        await DownloadSindohFilesAsync(sindoh, device, box, newFiles);
-                    }
+                    // 신규 파일 자동 다운로드 — 드라이버가 지원하지 않으면 실패 반환하므로 Ricoh 등은 자연스럽게 스킵
+                    var newFiles = current.Where(f => added.Contains(f.DocId)).ToList();
+                    if (newFiles.Count > 0)
+                        await DownloadNewFilesAsync(driver, device, box, newFiles);
                 }
                 if (removed.Count > 0)
                 {
@@ -148,8 +146,9 @@ public class FileWatchService : IDisposable
         }
     }
 
-    /// <summary>신도 신규 파일을 스캔함 로컬 경로에 자동 다운로드</summary>
-    private async Task DownloadSindohFilesAsync(SindohDriver sindoh, MfpDevice device, ScanBox box, List<BoxFile> newFiles)
+    /// <summary>드라이버를 통해 신규 파일을 스캔함 로컬 경로에 자동 다운로드.
+    /// 드라이버가 단일 파일 다운로드를 지원하지 않으면 DriverResult 실패만 기록하고 넘어감.</summary>
+    private async Task DownloadNewFilesAsync(IMfpDriver driver, MfpDevice device, ScanBox box, List<BoxFile> newFiles)
     {
         var tag = $"{device.DisplayName}/{box.Name}";
 
@@ -174,26 +173,23 @@ public class FileWatchService : IDisposable
         {
             try
             {
-                AppLogger.Log("FileWatch", $"[신도 {tag}] 다운로드 시작: {file.Name}");
-                var dlResult = await sindoh.DownloadFileAsync(device, box, file);
-
-                // 드라이버 로그는 성공/실패 관계없이 항상 출력
-                foreach (var line in dlResult.Logs)
-                    AppLogger.Log("FileWatch", $"  └ {line}");
+                var dlResult = await driver.DownloadFileAsync(device, box, file);
 
                 if (!dlResult.Success || dlResult.Data == null)
                 {
-                    AppLogger.Log("FileWatch", $"[신도 {tag}] 다운로드 실패: {dlResult.Message}");
+                    AppLogger.Log("FileWatch", $"[{tag}] 다운로드 실패: {file.Name} — {dlResult.Message}");
+                    foreach (var line in dlResult.Logs)
+                        AppLogger.Log("FileWatch", $"  └ {line}");
                     continue;
                 }
 
                 var localPath = Path.Combine(box.LocalFolder, $"{file.Name}.pdf");
                 await File.WriteAllBytesAsync(localPath, dlResult.Data);
-                AppLogger.Log("FileWatch", $"[신도 {tag}] 저장 완료: {localPath} ({dlResult.Data.Length} bytes)");
+                AppLogger.Log("FileWatch", $"[{tag}] 저장 완료: {file.Name}.pdf ({dlResult.Data.Length} bytes)");
             }
             catch (Exception ex)
             {
-                AppLogger.Error("FileWatch", $"[신도 {tag}] 다운로드/저장 예외: {file.Name}", ex);
+                AppLogger.Error("FileWatch", $"[{tag}] 다운로드/저장 예외: {file.Name}", ex);
             }
         }
     }
