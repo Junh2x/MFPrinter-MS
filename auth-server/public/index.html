@@ -31,9 +31,13 @@
 
     /* 대시보드 */
     .dashboard { display: none; max-width: 1080px; margin: 0 auto; padding: 24px 16px; }
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
     .header h1 { font-size: 20px; color: #1B2A4A; }
     .header-actions { display: flex; gap: 8px; }
+    .toolbar { display: flex; justify-content: flex-end; margin-bottom: 12px; }
+    .search-box { position: relative; width: 260px; }
+    .search-box input { padding-left: 34px; }
+    .search-box::before { content: "\1F50D"; position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 13px; color: #aaa; pointer-events: none; }
 
     /* 테이블 */
     .table-wrap { background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 1px 6px rgba(0,0,0,0.06); }
@@ -97,6 +101,12 @@
       </div>
     </div>
 
+    <div class="toolbar">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="상호명 검색" autocomplete="off">
+      </div>
+    </div>
+
     <div class="table-wrap">
       <table>
         <thead>
@@ -106,7 +116,7 @@
             <th>상태</th>
             <th>코드</th>
             <th>생성일</th>
-            <th>접속일</th>
+            <th>마지막 접속일</th>
             <th></th>
           </tr>
         </thead>
@@ -190,6 +200,7 @@
   const API = "/api";
   let adminKey = "";
   let editingId = null;
+  let allLicenses = [];
 
   // --- 로그인 ---
   document.getElementById("adminKeyInput").addEventListener("keydown", (e) => {
@@ -241,7 +252,8 @@
         throw new Error("fetch error");
       }
       const data = await res.json();
-      renderTable(data.licenses);
+      allLicenses = data.licenses || [];
+      applyFilter();
       return true;
     } catch (e) {
       console.error(e);
@@ -321,11 +333,23 @@
     }
   }
 
+  // --- 검색 ---
+  document.getElementById("searchInput").addEventListener("input", applyFilter);
+
+  function applyFilter() {
+    const q = document.getElementById("searchInput").value.trim().toLowerCase();
+    const filtered = q
+      ? allLicenses.filter((l) => (l.companyName || "").toLowerCase().includes(q))
+      : allLicenses;
+    renderTable(filtered, q);
+  }
+
   // --- 렌더링 ---
-  function renderTable(licenses) {
+  function renderTable(licenses, query) {
     const tbody = document.getElementById("licenseTableBody");
     if (!licenses.length) {
-      tbody.innerHTML = '<tr><td colspan="7" class="empty">등록된 인증코드가 없습니다.</td></tr>';
+      const msg = query ? `"${escapeHtml(query)}" 검색 결과가 없습니다.` : "등록된 인증코드가 없습니다.";
+      tbody.innerHTML = `<tr><td colspan="7" class="empty">${msg}</td></tr>`;
       return;
     }
     tbody.innerHTML = licenses.map((l) => {
