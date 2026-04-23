@@ -35,15 +35,17 @@
     .header h1 { font-size: 20px; color: #1B2A4A; }
     .header-actions { display: flex; gap: 8px; }
     .toolbar { display: flex; justify-content: flex-end; margin-bottom: 12px; }
-    .search-box { position: relative; width: 260px; }
-    .search-box input { padding-left: 34px; }
-    .search-box::before { content: "\1F50D"; position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 13px; color: #aaa; pointer-events: none; }
+    .search-box { width: 440px; display: flex; align-items: center; height: 38px; background: #fff; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; transition: border-color 0.15s; }
+    .search-box:focus-within { border-color: #1B2A4A; }
+    .search-box select.search-field { width: 96px; height: 100%; padding: 0 26px 0 14px; border: none; border-right: 1px solid #eee; background: transparent; font-size: 13px; color: #555; cursor: pointer; outline: none; appearance: none; -webkit-appearance: none; -moz-appearance: none; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='none' stroke='%23888' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' d='M1 1l4 4 4-4'/></svg>"); background-repeat: no-repeat; background-position: right 10px center; }
+    .search-box select.search-field:hover { color: #1B2A4A; }
+    .search-box input.search-input { flex: 1; height: 100%; padding: 0 14px; border: none; background: transparent; font-size: 13px; outline: none; }
 
     /* 테이블 */
     .table-wrap { background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 1px 6px rgba(0,0,0,0.06); }
-    table { width: 100%; border-collapse: collapse; }
+    table { width: 100%; border-collapse: collapse; table-layout: fixed; }
     th { background: #f8f9fb; text-align: center; padding: 10px 14px; font-size: 11px; color: #888; font-weight: 600; text-transform: uppercase; white-space: nowrap; }
-    td { padding: 12px 10px; font-size: 13px; border-top: 1px solid #f0f0f0; text-align: center; }
+    td { padding: 6px 10px; font-size: 13px; border-top: 1px solid #f0f0f0; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     tr.row-clickable { cursor: pointer; }
     tr.row-clickable:hover td { background: #fafbfd; }
     .code { font-family: 'Consolas', monospace; font-weight: 600; letter-spacing: 0.5px; }
@@ -52,12 +54,12 @@
     .copy-btn:hover { color: #1B2A4A; background: #eef1f7; }
     .empty { text-align: center; padding: 48px; color: #aaa; font-size: 13px; }
 
-    /* 뱃지 */
-    .badge { display: inline-block; padding: 4px 12px; border-radius: 10px; font-size: 11px; font-weight: 600; cursor: pointer; user-select: none; }
-    .badge-active { background: #d4edda; color: #155724; }
-    .badge-active:hover { background: #c3e6cb; }
-    .badge-revoked { background: #f8d7da; color: #721c24; }
-    .badge-revoked:hover { background: #f5c6cb; }
+    /* 뱃지 (텍스트 색상만, 배경 없음) */
+    .badge { display: inline-block; padding: 4px 12px; font-size: 12px; font-weight: 700; cursor: pointer; user-select: none; background: transparent; }
+    .badge-active { color: #1f8b3a; }
+    .badge-active:hover { color: #155724; }
+    .badge-revoked { color: #c82a3a; }
+    .badge-revoked:hover { color: #721c24; }
 
     /* 모달 */
     .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 100; justify-content: center; align-items: center; }
@@ -69,6 +71,17 @@
     .modal .meta { font-size: 11px; color: #999; margin-top: 4px; }
     .modal .actions { display: flex; gap: 8px; justify-content: space-between; margin-top: 20px; }
     .modal .actions .right { display: flex; gap: 8px; }
+
+    /* 페이지네이션 */
+    .pagination { display: flex; justify-content: center; align-items: center; gap: 6px; margin-top: 16px; flex-wrap: wrap; }
+    .page-info { font-size: 12px; color: #888; margin-right: 12px; }
+    .page-btn { min-width: 40px; height: 40px; padding: 0 12px; border: none; background: transparent; color: #333; font-size: 14px; border-radius: 8px; cursor: pointer; line-height: 1; display: inline-flex; align-items: center; justify-content: center; }
+    .page-btn.arrow { font-size: 22px; font-weight: 500; }
+    .page-btn:hover:not(:disabled) { background: #eef1f7; color: #1B2A4A; }
+    .page-btn:disabled { color: #ccc; cursor: not-allowed; background: transparent; }
+    .page-btn.active { background: #1B2A4A; color: #fff; font-weight: 700; }
+    .page-btn.active:hover { background: #1B2A4A; color: #fff; }
+    .page-ellipsis { padding: 0 4px; color: #aaa; font-size: 13px; }
 
     /* 토스트 */
     .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #1B2A4A; color: #fff; padding: 10px 24px; border-radius: 8px; font-size: 13px; display: none; z-index: 200; }
@@ -103,12 +116,24 @@
 
     <div class="toolbar">
       <div class="search-box">
-        <input type="text" id="searchInput" placeholder="상호명 검색" autocomplete="off">
+        <select id="searchField" class="search-field">
+          <option value="companyName">상호명</option>
+          <option value="code">코드</option>
+        </select>
+        <input type="text" id="searchInput" class="search-input" placeholder="상호명 검색" autocomplete="off">
       </div>
     </div>
 
     <div class="table-wrap">
       <table>
+        <colgroup>
+          <col style="width: 110px;">
+          <col>
+          <col style="width: 90px;">
+          <col style="width: 220px;">
+          <col style="width: 110px;">
+          <col style="width: 130px;">
+        </colgroup>
         <thead>
           <tr>
             <th>회사구분</th>
@@ -117,14 +142,15 @@
             <th>코드</th>
             <th>생성일</th>
             <th>마지막 접속일</th>
-            <th></th>
           </tr>
         </thead>
         <tbody id="licenseTableBody">
-          <tr><td colspan="7" class="empty">로딩 중...</td></tr>
+          <tr><td colspan="6" class="empty">로딩 중...</td></tr>
         </tbody>
       </table>
     </div>
+
+    <div class="pagination" id="pagination"></div>
   </div>
 
   <!-- 코드 생성 모달 -->
@@ -198,9 +224,12 @@
 
 <script>
   const API = "/api";
+  const PAGE_SIZE = 20;
   let adminKey = "";
   let editingId = null;
   let allLicenses = [];
+  let filteredLicenses = [];
+  let currentPage = 1;
 
   // --- 로그인 ---
   document.getElementById("adminKeyInput").addEventListener("keydown", (e) => {
@@ -334,22 +363,85 @@
   }
 
   // --- 검색 ---
-  document.getElementById("searchInput").addEventListener("input", applyFilter);
+  const searchFieldLabels = { companyName: "상호명", code: "코드" };
+
+  document.getElementById("searchInput").addEventListener("input", () => {
+    currentPage = 1;
+    applyFilter();
+  });
+  document.getElementById("searchField").addEventListener("change", () => {
+    const field = document.getElementById("searchField").value;
+    document.getElementById("searchInput").placeholder = `${searchFieldLabels[field]} 검색`;
+    currentPage = 1;
+    applyFilter();
+  });
 
   function applyFilter() {
     const q = document.getElementById("searchInput").value.trim().toLowerCase();
-    const filtered = q
-      ? allLicenses.filter((l) => (l.companyName || "").toLowerCase().includes(q))
-      : allLicenses;
-    renderTable(filtered, q);
+    const field = document.getElementById("searchField").value;
+    filteredLicenses = q
+      ? allLicenses.filter((l) => (l[field] || "").toLowerCase().includes(q))
+      : allLicenses.slice();
+    renderPage();
+  }
+
+  // --- 페이지네이션 ---
+  function totalPages() {
+    return Math.max(1, Math.ceil(filteredLicenses.length / PAGE_SIZE));
+  }
+
+  function goToPage(p) {
+    const tp = totalPages();
+    currentPage = Math.min(Math.max(1, p), tp);
+    renderPage();
+  }
+
+  function renderPage() {
+    const q = document.getElementById("searchInput").value.trim().toLowerCase();
+    const tp = totalPages();
+    if (currentPage > tp) currentPage = tp;
+    const start = (currentPage - 1) * PAGE_SIZE;
+    const pageItems = filteredLicenses.slice(start, start + PAGE_SIZE);
+    renderTable(pageItems, q, filteredLicenses.length === 0);
+    renderPagination();
+  }
+
+  function renderPagination() {
+    const container = document.getElementById("pagination");
+    const total = filteredLicenses.length;
+    if (total === 0) { container.innerHTML = ""; return; }
+
+    const tp = totalPages();
+    const start = (currentPage - 1) * PAGE_SIZE + 1;
+    const end = Math.min(currentPage * PAGE_SIZE, total);
+
+    const btns = [];
+    btns.push(`<span class="page-info">${start}-${end} / ${total}건</span>`);
+    btns.push(`<button class="page-btn arrow" ${currentPage === 1 ? "disabled" : ""} onclick="goToPage(1)">«</button>`);
+    btns.push(`<button class="page-btn arrow" ${currentPage === 1 ? "disabled" : ""} onclick="goToPage(${currentPage - 1})">‹</button>`);
+
+    // 페이지 번호: 현재 페이지 주변 ±2, 처음/끝 포함
+    const pages = new Set([1, tp, currentPage, currentPage - 1, currentPage - 2, currentPage + 1, currentPage + 2]);
+    const sorted = [...pages].filter(p => p >= 1 && p <= tp).sort((a, b) => a - b);
+    let prev = 0;
+    for (const p of sorted) {
+      if (p - prev > 1) btns.push(`<span class="page-ellipsis">…</span>`);
+      btns.push(`<button class="page-btn ${p === currentPage ? "active" : ""}" onclick="goToPage(${p})">${p}</button>`);
+      prev = p;
+    }
+
+    btns.push(`<button class="page-btn arrow" ${currentPage === tp ? "disabled" : ""} onclick="goToPage(${currentPage + 1})">›</button>`);
+    btns.push(`<button class="page-btn arrow" ${currentPage === tp ? "disabled" : ""} onclick="goToPage(${tp})">»</button>`);
+
+    container.innerHTML = btns.join("");
   }
 
   // --- 렌더링 ---
-  function renderTable(licenses, query) {
+  function renderTable(licenses, query, isEmpty) {
     const tbody = document.getElementById("licenseTableBody");
-    if (!licenses.length) {
+    if (isEmpty) {
       const msg = query ? `"${escapeHtml(query)}" 검색 결과가 없습니다.` : "등록된 인증코드가 없습니다.";
-      tbody.innerHTML = `<tr><td colspan="7" class="empty">${msg}</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="6" class="empty">${msg}</td></tr>`;
       return;
     }
     tbody.innerHTML = licenses.map((l) => {
@@ -357,7 +449,7 @@
       return `
       <tr class="row-clickable" onclick='openEditModal(${payload})'>
         <td>${escapeHtml(l.companyType) || "-"}</td>
-        <td>${escapeHtml(l.companyName) || "-"}</td>
+        <td title="${escapeAttr(l.companyName || "")}">${escapeHtml(l.companyName) || "-"}</td>
         <td><span class="badge badge-${badgeClass(l.status)}"
               onclick="event.stopPropagation(); toggleStatus('${l.id}','${l.status}')">
               ${statusLabel(l.status)}
@@ -370,7 +462,6 @@
         </td>
         <td>${formatDate(l.createdAt)}</td>
         <td>${formatDate(l.lastUsedAt)}</td>
-        <td></td>
       </tr>`;
     }).join("");
   }
