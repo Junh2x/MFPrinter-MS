@@ -70,12 +70,8 @@ public class FileWatchService : IDisposable
             failedCount = results.Sum();
 
             sw.Stop();
-            // 실패가 없을 때는 조용히 넘어감 (자동 폴링이라 스팸 방지). 실패나 시간 초과만 눈에 띄게.
-            if (failedCount > 0 || sw.ElapsedMilliseconds > 5000)
-            {
-                AppLogger.Log("FileWatch",
-                    $"조회 완료: 기기 {devices.Count}대, 박스 {totalBoxes}개, 실패 {failedCount}건, 소요 {sw.ElapsedMilliseconds}ms");
-            }
+            AppLogger.Log("FileWatch",
+                $"조회 완료: 기기 {devices.Count}대, 박스 {totalBoxes}개, 실패 {failedCount}건, 소요 {sw.ElapsedMilliseconds}ms");
         }
         catch (Exception ex)
         {
@@ -110,29 +106,28 @@ public class FileWatchService : IDisposable
             var added = currentIds.Except(previousIds).ToList();
             var removed = previousIds.Except(currentIds).ToList();
 
-            // 자동 폴링이라 변경이 없을 때는 조용히 넘어감. 변경이 있을 때만 한 줄 요약.
-            if (added.Count > 0 || removed.Count > 0)
+            // 폴링 결과는 항상 한 줄로 보여줌 (파일 목록 포함).
+            var fileNames = current.Count > 0
+                ? string.Join(", ", current.Select(f => f.Name))
+                : "(없음)";
+            AppLogger.Log("FileWatch", $"[{tag}] 파일 {current.Count}개: {fileNames}");
+
+            if (added.Count > 0)
             {
-                AppLogger.Log("FileWatch",
-                    $"[{tag}] 현재 {current.Count}개 (신규 {added.Count}, 삭제 {removed.Count})");
+                var addedInfo = current.Where(f => added.Contains(f.DocId))
+                    .Select(f => $"{f.Name}({f.DocId})");
+                AppLogger.Log("FileWatch", $"  + 신규: {string.Join(", ", addedInfo)}");
 
-                if (added.Count > 0)
-                {
-                    var addedInfo = current.Where(f => added.Contains(f.DocId))
-                        .Select(f => $"{f.Name}({f.DocId})");
-                    AppLogger.Log("FileWatch", $"  + 신규: {string.Join(", ", addedInfo)}");
-
-                    // 신규 파일 자동 다운로드 — 드라이버가 지원하지 않으면 실패 반환하므로 Ricoh 등은 자연스럽게 스킵
-                    var newFiles = current.Where(f => added.Contains(f.DocId)).ToList();
-                    if (newFiles.Count > 0)
-                        await DownloadNewFilesAsync(driver, device, box, newFiles);
-                }
-                if (removed.Count > 0)
-                {
-                    var removedInfo = previous.Where(f => removed.Contains(f.DocId))
-                        .Select(f => $"{f.Name}({f.DocId})");
-                    AppLogger.Log("FileWatch", $"  - 삭제: {string.Join(", ", removedInfo)}");
-                }
+                // 신규 파일 자동 다운로드 — 드라이버가 지원하지 않으면 실패 반환하므로 Ricoh 등은 자연스럽게 스킵
+                var newFiles = current.Where(f => added.Contains(f.DocId)).ToList();
+                if (newFiles.Count > 0)
+                    await DownloadNewFilesAsync(driver, device, box, newFiles);
+            }
+            if (removed.Count > 0)
+            {
+                var removedInfo = previous.Where(f => removed.Contains(f.DocId))
+                    .Select(f => $"{f.Name}({f.DocId})");
+                AppLogger.Log("FileWatch", $"  - 삭제: {string.Join(", ", removedInfo)}");
             }
 
             // 현재 상태 저장 (변경 유무와 관계없이)
