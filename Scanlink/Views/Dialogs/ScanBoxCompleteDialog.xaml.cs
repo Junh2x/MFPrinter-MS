@@ -16,8 +16,9 @@ public partial class ScanBoxCompleteDialog : Window
     {
         var imagePath = brand switch
         {
-            MfpBrand.Ricoh => "pack://application:,,,/Assets/ricoh_manual.png",
-            // MfpBrand.Canon => "pack://application:,,,/Assets/canon_manual.png",
+            MfpBrand.Ricoh  => "pack://application:,,,/Assets/ricoh_manual.png",
+            MfpBrand.Canon  => "pack://application:,,,/Assets/canon_manual.png",
+            MfpBrand.Sindoh => "pack://application:,,,/Assets/sindoh_manual.png",
             _ => null,
         };
 

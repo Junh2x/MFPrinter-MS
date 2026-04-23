@@ -19,7 +19,9 @@
 
   <ItemGroup>
     <Resource Include="Assets\app.ico" />
+    <Resource Include="Assets\canon_manual.png" />
     <Resource Include="Assets\ricoh_manual.png" />
+    <Resource Include="Assets\sindoh_manual.png" />
   </ItemGroup>
 
 </Project>

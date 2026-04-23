@@ -4,6 +4,7 @@
         xmlns:vm="clr-namespace:Scanlink.ViewModels"
         xmlns:pages="clr-namespace:Scanlink.Views.Pages"
         Title="Scanlink" Width="380" Height="580"
+        Icon="pack://application:,,,/Assets/app.ico"
         WindowStartupLocation="CenterScreen" WindowStyle="None"
         AllowsTransparency="True" Background="Transparent"
         ResizeMode="NoResize">
