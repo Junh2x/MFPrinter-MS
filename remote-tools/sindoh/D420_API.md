@@ -2129,3 +2129,13 @@ Status Code
     </BODY>
 </HTML>
 
+## 로딩 후, 다운로드 클릭
+Request URL
+http://192.168.11.241/wcd/doc/S25C-926042414080.pdf
+Request Method
+POST
+Status Code
+200 OK
+페이로드: func=PSL_F_UOU_DLD&h_token=IAvhw4waexfu3QFm82Vcqedcp1yJYPs7&cginame1=doc%2FS25C-926042414080.pdf&cginame2=doc%2FS25C-926042414080.pdf&H_BAK=0&H_TAB=&H_DLV=
+
+
