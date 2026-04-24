@@ -808,29 +808,11 @@ public sealed class SindohD420Driver : SindohDriverBase
                     result.Logs.Add(enterEx.Dump());
                     return DriverResult<byte[]>.Fail("박스 진입 실패", result.Logs);
                 }
-                result.Logs.Add("[신도D420다운][DBG] enter 응답:");
-                result.Logs.Add(enterEx.Dump());
+                // enter 응답의 <Interval> 만큼 대기 (redirect 타이밍 존중)
+                await HandleWaitAsync(session, enterEx.Body, $"{session.BaseUrl}/wcd/box_list.xml", 15, 1500, result.Logs);
 
-                var taskNo = "0";
-                var tmEnter = Regex.Match(enterEx.Body, @"<ParamValue>([^<]+)</ParamValue>");
-                if (tmEnter.Success) taskNo = tmEnter.Groups[1].Value;
-
-                await WaitUntilReadyAsync(session, taskNo, $"{session.BaseUrl}/wcd/box_list.xml", 15, 1000);
-
-                var detailEx = await PostFormAsync(session.Client, $"{session.BaseUrl}/wcd/box_detail.xml",
-                    $"waitend=true&TaskNo={taskNo}&_=", $"{session.BaseUrl}/wcd/box_list.xml", result.Logs);
-                if (!detailEx.IsSuccessStatusCode)
-                {
-                    result.Logs.Add("[신도D420다운][FAIL] box_detail.xml 실패");
-                    result.Logs.Add(detailEx.Dump());
-                    return DriverResult<byte[]>.Fail("박스 상세 조회 실패", result.Logs);
-                }
-                result.Logs.Add("[신도D420다운][DBG] box_detail 응답:");
-                result.Logs.Add(detailEx.Dump());
-
-                // box_detail.xml에서 최신 토큰 갱신 (가능한 경우)
-                var detailToken = ExtractToken(detailEx.Body);
-                if (detailToken != null) session.Token = detailToken;
+                // 주의: 네트워크 트레이스상 다운로드 플로우에선 box_detail.xml 경유 없음.
+                //       enter → NXT → box_joboperate.xml → DWN → progress 순서임.
 
                 // ── Step B: NXT (파일 다운로드 설정 창 진입)
                 var nxtPayload =
@@ -848,7 +830,7 @@ public sealed class SindohD420Driver : SindohDriverBase
                     $"&H_OPE=FileDownload" +
                     $"&H_MAX=1";
                 var nxtEx = await PostFormAsync(session.Client, $"{session.BaseUrl}/wcd/user.cgi",
-                    nxtPayload, $"{session.BaseUrl}/wcd/box_detail.xml", result.Logs);
+                    nxtPayload, $"{session.BaseUrl}/wcd/box_list.xml", result.Logs);
                 if (!nxtEx.IsSuccessStatusCode)
                 {
                     result.Logs.Add("[신도D420다운][FAIL] NXT(설정) 실패");
@@ -862,8 +844,22 @@ public sealed class SindohD420Driver : SindohDriverBase
                 var nxtToken = ExtractToken(nxtEx.Body);
                 if (nxtToken != null) session.Token = nxtToken;
 
-                // NXT 응답이 waitmove.xsl 이면 Interval 만큼 대기 후 waitmsg 폴링
-                await FollowWaitmoveAsync(session, nxtEx.Body, $"{session.BaseUrl}/wcd/user.cgi", 15, 1500, result.Logs);
+                // NXT 응답의 Interval 대기 (CgiAction=void 라 waitmsg 폴링은 불필요)
+                await HandleWaitAsync(session, nxtEx.Body, $"{session.BaseUrl}/wcd/user.cgi", 15, 1500, result.Logs);
+
+                // ── Step B': NXT 의 RedirectUrl=box_joboperate.xml 를 GET (상태 전환의 핵심 단계)
+                var jopEx = await GetAsync(session.Client, $"{session.BaseUrl}/wcd/box_joboperate.xml", result.Logs);
+                result.Logs.Add("[신도D420다운][DBG] box_joboperate 응답:");
+                result.Logs.Add(jopEx.Dump());
+                if (!jopEx.IsSuccessStatusCode)
+                {
+                    return DriverResult<byte[]>.Fail($"box_joboperate.xml HTTP {jopEx.StatusCode}", result.Logs);
+                }
+                // 이 응답에서 최신 토큰 갱신
+                var jopToken = ExtractToken(jopEx.Body);
+                if (jopToken != null) session.Token = jopToken;
+                // box_joboperate 자체가 wait.xsl 이면 폴링
+                await HandleWaitAsync(session, jopEx.Body, $"{session.BaseUrl}/wcd/user.cgi", 15, 1500, result.Logs);
 
                 // ── Step C: DWN (다운로드 대기 창 진입)
                 var dwnPayload =
@@ -888,7 +884,7 @@ public sealed class SindohD420Driver : SindohDriverBase
                     $"&F_UOU_R_PAG=MultiPage" +
                     $"&R_SPG=Off";
                 var dwnEx = await PostFormAsync(session.Client, $"{session.BaseUrl}/wcd/user.cgi",
-                    dwnPayload, $"{session.BaseUrl}/wcd/user.cgi", result.Logs);
+                    dwnPayload, $"{session.BaseUrl}/wcd/box_joboperate.xml", result.Logs);
                 if (!dwnEx.IsSuccessStatusCode)
                 {
                     result.Logs.Add("[신도D420다운][FAIL] DWN(대기) 실패");
@@ -898,23 +894,26 @@ public sealed class SindohD420Driver : SindohDriverBase
                 result.Logs.Add("[신도D420다운][DBG] DWN 응답:");
                 result.Logs.Add(dwnEx.Dump());
 
-                // DWN 응답이 waitmove.xsl 이면 Interval 대기 후 waitmsg 폴링으로 태스크 완료 대기
-                await FollowWaitmoveAsync(session, dwnEx.Body, $"{session.BaseUrl}/wcd/user.cgi", 30, 2500, result.Logs);
+                // DWN 응답의 Interval(기본 2500ms) 만큼 대기 — 서버가 다운로드 태스크 준비할 시간
+                await HandleWaitAsync(session, dwnEx.Body, $"{session.BaseUrl}/wcd/user.cgi", 15, 3000, result.Logs);
 
-                // ── Step D: progress 폴링 — 응답 HTML에서 다운로드 form 추출
+                // ── Step D: progress 폴링 — wait.xsl(준비 중) 또는 HTML(A_DL FORM 존재 = 준비 완료)
                 string? actionUrl = null;
                 string dlToken = session.Token;
                 string? cginame1 = null, cginame2 = null;
                 string hBak = "0", hDlv = "";
                 HttpExchange? lastProg = null;
 
-                for (var attempt = 0; attempt < 30; attempt++)
+                for (var attempt = 0; attempt < 60; attempt++)
                 {
                     var progEx = await GetAsync(session.Client, $"{session.BaseUrl}/wcd/progress");
                     lastProg = progEx;
+
                     if (progEx.IsSuccessStatusCode)
                     {
                         var body = progEx.Body;
+
+                        // 다운로드 폼(준비 완료) 우선 확인
                         var m = Regex.Match(body, @"<FORM[^>]*id=[""']A_DL[""'][^>]*action=[""']([^""']+)[""']", RegexOptions.IgnoreCase);
                         if (m.Success)
                         {
@@ -925,11 +924,20 @@ public sealed class SindohD420Driver : SindohDriverBase
                             cginame2 = ExtractInputValue(body, "cginame2");
                             hBak = ExtractInputValue(body, "H_BAK") ?? "0";
                             hDlv = ExtractInputValue(body, "H_DLV") ?? "";
-                            result.Logs.Add($"[신도D420다운] progress action={actionUrl}");
+                            result.Logs.Add($"[신도D420다운] progress action={actionUrl} (시도 {attempt + 1}회)");
                             break;
                         }
+
+                        // wait.xsl — 서버가 Interval 지정. 그 값 존중해 다시 폴링.
+                        var iv = Regex.Match(body, @"<Interval>(\d+)</Interval>");
+                        var waitMs = iv.Success ? int.Parse(iv.Groups[1].Value) : 2500;
+                        await Task.Delay(Math.Min(waitMs, 3000));
                     }
-                    await Task.Delay(800);
+                    else
+                    {
+                        // 500 ISE 등 — 서버가 아직 태스크 준비 못함. 잠시 대기 후 재시도.
+                        await Task.Delay(2000);
+                    }
                 }
 
                 if (actionUrl == null)
@@ -1035,27 +1043,28 @@ public sealed class SindohD420Driver : SindohDriverBase
     }
 
     /// <summary>
-    /// POST 응답이 waitmove.xsl 패턴이면 Interval 대기 후 waitmsg 폴링으로 태스크 완료 대기.
-    /// 응답에 &lt;Interval&gt;과 &lt;ParamValue&gt; 가 있으면 그 값을 사용, 없으면 기본 2초 + 폴링 생략.
+    /// 응답이 waitmove.xsl(CgiAction=void) 이면 Interval 만큼 대기만 하고 반환.
+    /// 응답이 wait.xsl(CgiAction=waitmsg) 이면 Interval 대기 후 waitmsg 폴링으로 태스크 완료 대기.
+    /// 그 외(정상 데이터)는 즉시 반환.
     /// </summary>
-    private static async Task FollowWaitmoveAsync(D420Session session, string responseBody, string referer,
+    private static async Task HandleWaitAsync(D420Session session, string responseBody, string referer,
         int maxPolls, int maxIntervalMs, List<string>? logs = null)
     {
-        // waitmove 판단: TemplateName=waitmove.xsl 또는 Function=err + RedirectUrl 존재
-        var isWaitmove = responseBody.Contains("<TemplateName>waitmove.xsl</TemplateName>")
-                      || (responseBody.Contains("<RedirectUrl>") && responseBody.Contains("<Interval>"));
-        if (!isWaitmove) return;
+        if (string.IsNullOrWhiteSpace(responseBody)) return;
+        if (!responseBody.Contains("<RedirectUrl>") && !responseBody.Contains("<Interval>")) return;
 
         var iv = Regex.Match(responseBody, @"<Interval>(\d+)</Interval>");
         var initInterval = iv.Success ? int.Parse(iv.Groups[1].Value) : 100;
         await Task.Delay(Math.Min(initInterval, maxIntervalMs));
 
-        // waitmsg 폴링 — ParamValue 있으면 TaskNo 로 사용, 없으면 "0"
-        var pv = Regex.Match(responseBody, @"<ParamValue>([^<]+)</ParamValue>");
-        var taskNo = pv.Success ? pv.Groups[1].Value : "0";
-
-        logs?.Add($"[신도D420][DBG] waitmove → waitmsg 폴링 시작 (TaskNo={taskNo}, Interval={initInterval}ms)");
-        await WaitUntilReadyAsync(session, taskNo, referer, maxPolls, maxIntervalMs);
-        logs?.Add("[신도D420][DBG] waitmsg 폴링 완료");
+        var cgi = Regex.Match(responseBody, @"<CgiAction>([^<]+)</CgiAction>");
+        if (cgi.Success && cgi.Groups[1].Value == "waitmsg")
+        {
+            var pv = Regex.Match(responseBody, @"<ParamValue>([^<]+)</ParamValue>");
+            var taskNo = pv.Success ? pv.Groups[1].Value : "0";
+            logs?.Add($"[신도D420][DBG] wait.xsl → waitmsg 폴링 (TaskNo={taskNo}, Interval={initInterval}ms)");
+            await WaitUntilReadyAsync(session, taskNo, referer, maxPolls, maxIntervalMs);
+            logs?.Add("[신도D420][DBG] waitmsg 폴링 완료");
+        }
     }
 }
