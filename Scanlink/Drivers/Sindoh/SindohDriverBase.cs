@@ -13,7 +13,8 @@ namespace Scanlink.Drivers.Sindoh;
 ///
 /// 공유 유틸:
 ///   - HTTP 클라이언트 생성 (신도 표준 헤더, XMLHttpRequest)
-///   - JSON POST 헬퍼 (요청/응답 전체를 로그로 덤프하는 옵션)
+///   - JSON POST 헬퍼 (요청/응답 전체를 캡처한 HttpExchange 반환)
+///   - Form POST / 일반 SendAsync 헬퍼 (역시 HttpExchange 반환)
 ///   - usr 쿠키 경로별 교체 로직
 /// </summary>
 public abstract class SindohDriverBase : IMfpDriver
@@ -40,9 +41,10 @@ public abstract class SindohDriverBase : IMfpDriver
     }
 
     /// <summary>
-    /// POST JSON. 로그는 URL 한 줄 + 상태/길이 한 줄만 기록(상세 덤프는 호출부에서 필요 시 추가).
+    /// POST JSON. 성공 시 [HTTP→]/[HTTP←] 요약 로그를 남기고, HttpExchange 전체를 반환.
+    /// 호출자는 실패 판정 후 result.Logs.Add(ex.Dump())로 전체 덤프를 쓸 수 있다.
     /// </summary>
-    protected static async Task<string> PostJsonAsync(HttpClient client, string url, object data, string referer, List<string>? logs = null)
+    protected static async Task<HttpExchange> PostJsonAsync(HttpClient client, string url, object data, string referer, List<string>? logs = null)
     {
         var json = JsonSerializer.Serialize(data);
         var req = new HttpRequestMessage(HttpMethod.Post, url)
@@ -52,14 +54,38 @@ public abstract class SindohDriverBase : IMfpDriver
         req.Headers.Add("Referer", referer);
         req.Headers.Add("Accept", "application/json, text/javascript, */*; q=0.01");
 
-        logs?.Add($"[HTTP→] 요청 ({url})");
+        logs?.Add($"[HTTP→] POST ({url})");
+        var ex = await HttpDiagnostics.SendAsync(client, req, json);
+        logs?.Add($"[HTTP←] {ex.StatusCode} {ex.ReasonPhrase} ({ex.Body.Length}자, {(int)ex.Elapsed.TotalMilliseconds}ms)");
+        return ex;
+    }
 
-        var r = await client.SendAsync(req);
-        var body = await r.Content.ReadAsStringAsync();
+    /// <summary>
+    /// POST form-urlencoded. 헤더/본문을 호출자가 직접 구성할 때 사용. HttpExchange 반환.
+    /// </summary>
+    protected static async Task<HttpExchange> PostFormAsync(HttpClient client, string url, string formBody, string referer, List<string>? logs = null, string accept = "application/json, text/javascript, */*; q=0.01")
+    {
+        var req = new HttpRequestMessage(HttpMethod.Post, url)
+        {
+            Content = new StringContent(formBody, Encoding.UTF8, "application/x-www-form-urlencoded")
+        };
+        req.Headers.Add("Referer", referer);
+        req.Headers.Add("Accept", accept);
 
-        logs?.Add($"[HTTP←] 응답 {(int)r.StatusCode} {r.ReasonPhrase} ({body.Length}자)");
+        logs?.Add($"[HTTP→] POST ({url})");
+        var ex = await HttpDiagnostics.SendAsync(client, req, formBody);
+        logs?.Add($"[HTTP←] {ex.StatusCode} {ex.ReasonPhrase} ({ex.Body.Length}자, {(int)ex.Elapsed.TotalMilliseconds}ms)");
+        return ex;
+    }
 
-        return body;
+    /// <summary>GET 요청 진단 버전.</summary>
+    protected static async Task<HttpExchange> GetAsync(HttpClient client, string url, List<string>? logs = null)
+    {
+        var req = new HttpRequestMessage(HttpMethod.Get, url);
+        logs?.Add($"[HTTP→] GET ({url})");
+        var ex = await HttpDiagnostics.SendAsync(client, req);
+        logs?.Add($"[HTTP←] {ex.StatusCode} {ex.ReasonPhrase} ({ex.Body.Length}자, {(int)ex.Elapsed.TotalMilliseconds}ms)");
+        return ex;
     }
 
     /// <summary>

@@ -75,24 +75,24 @@ public sealed class CanonDefaultDriver : CanonDriverBase
                 portsToTry.Add(url);
         }
 
+        HttpExchange? lastFail = null;
         foreach (var baseUrl in portsToTry)
         {
             var (client, cookies) = CreateClient();
             try
             {
                 logs.Add($"[세션] 포트 시도: {baseUrl}");
-                var r = await client.GetAsync($"{baseUrl}/");
-                if (!r.IsSuccessStatusCode)
+                var rootEx = await GetAsync(client, $"{baseUrl}/");
+                if (!rootEx.IsSuccessStatusCode)
                 {
-                    logs.Add($"[세션] {baseUrl} — HTTP {(int)r.StatusCode}");
+                    logs.Add($"[세션] {baseUrl} — HTTP {rootEx.StatusCode}");
+                    lastFail = rootEx;
                     client.Dispose();
                     continue;
                 }
 
                 var nativeUrl = $"{baseUrl}/rps/nativetop.cgi?RUIPNxBundle=&CorePGTAG=PGTAG_ADR_USR&Dummy={Dummy()}";
-                var req = new HttpRequestMessage(HttpMethod.Get, nativeUrl);
-                req.Headers.Add("Referer", $"{baseUrl}/");
-                await client.SendAsync(req);
+                var nativeEx = await GetAsync(client, nativeUrl, $"{baseUrl}/");
 
                 var allCookies = cookies.GetAllCookies();
                 var hasIR = allCookies.Any(c => c.Name == "iR");
@@ -104,17 +104,24 @@ public sealed class CanonDefaultDriver : CanonDriverBase
                     return (client, baseUrl, logs);
                 }
 
-                logs.Add($"[세션] {baseUrl} — iR 쿠키 미발급");
+                logs.Add($"[세션] {baseUrl} — iR 쿠키 미발급 (nativetop HTTP {nativeEx.StatusCode})");
+                lastFail = nativeEx;
                 client.Dispose();
             }
             catch (Exception ex)
             {
                 logs.Add($"[세션] {baseUrl} — 실패: {ex.Message}");
+                logs.Add($"[STACK] {ex.StackTrace}");
                 client.Dispose();
             }
         }
 
         logs.Add("[세션][FAIL] 모든 포트 실패");
+        if (lastFail != null)
+        {
+            logs.Add("[세션][FAIL] 마지막 실패 응답 덤프:");
+            logs.Add(lastFail.Dump());
+        }
         return (null, "", logs);
     }
 
@@ -141,17 +148,15 @@ public sealed class CanonDefaultDriver : CanonDriverBase
         return boxes;
     }
 
-    private static async Task<(List<(string boxNo, string name, int docCount)> boxes, string html)>
-        GetBoxListAsync(HttpClient client, string baseUrl)
+    private static async Task<(List<(string boxNo, string name, int docCount)> boxes, HttpExchange ex)>
+        GetBoxListAsync(HttpClient client, string baseUrl, List<string>? logs = null)
     {
         var url = $"{baseUrl}/rps/bpbl.cgi?CorePGTAG=16&BoxKind=UserBox&Dummy={Dummy()}";
-        var req = new HttpRequestMessage(HttpMethod.Get, url);
-        req.Headers.Add("Referer", $"{baseUrl}/rps/nativetop.cgi");
-        var html = await (await client.SendAsync(req)).Content.ReadAsStringAsync();
-        return (ParseBoxList(html), html);
+        var ex = await GetAsync(client, url, $"{baseUrl}/rps/nativetop.cgi", logs);
+        return (ParseBoxList(ex.Body), ex);
     }
 
-    private static async Task BoxLoginAsync(HttpClient client, string baseUrl, string boxNo, string password)
+    private static async Task<HttpExchange> BoxLoginAsync(HttpClient client, string baseUrl, string boxNo, string password, List<string>? logs = null)
     {
         string url, body, referer;
         if (string.IsNullOrEmpty(password))
@@ -168,28 +173,17 @@ public sealed class CanonDefaultDriver : CanonDriverBase
             referer = $"{baseUrl}/rps/blogin.cgi";
         }
 
-        var req = new HttpRequestMessage(HttpMethod.Post, url)
-        {
-            Content = new StringContent(body, Encoding.UTF8, "application/x-www-form-urlencoded")
-        };
-        req.Headers.Add("Referer", referer);
-        req.Headers.Add("Origin", baseUrl);
-        await client.SendAsync(req);
+        return await PostFormAsync(client, url, body, referer, logs, baseUrl);
     }
 
-    private static async Task<(string? token, string debug)> GetBoxPropTokenAsync(HttpClient client, string baseUrl, string boxNo, string password = "")
+    private static async Task<(string? token, HttpExchange? loginEx, HttpExchange propEx)> GetBoxPropTokenAsync(
+        HttpClient client, string baseUrl, string boxNo, string password = "", List<string>? logs = null)
     {
-        await BoxLoginAsync(client, baseUrl, boxNo, password);
+        var loginEx = await BoxLoginAsync(client, baseUrl, boxNo, password, logs);
 
         var propBody = $"BOX_No={boxNo}&Dummy={Dummy()}";
-        var propReq = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/rps/bprop.cgi")
-        {
-            Content = new StringContent(propBody, Encoding.UTF8, "application/x-www-form-urlencoded")
-        };
-        propReq.Headers.Add("Referer", $"{baseUrl}/rps/blogin.cgi");
-        propReq.Headers.Add("Origin", baseUrl);
-
-        var html = await (await client.SendAsync(propReq)).Content.ReadAsStringAsync();
+        var propEx = await PostFormAsync(client, $"{baseUrl}/rps/bprop.cgi", propBody, $"{baseUrl}/rps/blogin.cgi", logs, baseUrl);
+        var html = propEx.Body;
 
         var token = ExtractTokenFromHidden(html);
         if (token == null)
@@ -198,21 +192,11 @@ public sealed class CanonDefaultDriver : CanonDriverBase
             if (m.Success) token = m.Groups[1].Value;
         }
 
-        var debug = $"HTML {html.Length}자";
-        if (token == null)
-        {
-            var snippet = "";
-            var idx = html.IndexOf("Token", StringComparison.OrdinalIgnoreCase);
-            if (idx >= 0)
-                snippet = html.Substring(idx, Math.Min(200, html.Length - idx));
-            debug += $" | Token 스니펫: {snippet}";
-        }
-
-        return (token, debug);
+        return (token, loginEx, propEx);
     }
 
-    private static async Task<string> SetBoxPropAsync(
-        HttpClient client, string baseUrl, string boxNo, string name, string password, string token)
+    private static async Task<HttpExchange> SetBoxPropAsync(
+        HttpClient client, string baseUrl, string boxNo, string name, string password, string token, List<string>? logs = null)
     {
         var pwStat = string.IsNullOrEmpty(password) ? "0" : "1";
         var body = $"BOX_No={boxNo}" +
@@ -231,14 +215,7 @@ public sealed class CanonDefaultDriver : CanonDriverBase
             "&COMADR_WebDav_Reload=&COMADR_AirFaxFlg_Reload=&URLAdrID_Reload=" +
             $"&Token={token}";
 
-        var req = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/rps/bpropset.cgi")
-        {
-            Content = new StringContent(body, Encoding.UTF8, "application/x-www-form-urlencoded")
-        };
-        req.Headers.Add("Referer", $"{baseUrl}/rps/bprop.cgi?");
-        req.Headers.Add("Origin", baseUrl);
-        var resp = await client.SendAsync(req);
-        return await resp.Content.ReadAsStringAsync();
+        return await PostFormAsync(client, $"{baseUrl}/rps/bpropset.cgi", body, $"{baseUrl}/rps/bprop.cgi?", logs, baseUrl);
     }
 
     // ──────────────────────────────────────────────
@@ -265,6 +242,7 @@ public sealed class CanonDefaultDriver : CanonDriverBase
         catch (Exception ex)
         {
             result.Logs.Add($"[연결][ERROR] {ex.Message}");
+            result.Logs.Add($"[STACK] {ex.StackTrace}");
             return DriverResult.Fail($"연결 오류: {ex.Message}", result.Logs);
         }
     }
@@ -282,7 +260,13 @@ public sealed class CanonDefaultDriver : CanonDriverBase
             result.Logs.AddRange(logs);
             if (client == null) return DriverResult<List<ScanBox>>.Fail("세션 실패", result.Logs);
 
-            var (boxes, _) = await GetBoxListAsync(client, baseUrl);
+            var (boxes, listEx) = await GetBoxListAsync(client, baseUrl, result.Logs);
+            if (!listEx.IsSuccessStatusCode)
+            {
+                result.Logs.Add("[조회][FAIL] 박스 목록 HTTP 실패");
+                result.Logs.Add(listEx.Dump());
+                return DriverResult<List<ScanBox>>.Fail($"조회 HTTP {listEx.StatusCode}", result.Logs);
+            }
             result.Logs.Add($"[조회] 전체 박스 {boxes.Count}개");
 
             var scanBoxes = boxes
@@ -304,6 +288,7 @@ public sealed class CanonDefaultDriver : CanonDriverBase
         catch (Exception ex)
         {
             result.Logs.Add($"[조회][ERROR] {ex.Message}");
+            result.Logs.Add($"[STACK] {ex.StackTrace}");
             result.Success = false;
             result.Message = $"조회 오류: {ex.Message}";
             return result;
@@ -325,10 +310,11 @@ public sealed class CanonDefaultDriver : CanonDriverBase
             result.Logs.AddRange(logs);
             if (client == null) return DriverResult.Fail("세션 실패", result.Logs);
 
-            var (boxes, _) = await GetBoxListAsync(client, baseUrl);
+            var (boxes, listEx) = await GetBoxListAsync(client, baseUrl, result.Logs);
             if (boxes.Count == 0)
             {
-                result.Logs.Add("[추가][FAIL] 박스 목록 파싱 실패");
+                result.Logs.Add("[추가][FAIL] 박스 목록 파싱 실패 — 덤프:");
+                result.Logs.Add(listEx.Dump());
                 return DriverResult.Fail("박스 목록을 읽을 수 없습니다.", result.Logs);
             }
 
@@ -347,22 +333,23 @@ public sealed class CanonDefaultDriver : CanonDriverBase
 
             result.Logs.Add($"[추가] 빈 박스 선택: {emptyBox.boxNo}");
 
-            var (token, dbg) = await GetBoxPropTokenAsync(client, baseUrl, emptyBox.boxNo, "");
-            result.Logs.Add($"[추가] Token 응답: {dbg}");
+            var (token, loginEx, propEx) = await GetBoxPropTokenAsync(client, baseUrl, emptyBox.boxNo, "", result.Logs);
             if (token == null)
             {
-                result.Logs.Add("[추가][FAIL] Token 획득 실패");
+                result.Logs.Add("[추가][FAIL] Token 획득 실패 — 로그인/속성 응답 덤프:");
+                if (loginEx != null) result.Logs.Add(loginEx.Dump());
+                result.Logs.Add(propEx.Dump());
                 return DriverResult.Fail("Token 획득 실패", result.Logs);
             }
             result.Logs.Add($"[추가] Token = {token[..Math.Min(15, token.Length)]}...");
 
             var pw = box.Password ?? "";
-            var respHtml = await SetBoxPropAsync(client, baseUrl, emptyBox.boxNo, box.Name, pw, token);
-            result.Logs.Add($"[추가] 설정 응답: {respHtml.Length}자");
+            var setEx = await SetBoxPropAsync(client, baseUrl, emptyBox.boxNo, box.Name, pw, token, result.Logs);
 
-            if (respHtml.Contains("ERR") && !respHtml.Contains("ERR_SUBMIT_FORM"))
+            if (!setEx.IsSuccessStatusCode || (setEx.Body.Contains("ERR") && !setEx.Body.Contains("ERR_SUBMIT_FORM")))
             {
-                result.Logs.Add("[추가][FAIL] 서버 에러 응답");
+                result.Logs.Add("[추가][FAIL] 서버 에러 응답 — 덤프:");
+                result.Logs.Add(setEx.Dump());
                 return DriverResult.Fail("박스 설정 실패", result.Logs);
             }
 
@@ -375,6 +362,7 @@ public sealed class CanonDefaultDriver : CanonDriverBase
         catch (Exception ex)
         {
             result.Logs.Add($"[추가][ERROR] {ex.Message}");
+            result.Logs.Add($"[STACK] {ex.StackTrace}");
             result.Success = false;
             result.Message = $"추가 오류: {ex.Message}";
             return result;
@@ -401,19 +389,23 @@ public sealed class CanonDefaultDriver : CanonDriverBase
 
             var boxNo = box.SlotIndex.ToString("D2");
 
-            var (token, dbg) = await GetBoxPropTokenAsync(client, baseUrl, boxNo, oldPassword ?? "");
-            result.Logs.Add($"[수정] Token 응답: {dbg}");
+            var (token, loginEx, propEx) = await GetBoxPropTokenAsync(client, baseUrl, boxNo, oldPassword ?? "", result.Logs);
             if (token == null)
+            {
+                result.Logs.Add("[수정][FAIL] Token 획득 실패 — 로그인/속성 응답 덤프:");
+                if (loginEx != null) result.Logs.Add(loginEx.Dump());
+                result.Logs.Add(propEx.Dump());
                 return DriverResult.Fail("Token 획득 실패", result.Logs);
+            }
             result.Logs.Add($"[수정] Token = {token[..Math.Min(15, token.Length)]}...");
 
             var pw = box.Password ?? "";
-            var respHtml = await SetBoxPropAsync(client, baseUrl, boxNo, box.Name, pw, token);
-            result.Logs.Add($"[수정] 응답: {respHtml.Length}자");
+            var setEx = await SetBoxPropAsync(client, baseUrl, boxNo, box.Name, pw, token, result.Logs);
 
-            if (respHtml.Contains("ERR") && !respHtml.Contains("ERR_SUBMIT_FORM"))
+            if (!setEx.IsSuccessStatusCode || (setEx.Body.Contains("ERR") && !setEx.Body.Contains("ERR_SUBMIT_FORM")))
             {
-                result.Logs.Add("[수정][FAIL] 서버 에러 응답");
+                result.Logs.Add("[수정][FAIL] 서버 에러 응답 — 덤프:");
+                result.Logs.Add(setEx.Dump());
                 return DriverResult.Fail("박스 수정 실패", result.Logs);
             }
 
@@ -425,6 +417,7 @@ public sealed class CanonDefaultDriver : CanonDriverBase
         catch (Exception ex)
         {
             result.Logs.Add($"[수정][ERROR] {ex.Message}");
+            result.Logs.Add($"[STACK] {ex.StackTrace}");
             result.Success = false;
             result.Message = $"수정 오류: {ex.Message}";
             return result;
@@ -478,7 +471,7 @@ public sealed class CanonDefaultDriver : CanonDriverBase
             else
             {
                 result.Logs.Add("[파일목록] SlotIndex 없음, 이름으로 박스 번호 조회...");
-                var (allBoxes, _) = await GetBoxListAsync(client, baseUrl);
+                var (allBoxes, _) = await GetBoxListAsync(client, baseUrl, result.Logs);
                 var found = allBoxes.FirstOrDefault(b => b.name == box.Name);
                 if (found.boxNo == null)
                     return DriverResult<List<BoxFile>>.Fail($"'{box.Name}' 박스를 찾을 수 없습니다.", result.Logs);
@@ -488,21 +481,29 @@ public sealed class CanonDefaultDriver : CanonDriverBase
             }
 
             result.Logs.Add("[파일목록] 박스 진입 중...");
-            await BoxLoginAsync(client, baseUrl, boxNo, box.Password ?? "");
+            var loginEx = await BoxLoginAsync(client, baseUrl, boxNo, box.Password ?? "", result.Logs);
+            if (!loginEx.IsSuccessStatusCode)
+            {
+                result.Logs.Add("[파일목록][FAIL] 박스 로그인 실패 — 덤프:");
+                result.Logs.Add(loginEx.Dump());
+                return DriverResult<List<BoxFile>>.Fail("박스 로그인 실패", result.Logs);
+            }
 
             var body = $"BOX_No={boxNo}&DocStart=1&DIDS=&Dummy={Dummy()}";
-            var req = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/rps/bcomdocs.cgi")
+            var docsEx = await PostFormAsync(client, $"{baseUrl}/rps/bcomdocs.cgi", body, $"{baseUrl}/rps/blogin.cgi", result.Logs);
+            if (!docsEx.IsSuccessStatusCode)
             {
-                Content = new StringContent(body, Encoding.UTF8, "application/x-www-form-urlencoded")
-            };
-            req.Headers.Add("Referer", $"{baseUrl}/rps/blogin.cgi");
-            var html = await (await client.SendAsync(req)).Content.ReadAsStringAsync();
-            result.Logs.Add($"[파일목록] 응답: {html.Length}자");
+                result.Logs.Add("[파일목록][FAIL] bcomdocs.cgi HTTP 실패 — 덤프:");
+                result.Logs.Add(docsEx.Dump());
+                return DriverResult<List<BoxFile>>.Fail($"HTTP {docsEx.StatusCode}", result.Logs);
+            }
+            var html = docsEx.Body;
 
             var boxNoMatch = Regex.Match(html, @"BOX_No[""']?[\s:=]+[""']?(\d{2})");
             if (boxNoMatch.Success && boxNoMatch.Groups[1].Value != boxNo)
             {
-                result.Logs.Add($"[파일목록][WARN] 응답의 박스 번호 불일치: 요청={boxNo}, 응답={boxNoMatch.Groups[1].Value}");
+                result.Logs.Add($"[파일목록][WARN] 응답의 박스 번호 불일치: 요청={boxNo}, 응답={boxNoMatch.Groups[1].Value} — 덤프:");
+                result.Logs.Add(docsEx.Dump());
                 return DriverResult<List<BoxFile>>.Fail("박스 번호 불일치", result.Logs);
             }
 
@@ -517,6 +518,7 @@ public sealed class CanonDefaultDriver : CanonDriverBase
         catch (Exception ex)
         {
             result.Logs.Add($"[파일목록][ERROR] {ex.Message}");
+            result.Logs.Add($"[STACK] {ex.StackTrace}");
             InvalidateSession(device.Ip);
             result.Success = false;
             result.Message = $"파일 목록 조회 오류: {ex.Message}";
@@ -540,17 +542,23 @@ public sealed class CanonDefaultDriver : CanonDriverBase
             if (client == null) return DriverResult<byte[]>.Fail("세션 실패", result.Logs);
 
             var boxNo = box.SlotIndex.ToString("D2");
-            await BoxLoginAsync(client, baseUrl, boxNo, box.Password ?? "");
+            var loginEx = await BoxLoginAsync(client, baseUrl, boxNo, box.Password ?? "", result.Logs);
+            if (!loginEx.IsSuccessStatusCode)
+            {
+                result.Logs.Add("[다운로드][FAIL] 박스 로그인 실패"); result.Logs.Add(loginEx.Dump());
+                return DriverResult<byte[]>.Fail("박스 로그인 실패", result.Logs);
+            }
 
             var url = $"{baseUrl}/rps/image.jpg?BOX_No={boxNo}&DocID={docId}&PageNo={pageNo}&Mode=PJPEG&EFLG=true&Dummy={Dummy()}";
-            var req = new HttpRequestMessage(HttpMethod.Get, url);
-            req.Headers.Add("Referer", $"{baseUrl}/rps/bcomdocs.cgi");
-            var resp = await client.SendAsync(req);
+            var (imgEx, bytes) = await GetBytesAsync(client, url, $"{baseUrl}/rps/bcomdocs.cgi", result.Logs);
 
-            if (!resp.IsSuccessStatusCode)
-                return DriverResult<byte[]>.Fail($"다운로드 실패: HTTP {(int)resp.StatusCode}", result.Logs);
+            if (!imgEx.IsSuccessStatusCode)
+            {
+                result.Logs.Add($"[다운로드][FAIL] HTTP {imgEx.StatusCode} — 덤프:");
+                result.Logs.Add(imgEx.Dump());
+                return DriverResult<byte[]>.Fail($"다운로드 실패: HTTP {imgEx.StatusCode}", result.Logs);
+            }
 
-            var bytes = await resp.Content.ReadAsByteArrayAsync();
             result.Logs.Add($"[다운로드] {docId} 페이지 {pageNo}: {bytes.Length}바이트");
 
             result.Success = true;
@@ -560,6 +568,7 @@ public sealed class CanonDefaultDriver : CanonDriverBase
         catch (Exception ex)
         {
             result.Logs.Add($"[다운로드][ERROR] {ex.Message}");
+            result.Logs.Add($"[STACK] {ex.StackTrace}");
             result.Success = false;
             result.Message = $"다운로드 오류: {ex.Message}";
             return result;
@@ -586,18 +595,22 @@ public sealed class CanonDefaultDriver : CanonDriverBase
 
             var boxNo = box.SlotIndex.ToString("D2");
 
-            var (token, dbg) = await GetBoxPropTokenAsync(client, baseUrl, boxNo, box.Password ?? "");
-            result.Logs.Add($"[삭제] Token 응답: {dbg}");
+            var (token, loginEx, propEx) = await GetBoxPropTokenAsync(client, baseUrl, boxNo, box.Password ?? "", result.Logs);
             if (token == null)
+            {
+                result.Logs.Add("[삭제][FAIL] Token 획득 실패 — 로그인/속성 덤프:");
+                if (loginEx != null) result.Logs.Add(loginEx.Dump());
+                result.Logs.Add(propEx.Dump());
                 return DriverResult.Fail("Token 획득 실패", result.Logs);
+            }
             result.Logs.Add($"[삭제] Token = {token[..Math.Min(15, token.Length)]}...");
 
-            var respHtml = await SetBoxPropAsync(client, baseUrl, boxNo, "", "", token);
-            result.Logs.Add($"[삭제] 응답: {respHtml.Length}자");
+            var setEx = await SetBoxPropAsync(client, baseUrl, boxNo, "", "", token, result.Logs);
 
-            if (respHtml.Contains("ERR") && !respHtml.Contains("ERR_SUBMIT_FORM"))
+            if (!setEx.IsSuccessStatusCode || (setEx.Body.Contains("ERR") && !setEx.Body.Contains("ERR_SUBMIT_FORM")))
             {
-                result.Logs.Add("[삭제][FAIL] 서버 에러 응답");
+                result.Logs.Add("[삭제][FAIL] 서버 에러 응답 — 덤프:");
+                result.Logs.Add(setEx.Dump());
                 return DriverResult.Fail("박스 초기화 실패", result.Logs);
             }
 
@@ -609,6 +622,7 @@ public sealed class CanonDefaultDriver : CanonDriverBase
         catch (Exception ex)
         {
             result.Logs.Add($"[삭제][ERROR] {ex.Message}");
+            result.Logs.Add($"[STACK] {ex.StackTrace}");
             result.Success = false;
             result.Message = $"삭제 오류: {ex.Message}";
             return result;

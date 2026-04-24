@@ -71,25 +71,25 @@ public sealed class SindohDefaultDriver : SindohDriverBase
             logs.Add($"[신도] 세션 초기화 ({baseUrl})");
 
             // Step 1
-            await client.GetAsync($"{baseUrl}/wcd/spa_login.html");
+            var step1 = await GetAsync(client, $"{baseUrl}/spa_login.html") ;
+            if (!step1.IsSuccessStatusCode)
+            {
+                logs.Add("[신도][FAIL] Step1 spa_login.html 응답 실패");
+                logs.Add(step1.Dump());
+            }
 
-            // Step 2
+            // Step 2: ulogin
             var loginPayload = "func=PSL_LP0_TOP&AuthType=None&TrackType=&ExtSvType=0&PswcForm=&Mode=Public" +
                 "&publicuser=&username=&password=&AuthorityType=&R_ADM=&ExtServ=0&ViewMode=&BrowserMode=&Lang=" +
                 "&trackname=&trackpassword=";
-            var loginReq = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/wcd/ulogin.cgi")
-            {
-                Content = new StringContent(loginPayload, Encoding.UTF8, "application/x-www-form-urlencoded")
-            };
-            loginReq.Headers.Add("Referer", $"{baseUrl}/wcd/spa_login.html");
-            loginReq.Headers.Add("Accept", "*/*");
-            await client.SendAsync(loginReq);
+            var loginEx = await PostFormAsync(client, $"{baseUrl}/wcd/ulogin.cgi", loginPayload, $"{baseUrl}/wcd/spa_login.html", logs, "*/*");
 
             var allCookies = cookies.GetAllCookies();
             var idCookie = allCookies.FirstOrDefault(c => c.Name == "ID");
             if (idCookie == null || string.IsNullOrEmpty(idCookie.Value))
             {
                 logs.Add("[신도][FAIL] 로그인 실패 — ID 쿠키 없음");
+                logs.Add(loginEx.Dump());
                 client.Dispose();
                 return (null, null, baseUrl, logs);
             }
@@ -101,10 +101,15 @@ public sealed class SindohDefaultDriver : SindohDriverBase
             cookies.Add(uri, new Cookie("webUI", "new"));
 
             // Step 4
-            await client.GetAsync($"{baseUrl}/wcd/spa_main.html");
+            var step4 = await GetAsync(client, $"{baseUrl}/wcd/spa_main.html");
+            if (!step4.IsSuccessStatusCode)
+            {
+                logs.Add("[신도][WARN] spa_main.html 응답 비정상");
+                logs.Add(step4.Dump());
+            }
 
             // Step 5 — 토큰 추출
-            var tokenResp = await PostJsonAsync(client, $"{baseUrl}/wcd/api/AppReqGetUserBoxList",
+            var tokenEx = await PostJsonAsync(client, $"{baseUrl}/wcd/api/AppReqGetUserBoxList",
                 new {
                     BoxListCondition = new {
                         SearchKey = "None", WellUse = "false",
@@ -112,14 +117,23 @@ public sealed class SindohDefaultDriver : SindohDriverBase
                         ObtainCondition = new { Type = "OffsetList", OffsetRange = new { Start = "1", Length = "1" } }
                     },
                     Token = ""
-                }, $"{baseUrl}/wcd/spa_main.html");
+                }, $"{baseUrl}/wcd/spa_main.html", logs);
 
-            var tokenMatch = Regex.Match(tokenResp, @"""Token""\s*:\s*""([^""]+)""");
+            if (!tokenEx.IsSuccessStatusCode)
+            {
+                logs.Add("[신도][FAIL] 토큰 요청 HTTP 실패");
+                logs.Add(tokenEx.Dump());
+                client.Dispose();
+                return (null, null, baseUrl, logs);
+            }
+
+            var tokenMatch = Regex.Match(tokenEx.Body, @"""Token""\s*:\s*""([^""]+)""");
             string? token = tokenMatch.Success ? tokenMatch.Groups[1].Value : null;
 
             if (token == null)
             {
-                logs.Add($"[신도][WARN] 토큰 미추출, 응답(앞300자): {tokenResp[..Math.Min(300, tokenResp.Length)]}");
+                logs.Add("[신도][WARN] 토큰 미추출 — 전체 덤프:");
+                logs.Add(tokenEx.Dump());
                 token = "";
             }
 
@@ -131,6 +145,7 @@ public sealed class SindohDefaultDriver : SindohDriverBase
         catch (Exception ex)
         {
             logs.Add($"[신도][ERROR] 세션: {ex.Message}");
+            logs.Add($"[STACK] {ex.StackTrace}");
             client.Dispose();
             return (null, null, baseUrl, logs);
         }
@@ -156,6 +171,7 @@ public sealed class SindohDefaultDriver : SindohDriverBase
         catch (Exception ex)
         {
             result.Logs.Add($"[신도][ERROR] {ex.Message}");
+            result.Logs.Add($"[STACK] {ex.StackTrace}");
             return DriverResult.Fail($"연결 오류: {ex.Message}", result.Logs);
         }
     }
@@ -173,7 +189,7 @@ public sealed class SindohDefaultDriver : SindohDriverBase
             result.Logs.AddRange(loginLogs);
             if (client == null) return DriverResult<List<ScanBox>>.Fail("세션 실패", result.Logs);
 
-            var resp = await PostJsonAsync(client, $"{baseUrl}/wcd/api/AppReqGetUserBoxList",
+            var ex = await PostJsonAsync(client, $"{baseUrl}/wcd/api/AppReqGetUserBoxList",
                 new {
                     BoxListCondition = new {
                         SearchKey = "None", WellUse = "false",
@@ -181,10 +197,17 @@ public sealed class SindohDefaultDriver : SindohDriverBase
                         ObtainCondition = new { Type = "OffsetList", OffsetRange = new { Start = "1", Length = "50" } }
                     },
                     Token = token ?? ""
-                }, $"{baseUrl}/wcd/spa_main.html");
+                }, $"{baseUrl}/wcd/spa_main.html", result.Logs);
+
+            if (!ex.IsSuccessStatusCode)
+            {
+                result.Logs.Add("[신도조회][FAIL] 박스 목록 HTTP 실패");
+                result.Logs.Add(ex.Dump());
+                return DriverResult<List<ScanBox>>.Fail($"조회 실패 HTTP {ex.StatusCode}", result.Logs);
+            }
 
             var boxes = new List<ScanBox>();
-            foreach (Match m in Regex.Matches(resp, @"""BoxID""\s*:\s*""(\d+)"".*?""Name""\s*:\s*""([^""]+)""", RegexOptions.Singleline))
+            foreach (Match m in Regex.Matches(ex.Body, @"""BoxID""\s*:\s*""(\d+)"".*?""Name""\s*:\s*""([^""]+)""", RegexOptions.Singleline))
             {
                 boxes.Add(new ScanBox { Name = m.Groups[2].Value, SlotIndex = int.Parse(m.Groups[1].Value), MfpDeviceId = device.Id });
             }
@@ -197,6 +220,7 @@ public sealed class SindohDefaultDriver : SindohDriverBase
         catch (Exception ex)
         {
             result.Logs.Add($"[신도][ERROR] {ex.Message}");
+            result.Logs.Add($"[STACK] {ex.StackTrace}");
             result.Success = false;
             result.Message = $"조회 오류: {ex.Message}";
             return result;
@@ -221,7 +245,7 @@ public sealed class SindohDefaultDriver : SindohDriverBase
             var pw = box.Password ?? "";
             var usePass = !string.IsNullOrEmpty(pw) ? "UsePass" : "NoPass";
 
-            var resp = await PostJsonAsync(client,
+            var ex = await PostJsonAsync(client,
                 $"{baseUrl}/wcd/api/AppReqSetCustomMessage/_005_001_ULU001",
                 new {
                     func = "PSL_F_ULUUser_CRE",
@@ -240,10 +264,11 @@ public sealed class SindohDefaultDriver : SindohDriverBase
                     S_DTP = "false",
                 }, $"{baseUrl}/wcd/spa_main.html", result.Logs);
 
-            if (!resp.Contains("\"Ack\"") && !resp.Contains("\"Ok_1\""))
+            if (!ex.IsSuccessStatusCode || (!ex.Body.Contains("\"Ack\"") && !ex.Body.Contains("\"Ok_1\"")))
             {
-                result.Logs.Add($"[신도추가][FAIL] 응답 내용(앞300자): {resp[..Math.Min(300, resp.Length)]}");
-                return DriverResult.Fail($"박스 생성 실패", result.Logs);
+                result.Logs.Add("[신도추가][FAIL] 박스 생성 실패 — 전체 덤프:");
+                result.Logs.Add(ex.Dump());
+                return DriverResult.Fail("박스 생성 실패", result.Logs);
             }
 
             result.Logs.Add("[신도추가] 생성 완료");
@@ -254,6 +279,7 @@ public sealed class SindohDefaultDriver : SindohDriverBase
         catch (Exception ex)
         {
             result.Logs.Add($"[신도추가][ERROR] {ex.Message}");
+            result.Logs.Add($"[STACK] {ex.StackTrace}");
             result.Success = false;
             result.Message = $"추가 오류: {ex.Message}";
             return result;
@@ -276,7 +302,7 @@ public sealed class SindohDefaultDriver : SindohDriverBase
             result.Logs.AddRange(loginLogs);
             if (client == null) return DriverResult.Fail("세션 실패", result.Logs);
 
-            var listResp = await PostJsonAsync(client, $"{baseUrl}/wcd/api/AppReqGetUserBoxList",
+            var listEx = await PostJsonAsync(client, $"{baseUrl}/wcd/api/AppReqGetUserBoxList",
                 new {
                     BoxListCondition = new {
                         SearchKey = "None", WellUse = "false",
@@ -284,12 +310,20 @@ public sealed class SindohDefaultDriver : SindohDriverBase
                         ObtainCondition = new { Type = "OffsetList", OffsetRange = new { Start = "1", Length = "50" } }
                     },
                     Token = token ?? ""
-                }, $"{baseUrl}/wcd/spa_main.html");
+                }, $"{baseUrl}/wcd/spa_main.html", result.Logs);
 
-            var boxNum = FindBoxNumber(listResp, searchName);
+            if (!listEx.IsSuccessStatusCode)
+            {
+                result.Logs.Add("[신도수정][FAIL] 박스 목록 조회 실패");
+                result.Logs.Add(listEx.Dump());
+                return DriverResult.Fail("박스 목록 조회 실패", result.Logs);
+            }
+
+            var boxNum = FindBoxNumber(listEx.Body, searchName);
             if (boxNum == null)
             {
-                result.Logs.Add($"[신도수정][FAIL] 박스 '{searchName}' 찾을 수 없음");
+                result.Logs.Add($"[신도수정][FAIL] 박스 '{searchName}' 찾을 수 없음 — 목록 응답 덤프:");
+                result.Logs.Add(listEx.Dump());
                 return DriverResult.Fail($"박스 '{searchName}'을 찾을 수 없습니다.", result.Logs);
             }
             result.Logs.Add($"[신도수정] 대상 박스 번호: {boxNum}");
@@ -297,7 +331,7 @@ public sealed class SindohDefaultDriver : SindohDriverBase
             var pw = box.Password ?? "";
             var changePw = !string.IsNullOrEmpty(pw);
 
-            var resp = await PostJsonAsync(client,
+            var ex = await PostJsonAsync(client,
                 $"{baseUrl}/wcd/api/AppReqSetCustomMessage/_005_001_ULU002",
                 new {
                     func = "PSL_F_ULU_SET",
@@ -317,11 +351,12 @@ public sealed class SindohDefaultDriver : SindohDriverBase
                     P_CPA = oldPassword ?? "",
                     P_NPA = pw,
                     P_NPA2 = pw,
-                }, $"{baseUrl}/wcd/spa_main.html");
+                }, $"{baseUrl}/wcd/spa_main.html", result.Logs);
 
-            if (!resp.Contains("\"Ack\"") && !resp.Contains("\"Ok_1\""))
+            if (!ex.IsSuccessStatusCode || (!ex.Body.Contains("\"Ack\"") && !ex.Body.Contains("\"Ok_1\"")))
             {
-                result.Logs.Add($"[신도수정][FAIL] 응답 내용(앞300자): {resp[..Math.Min(300, resp.Length)]}");
+                result.Logs.Add("[신도수정][FAIL] 수정 실패 — 전체 덤프:");
+                result.Logs.Add(ex.Dump());
                 return DriverResult.Fail("수정 실패", result.Logs);
             }
 
@@ -333,6 +368,7 @@ public sealed class SindohDefaultDriver : SindohDriverBase
         catch (Exception ex)
         {
             result.Logs.Add($"[신도수정][ERROR] {ex.Message}");
+            result.Logs.Add($"[STACK] {ex.StackTrace}");
             result.Success = false;
             result.Message = $"수정 오류: {ex.Message}";
             return result;
@@ -354,7 +390,7 @@ public sealed class SindohDefaultDriver : SindohDriverBase
             result.Logs.AddRange(loginLogs);
             if (client == null) return DriverResult.Fail("세션 실패", result.Logs);
 
-            var listResp = await PostJsonAsync(client, $"{baseUrl}/wcd/api/AppReqGetUserBoxList",
+            var listEx = await PostJsonAsync(client, $"{baseUrl}/wcd/api/AppReqGetUserBoxList",
                 new {
                     BoxListCondition = new {
                         SearchKey = "None", WellUse = "false",
@@ -362,12 +398,20 @@ public sealed class SindohDefaultDriver : SindohDriverBase
                         ObtainCondition = new { Type = "OffsetList", OffsetRange = new { Start = "1", Length = "50" } }
                     },
                     Token = token ?? ""
-                }, $"{baseUrl}/wcd/spa_main.html");
+                }, $"{baseUrl}/wcd/spa_main.html", result.Logs);
 
-            var boxNum = FindBoxNumber(listResp, box.Name);
+            if (!listEx.IsSuccessStatusCode)
+            {
+                result.Logs.Add("[신도삭제][FAIL] 박스 목록 HTTP 실패");
+                result.Logs.Add(listEx.Dump());
+                return DriverResult.Fail("박스 목록 조회 실패", result.Logs);
+            }
+
+            var boxNum = FindBoxNumber(listEx.Body, box.Name);
             if (boxNum == null)
             {
-                result.Logs.Add($"[신도삭제][FAIL] 박스 '{box.Name}' 목록에서 찾을 수 없음");
+                result.Logs.Add($"[신도삭제][FAIL] 박스 '{box.Name}' 목록에서 찾을 수 없음 — 응답 덤프:");
+                result.Logs.Add(listEx.Dump());
                 return DriverResult.Fail($"박스 '{box.Name}'을 찾을 수 없습니다.", result.Logs);
             }
             result.Logs.Add($"[신도삭제] 대상 박스 ID: {boxNum}");
@@ -381,22 +425,28 @@ public sealed class SindohDefaultDriver : SindohDriverBase
 
             session.Cookies.Add(uri, new Cookie("usr", "F_ULUUserBoxLogin"));
 
-            var tokenResp = await (await client.GetAsync($"{baseUrl}/wcd/token.json?_={DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}")).Content.ReadAsStringAsync();
-            var tokenMatch = Regex.Match(tokenResp, @"""Token""\s*:\s*""([^""]+)""");
+            var tokenEx = await GetAsync(client, $"{baseUrl}/wcd/token.json?_={DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}", result.Logs);
+            if (!tokenEx.IsSuccessStatusCode)
+            {
+                result.Logs.Add("[신도삭제][FAIL] token.json 실패");
+                result.Logs.Add(tokenEx.Dump());
+                return DriverResult.Fail("토큰 갱신 실패", result.Logs);
+            }
+            var tokenMatch = Regex.Match(tokenEx.Body, @"""Token""\s*:\s*""([^""]+)""");
             if (tokenMatch.Success) token = tokenMatch.Groups[1].Value;
 
             // Step 2: 비밀번호 인증 (form-urlencoded)
             var authPayload = $"func=PSL_F_ULUUser_BOX&h_token={token}&H_TAB=&H_BID={boxNum}&H_DSP=Delete&H_IPA=On&T_BID={boxNum}&H_BAT=Public&P_BPA={Uri.EscapeDataString(pw)}";
-            var authReq = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/wcd/api/AppReqSetCustomMessage/_005_001_ULU004")
+            var authEx = await PostFormAsync(client, $"{baseUrl}/wcd/api/AppReqSetCustomMessage/_005_001_ULU004", authPayload, $"{baseUrl}/wcd/spa_main.html", result.Logs);
+            if (!authEx.IsSuccessStatusCode)
             {
-                Content = new StringContent(authPayload, Encoding.UTF8, "application/x-www-form-urlencoded")
-            };
-            authReq.Headers.Add("Referer", $"{baseUrl}/wcd/spa_main.html");
-            authReq.Headers.Add("Accept", "application/json, text/javascript, */*; q=0.01");
-            await (await client.SendAsync(authReq)).Content.ReadAsStringAsync();
+                result.Logs.Add("[신도삭제][FAIL] 비밀번호 인증 HTTP 실패");
+                result.Logs.Add(authEx.Dump());
+                return DriverResult.Fail("비밀번호 인증 실패", result.Logs);
+            }
 
             // Step 3: 실제 삭제
-            var resp = await PostJsonAsync(client,
+            var ex = await PostJsonAsync(client,
                 $"{baseUrl}/wcd/api/AppReqSetCustomMessage/_005_001_ULU003",
                 new {
                     func = "PSL_F_ULU_DEL",
@@ -410,11 +460,13 @@ public sealed class SindohDefaultDriver : SindohDriverBase
                     H_SAV = "0",
                     H_BTY = "User",
                     H_DCNT = "0",
-                }, $"{baseUrl}/wcd/spa_main.html");
+                }, $"{baseUrl}/wcd/spa_main.html", result.Logs);
 
-            if (!resp.Contains("\"Ack\"") && !resp.Contains("\"Ok_1\""))
+            if (!ex.IsSuccessStatusCode || (!ex.Body.Contains("\"Ack\"") && !ex.Body.Contains("\"Ok_1\"")))
             {
-                result.Logs.Add($"[신도삭제][FAIL] 응답 내용(앞300자): {resp[..Math.Min(300, resp.Length)]}");
+                result.Logs.Add("[신도삭제][FAIL] 삭제 실패 — 전체 덤프(인증 포함):");
+                result.Logs.Add(authEx.Dump());
+                result.Logs.Add(ex.Dump());
                 return DriverResult.Fail("삭제 실패", result.Logs);
             }
 
@@ -426,6 +478,7 @@ public sealed class SindohDefaultDriver : SindohDriverBase
         catch (Exception ex)
         {
             result.Logs.Add($"[신도삭제][ERROR] {ex.Message}");
+            result.Logs.Add($"[STACK] {ex.StackTrace}");
             result.Success = false;
             result.Message = $"삭제 오류: {ex.Message}";
             return result;
@@ -466,7 +519,7 @@ public sealed class SindohDefaultDriver : SindohDriverBase
             if (!_sessions.TryGetValue(device.Ip, out var session))
                 return DriverResult<List<BoxFile>>.Fail("세션 캐시 없음", result.Logs);
 
-            var listResp = await PostJsonAsync(client, $"{baseUrl}/wcd/api/AppReqGetUserBoxList",
+            var listEx = await PostJsonAsync(client, $"{baseUrl}/wcd/api/AppReqGetUserBoxList",
                 new {
                     BoxListCondition = new {
                         SearchKey = "None", WellUse = "false",
@@ -474,11 +527,22 @@ public sealed class SindohDefaultDriver : SindohDriverBase
                         ObtainCondition = new { Type = "OffsetList", OffsetRange = new { Start = "1", Length = "50" } }
                     },
                     Token = token
-                }, $"{baseUrl}/wcd/spa_main.html");
+                }, $"{baseUrl}/wcd/spa_main.html", result.Logs);
 
-            var boxNum = FindBoxNumber(listResp, box.Name);
+            if (!listEx.IsSuccessStatusCode)
+            {
+                result.Logs.Add("[신도파일][FAIL] 박스 목록 HTTP 실패");
+                result.Logs.Add(listEx.Dump());
+                return DriverResult<List<BoxFile>>.Fail("박스 목록 조회 실패", result.Logs);
+            }
+
+            var boxNum = FindBoxNumber(listEx.Body, box.Name);
             if (boxNum == null)
+            {
+                result.Logs.Add("[신도파일][FAIL] 박스 미존재 — 목록 응답 덤프:");
+                result.Logs.Add(listEx.Dump());
                 return DriverResult<List<BoxFile>>.Fail($"박스 '{box.Name}' 찾을 수 없음", result.Logs);
+            }
 
             result.Logs.Add($"[신도파일] 박스 번호: {boxNum}");
 
@@ -486,73 +550,81 @@ public sealed class SindohDefaultDriver : SindohDriverBase
             var wcdUri = new Uri($"{baseUrl}/wcd/");
             ReplaceUsrCookie(session.Cookies, uri, wcdUri, "F_UOU");
             var pw = box.Password ?? "";
-            var enterResp = await PostJsonAsync(client,
+            var enterEx = await PostJsonAsync(client,
                 $"{baseUrl}/wcd/api/AppReqSetCustomMessage/_105_000_ULU000",
                 new {
                     func = "PSL_F_UOUUser_BOX",
                     H_BID = boxNum, T_BID = boxNum, P_BPA = pw,
                     h_token = token, H_PID = "-1", H_IPA = "On",
                     H_BAT = "Public", _ = "",
-                }, $"{baseUrl}/wcd/spa_main.html");
+                }, $"{baseUrl}/wcd/spa_main.html", result.Logs);
+
+            if (!enterEx.IsSuccessStatusCode)
+            {
+                result.Logs.Add("[신도파일][FAIL] 박스 진입 실패");
+                result.Logs.Add(enterEx.Dump());
+                return DriverResult<List<BoxFile>>.Fail("박스 진입 실패", result.Logs);
+            }
 
             // Step 3-A
-            var detailReq = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/wcd/box_detail.json")
+            var firstEx = await PostFormAsync(client, $"{baseUrl}/wcd/box_detail.json",
+                "waitend=true&TaskNo=0&_=", $"{baseUrl}/wcd/spa_main.html", result.Logs);
+            if (!firstEx.IsSuccessStatusCode)
             {
-                Content = new StringContent("waitend=true&TaskNo=0&_=", Encoding.UTF8, "application/x-www-form-urlencoded")
-            };
-            detailReq.Headers.Add("Referer", $"{baseUrl}/wcd/spa_main.html");
-            detailReq.Headers.Add("Accept", "application/json, text/javascript, */*; q=0.01");
-            var firstResp = await (await client.SendAsync(detailReq)).Content.ReadAsStringAsync();
+                result.Logs.Add("[신도파일][FAIL] box_detail.json 첫 요청 실패");
+                result.Logs.Add(firstEx.Dump());
+                return DriverResult<List<BoxFile>>.Fail("데이터 준비 실패", result.Logs);
+            }
+            var firstResp = firstEx.Body;
 
             var taskNo = "0";
             var taskMatch = Regex.Match(firstResp, @"""ParamValue""\s*:\s*""([^""]+)""");
             if (taskMatch.Success) taskNo = taskMatch.Groups[1].Value;
 
             // Step 3-B: waitmsg polling
-            string detailResp = firstResp;
+            HttpExchange? lastWaitEx = null;
             var ready = false;
             var pollAttempts = 0;
             for (var attempt = 0; attempt < 30; attempt++)
             {
                 pollAttempts = attempt + 1;
-                var waitReq = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/wcd/waitmsg")
-                {
-                    Content = new StringContent($"TaskNo={taskNo}&_=", Encoding.UTF8, "application/x-www-form-urlencoded")
-                };
-                waitReq.Headers.Add("Referer", $"{baseUrl}/wcd/spa_main.html");
-                waitReq.Headers.Add("Accept", "application/json, text/javascript, */*; q=0.01");
-                var waitResp = await (await client.SendAsync(waitReq)).Content.ReadAsStringAsync();
+                lastWaitEx = await PostFormAsync(client, $"{baseUrl}/wcd/waitmsg",
+                    $"TaskNo={taskNo}&_=", $"{baseUrl}/wcd/spa_main.html");
 
-                if (waitResp.Contains("\"waitend\":\"true\""))
+                if (lastWaitEx.Body.Contains("\"waitend\":\"true\""))
                 {
                     ready = true;
                     break;
                 }
 
-                var intervalMatch = Regex.Match(waitResp, @"""Interval""\s*:\s*""(\d+)""");
+                var intervalMatch = Regex.Match(lastWaitEx.Body, @"""Interval""\s*:\s*""(\d+)""");
                 var interval = intervalMatch.Success ? int.Parse(intervalMatch.Groups[1].Value) : 200;
                 await Task.Delay(Math.Min(interval, 500));
             }
 
             if (!ready)
             {
-                result.Logs.Add($"[신도파일] waitmsg 타임아웃 ({pollAttempts}회 시도)");
+                result.Logs.Add($"[신도파일][FAIL] waitmsg 타임아웃 ({pollAttempts}회 시도) — 마지막 응답 덤프:");
+                if (lastWaitEx != null) result.Logs.Add(lastWaitEx.Dump());
                 return DriverResult<List<BoxFile>>.Fail("데이터 준비 타임아웃", result.Logs);
             }
 
             // Step 3-C
-            var finalReq = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/wcd/box_detail.json")
+            var finalEx = await PostFormAsync(client, $"{baseUrl}/wcd/box_detail.json",
+                $"TaskNo={taskNo}&waitend=true", $"{baseUrl}/wcd/spa_main.html");
+            if (!finalEx.IsSuccessStatusCode)
             {
-                Content = new StringContent($"TaskNo={taskNo}&waitend=true", Encoding.UTF8, "application/x-www-form-urlencoded")
-            };
-            finalReq.Headers.Add("Referer", $"{baseUrl}/wcd/spa_main.html");
-            finalReq.Headers.Add("Accept", "application/json, text/javascript, */*; q=0.01");
-            detailResp = await (await client.SendAsync(finalReq)).Content.ReadAsStringAsync();
+                result.Logs.Add("[신도파일][FAIL] box_detail.json 최종 요청 실패");
+                result.Logs.Add(finalEx.Dump());
+                return DriverResult<List<BoxFile>>.Fail("파일 목록 수신 실패", result.Logs);
+            }
+            var detailResp = finalEx.Body;
 
             var actualBoxId = ExtractBoxId(detailResp);
             if (actualBoxId != null && actualBoxId != boxNum)
             {
-                result.Logs.Add($"[신도파일][WARN] 박스 불일치 — 응답={actualBoxId}, 요청={boxNum}. 세션 무효화");
+                result.Logs.Add($"[신도파일][WARN] 박스 불일치 — 응답={actualBoxId}, 요청={boxNum}. 세션 무효화. 상세 덤프:");
+                result.Logs.Add(finalEx.Dump());
                 InvalidateSession(device.Ip);
                 return DriverResult<List<BoxFile>>.Fail($"박스 불일치 (응답={actualBoxId}, 요청={boxNum})", result.Logs);
             }
@@ -566,7 +638,7 @@ public sealed class SindohDefaultDriver : SindohDriverBase
         catch (Exception ex)
         {
             result.Logs.Add($"[신도파일][ERROR] {ex.Message}");
-            result.Logs.Add($"[신도파일][STACK] {ex.StackTrace}");
+            result.Logs.Add($"[STACK] {ex.StackTrace}");
             result.Success = false;
             result.Message = $"파일 목록 오류: {ex.Message}";
             return result;
@@ -671,7 +743,7 @@ public sealed class SindohDefaultDriver : SindohDriverBase
             if (!_sessions.TryGetValue(device.Ip, out var session))
                 return DriverResult<byte[]>.Fail("세션 캐시 없음", result.Logs);
 
-            var listResp = await PostJsonAsync(client, $"{baseUrl}/wcd/api/AppReqGetUserBoxList",
+            var listEx = await PostJsonAsync(client, $"{baseUrl}/wcd/api/AppReqGetUserBoxList",
                 new {
                     BoxListCondition = new {
                         SearchKey = "None", WellUse = "false",
@@ -679,18 +751,29 @@ public sealed class SindohDefaultDriver : SindohDriverBase
                         ObtainCondition = new { Type = "OffsetList", OffsetRange = new { Start = "1", Length = "50" } }
                     },
                     Token = token
-                }, $"{baseUrl}/wcd/spa_main.html");
+                }, $"{baseUrl}/wcd/spa_main.html", result.Logs);
 
-            var boxNum = FindBoxNumber(listResp, box.Name);
+            if (!listEx.IsSuccessStatusCode)
+            {
+                result.Logs.Add("[신도다운][FAIL] 박스 목록 HTTP 실패");
+                result.Logs.Add(listEx.Dump());
+                return DriverResult<byte[]>.Fail("박스 목록 조회 실패", result.Logs);
+            }
+
+            var boxNum = FindBoxNumber(listEx.Body, box.Name);
             if (boxNum == null)
+            {
+                result.Logs.Add("[신도다운][FAIL] 박스 찾을 수 없음 — 덤프:");
+                result.Logs.Add(listEx.Dump());
                 return DriverResult<byte[]>.Fail($"박스 '{box.Name}' 찾을 수 없음", result.Logs);
+            }
 
             var uri = new Uri(baseUrl);
             var wcdUri = new Uri($"{baseUrl}/wcd/");
             ReplaceUsrCookie(session.Cookies, uri, wcdUri, "F_UOU_FileDownload");
 
             var pw = box.Password ?? "";
-            var prepResp = await PostJsonAsync(client,
+            var prepEx = await PostJsonAsync(client,
                 $"{baseUrl}/wcd/api/AppReqSetCustomMessage/_105_000_ULU004",
                 new {
                     H_TAB = "",
@@ -714,26 +797,30 @@ public sealed class SindohDefaultDriver : SindohDriverBase
                     S_PDA = "Off",
                     F_UOU_R_PAG = "MultiPage",
                     R_SPG = "Off",
-                }, $"{baseUrl}/wcd/spa_main.html");
+                }, $"{baseUrl}/wcd/spa_main.html", result.Logs);
 
-            var initIntervalMatch = Regex.Match(prepResp, @"""Interval""\s*:\s*""(\d+)""");
+            if (!prepEx.IsSuccessStatusCode)
+            {
+                result.Logs.Add("[신도다운][FAIL] 다운로드 준비 요청 실패");
+                result.Logs.Add(prepEx.Dump());
+                ReplaceUsrCookie(session.Cookies, uri, wcdUri, "F_UOU");
+                return DriverResult<byte[]>.Fail("다운로드 준비 실패", result.Logs);
+            }
+
+            var initIntervalMatch = Regex.Match(prepEx.Body, @"""Interval""\s*:\s*""(\d+)""");
             var initInterval = initIntervalMatch.Success ? int.Parse(initIntervalMatch.Groups[1].Value) : 2500;
             await Task.Delay(Math.Min(initInterval, 2500));
 
+            HttpExchange? lastProgEx = null;
             var ready = false;
             var progressAttempts = 0;
             for (var attempt = 0; attempt < 30; attempt++)
             {
                 progressAttempts = attempt + 1;
-                var progReq = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/wcd/progress")
-                {
-                    Content = new StringContent("_=", Encoding.UTF8, "application/x-www-form-urlencoded")
-                };
-                progReq.Headers.Add("Referer", $"{baseUrl}/wcd/spa_main.html");
-                progReq.Headers.Add("Accept", "application/json, text/javascript, */*; q=0.01");
-                progReq.Headers.Add("X-Requested-With", "XMLHttpRequest");
-                var progResp = await (await client.SendAsync(progReq)).Content.ReadAsStringAsync();
+                lastProgEx = await PostFormAsync(client, $"{baseUrl}/wcd/progress",
+                    "_=", $"{baseUrl}/wcd/spa_main.html");
 
+                var progResp = lastProgEx.Body;
                 if (progResp.Length == 0
                     || progResp.Contains("ReadyToDownload")
                     || progResp.Contains("\"UserCgiName\"")
@@ -750,7 +837,11 @@ public sealed class SindohDefaultDriver : SindohDriverBase
             }
 
             if (!ready)
-                result.Logs.Add($"[신도다운][WARN] 폴링 미완료({progressAttempts}회), PDF GET 직접 시도");
+            {
+                result.Logs.Add($"[신도다운][WARN] 폴링 미완료({progressAttempts}회), 마지막 progress 응답:");
+                if (lastProgEx != null) result.Logs.Add(lastProgEx.Dump());
+                result.Logs.Add("[신도다운][WARN] PDF GET 직접 시도");
+            }
 
             var pdfUrl = $"{baseUrl}/wcd/doc/{Uri.EscapeDataString(file.Name)}.pdf" +
                 $"?func=PSL_F_UOU_DLD&h_token={token}" +
@@ -758,9 +849,10 @@ public sealed class SindohDefaultDriver : SindohDriverBase
                 $"&cginame2={Uri.EscapeDataString($"doc/{file.Name}.pdf")}" +
                 $"&H_BAK=0&H_TAB=&H_DLV=";
 
-            result.Logs.Add($"[HTTP→] 요청 ({pdfUrl})");
+            result.Logs.Add($"[HTTP→] GET ({pdfUrl})");
 
             byte[]? bytes = null;
+            HttpExchange? lastPdfEx = null;
             var getAttempts = 0;
             for (var attempt = 0; attempt < 6; attempt++)
             {
@@ -768,20 +860,21 @@ public sealed class SindohDefaultDriver : SindohDriverBase
                 var pdfReq = new HttpRequestMessage(HttpMethod.Get, pdfUrl);
                 pdfReq.Headers.Add("Referer", $"{baseUrl}/wcd/spa_contents_frame.tmpl.html");
                 pdfReq.Headers.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
-                var pdfResp = await client.SendAsync(pdfReq);
+                var (pdfEx, data) = await HttpDiagnostics.SendBytesAsync(client, pdfReq);
+                lastPdfEx = pdfEx;
 
-                if (!pdfResp.IsSuccessStatusCode)
+                if (!pdfEx.IsSuccessStatusCode)
                 {
-                    result.Logs.Add($"[신도다운][FAIL] GET 실패 HTTP {(int)pdfResp.StatusCode}");
+                    result.Logs.Add($"[신도다운][FAIL] GET 실패 HTTP {pdfEx.StatusCode} — 덤프:");
+                    result.Logs.Add(pdfEx.Dump());
                     ReplaceUsrCookie(session.Cookies, uri, wcdUri, "F_UOU");
-                    return DriverResult<byte[]>.Fail($"HTTP {(int)pdfResp.StatusCode}", result.Logs);
+                    return DriverResult<byte[]>.Fail($"HTTP {pdfEx.StatusCode}", result.Logs);
                 }
 
-                var ct = pdfResp.Content.Headers.ContentType?.MediaType ?? "";
-                var data = await pdfResp.Content.ReadAsByteArrayAsync();
                 var isPdf = data.Length >= 4 && data[0] == 0x25 && data[1] == 0x50 && data[2] == 0x44 && data[3] == 0x46; // %PDF
+                var ct = pdfEx.ResponseHeaders.Contains("Content-Type: application/octet-stream");
 
-                if (isPdf || ct == "application/octet-stream")
+                if (isPdf || ct)
                 {
                     bytes = data;
                     break;
@@ -793,7 +886,11 @@ public sealed class SindohDefaultDriver : SindohDriverBase
             ReplaceUsrCookie(session.Cookies, uri, wcdUri, "F_UOU");
 
             if (bytes == null)
+            {
+                result.Logs.Add($"[신도다운][FAIL] PDF 수신 실패 ({getAttempts}회 시도) — 마지막 GET 응답:");
+                if (lastPdfEx != null) result.Logs.Add(lastPdfEx.Dump());
                 return DriverResult<byte[]>.Fail("PDF 응답 수신 실패 (서버가 PDF 반환 안함)", result.Logs);
+            }
 
             result.Logs.Add($"[신도다운] 완료: {bytes.Length} bytes");
             result.Success = true;
@@ -804,6 +901,7 @@ public sealed class SindohDefaultDriver : SindohDriverBase
         catch (Exception ex)
         {
             result.Logs.Add($"[신도다운][ERROR] {ex.Message}");
+            result.Logs.Add($"[STACK] {ex.StackTrace}");
             return DriverResult<byte[]>.Fail($"다운로드 오류: {ex.Message}", result.Logs);
         }
     }

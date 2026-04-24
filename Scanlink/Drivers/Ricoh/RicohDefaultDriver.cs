@@ -41,39 +41,50 @@ public sealed class RicohDefaultDriver : RicohDriverBase
         try
         {
             logs.Add($"[리코] 접속: {baseUrl}");
-            await client.GetAsync($"{baseUrl}/");
+            var rootEx = await GetAsync(client, $"{baseUrl}/", null, logs);
+            if (!rootEx.IsSuccessStatusCode)
+            {
+                logs.Add("[리코][WARN] 루트 응답 비정상");
+                logs.Add(rootEx.Dump());
+            }
             cookies.Add(new Uri(baseUrl), new Cookie("cookieOnOffChecker", "on"));
 
-            var authHtml = await (await client.GetAsync(
-                $"{baseUrl}/web/guest/ko/websys/webArch/authForm.cgi")).Content.ReadAsStringAsync();
-            var wimToken = ExtractWimToken(authHtml);
+            var authEx = await GetAsync(client, $"{baseUrl}/web/guest/ko/websys/webArch/authForm.cgi", null, logs);
+            if (!authEx.IsSuccessStatusCode)
+            {
+                logs.Add("[리코][FAIL] authForm.cgi 응답 실패");
+                logs.Add(authEx.Dump());
+                client.Dispose();
+                return (null, null, baseUrl, logs);
+            }
+            var wimToken = ExtractWimToken(authEx.Body);
             if (wimToken == null)
             {
-                logs.Add("[리코][FAIL] wimToken 추출 실패");
+                logs.Add("[리코][FAIL] wimToken 추출 실패 — authForm 덤프:");
+                logs.Add(authEx.Dump());
                 client.Dispose();
                 return (null, null, baseUrl, logs);
             }
 
             logs.Add("[리코] 로그인 중...");
-            var loginData = new FormUrlEncodedContent(new Dictionary<string, string>
-            {
-                ["wimToken"] = wimToken,
-                ["userid_work"] = "",
-                ["userid"] = B64("admin"),
-                ["password_work"] = "",
-                ["password"] = B64(""),
-                ["open"] = "",
-            });
-            var req = new HttpRequestMessage(HttpMethod.Post,
-                $"{baseUrl}/web/guest/ko/websys/webArch/login.cgi") { Content = loginData };
-            req.Headers.Add("Referer", $"{baseUrl}/web/guest/ko/websys/webArch/authForm.cgi");
-            await client.SendAsync(req);
+            var loginEx = await PostFormAsync(client, $"{baseUrl}/web/guest/ko/websys/webArch/login.cgi",
+                new Dictionary<string, string>
+                {
+                    ["wimToken"] = wimToken,
+                    ["userid_work"] = "",
+                    ["userid"] = B64("admin"),
+                    ["password_work"] = "",
+                    ["password"] = B64(""),
+                    ["open"] = "",
+                },
+                $"{baseUrl}/web/guest/ko/websys/webArch/authForm.cgi", logs);
 
             var allCookies = cookies.GetAllCookies();
             var hasSession = allCookies.Any(c => c.Name is "wimsesid" or "risessionid");
             if (!hasSession)
             {
-                logs.Add("[리코][FAIL] 로그인 실패 — 세션 쿠키 없음");
+                logs.Add("[리코][FAIL] 로그인 실패 — 세션 쿠키 없음. login.cgi 덤프:");
+                logs.Add(loginEx.Dump());
                 client.Dispose();
                 return (null, null, baseUrl, logs);
             }
@@ -85,6 +96,7 @@ public sealed class RicohDefaultDriver : RicohDriverBase
         catch (Exception ex)
         {
             logs.Add($"[리코][ERROR] 로그인: {ex.Message}");
+            logs.Add($"[STACK] {ex.StackTrace}");
             client.Dispose();
             return (null, null, baseUrl, logs);
         }
@@ -94,18 +106,20 @@ public sealed class RicohDefaultDriver : RicohDriverBase
     // 폴더 조회/프로필 감지
     // ──────────────────────────────────────────────
 
-    private static async Task<(string profile, string? wimToken, List<(string id, string name)> folders)>
+    private static async Task<(string profile, string? wimToken, List<(string id, string name)> folders, HttpExchange? lastEx)>
         ListFoldersAsync(HttpClient client, string baseUrl, string deviceIp, List<string> logs)
     {
         var cached = _profileCache.TryGetValue(deviceIp, out var cp) ? cp : null;
         var candidates = cached != null ? new[] { cached } : new[] { "entry", "guest" };
 
+        HttpExchange? lastEx = null;
         foreach (var profile in candidates)
         {
-            var req = new HttpRequestMessage(HttpMethod.Get,
-                $"{baseUrl}/web/{profile}/ko/webdocbox/folderListPage.cgi");
-            req.Headers.Add("Referer", $"{baseUrl}/web/{profile}/ko/websys/webArch/topPage.cgi");
-            var html = await (await client.SendAsync(req)).Content.ReadAsStringAsync();
+            lastEx = await GetAsync(client,
+                $"{baseUrl}/web/{profile}/ko/webdocbox/folderListPage.cgi",
+                $"{baseUrl}/web/{profile}/ko/websys/webArch/topPage.cgi",
+                logs);
+            var html = lastEx.Body;
             var wimToken = ExtractWimToken(html);
 
             var folders = new List<(string id, string name)>();
@@ -122,14 +136,15 @@ public sealed class RicohDefaultDriver : RicohDriverBase
             {
                 _profileCache[deviceIp] = profile;
                 logs.Add($"[리코] profile={profile}, 폴더 {folders.Count}개: {string.Join(", ", folders.Select(f => f.name))}");
-                return (profile, wimToken, folders);
+                return (profile, wimToken, folders, lastEx);
             }
 
             logs.Add($"[리코] profile={profile} 불일치 — 다음 후보 시도 (wimToken={(wimToken != null)}, 폴더={folders.Count})");
         }
 
-        logs.Add("[리코][FAIL] 프로필 감지 실패 — entry/guest 모두 유효한 folderListPage 반환 안 함");
-        return ("entry", null, new List<(string id, string name)>());
+        logs.Add("[리코][FAIL] 프로필 감지 실패 — entry/guest 모두 유효한 folderListPage 반환 안 함. 마지막 응답 덤프:");
+        if (lastEx != null) logs.Add(lastEx.Dump());
+        return ("entry", null, new List<(string id, string name)>(), lastEx);
     }
 
     private static string FindEmptyFolderId(List<(string id, string name)> folders)
@@ -169,6 +184,7 @@ public sealed class RicohDefaultDriver : RicohDriverBase
         catch (Exception ex)
         {
             result.Logs.Add($"[리코][ERROR] {ex.Message}");
+            result.Logs.Add($"[STACK] {ex.StackTrace}");
             return DriverResult.Fail($"연결 오류: {ex.Message}", result.Logs);
         }
         finally { client?.Dispose(); }
@@ -189,7 +205,7 @@ public sealed class RicohDefaultDriver : RicohDriverBase
             result.Logs.AddRange(loginLogs);
             if (client == null) return DriverResult<List<ScanBox>>.Fail("로그인 실패", result.Logs);
 
-            var (_, _, folders) = await ListFoldersAsync(client, baseUrl, device.Ip, result.Logs);
+            var (_, _, folders, _) = await ListFoldersAsync(client, baseUrl, device.Ip, result.Logs);
 
             var boxes = folders.Select(f => new ScanBox
             {
@@ -205,6 +221,7 @@ public sealed class RicohDefaultDriver : RicohDriverBase
         catch (Exception ex)
         {
             result.Logs.Add($"[리코][ERROR] {ex.Message}");
+            result.Logs.Add($"[STACK] {ex.StackTrace}");
             result.Success = false;
             result.Message = $"조회 오류: {ex.Message}";
             return result;
@@ -230,7 +247,7 @@ public sealed class RicohDefaultDriver : RicohDriverBase
             if (client == null || wimToken == null)
                 return DriverResult.Fail("로그인 실패", result.Logs);
 
-            var (profile, newToken, folders) = await ListFoldersAsync(client, baseUrl, device.Ip, result.Logs);
+            var (profile, newToken, folders, _) = await ListFoldersAsync(client, baseUrl, device.Ip, result.Logs);
             if (newToken != null) wimToken = newToken;
             if (newToken == null)
                 return DriverResult.Fail("폴더 목록 접근 실패 (프로필 감지 불가)", result.Logs);
@@ -254,9 +271,13 @@ public sealed class RicohDefaultDriver : RicohDriverBase
                     ["subReturnDsp"] = "", ["useInputParam"] = "", ["useSavedPropParam"] = "false",
                     ["_hour"] = now.ToString("HH"), ["_min"] = now.ToString("mm"),
                 },
-                $"{wb}/folderListPage.cgi");
-            var t1 = ExtractWimToken(s1); if (t1 != null) wimToken = t1;
-            result.Logs.Add($"[리코추가] Step1 응답: {s1.Length}자");
+                $"{wb}/folderListPage.cgi", result.Logs);
+            if (!s1.IsSuccessStatusCode)
+            {
+                result.Logs.Add("[리코추가][FAIL] Step1 실패"); result.Logs.Add(s1.Dump());
+                return DriverResult.Fail("Step1 실패", result.Logs);
+            }
+            var t1 = ExtractWimToken(s1.Body); if (t1 != null) wimToken = t1;
 
             // Step 2
             result.Logs.Add("[리코추가] Step2: 비밀번호 페이지...");
@@ -268,9 +289,13 @@ public sealed class RicohDefaultDriver : RicohDriverBase
                     ["title"] = box.Name, ["useSavedPropParam"] = "true",
                     ["useInputParam"] = "false", ["subReturnDsp"] = "3", ["dummy"] = "",
                 },
-                $"{wb}/folderPropPage.cgi");
-            var t2 = ExtractWimToken(s2); if (t2 != null) wimToken = t2;
-            result.Logs.Add($"[리코추가] Step2 응답: {s2.Length}자");
+                $"{wb}/folderPropPage.cgi", result.Logs);
+            if (!s2.IsSuccessStatusCode)
+            {
+                result.Logs.Add("[리코추가][FAIL] Step2 실패"); result.Logs.Add(s2.Dump());
+                return DriverResult.Fail("Step2 실패", result.Logs);
+            }
+            var t2 = ExtractWimToken(s2.Body); if (t2 != null) wimToken = t2;
 
             // Step 3
             result.Logs.Add("[리코추가] Step3: 비밀번호 설정...");
@@ -287,9 +312,13 @@ public sealed class RicohDefaultDriver : RicohDriverBase
                     ["useSavedPropParam"] = "true", ["selectedFolderId"] = "",
                     ["ID"] = "", ["dummy"] = "",
                 },
-                $"{wb}/chPasswordPage.cgi");
-            var t3 = ExtractWimToken(s3); if (t3 != null) wimToken = t3;
-            result.Logs.Add($"[리코추가] Step3 응답: {s3.Length}자");
+                $"{wb}/chPasswordPage.cgi", result.Logs);
+            if (!s3.IsSuccessStatusCode)
+            {
+                result.Logs.Add("[리코추가][FAIL] Step3 실패"); result.Logs.Add(s3.Dump());
+                return DriverResult.Fail("Step3 실패", result.Logs);
+            }
+            var t3 = ExtractWimToken(s3.Body); if (t3 != null) wimToken = t3;
 
             // Step 4
             result.Logs.Add("[리코추가] Step4: 속성 확인...");
@@ -306,13 +335,17 @@ public sealed class RicohDefaultDriver : RicohDriverBase
                     ["selectedFolderId"] = folderId, ["useSavedPropParam"] = "true",
                     ["ID"] = "", ["simpleErrorMessage"] = "", ["dummy"] = "",
                 },
-                $"{wb}/commitChPassword.cgi");
-            var t4 = ExtractWimToken(s4); if (t4 != null) wimToken = t4;
-            result.Logs.Add($"[리코추가] Step4 응답: {s4.Length}자");
+                $"{wb}/commitChPassword.cgi", result.Logs);
+            if (!s4.IsSuccessStatusCode)
+            {
+                result.Logs.Add("[리코추가][FAIL] Step4 실패"); result.Logs.Add(s4.Dump());
+                return DriverResult.Fail("Step4 실패", result.Logs);
+            }
+            var t4 = ExtractWimToken(s4.Body); if (t4 != null) wimToken = t4;
 
             // Step 5
             result.Logs.Add("[리코추가] Step5: 생성 확정...");
-            var html = await PostFormAsync(client, $"{wb}/putFolderProp.cgi",
+            var s5 = await PostFormAsync(client, $"{wb}/putFolderProp.cgi",
                 new() {
                     ["wimToken"] = wimToken, ["targetFolderId"] = folderId,
                     ["changedFolderName"] = box.Name, ["mode"] = "CREATE",
@@ -320,22 +353,24 @@ public sealed class RicohDefaultDriver : RicohDriverBase
                     ["title"] = "", ["useSavedPropParam"] = "true",
                     ["useInputParam"] = "false", ["subReturnDsp"] = "3", ["dummy"] = "",
                 },
-                $"{wb}/folderPropPage.cgi");
-            result.Logs.Add($"[리코추가] Step5 응답: {html.Length}자");
+                $"{wb}/folderPropPage.cgi", result.Logs);
+            var html = s5.Body;
 
             var errMatch = Regex.Match(html, @"simpleErrorMessage[^>]*value=[""']([^""']+)");
             if (errMatch.Success && !string.IsNullOrWhiteSpace(errMatch.Groups[1].Value))
             {
-                result.Logs.Add($"[리코추가][FAIL] 서버 에러: {errMatch.Groups[1].Value}");
+                result.Logs.Add($"[리코추가][FAIL] 서버 에러: {errMatch.Groups[1].Value} — Step5 덤프:");
+                result.Logs.Add(s5.Dump());
                 return DriverResult.Fail($"생성 실패: {errMatch.Groups[1].Value}", result.Logs);
             }
 
-            var (_, _, afterFolders) = await ListFoldersAsync(client, baseUrl, device.Ip, result.Logs);
+            var (_, _, afterFolders, listEx) = await ListFoldersAsync(client, baseUrl, device.Ip, result.Logs);
             var created = afterFolders.Any(f => f.name == box.Name);
             if (!created)
             {
-                result.Logs.Add($"[리코추가][FAIL] 서버에 폴더 '{box.Name}' 미생성 — Step 응답 요약");
-                result.Logs.Add($"  └ Step5 앞 400자: {html[..Math.Min(400, html.Length)]}");
+                result.Logs.Add($"[리코추가][FAIL] 서버에 폴더 '{box.Name}' 미생성 — Step5 및 목록 덤프:");
+                result.Logs.Add(s5.Dump());
+                if (listEx != null) result.Logs.Add(listEx.Dump());
                 return DriverResult.Fail("생성 검증 실패 (서버에 폴더가 추가되지 않음)", result.Logs);
             }
 
@@ -347,6 +382,7 @@ public sealed class RicohDefaultDriver : RicohDriverBase
         catch (Exception ex)
         {
             result.Logs.Add($"[리코추가][ERROR] {ex.Message}");
+            result.Logs.Add($"[STACK] {ex.StackTrace}");
             result.Success = false;
             result.Message = $"추가 오류: {ex.Message}";
             return result;
@@ -372,7 +408,7 @@ public sealed class RicohDefaultDriver : RicohDriverBase
             if (client == null || wimToken == null)
                 return DriverResult.Fail("로그인 실패", result.Logs);
 
-            var (profile, newToken, folders) = await ListFoldersAsync(client, baseUrl, device.Ip, result.Logs);
+            var (profile, newToken, folders, _) = await ListFoldersAsync(client, baseUrl, device.Ip, result.Logs);
             if (newToken != null) wimToken = newToken;
 
             var target = folders.FirstOrDefault(f => f.name == box.Name);
@@ -389,10 +425,9 @@ public sealed class RicohDefaultDriver : RicohDriverBase
             var now = DateTime.Now;
             var pw = box.Password ?? "";
             var wb = $"{baseUrl}/web/{profile}/ko/webdocbox";
-            string html;
 
             result.Logs.Add("[리코삭제] Step1: 삭제 페이지 진입...");
-            html = await PostFormAsync(client, $"{wb}/folderDeletePage.cgi",
+            var s1 = await PostFormAsync(client, $"{wb}/folderDeletePage.cgi",
                 new() {
                     ["wimToken"] = wimToken,
                     ["mode"] = "", ["selectedDocIds"] = "",
@@ -401,25 +436,29 @@ public sealed class RicohDefaultDriver : RicohDriverBase
                     ["_hour"] = now.ToString("HH"), ["_min"] = now.ToString("mm"),
                     ["selectedFolderId"] = target.id,
                 },
-                $"{wb}/folderListPage.cgi");
-            var t = ExtractWimToken(html); if (t != null) wimToken = t;
-            result.Logs.Add($"[리코삭제] Step1 응답: {html.Length}자");
+                $"{wb}/folderListPage.cgi", result.Logs);
+            if (!s1.IsSuccessStatusCode)
+            {
+                result.Logs.Add("[리코삭제][FAIL] Step1 실패"); result.Logs.Add(s1.Dump());
+                return DriverResult.Fail("삭제 페이지 진입 실패", result.Logs);
+            }
+            var t = ExtractWimToken(s1.Body); if (t != null) wimToken = t;
 
             if (!string.IsNullOrEmpty(pw))
             {
                 result.Logs.Add("[리코삭제] Step2: 비밀번호 인증...");
-                html = await PostFormAsync(client, $"{wb}/chPasswordPage.cgi",
+                var s2 = await PostFormAsync(client, $"{wb}/chPasswordPage.cgi",
                     new() {
                         ["wimToken"] = wimToken, ["mode"] = "AUTHENTICATE",
                         ["targetFolderId"] = target.id, ["wayTo"] = "DELETEFOLDER",
                         ["targetDocId"] = target.id, ["useSavedPropParam"] = "true",
                         ["useInputParam"] = "false", ["subReturnDsp"] = "3", ["dummy"] = "",
                     },
-                    $"{wb}/folderDeletePage.cgi");
-                t = ExtractWimToken(html); if (t != null) wimToken = t;
+                    $"{wb}/folderDeletePage.cgi", result.Logs);
+                t = ExtractWimToken(s2.Body); if (t != null) wimToken = t;
 
                 result.Logs.Add("[리코삭제] Step3: 비밀번호 확정...");
-                html = await PostFormAsync(client, $"{wb}/commitChPassword.cgi",
+                var s3 = await PostFormAsync(client, $"{wb}/commitChPassword.cgi",
                     new() {
                         ["wimToken"] = wimToken, ["title"] = "", ["creator"] = "",
                         ["dataFormat"] = "", ["allPages"] = "false",
@@ -432,11 +471,11 @@ public sealed class RicohDefaultDriver : RicohDriverBase
                         ["wayTo"] = "DELETEFOLDER", ["useSavedPropParam"] = "false",
                         ["selectedFolderId"] = "", ["ID"] = "", ["dummy"] = "",
                     },
-                    $"{wb}/chPasswordPage.cgi");
-                t = ExtractWimToken(html); if (t != null) wimToken = t;
+                    $"{wb}/chPasswordPage.cgi", result.Logs);
+                t = ExtractWimToken(s3.Body); if (t != null) wimToken = t;
 
                 result.Logs.Add("[리코삭제] Step4: 삭제 페이지 재진입...");
-                html = await PostFormAsync(client, $"{wb}/folderDeletePage.cgi",
+                var s4 = await PostFormAsync(client, $"{wb}/folderDeletePage.cgi",
                     new() {
                         ["wimToken"] = wimToken,
                         ["id"] = "", ["jt"] = "", ["el"] = "",
@@ -450,24 +489,23 @@ public sealed class RicohDefaultDriver : RicohDriverBase
                         ["useSavedPropParam"] = "false",
                         ["ID"] = "", ["simpleErrorMessage"] = "", ["dummy"] = "",
                     },
-                    $"{wb}/commitChPassword.cgi");
-                t = ExtractWimToken(html); if (t != null) wimToken = t;
+                    $"{wb}/commitChPassword.cgi", result.Logs);
+                t = ExtractWimToken(s4.Body); if (t != null) wimToken = t;
             }
 
             result.Logs.Add("[리코삭제] 최종 삭제...");
-            html = await PostFormAsync(client, $"{wb}/deleteDocContentsPage.cgi",
+            var sFinal = await PostFormAsync(client, $"{wb}/deleteDocContentsPage.cgi",
                 new() {
                     ["wimToken"] = wimToken,
                     ["selectedDocIds"] = target.id,
                     ["subReturnDsp"] = "3",
                 },
-                $"{wb}/folderDeletePage.cgi");
+                $"{wb}/folderDeletePage.cgi", result.Logs);
 
-            result.Logs.Add($"[리코삭제] 최종 응답: {html.Length}자");
-
-            if (html.Length == 0)
+            if (!sFinal.IsSuccessStatusCode || sFinal.Body.Length == 0)
             {
-                result.Logs.Add("[리코삭제][FAIL] 빈 응답");
+                result.Logs.Add("[리코삭제][FAIL] 최종 삭제 응답 이상 — 덤프:");
+                result.Logs.Add(sFinal.Dump());
                 return DriverResult.Fail("삭제 실패: 서버 응답 없음", result.Logs);
             }
 
@@ -479,6 +517,7 @@ public sealed class RicohDefaultDriver : RicohDriverBase
         catch (Exception ex)
         {
             result.Logs.Add($"[리코삭제][ERROR] {ex.Message}");
+            result.Logs.Add($"[STACK] {ex.StackTrace}");
             result.Success = false;
             result.Message = $"삭제 오류: {ex.Message}";
             return result;
@@ -505,7 +544,7 @@ public sealed class RicohDefaultDriver : RicohDriverBase
             if (client == null || wimToken == null)
                 return DriverResult.Fail("로그인 실패", result.Logs);
 
-            var (profile, newToken, folders) = await ListFoldersAsync(client, baseUrl, device.Ip, result.Logs);
+            var (profile, newToken, folders, _) = await ListFoldersAsync(client, baseUrl, device.Ip, result.Logs);
             if (newToken != null) wimToken = newToken;
 
             var target = folders.FirstOrDefault(f => f.name == searchName);
@@ -518,10 +557,9 @@ public sealed class RicohDefaultDriver : RicohDriverBase
             var pw = box.Password ?? "";
             var changePw = !string.IsNullOrEmpty(pw);
             var wb = $"{baseUrl}/web/{profile}/ko/webdocbox";
-            string html;
 
             result.Logs.Add("[리코수정] Step1: 속성 페이지 진입...");
-            html = await PostFormAsync(client, $"{wb}/folderPropPage.cgi",
+            var s1 = await PostFormAsync(client, $"{wb}/folderPropPage.cgi",
                 new() {
                     ["wimToken"] = wimToken, ["mode"] = "PROPERTY",
                     ["selectedDocIds"] = "", ["subReturnDsp"] = "",
@@ -529,12 +567,16 @@ public sealed class RicohDefaultDriver : RicohDriverBase
                     ["_hour"] = now.ToString("HH"), ["_min"] = now.ToString("mm"),
                     ["selectedFolderId"] = target.id,
                 },
-                $"{wb}/folderListPage.cgi");
-            var t = ExtractWimToken(html); if (t != null) wimToken = t;
-            result.Logs.Add($"[리코수정] Step1 응답: {html.Length}자");
+                $"{wb}/folderListPage.cgi", result.Logs);
+            if (!s1.IsSuccessStatusCode)
+            {
+                result.Logs.Add("[리코수정][FAIL] Step1 실패"); result.Logs.Add(s1.Dump());
+                return DriverResult.Fail("Step1 실패", result.Logs);
+            }
+            var t = ExtractWimToken(s1.Body); if (t != null) wimToken = t;
 
             result.Logs.Add("[리코수정] Step2: 비밀번호 페이지...");
-            html = await PostFormAsync(client, $"{wb}/chPasswordPage.cgi",
+            var s2 = await PostFormAsync(client, $"{wb}/chPasswordPage.cgi",
                 new() {
                     ["wimToken"] = wimToken, ["targetFolderId"] = target.id,
                     ["changedFolderName"] = box.Name, ["mode"] = "PROPERTY",
@@ -542,13 +584,12 @@ public sealed class RicohDefaultDriver : RicohDriverBase
                     ["title"] = box.Name, ["useSavedPropParam"] = "true",
                     ["useInputParam"] = "false", ["subReturnDsp"] = "3", ["dummy"] = "",
                 },
-                $"{wb}/folderPropPage.cgi");
-            t = ExtractWimToken(html); if (t != null) wimToken = t;
-            result.Logs.Add($"[리코수정] Step2 응답: {html.Length}자");
+                $"{wb}/folderPropPage.cgi", result.Logs);
+            t = ExtractWimToken(s2.Body); if (t != null) wimToken = t;
 
             var pwB64 = changePw ? B64(pw) : "";
             result.Logs.Add("[리코수정] Step3: 비밀번호 저장...");
-            html = await PostFormAsync(client, $"{wb}/commitChPassword.cgi",
+            var s3 = await PostFormAsync(client, $"{wb}/commitChPassword.cgi",
                 new() {
                     ["wimToken"] = wimToken, ["title"] = box.Name,
                     ["creator"] = "", ["dataFormat"] = "", ["allPages"] = "false",
@@ -562,12 +603,11 @@ public sealed class RicohDefaultDriver : RicohDriverBase
                     ["useSavedPropParam"] = "true", ["selectedFolderId"] = "",
                     ["ID"] = "", ["dummy"] = "",
                 },
-                $"{wb}/chPasswordPage.cgi");
-            t = ExtractWimToken(html); if (t != null) wimToken = t;
-            result.Logs.Add($"[리코수정] Step3 응답: {html.Length}자");
+                $"{wb}/chPasswordPage.cgi", result.Logs);
+            t = ExtractWimToken(s3.Body); if (t != null) wimToken = t;
 
             result.Logs.Add("[리코수정] Step4: 수정 확정...");
-            html = await PostFormAsync(client, $"{wb}/putFolderProp.cgi",
+            var s4 = await PostFormAsync(client, $"{wb}/putFolderProp.cgi",
                 new() {
                     ["wimToken"] = wimToken, ["targetFolderId"] = target.id,
                     ["changedFolderName"] = box.Name, ["mode"] = "PROPERTY",
@@ -575,13 +615,14 @@ public sealed class RicohDefaultDriver : RicohDriverBase
                     ["title"] = "", ["useSavedPropParam"] = "true",
                     ["useInputParam"] = "false", ["subReturnDsp"] = "3", ["dummy"] = "",
                 },
-                $"{wb}/folderPropPage.cgi");
-            result.Logs.Add($"[리코수정] Step4 응답: {html.Length}자");
+                $"{wb}/folderPropPage.cgi", result.Logs);
+            var html = s4.Body;
 
             var errMatch = Regex.Match(html, @"simpleErrorMessage[^>]*value=[""']([^""']+)");
             if (errMatch.Success && !string.IsNullOrWhiteSpace(errMatch.Groups[1].Value))
             {
-                result.Logs.Add($"[리코수정][FAIL] 서버 에러: {errMatch.Groups[1].Value}");
+                result.Logs.Add($"[리코수정][FAIL] 서버 에러: {errMatch.Groups[1].Value} — Step4 덤프:");
+                result.Logs.Add(s4.Dump());
                 return DriverResult.Fail($"수정 실패: {errMatch.Groups[1].Value}", result.Logs);
             }
 
@@ -593,6 +634,7 @@ public sealed class RicohDefaultDriver : RicohDriverBase
         catch (Exception ex)
         {
             result.Logs.Add($"[리코수정][ERROR] {ex.Message}");
+            result.Logs.Add($"[STACK] {ex.StackTrace}");
             result.Success = false;
             result.Message = $"수정 오류: {ex.Message}";
             return result;

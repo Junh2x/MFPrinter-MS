@@ -15,7 +15,7 @@ namespace Scanlink.Drivers.Ricoh;
 ///   - HTTP 클라이언트 생성 (리코 표준 헤더)
 ///   - wimToken 추출 (hidden input)
 ///   - Base64 인코딩 (리코는 사용자/비밀번호를 base64로 전달)
-///   - POST form 헬퍼
+///   - POST form / GET 헬퍼 — 요청/응답 전체를 HttpExchange로 반환
 /// </summary>
 public abstract class RicohDriverBase : IMfpDriver
 {
@@ -48,17 +48,37 @@ public abstract class RicohDriverBase : IMfpDriver
         return (client, cookies);
     }
 
-    protected static async Task<string> PostFormAsync(HttpClient client, string url,
-        Dictionary<string, string> data, string referer)
+    /// <summary>
+    /// POST form-urlencoded. HttpExchange 전체를 반환해 실패 시 호출자가 Dump() 가능.
+    /// </summary>
+    protected static async Task<HttpExchange> PostFormAsync(HttpClient client, string url,
+        Dictionary<string, string> data, string referer, List<string>? logs = null)
     {
+        var bodyText = string.Join("&", data.Select(kv =>
+            $"{Uri.EscapeDataString(kv.Key)}={Uri.EscapeDataString(kv.Value ?? "")}"));
+
         var req = new HttpRequestMessage(HttpMethod.Post, url)
         {
-            Content = new FormUrlEncodedContent(data)
+            Content = new StringContent(bodyText, Encoding.UTF8, "application/x-www-form-urlencoded")
         };
         req.Headers.Add("Referer", referer);
         req.Headers.Add("Upgrade-Insecure-Requests", "1");
-        var r = await client.SendAsync(req);
-        return await r.Content.ReadAsStringAsync();
+
+        logs?.Add($"[HTTP→] POST ({url})");
+        var ex = await HttpDiagnostics.SendAsync(client, req, bodyText);
+        logs?.Add($"[HTTP←] {ex.StatusCode} {ex.ReasonPhrase} ({ex.Body.Length}자, {(int)ex.Elapsed.TotalMilliseconds}ms)");
+        return ex;
+    }
+
+    /// <summary>GET 진단 버전.</summary>
+    protected static async Task<HttpExchange> GetAsync(HttpClient client, string url, string? referer = null, List<string>? logs = null)
+    {
+        var req = new HttpRequestMessage(HttpMethod.Get, url);
+        if (!string.IsNullOrEmpty(referer)) req.Headers.Add("Referer", referer);
+        logs?.Add($"[HTTP→] GET ({url})");
+        var ex = await HttpDiagnostics.SendAsync(client, req);
+        logs?.Add($"[HTTP←] {ex.StatusCode} {ex.ReasonPhrase} ({ex.Body.Length}자, {(int)ex.Elapsed.TotalMilliseconds}ms)");
+        return ex;
     }
 
     // IMfpDriver — 파생이 구현
