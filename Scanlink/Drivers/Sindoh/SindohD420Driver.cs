@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
 using Scanlink.Core;
 using Scanlink.Models;
 
@@ -125,36 +126,56 @@ public sealed class SindohD420Driver : SindohDriverBase
     }
 
     // ──────────────────────────────────────────────
-    // HTML 파싱 유틸
+    // 응답 파싱 유틸 (XML 우선, HTML fallback)
     // ──────────────────────────────────────────────
 
-    private static string? ExtractToken(string html)
+    /// <summary>
+    /// h_token 추출.
+    /// 우선순위:
+    ///   1) XML &lt;Token&gt;...&lt;/Token&gt; — box_list.xml 정상 응답
+    ///   2) HTML input의 id 또는 name 이 "h_token" 인 경우 — ulogin.cgi 응답
+    /// </summary>
+    private static string? ExtractToken(string content)
     {
-        var m = Regex.Match(html, @"name=[""']h_token[""']\s+value=[""']([^""']+)[""']");
-        return m.Success ? m.Groups[1].Value : null;
+        if (string.IsNullOrEmpty(content)) return null;
+
+        var xml = Regex.Match(content, @"<Token>([^<]+)</Token>");
+        if (xml.Success) return xml.Groups[1].Value;
+
+        var attrFirst = Regex.Match(content, @"(?:id|name)\s*=\s*[""']h_token[""'][^>]*\svalue\s*=\s*[""']([^""']+)[""']");
+        if (attrFirst.Success) return attrFirst.Groups[1].Value;
+
+        var valueFirst = Regex.Match(content, @"value\s*=\s*[""']([^""']+)[""'][^>]*\s(?:id|name)\s*=\s*[""']h_token[""']");
+        if (valueFirst.Success) return valueFirst.Groups[1].Value;
+
+        return null;
     }
 
     /// <summary>
-    /// box_list.xml HTML에서 박스 번호/이름 쌍을 추출.
-    /// 각 박스는 id="{n}_BID" / id="{n}_BNM" hidden input 쌍으로 렌더됨.
+    /// box_list.xml의 &lt;BoxInfo&gt; 블록에서 박스 번호/이름 쌍 추출.
+    /// XML 파싱 실패 시 빈 리스트 반환.
     /// </summary>
-    private static List<(string boxId, string name)> ParseBoxes(string html)
+    private static List<(string boxId, string name)> ParseBoxes(string body)
     {
-        var bidMap = new Dictionary<string, string>();
-        var bnmMap = new Dictionary<string, string>();
-
-        foreach (Match m in Regex.Matches(html, @"id=[""'](\d+)_BID[""']\s+value=[""'](\d+)[""']"))
-            bidMap[m.Groups[1].Value] = m.Groups[2].Value;
-
-        foreach (Match m in Regex.Matches(html, @"id=[""'](\d+)_BNM[""']\s+value=[""']([^""']*)[""']"))
-            bnmMap[m.Groups[1].Value] = m.Groups[2].Value;
-
         var result = new List<(string, string)>();
-        foreach (var kv in bidMap)
+        if (string.IsNullOrWhiteSpace(body)) return result;
+
+        try
         {
-            if (bnmMap.TryGetValue(kv.Key, out var name))
-                result.Add((kv.Value, name));
+            var doc = XDocument.Parse(body);
+            foreach (var bi in doc.Descendants("BoxInfo"))
+            {
+                var id = bi.Element("BoxID")?.Value;
+                var name = bi.Element("Name")?.Value;
+                if (!string.IsNullOrEmpty(id))
+                    result.Add((id, name ?? ""));
+            }
         }
+        catch (Exception)
+        {
+            // XML이 아닌 응답(에러 HTML 등)은 빈 리스트로 반환. 호출부에서 ex.Dump()로 확인.
+        }
+
         return result;
     }
 
