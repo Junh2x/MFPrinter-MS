@@ -635,16 +635,40 @@ public sealed class SindohD420Driver : SindohDriverBase
                 if (!ready)
                     result.Logs.Add($"[신도D420파일][WARN] waitmsg 폴링 타임아웃, 최종 조회 시도");
 
-                // Step 3: box_detail.xml 최종 조회
-                var detailEx = await PostFormAsync(session.Client, $"{session.BaseUrl}/wcd/box_detail.xml",
-                    $"waitend=true&TaskNo={taskNo}&_=", $"{session.BaseUrl}/wcd/box_list.xml", result.Logs);
-
-                if (!detailEx.IsSuccessStatusCode)
+                // Step 3: box_detail.xml 최종 조회 (wait.xsl 응답이면 재폴링 + 재요청)
+                HttpExchange detailEx = null!;
+                for (var detailAttempt = 0; detailAttempt < 5; detailAttempt++)
                 {
-                    result.Logs.Add("[신도D420파일][FAIL] box_detail.xml HTTP 실패");
-                    if (lastWait != null) result.Logs.Add(lastWait.Dump());
+                    detailEx = await PostFormAsync(session.Client, $"{session.BaseUrl}/wcd/box_detail.xml",
+                        $"waitend=true&TaskNo={taskNo}&_=", $"{session.BaseUrl}/wcd/box_list.xml", result.Logs);
+
+                    if (!detailEx.IsSuccessStatusCode)
+                    {
+                        result.Logs.Add("[신도D420파일][FAIL] box_detail.xml HTTP 실패");
+                        if (lastWait != null) result.Logs.Add(lastWait.Dump());
+                        result.Logs.Add(detailEx.Dump());
+                        return DriverResult<List<BoxFile>>.Fail("파일 목록 수신 실패", result.Logs);
+                    }
+
+                    // 응답이 wait.xsl(준비 중)이면 waitmsg 폴링 후 재요청.
+                    // 이 가드가 없으면 빈 성공이 리턴되어 FileWatch 가 "삭제"로 오탐.
+                    var isWaitPage = detailEx.Body.Contains("<TemplateName>wait.xsl</TemplateName>")
+                                   || detailEx.Body.Contains("<TemplateName>waitmove.xsl</TemplateName>");
+                    if (!isWaitPage) break;
+
+                    result.Logs.Add($"[신도D420파일][WARN] box_detail.xml wait.xsl (시도 {detailAttempt + 1}/5) — 폴링 후 재시도");
+                    var pv = Regex.Match(detailEx.Body, @"<ParamValue>([^<]+)</ParamValue>");
+                    if (pv.Success) taskNo = pv.Groups[1].Value;
+                    await HandleWaitAsync(session, detailEx.Body, $"{session.BaseUrl}/wcd/box_list.xml", 20, 2000, result.Logs);
+                }
+
+                // 최종적으로도 wait.xsl 이면 실패 반환 (빈 성공은 FileWatch 오탐 유발)
+                if (detailEx.Body.Contains("<TemplateName>wait.xsl</TemplateName>")
+                    || detailEx.Body.Contains("<TemplateName>waitmove.xsl</TemplateName>"))
+                {
+                    result.Logs.Add("[신도D420파일][FAIL] box_detail.xml 지속 대기 상태 — 장치 busy 로 판단. 이번 폴링 스킵");
                     result.Logs.Add(detailEx.Dump());
-                    return DriverResult<List<BoxFile>>.Fail("파일 목록 수신 실패", result.Logs);
+                    return DriverResult<List<BoxFile>>.Fail("box_detail.xml 응답 대기 중 (장치 busy)", result.Logs);
                 }
 
                 // 박스 불일치 검증 (엉뚱한 박스 응답이면 세션 무효화)
@@ -655,6 +679,14 @@ public sealed class SindohD420Driver : SindohDriverBase
                     result.Logs.Add(detailEx.Dump());
                     InvalidateSession(device.Ip);
                     return DriverResult<List<BoxFile>>.Fail($"박스 불일치 (응답={actualBoxId}, 요청={target.boxId})", result.Logs);
+                }
+
+                // BoxID 가 응답에 아예 없으면 응답 자체가 불완전. 빈 성공 대신 실패로 처리.
+                if (actualBoxId == null)
+                {
+                    result.Logs.Add("[신도D420파일][FAIL] 응답에 BoxID 없음 (불완전한 응답). 빈 성공 오탐 방지 차원에서 실패 처리");
+                    result.Logs.Add(detailEx.Dump());
+                    return DriverResult<List<BoxFile>>.Fail("box_detail.xml 응답 불완전", result.Logs);
                 }
 
                 var files = ParseBoxFiles(detailEx.Body);
