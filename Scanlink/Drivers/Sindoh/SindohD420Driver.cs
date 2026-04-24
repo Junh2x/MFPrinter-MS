@@ -69,49 +69,31 @@ public sealed class SindohD420Driver : SindohDriverBase
         {
             logs.Add($"[신도D420] 세션 초기화 ({baseUrl})");
 
-            // Step 1: 로그인 페이지
-            var step1 = await GetAsync(client, $"{baseUrl}/wcd/spa_login.html", logs);
+            // Step 1: 루트 페이지 GET(세션 쿠키 준비)
+            var step1 = await GetAsync(client, $"{baseUrl}/", logs);
             if (!step1.IsSuccessStatusCode)
             {
-                logs.Add("[신도D420][FAIL] spa_login.html 실패");
+                logs.Add("[신도D420][WARN] 루트 페이지 응답 비정상");
                 logs.Add(step1.Dump());
-                client.Dispose();
-                return (null, logs);
             }
 
-            // Step 2: ulogin (Public 사용자)
+            // Step 2: Public 로그인 — D420은 spa_login.html이 없고 ulogin.cgi만 존재
             var loginPayload = "func=PSL_LP0_TOP&AuthType=None&TrackType=&ExtSvType=0&PswcForm=&Mode=Public" +
                 "&publicuser=&username=&password=&AuthorityType=&R_ADM=&ExtServ=0&ViewMode=&BrowserMode=&Lang=" +
                 "&trackname=&trackpassword=";
-            var loginEx = await PostFormAsync(client, $"{baseUrl}/wcd/ulogin.cgi", loginPayload, $"{baseUrl}/wcd/spa_login.html", logs, "*/*");
+            var loginEx = await PostFormAsync(client, $"{baseUrl}/wcd/ulogin.cgi", loginPayload, $"{baseUrl}/", logs, "*/*");
 
-            var idCookie = cookies.GetAllCookies().FirstOrDefault(c => c.Name == "ID");
-            if (idCookie == null || string.IsNullOrEmpty(idCookie.Value))
-            {
-                logs.Add("[신도D420][FAIL] 로그인 실패 — ID 쿠키 없음");
-                logs.Add(loginEx.Dump());
-                client.Dispose();
-                return (null, logs);
-            }
-
-            // Step 3: 박스 목록 조회용 쿠키 셋
+            // 쿠키 세팅(ID 쿠키가 이미 있으면 덮어씀)
             cookies.Add(uri, new Cookie("menuType", "Public"));
             cookies.Add(uri, new Cookie("usr", "F_ULU"));
             cookies.Add(uri, new Cookie("box_dsp", "Setting"));
 
-            // Step 4: 메인 페이지 로드(세션 안정화)
-            var step4 = await GetAsync(client, $"{baseUrl}/wcd/spa_main.html", logs);
-            if (!step4.IsSuccessStatusCode)
-            {
-                logs.Add("[신도D420][WARN] spa_main.html 비정상");
-                logs.Add(step4.Dump());
-            }
-
-            // Step 5: 박스 목록 페이지 → 토큰 추출
+            // Step 3: 박스 목록 페이지 → 토큰 추출
             var listEx = await GetAsync(client, $"{baseUrl}/wcd/box_list.xml", logs);
             if (!listEx.IsSuccessStatusCode)
             {
-                logs.Add("[신도D420][FAIL] box_list.xml HTTP 실패");
+                logs.Add("[신도D420][FAIL] box_list.xml HTTP 실패 — 로그인/박스 응답 덤프:");
+                logs.Add(loginEx.Dump());
                 logs.Add(listEx.Dump());
                 client.Dispose();
                 return (null, logs);
@@ -120,7 +102,8 @@ public sealed class SindohD420Driver : SindohDriverBase
             var token = ExtractToken(listEx.Body);
             if (token == null)
             {
-                logs.Add("[신도D420][FAIL] h_token 추출 실패 — box_list.xml 덤프:");
+                logs.Add("[신도D420][FAIL] h_token 추출 실패 — 로그인/박스 응답 덤프:");
+                logs.Add(loginEx.Dump());
                 logs.Add(listEx.Dump());
                 client.Dispose();
                 return (null, logs);
