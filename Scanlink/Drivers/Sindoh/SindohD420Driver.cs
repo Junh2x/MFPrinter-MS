@@ -47,8 +47,25 @@ public sealed class SindohD420Driver : SindohDriverBase
 
     private static void InvalidateSession(string deviceIp)
     {
-        if (_sessions.TryRemove(deviceIp, out var old))
-            old.Client.Dispose();
+        if (!_sessions.TryRemove(deviceIp, out var old)) return;
+
+        // 서버측 세션도 해제해야 D420 의 웹 세션 슬롯이 즉시 반환됨.
+        // 실패해도 무시 (네트워크 끊김/타임아웃 시 클라이언트만 정리).
+        try
+        {
+            var payload = $"func=PSL_ACO_LGO&h_token={Uri.EscapeDataString(old.Token)}";
+            var req = new HttpRequestMessage(HttpMethod.Post, $"{old.BaseUrl}/wcd/user.cgi")
+            {
+                Content = new StringContent(payload, Encoding.UTF8, "application/x-www-form-urlencoded")
+            };
+            req.Headers.Add("Referer", $"{old.BaseUrl}/wcd/box_list.xml");
+            // fire-and-forget, short timeout — 세션이 이미 죽었으면 빨리 포기
+            var cts = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(3));
+            _ = old.Client.SendAsync(req, cts.Token);
+        }
+        catch { /* 로그아웃 실패 무시 */ }
+
+        old.Client.Dispose();
     }
 
     // ──────────────────────────────────────────────
