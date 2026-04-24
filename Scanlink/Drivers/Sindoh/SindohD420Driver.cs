@@ -9,15 +9,18 @@ using Scanlink.Models;
 namespace Scanlink.Drivers.Sindoh;
 
 /// <summary>
-/// 신도 D420 전용 드라이버 — 레거시 /wcd/user.cgi + HTML 인터페이스.
+/// 신도 D420 전용 드라이버 — 레거시 /wcd/user.cgi + XML 인터페이스.
 ///
 /// D450(SindohDefaultDriver)와의 차이:
 ///   - REST JSON API (/wcd/api/AppReqSetCustomMessage/...) 미사용
 ///   - 모든 박스 CRUD가 /wcd/user.cgi 에 form-urlencoded POST
-///   - 박스 목록은 GET /wcd/box_list.xml (실제로는 HTML 반환)
-///   - 토큰/박스 ID/이름 모두 HTML hidden input에서 파싱
+///   - 박스 목록은 GET /wcd/box_list.xml (XML 응답, XDocument 파싱)
+///   - 토큰은 응답 XML &lt;Token&gt; 또는 HTML input id="h_token" 에서 파싱
 ///
-/// 파일 목록/다운로드는 추후 구현(현재는 미구현 반환).
+/// 구현 상태:
+///   - 박스 목록/생성/수정/삭제: 구현
+///   - 박스 내 파일 목록: 구현 (user.cgi 진입 → waitmsg 폴링 → box_detail.xml)
+///   - 파일 다운로드: 미구현 (실제 다운로드 엔드포인트 HAR 필요)
 /// </summary>
 public sealed class SindohD420Driver : SindohDriverBase
 {
@@ -518,16 +521,227 @@ public sealed class SindohD420Driver : SindohDriverBase
     }
 
     // ──────────────────────────────────────────────
-    // 파일 기능 — 추후 구현
+    // GetBoxFilesAsync — 3단계 플로우
+    //   1) POST user.cgi (func=PSL_F_UOUUser_BOX)  — 박스 진입, TaskNo 개시
+    //   2) POST waitmsg (TaskNo=N)                 — 데이터 준비 폴링
+    //   3) POST box_detail.xml (waitend=true&TaskNo=N) — 최종 파일 목록 XML 수신
+    //
+    // 쿠키 usr 를 F_ULU → F_UOU 로 전환 후, 완료 시 F_ULU 로 복원.
     // ──────────────────────────────────────────────
 
-    public override Task<DriverResult<List<BoxFile>>> GetBoxFilesAsync(MfpDevice device, ScanBox box)
+    public override async Task<DriverResult<List<BoxFile>>> GetBoxFilesAsync(MfpDevice device, ScanBox box)
     {
-        return Task.FromResult(DriverResult<List<BoxFile>>.Ok(new List<BoxFile>(), "신도 D420 파일 목록 미구현"));
+        var result = new DriverResult<List<BoxFile>> { Logs = [] };
+        try
+        {
+            result.Logs.Add($"[신도D420파일] 박스 '{box.Name}' 파일 목록 조회");
+
+            var (session, logs) = await InitSessionAsync(device);
+            result.Logs.AddRange(logs);
+            if (session == null) return DriverResult<List<BoxFile>>.Fail("세션 실패", result.Logs);
+
+            // 박스 ID 확인
+            var (boxes, listEx) = await FetchBoxesAsync(session, result.Logs);
+            if (!listEx.IsSuccessStatusCode)
+            {
+                result.Logs.Add("[신도D420파일][FAIL] 박스 목록 HTTP 실패");
+                result.Logs.Add(listEx.Dump());
+                return DriverResult<List<BoxFile>>.Fail("박스 목록 조회 실패", result.Logs);
+            }
+            var target = boxes.FirstOrDefault(b => b.name == box.Name);
+            if (target == default)
+            {
+                result.Logs.Add($"[신도D420파일][FAIL] 박스 '{box.Name}' 없음 — 목록 덤프:");
+                result.Logs.Add(listEx.Dump());
+                return DriverResult<List<BoxFile>>.Fail($"박스 '{box.Name}' 찾을 수 없음", result.Logs);
+            }
+            result.Logs.Add($"[신도D420파일] 박스 ID={target.boxId}");
+
+            var uri = new Uri(session.BaseUrl);
+            var wcdUri = new Uri($"{session.BaseUrl}/wcd/");
+            ReplaceUsrCookie(session.Cookies, uri, wcdUri, "F_UOU");
+
+            try
+            {
+                var pw = box.Password ?? "";
+
+                // Step 1: 박스 진입 (PSL_F_UOUUser_BOX)
+                var enterPayload =
+                    $"func=PSL_F_UOUUser_BOX" +
+                    $"&H_BID={target.boxId}" +
+                    $"&T_BID={target.boxId}" +
+                    $"&P_BPA={Uri.EscapeDataString(pw)}" +
+                    $"&h_token={Uri.EscapeDataString(session.Token)}" +
+                    $"&H_PID=-1" +
+                    $"&H_IPA=On" +
+                    $"&_=";
+                var enterEx = await PostFormAsync(session.Client, $"{session.BaseUrl}/wcd/user.cgi",
+                    enterPayload, $"{session.BaseUrl}/wcd/box_list.xml", result.Logs);
+
+                if (!enterEx.IsSuccessStatusCode)
+                {
+                    result.Logs.Add("[신도D420파일][FAIL] 박스 진입 HTTP 실패");
+                    result.Logs.Add(enterEx.Dump());
+                    return DriverResult<List<BoxFile>>.Fail("박스 진입 실패", result.Logs);
+                }
+
+                // 응답에서 TaskNo 추출 (<ParamValue>N</ParamValue>), 없으면 0
+                var taskNo = "0";
+                var tm = Regex.Match(enterEx.Body, @"<ParamValue>([^<]+)</ParamValue>");
+                if (tm.Success) taskNo = tm.Groups[1].Value;
+
+                // Step 2: waitmsg 폴링 — CgiAction 이 waitmsg 가 아니면 준비 완료
+                HttpExchange? lastWait = null;
+                var ready = false;
+                for (var attempt = 0; attempt < 30; attempt++)
+                {
+                    lastWait = await PostFormAsync(session.Client, $"{session.BaseUrl}/wcd/waitmsg",
+                        $"TaskNo={taskNo}&_=", $"{session.BaseUrl}/wcd/box_list.xml");
+
+                    var cgi = Regex.Match(lastWait.Body, @"<CgiAction>([^<]+)</CgiAction>");
+                    if (!cgi.Success || cgi.Groups[1].Value != "waitmsg")
+                    {
+                        ready = true;
+                        break;
+                    }
+
+                    // 서버가 TaskNo 갱신 시 반영
+                    var tm2 = Regex.Match(lastWait.Body, @"<ParamValue>([^<]+)</ParamValue>");
+                    if (tm2.Success) taskNo = tm2.Groups[1].Value;
+
+                    var iv = Regex.Match(lastWait.Body, @"<Interval>(\d+)</Interval>");
+                    var interval = iv.Success ? int.Parse(iv.Groups[1].Value) : 500;
+                    await Task.Delay(Math.Min(interval, 2000));
+                }
+
+                if (!ready)
+                    result.Logs.Add($"[신도D420파일][WARN] waitmsg 폴링 타임아웃, 최종 조회 시도");
+
+                // Step 3: box_detail.xml 최종 조회
+                var detailEx = await PostFormAsync(session.Client, $"{session.BaseUrl}/wcd/box_detail.xml",
+                    $"waitend=true&TaskNo={taskNo}&_=", $"{session.BaseUrl}/wcd/box_list.xml", result.Logs);
+
+                if (!detailEx.IsSuccessStatusCode)
+                {
+                    result.Logs.Add("[신도D420파일][FAIL] box_detail.xml HTTP 실패");
+                    if (lastWait != null) result.Logs.Add(lastWait.Dump());
+                    result.Logs.Add(detailEx.Dump());
+                    return DriverResult<List<BoxFile>>.Fail("파일 목록 수신 실패", result.Logs);
+                }
+
+                // 박스 불일치 검증 (엉뚱한 박스 응답이면 세션 무효화)
+                var actualBoxId = ExtractDetailBoxId(detailEx.Body);
+                if (actualBoxId != null && actualBoxId != target.boxId)
+                {
+                    result.Logs.Add($"[신도D420파일][WARN] 박스 불일치 — 요청={target.boxId}, 응답={actualBoxId}. 세션 무효화.");
+                    result.Logs.Add(detailEx.Dump());
+                    InvalidateSession(device.Ip);
+                    return DriverResult<List<BoxFile>>.Fail($"박스 불일치 (응답={actualBoxId}, 요청={target.boxId})", result.Logs);
+                }
+
+                var files = ParseBoxFiles(detailEx.Body);
+                result.Logs.Add($"[신도D420파일] 파일 {files.Count}개");
+                result.Success = true;
+                result.Data = files;
+                result.Message = $"{files.Count}개 파일";
+                return result;
+            }
+            finally
+            {
+                // usr 쿠키를 목록용(F_ULU)으로 원복해 이후 박스 CRUD 가 정상 동작하도록
+                ReplaceUsrCookie(session.Cookies, uri, wcdUri, "F_ULU");
+            }
+        }
+        catch (Exception ex)
+        {
+            result.Logs.Add($"[신도D420파일][ERROR] {ex.Message}");
+            result.Logs.Add($"[STACK] {ex.StackTrace}");
+            result.Success = false;
+            result.Message = $"파일 목록 오류: {ex.Message}";
+            return result;
+        }
     }
+
+    /// <summary>box_detail.xml 응답의 최상위 BoxInfo.BoxID 값.</summary>
+    private static string? ExtractDetailBoxId(string xml)
+    {
+        try
+        {
+            var doc = XDocument.Parse(xml);
+            var bi = doc.Descendants("BoxInfo").FirstOrDefault();
+            return bi?.Element("BoxID")?.Value;
+        }
+        catch { return null; }
+    }
+
+    /// <summary>
+    /// box_detail.xml 의 &lt;BoxJobInfo&gt; 블록에서 파일 목록 추출.
+    /// DocId = BoxJobID, Name = JobName, ScannedAt = JobTime/CreateTime.
+    /// </summary>
+    private static List<BoxFile> ParseBoxFiles(string xml)
+    {
+        var files = new List<BoxFile>();
+        if (string.IsNullOrWhiteSpace(xml)) return files;
+
+        try
+        {
+            var doc = XDocument.Parse(xml);
+            foreach (var job in doc.Descendants("BoxJobInfo"))
+            {
+                var file = new BoxFile
+                {
+                    DocId = job.Element("BoxJobID")?.Value ?? "",
+                    Name = job.Element("JobName")?.Value ?? "",
+                    PageCount = 1,
+                    Size = "",
+                };
+
+                var createTime = job.Element("JobTime")?.Element("CreateTime");
+                if (createTime != null)
+                {
+                    try
+                    {
+                        file.ScannedAt = new DateTime(
+                            int.Parse(createTime.Element("Year")!.Value),
+                            int.Parse(createTime.Element("Month")!.Value),
+                            int.Parse(createTime.Element("Day")!.Value),
+                            int.Parse(createTime.Element("Hour")!.Value),
+                            int.Parse(createTime.Element("Minute")!.Value), 0);
+                    }
+                    catch { }
+                }
+
+                if (!string.IsNullOrEmpty(file.DocId))
+                    files.Add(file);
+            }
+        }
+        catch
+        {
+            // XML 아닌 응답이면 빈 리스트 반환 — 호출부가 덤프로 확인
+        }
+
+        return files;
+    }
+
+    // ──────────────────────────────────────────────
+    // DownloadFileAsync — 추후 구현
+    //
+    // D420_API.md 에 "파일 선택(box_jobdetail.xml)" HTML 페이지만 문서화되어 있고,
+    // 실제 파일 전송(PDF/이미지) 요청/응답이 없어 현재 정보로는 신뢰 가능한 구현이 불가.
+    //
+    // D450 플로우 참고 시 필요한 항목(HAR 로 캡처 필요):
+    //   1) usr=F_UOU_FileDownload 쿠키로 전환 후
+    //   2) POST user.cgi 준비 요청 (func=PSL_F_UOU_DWN 혹은 유사) — 요청 payload 전체
+    //   3) POST progress/waitmsg 폴링 조건
+    //   4) GET /wcd/doc/{FileName}.pdf 본 다운로드 URL 파라미터 구성
+    //   5) 성공 응답 헤더(Content-Type, Content-Disposition)
+    //
+    // 위 5개 원시 요청을 확보한 뒤 SindohDefaultDriver.DownloadFileAsync 와 동일한 패턴으로 추가 예정.
+    // ──────────────────────────────────────────────
 
     public override Task<DriverResult<byte[]>> DownloadFileAsync(MfpDevice device, ScanBox box, BoxFile file)
     {
-        return Task.FromResult(DriverResult<byte[]>.Fail("신도 D420 파일 다운로드 미구현"));
+        return Task.FromResult(DriverResult<byte[]>.Fail(
+            "신도 D420 파일 다운로드 미구현 — 실제 다운로드 엔드포인트 HAR 캡처 필요"));
     }
 }
