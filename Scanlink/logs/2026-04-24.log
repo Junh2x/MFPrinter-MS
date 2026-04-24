@@ -91,3 +91,238 @@
 ║ ── 응답 본문 ──────────────────────────────────────────────
 ║   
 ╚═══════════════════════════════════════════════════════════
+[15:04:32.898] [APP] Scanlink 시작
+[15:04:33.525] [DeviceService] 기기 4대 로드
+[15:04:33.528] [ScanBoxService] 스캔함 12개 로드
+[15:04:33.535] [FileWatch] 파일 감시 시작 (주기: 10초)
+[15:04:35.612] [FileWatch] [Sindoh D450/test_name1] 파일 2개: S800101113826041008490, S800101113826041315460
+[15:04:37.298] [FileWatch] [Sindoh D420/TEST_SCAN] 파일 0개: (없음)
+[15:04:37.299] [FileWatch]   - 삭제: S25C-926042414080(1)
+[15:04:37.303] [FileWatch] 조회 완료: 기기 4대, 박스 12개, 실패 0건, 소요 3765ms
+[15:04:44.994] [FileWatch] [Sindoh D450/test_name1] 파일 2개: S800101113826041008490, S800101113826041315460
+[15:04:45.093] [FileWatch] [Sindoh D420/TEST_SCAN] 파일 1개: S25C-926042414080
+[15:04:45.094] [FileWatch]   + 신규: S25C-926042414080(1)
+[15:05:16.450] [FileWatch] [Sindoh D420/TEST_SCAN] 다운로드 실패: S25C-926042414080 — 다운로드 준비 타임아웃
+[15:05:16.451] [FileWatch]   └ [신도D420다운] S25C-926042414080 (박스=TEST_SCAN)
+[15:05:16.451] [FileWatch]   └ [HTTP→] GET (http://192.168.11.241/wcd/box_list.xml)
+[15:05:16.452] [FileWatch]   └ [HTTP←] 200 OK (11590자, 1441ms)
+[15:05:16.452] [FileWatch]   └ [HTTP→] POST (http://192.168.11.241/wcd/user.cgi)
+[15:05:16.452] [FileWatch]   └ [HTTP←] 200 OK (408자, 121ms)
+[15:05:16.453] [FileWatch]   └ [신도D420다운][DBG] enter 응답:
+[15:05:16.453] [FileWatch]   └ ╔══ HTTP 디버그 ════════════════════════════════════════════
+║ POST http://192.168.11.241/wcd/user.cgi  (121ms)
+║ ── 요청 헤더 ──────────────────────────────────────────────
+║   Referer: http://192.168.11.241/wcd/box_list.xml
+║   Accept: application/json, text/javascript, */*; q=0.01
+║   Content-Type: application/x-www-form-urlencoded; charset=utf-8
+║ ── 요청 본문 ──────────────────────────────────────────────
+║   func=PSL_F_UOUUser_BOX&H_BID=3&T_BID=3&P_BPA=1234&h_token=X7SgHgtZ8qhY1sIAgAFCV3WFD4Dpfiyb&H_PID=-1&H_IPA=On&_=
+║ ── 응답 200 OK ────────────────────────────────
+║ ── 응답 헤더 ──────────────────────────────────────────────
+║   X-Frame-Options: SAMEORIGIN
+║   Content-Type: text/xml
+║   Expires: Thu, 01 Jan 1970 00:00:00 GMT
+║   Content-Length: 408
+║ ── 응답 본문 ──────────────────────────────────────────────
+║   <?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet href="./waitmove.xsl" type="text/xsl"?><MFP><TemplateName>waitmove.xsl</TemplateName><Function>err</Function><LangNo>En</LangNo><RedirectUrl>box_detail.xml</RedirectUrl><Interval>100</Interval><MyTab>false</MyTab><NoMessage>true</NoMessage><Message></Message><CgiAction>void</CgiAction><CgiIdentity>void</CgiIdentity><CancelDisp>false</CancelDisp></MFP>
+╚═══════════════════════════════════════════════════════════
+[15:05:16.454] [FileWatch]   └ [HTTP→] POST (http://192.168.11.241/wcd/box_detail.xml)
+[15:05:16.454] [FileWatch]   └ [HTTP←] 200 OK (483자, 62ms)
+[15:05:16.454] [FileWatch]   └ [신도D420다운][DBG] box_detail 응답:
+[15:05:16.455] [FileWatch]   └ ╔══ HTTP 디버그 ════════════════════════════════════════════
+║ POST http://192.168.11.241/wcd/box_detail.xml  (62ms)
+║ ── 요청 헤더 ──────────────────────────────────────────────
+║   Referer: http://192.168.11.241/wcd/box_list.xml
+║   Accept: application/json, text/javascript, */*; q=0.01
+║   Content-Type: application/x-www-form-urlencoded; charset=utf-8
+║ ── 요청 본문 ──────────────────────────────────────────────
+║   waitend=true&TaskNo=0&_=
+║ ── 응답 200 OK ────────────────────────────────
+║ ── 응답 헤더 ──────────────────────────────────────────────
+║   X-Frame-Options: SAMEORIGIN
+║   Content-Type: text/xml
+║   Expires: Thu, 01 Jan 1970 00:00:00 GMT
+║   Content-Length: 483
+║ ── 응답 본문 ──────────────────────────────────────────────
+║   <?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet href="./wait.xsl" type="text/xsl"?><MFP><TemplateName>wait.xsl</TemplateName><Function>err</Function><LangNo>En</LangNo><RedirectUrl>waitmsg</RedirectUrl><Interval>100</Interval><MyTab>false</MyTab><NoMessage>false</NoMessage><Message><Item Code="DeviceExportExec"/></Message><CgiAction>waitmsg</CgiAction><CgiIdentity>void</CgiIdentity><CancelDisp>false</CancelDisp><ParamName>TaskNo</ParamName><ParamValue>0</ParamValue></MFP>
+╚═══════════════════════════════════════════════════════════
+[15:05:16.456] [FileWatch]   └ [HTTP→] POST (http://192.168.11.241/wcd/user.cgi)
+[15:05:16.456] [FileWatch]   └ [HTTP←] 200 OK (412자, 153ms)
+[15:05:16.457] [FileWatch]   └ [신도D420다운][DBG] NXT 응답:
+[15:05:16.457] [FileWatch]   └ ╔══ HTTP 디버그 ════════════════════════════════════════════
+║ POST http://192.168.11.241/wcd/user.cgi  (153ms)
+║ ── 요청 헤더 ──────────────────────────────────────────────
+║   Referer: http://192.168.11.241/wcd/box_detail.xml
+║   Accept: application/json, text/javascript, */*; q=0.01
+║   Content-Type: application/x-www-form-urlencoded; charset=utf-8
+║ ── 요청 본문 ──────────────────────────────────────────────
+║   func=PSL_F_UOU_NXT&h_token=X7SgHgtZ8qhY1sIAgAFCV3WFD4Dpfiyb&H_JLS=%401%40&H_CLS=&H_PID=-1&H_DTY=FileDownload&H_XTP=Thumbnail&H_TAB=&H_BOX=3&H_BPA=&H_BTY=User&H_OPE=FileDownload&H_MAX=1
+║ ── 응답 200 OK ────────────────────────────────
+║ ── 응답 헤더 ──────────────────────────────────────────────
+║   X-Frame-Options: SAMEORIGIN
+║   Content-Type: text/xml
+║   Expires: Thu, 01 Jan 1970 00:00:00 GMT
+║   Content-Length: 412
+║ ── 응답 본문 ──────────────────────────────────────────────
+║   <?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet href="./waitmove.xsl" type="text/xsl"?><MFP><TemplateName>waitmove.xsl</TemplateName><Function>err</Function><LangNo>En</LangNo><RedirectUrl>box_joboperate.xml</RedirectUrl><Interval>100</Interval><MyTab>false</MyTab><NoMessage>true</NoMessage><Message></Message><CgiAction>void</CgiAction><CgiIdentity>void</CgiIdentity><CancelDisp>false</CancelDisp></MFP>
+╚═══════════════════════════════════════════════════════════
+[15:05:16.457] [FileWatch]   └ [신도D420][DBG] waitmove → waitmsg 폴링 시작 (TaskNo=0, Interval=100ms)
+[15:05:16.458] [FileWatch]   └ [신도D420][DBG] waitmsg 폴링 완료
+[15:05:16.458] [FileWatch]   └ [HTTP→] POST (http://192.168.11.241/wcd/user.cgi)
+[15:05:16.458] [FileWatch]   └ [HTTP←] 200 OK (486자, 373ms)
+[15:05:16.459] [FileWatch]   └ [신도D420다운][DBG] DWN 응답:
+[15:05:16.459] [FileWatch]   └ ╔══ HTTP 디버그 ════════════════════════════════════════════
+║ POST http://192.168.11.241/wcd/user.cgi  (373ms)
+║ ── 요청 헤더 ──────────────────────────────────────────────
+║   Referer: http://192.168.11.241/wcd/user.cgi
+║   Accept: application/json, text/javascript, */*; q=0.01
+║   Content-Type: application/x-www-form-urlencoded; charset=utf-8
+║ ── 요청 본문 ──────────────────────────────────────────────
+║   H_TAB=&func=PSL_F_UOU_DWN&h_token=X7SgHgtZ8qhY1sIAgAFCV3WFD4Dpfiyb&H_BOX=3&H_BPA=&H_BTY=User&H_PID=-1&H_DTY=FileDownload&H_XTP=Thumbnail&H_FMT=CompactPdf&H_JLS=%401%40&H_JNL=%09S25C-926042414080%09&H_JOR=%401%40&H_DCN=1&C_GFA=On&C_SET=C_SET&F_UOU_S_FOR=CompactPdf&S_OUT=Off&F_UOU_R_PAG=MultiPage&R_SPG=Off
+║ ── 응답 200 OK ────────────────────────────────
+║ ── 응답 헤더 ──────────────────────────────────────────────
+║   X-Frame-Options: SAMEORIGIN
+║   Content-Type: text/xml
+║   Expires: Thu, 01 Jan 1970 00:00:00 GMT
+║   Content-Length: 486
+║ ── 응답 본문 ──────────────────────────────────────────────
+║   <?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet href="./wait.xsl" type="text/xsl"?><MFP><TemplateName>wait.xsl</TemplateName><Function>err</Function><LangNo>En</LangNo><RedirectUrl>progress</RedirectUrl><Interval>2500</Interval><MyTab>false</MyTab><NoMessage>false</NoMessage><Message><Item Code="DeviceExportExec"/></Message><CgiAction>user.cgi</CgiAction><CgiIdentity>PSL_F_UOU_DCA</CgiIdentity><Token>X7SgHgtZ8qhY1sIAgAFCV3WFD4Dpfiyb</Token><CancelDisp>true</CancelDisp></MFP>
+╚═══════════════════════════════════════════════════════════
+[15:05:16.459] [FileWatch]   └ [신도D420][DBG] waitmove → waitmsg 폴링 시작 (TaskNo=0, Interval=2500ms)
+[15:05:16.460] [FileWatch]   └ [신도D420][DBG] waitmsg 폴링 완료
+[15:05:16.460] [FileWatch]   └ [신도D420다운][FAIL] progress 페이지에서 다운로드 form 미발견 — 최종 응답 덤프:
+[15:05:16.460] [FileWatch]   └ ╔══ HTTP 디버그 ════════════════════════════════════════════
+║ GET http://192.168.11.241/wcd/progress  (10ms)
+║ ── 요청 헤더 ──────────────────────────────────────────────
+║   (없음)
+║ ── 요청 본문 ──────────────────────────────────────────────
+║   (없음)
+║ ── 응답 500 Internal Sever Error ────────────────────────────────
+║ ── 응답 헤더 ──────────────────────────────────────────────
+║   X-Frame-Options: SAMEORIGIN
+║   Content-Type: text/html
+║   Expires: Thu, 01 Jan 1970 00:00:00 GMT
+║   Content-Length: 0
+║ ── 응답 본문 ──────────────────────────────────────────────
+║   
+╚═══════════════════════════════════════════════════════════
+[15:05:16.461] [FileWatch] 조회 완료: 기기 4대, 박스 12개, 실패 0건, 소요 32917ms
+[15:05:24.965] [FileWatch] [Sindoh D450/test_name1] 파일 2개: S800101113826041008490, S800101113826041315460
+[15:05:25.239] [FileWatch] [Sindoh D420/TEST_SCAN] 파일 0개: (없음)
+[15:05:25.239] [FileWatch]   - 삭제: S25C-926042414080(1)
+[15:05:25.240] [FileWatch] 조회 완료: 기기 4대, 박스 12개, 실패 0건, 소요 1697ms
+[15:05:34.937] [FileWatch] [Sindoh D450/test_name1] 파일 2개: S800101113826041008490, S800101113826041315460
+[15:05:35.187] [FileWatch] [Sindoh D420/TEST_SCAN] 파일 1개: S25C-926042414080
+[15:05:35.188] [FileWatch]   + 신규: S25C-926042414080(1)
+[15:06:06.817] [FileWatch] [Sindoh D420/TEST_SCAN] 다운로드 실패: S25C-926042414080 — 다운로드 준비 타임아웃
+[15:06:06.819] [FileWatch]   └ [신도D420다운] S25C-926042414080 (박스=TEST_SCAN)
+[15:06:06.819] [FileWatch]   └ [HTTP→] GET (http://192.168.11.241/wcd/box_list.xml)
+[15:06:06.820] [FileWatch]   └ [HTTP←] 200 OK (11590자, 1369ms)
+[15:06:06.820] [FileWatch]   └ [HTTP→] POST (http://192.168.11.241/wcd/user.cgi)
+[15:06:06.820] [FileWatch]   └ [HTTP←] 200 OK (408자, 166ms)
+[15:06:06.821] [FileWatch]   └ [신도D420다운][DBG] enter 응답:
+[15:06:06.821] [FileWatch]   └ ╔══ HTTP 디버그 ════════════════════════════════════════════
+║ POST http://192.168.11.241/wcd/user.cgi  (166ms)
+║ ── 요청 헤더 ──────────────────────────────────────────────
+║   Referer: http://192.168.11.241/wcd/box_list.xml
+║   Accept: application/json, text/javascript, */*; q=0.01
+║   Content-Type: application/x-www-form-urlencoded; charset=utf-8
+║ ── 요청 본문 ──────────────────────────────────────────────
+║   func=PSL_F_UOUUser_BOX&H_BID=3&T_BID=3&P_BPA=1234&h_token=X7SgHgtZ8qhY1sIAgAFCV3WFD4Dpfiyb&H_PID=-1&H_IPA=On&_=
+║ ── 응답 200 OK ────────────────────────────────
+║ ── 응답 헤더 ──────────────────────────────────────────────
+║   X-Frame-Options: SAMEORIGIN
+║   Content-Type: text/xml
+║   Expires: Thu, 01 Jan 1970 00:00:00 GMT
+║   Content-Length: 408
+║ ── 응답 본문 ──────────────────────────────────────────────
+║   <?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet href="./waitmove.xsl" type="text/xsl"?><MFP><TemplateName>waitmove.xsl</TemplateName><Function>err</Function><LangNo>En</LangNo><RedirectUrl>box_detail.xml</RedirectUrl><Interval>100</Interval><MyTab>false</MyTab><NoMessage>true</NoMessage><Message></Message><CgiAction>void</CgiAction><CgiIdentity>void</CgiIdentity><CancelDisp>false</CancelDisp></MFP>
+╚═══════════════════════════════════════════════════════════
+[15:06:06.822] [FileWatch]   └ [HTTP→] POST (http://192.168.11.241/wcd/box_detail.xml)
+[15:06:06.822] [FileWatch]   └ [HTTP←] 200 OK (483자, 61ms)
+[15:06:06.823] [FileWatch]   └ [신도D420다운][DBG] box_detail 응답:
+[15:06:06.823] [FileWatch]   └ ╔══ HTTP 디버그 ════════════════════════════════════════════
+║ POST http://192.168.11.241/wcd/box_detail.xml  (61ms)
+║ ── 요청 헤더 ──────────────────────────────────────────────
+║   Referer: http://192.168.11.241/wcd/box_list.xml
+║   Accept: application/json, text/javascript, */*; q=0.01
+║   Content-Type: application/x-www-form-urlencoded; charset=utf-8
+║ ── 요청 본문 ──────────────────────────────────────────────
+║   waitend=true&TaskNo=0&_=
+║ ── 응답 200 OK ────────────────────────────────
+║ ── 응답 헤더 ──────────────────────────────────────────────
+║   X-Frame-Options: SAMEORIGIN
+║   Content-Type: text/xml
+║   Expires: Thu, 01 Jan 1970 00:00:00 GMT
+║   Content-Length: 483
+║ ── 응답 본문 ──────────────────────────────────────────────
+║   <?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet href="./wait.xsl" type="text/xsl"?><MFP><TemplateName>wait.xsl</TemplateName><Function>err</Function><LangNo>En</LangNo><RedirectUrl>waitmsg</RedirectUrl><Interval>100</Interval><MyTab>false</MyTab><NoMessage>false</NoMessage><Message><Item Code="DeviceExportExec"/></Message><CgiAction>waitmsg</CgiAction><CgiIdentity>void</CgiIdentity><CancelDisp>false</CancelDisp><ParamName>TaskNo</ParamName><ParamValue>0</ParamValue></MFP>
+╚═══════════════════════════════════════════════════════════
+[15:06:06.823] [FileWatch]   └ [HTTP→] POST (http://192.168.11.241/wcd/user.cgi)
+[15:06:06.824] [FileWatch]   └ [HTTP←] 200 OK (412자, 247ms)
+[15:06:06.824] [FileWatch]   └ [신도D420다운][DBG] NXT 응답:
+[15:06:06.825] [FileWatch]   └ ╔══ HTTP 디버그 ════════════════════════════════════════════
+║ POST http://192.168.11.241/wcd/user.cgi  (247ms)
+║ ── 요청 헤더 ──────────────────────────────────────────────
+║   Referer: http://192.168.11.241/wcd/box_detail.xml
+║   Accept: application/json, text/javascript, */*; q=0.01
+║   Content-Type: application/x-www-form-urlencoded; charset=utf-8
+║ ── 요청 본문 ──────────────────────────────────────────────
+║   func=PSL_F_UOU_NXT&h_token=X7SgHgtZ8qhY1sIAgAFCV3WFD4Dpfiyb&H_JLS=%401%40&H_CLS=&H_PID=-1&H_DTY=FileDownload&H_XTP=Thumbnail&H_TAB=&H_BOX=3&H_BPA=&H_BTY=User&H_OPE=FileDownload&H_MAX=1
+║ ── 응답 200 OK ────────────────────────────────
+║ ── 응답 헤더 ──────────────────────────────────────────────
+║   X-Frame-Options: SAMEORIGIN
+║   Content-Type: text/xml
+║   Expires: Thu, 01 Jan 1970 00:00:00 GMT
+║   Content-Length: 412
+║ ── 응답 본문 ──────────────────────────────────────────────
+║   <?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet href="./waitmove.xsl" type="text/xsl"?><MFP><TemplateName>waitmove.xsl</TemplateName><Function>err</Function><LangNo>En</LangNo><RedirectUrl>box_joboperate.xml</RedirectUrl><Interval>100</Interval><MyTab>false</MyTab><NoMessage>true</NoMessage><Message></Message><CgiAction>void</CgiAction><CgiIdentity>void</CgiIdentity><CancelDisp>false</CancelDisp></MFP>
+╚═══════════════════════════════════════════════════════════
+[15:06:06.825] [FileWatch]   └ [신도D420][DBG] waitmove → waitmsg 폴링 시작 (TaskNo=0, Interval=100ms)
+[15:06:06.826] [FileWatch]   └ [신도D420][DBG] waitmsg 폴링 완료
+[15:06:06.826] [FileWatch]   └ [HTTP→] POST (http://192.168.11.241/wcd/user.cgi)
+[15:06:06.827] [FileWatch]   └ [HTTP←] 200 OK (486자, 497ms)
+[15:06:06.827] [FileWatch]   └ [신도D420다운][DBG] DWN 응답:
+[15:06:06.828] [FileWatch]   └ ╔══ HTTP 디버그 ════════════════════════════════════════════
+║ POST http://192.168.11.241/wcd/user.cgi  (497ms)
+║ ── 요청 헤더 ──────────────────────────────────────────────
+║   Referer: http://192.168.11.241/wcd/user.cgi
+║   Accept: application/json, text/javascript, */*; q=0.01
+║   Content-Type: application/x-www-form-urlencoded; charset=utf-8
+║ ── 요청 본문 ──────────────────────────────────────────────
+║   H_TAB=&func=PSL_F_UOU_DWN&h_token=X7SgHgtZ8qhY1sIAgAFCV3WFD4Dpfiyb&H_BOX=3&H_BPA=&H_BTY=User&H_PID=-1&H_DTY=FileDownload&H_XTP=Thumbnail&H_FMT=CompactPdf&H_JLS=%401%40&H_JNL=%09S25C-926042414080%09&H_JOR=%401%40&H_DCN=1&C_GFA=On&C_SET=C_SET&F_UOU_S_FOR=CompactPdf&S_OUT=Off&F_UOU_R_PAG=MultiPage&R_SPG=Off
+║ ── 응답 200 OK ────────────────────────────────
+║ ── 응답 헤더 ──────────────────────────────────────────────
+║   X-Frame-Options: SAMEORIGIN
+║   Content-Type: text/xml
+║   Expires: Thu, 01 Jan 1970 00:00:00 GMT
+║   Content-Length: 486
+║ ── 응답 본문 ──────────────────────────────────────────────
+║   <?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet href="./wait.xsl" type="text/xsl"?><MFP><TemplateName>wait.xsl</TemplateName><Function>err</Function><LangNo>En</LangNo><RedirectUrl>progress</RedirectUrl><Interval>2500</Interval><MyTab>false</MyTab><NoMessage>false</NoMessage><Message><Item Code="DeviceExportExec"/></Message><CgiAction>user.cgi</CgiAction><CgiIdentity>PSL_F_UOU_DCA</CgiIdentity><Token>X7SgHgtZ8qhY1sIAgAFCV3WFD4Dpfiyb</Token><CancelDisp>true</CancelDisp></MFP>
+╚═══════════════════════════════════════════════════════════
+[15:06:06.828] [FileWatch]   └ [신도D420][DBG] waitmove → waitmsg 폴링 시작 (TaskNo=0, Interval=2500ms)
+[15:06:06.828] [FileWatch]   └ [신도D420][DBG] waitmsg 폴링 완료
+[15:06:06.828] [FileWatch]   └ [신도D420다운][FAIL] progress 페이지에서 다운로드 form 미발견 — 최종 응답 덤프:
+[15:06:06.829] [FileWatch]   └ ╔══ HTTP 디버그 ════════════════════════════════════════════
+║ GET http://192.168.11.241/wcd/progress  (16ms)
+║ ── 요청 헤더 ──────────────────────────────────────────────
+║   (없음)
+║ ── 요청 본문 ──────────────────────────────────────────────
+║   (없음)
+║ ── 응답 500 Internal Sever Error ────────────────────────────────
+║ ── 응답 헤더 ──────────────────────────────────────────────
+║   X-Frame-Options: SAMEORIGIN
+║   Content-Type: text/html
+║   Expires: Thu, 01 Jan 1970 00:00:00 GMT
+║   Content-Length: 0
+║ ── 응답 본문 ──────────────────────────────────────────────
+║   
+╚═══════════════════════════════════════════════════════════
+[15:06:06.829] [FileWatch] 조회 완료: 기기 4대, 박스 12개, 실패 0건, 소요 33278ms
+[15:06:14.943] [FileWatch] [Sindoh D450/test_name1] 파일 2개: S800101113826041008490, S800101113826041315460
+[15:06:15.226] [FileWatch] [Sindoh D420/TEST_SCAN] 파일 0개: (없음)
+[15:06:15.226] [FileWatch]   - 삭제: S25C-926042414080(1)
+[15:06:15.227] [FileWatch] 조회 완료: 기기 4대, 박스 12개, 실패 0건, 소요 1682ms
+[15:06:24.950] [FileWatch] [Sindoh D450/test_name1] 파일 2개: S800101113826041008490, S800101113826041315460
+[15:06:25.158] [FileWatch] [Sindoh D420/TEST_SCAN] 파일 1개: S25C-926042414080
+[15:06:25.159] [FileWatch]   + 신규: S25C-926042414080(1)
