@@ -20,7 +20,8 @@ namespace Scanlink.Drivers.Sindoh;
 /// 구현 상태:
 ///   - 박스 목록/생성/수정/삭제: 구현
 ///   - 박스 내 파일 목록: 구현 (user.cgi 진입 → waitmsg 폴링 → box_detail.xml)
-///   - 파일 다운로드: 미구현 (실제 다운로드 엔드포인트 HAR 필요)
+///   - 파일 다운로드: 구현 (NXT → DWN → progress → doc/{name}.pdf)
+///     FileWatchService 가 신규 파일 감지 시 자동 호출하여 box.LocalFolder 로 저장.
 /// </summary>
 public sealed class SindohD420Driver : SindohDriverBase
 {
@@ -741,24 +742,267 @@ public sealed class SindohD420Driver : SindohDriverBase
     }
 
     // ──────────────────────────────────────────────
-    // DownloadFileAsync — 추후 구현
+    // DownloadFileAsync — 4단계 플로우 (D420_API.md 기반)
     //
-    // D420_API.md 에 "파일 선택(box_jobdetail.xml)" HTML 페이지만 문서화되어 있고,
-    // 실제 파일 전송(PDF/이미지) 요청/응답이 없어 현재 정보로는 신뢰 가능한 구현이 불가.
+    //   Step A: 박스 진입(PSL_F_UOUUser_BOX) → waitmsg → box_detail.xml
+    //           (서버측 "박스 안, 해당 파일 있음" 컨텍스트 확보)
+    //   Step B: POST user.cgi func=PSL_F_UOU_NXT           — 다운로드 설정 창 진입 (H_JLS=@1@, H_MAX=1)
+    //   Step C: POST user.cgi func=PSL_F_UOU_DWN           — 다운로드 대기 (H_FMT=CompactPdf, H_JNL=\t{name}\t)
+    //   Step D: GET  /wcd/progress                         — 응답 HTML 에서 <FORM id="A_DL" action="doc/...pdf"> 파싱,
+    //                                                         갱신된 h_token/cginame1/cginame2/H_BAK/H_DLV 수집
+    //   Step E: POST /wcd/doc/{filename}.pdf func=PSL_F_UOU_DLD — 실제 PDF 바이트 수신
     //
-    // D450 플로우 참고 시 필요한 항목(HAR 로 캡처 필요):
-    //   1) usr=F_UOU_FileDownload 쿠키로 전환 후
-    //   2) POST user.cgi 준비 요청 (func=PSL_F_UOU_DWN 혹은 유사) — 요청 payload 전체
-    //   3) POST progress/waitmsg 폴링 조건
-    //   4) GET /wcd/doc/{FileName}.pdf 본 다운로드 URL 파라미터 구성
-    //   5) 성공 응답 헤더(Content-Type, Content-Disposition)
-    //
-    // 위 5개 원시 요청을 확보한 뒤 SindohDefaultDriver.DownloadFileAsync 와 동일한 패턴으로 추가 예정.
+    // FileWatchService 가 신규 파일 감지 시 이 메서드를 자동 호출하여
+    // box.LocalFolder\{file.Name}.pdf 에 저장한다.
     // ──────────────────────────────────────────────
 
-    public override Task<DriverResult<byte[]>> DownloadFileAsync(MfpDevice device, ScanBox box, BoxFile file)
+    public override async Task<DriverResult<byte[]>> DownloadFileAsync(MfpDevice device, ScanBox box, BoxFile file)
     {
-        return Task.FromResult(DriverResult<byte[]>.Fail(
-            "신도 D420 파일 다운로드 미구현 — 실제 다운로드 엔드포인트 HAR 캡처 필요"));
+        var result = new DriverResult<byte[]> { Logs = [] };
+        try
+        {
+            result.Logs.Add($"[신도D420다운] {file.Name} (박스={box.Name})");
+
+            var (session, logs) = await InitSessionAsync(device);
+            result.Logs.AddRange(logs);
+            if (session == null) return DriverResult<byte[]>.Fail("세션 실패", result.Logs);
+
+            var (boxes, listEx) = await FetchBoxesAsync(session, result.Logs);
+            if (!listEx.IsSuccessStatusCode)
+            {
+                result.Logs.Add("[신도D420다운][FAIL] 박스 목록 HTTP 실패");
+                result.Logs.Add(listEx.Dump());
+                return DriverResult<byte[]>.Fail("박스 목록 조회 실패", result.Logs);
+            }
+            var target = boxes.FirstOrDefault(b => b.name == box.Name);
+            if (target == default)
+            {
+                result.Logs.Add($"[신도D420다운][FAIL] 박스 '{box.Name}' 없음 — 목록 덤프:");
+                result.Logs.Add(listEx.Dump());
+                return DriverResult<byte[]>.Fail($"박스 '{box.Name}' 찾을 수 없음", result.Logs);
+            }
+
+            var uri = new Uri(session.BaseUrl);
+            var wcdUri = new Uri($"{session.BaseUrl}/wcd/");
+            ReplaceUsrCookie(session.Cookies, uri, wcdUri, "F_UOU");
+
+            try
+            {
+                var pw = box.Password ?? "";
+                var pdfTab = "\t" + file.Name + "\t";
+                var boxId = target.boxId;
+
+                // ── Step A: 박스 진입 + 폴링 + box_detail.xml (서버 컨텍스트 확보)
+                var enterPayload =
+                    $"func=PSL_F_UOUUser_BOX" +
+                    $"&H_BID={boxId}" +
+                    $"&T_BID={boxId}" +
+                    $"&P_BPA={Uri.EscapeDataString(pw)}" +
+                    $"&h_token={Uri.EscapeDataString(session.Token)}" +
+                    $"&H_PID=-1&H_IPA=On&_=";
+                var enterEx = await PostFormAsync(session.Client, $"{session.BaseUrl}/wcd/user.cgi",
+                    enterPayload, $"{session.BaseUrl}/wcd/box_list.xml", result.Logs);
+                if (!enterEx.IsSuccessStatusCode)
+                {
+                    result.Logs.Add("[신도D420다운][FAIL] 박스 진입 실패");
+                    result.Logs.Add(enterEx.Dump());
+                    return DriverResult<byte[]>.Fail("박스 진입 실패", result.Logs);
+                }
+
+                var taskNo = "0";
+                var tmEnter = Regex.Match(enterEx.Body, @"<ParamValue>([^<]+)</ParamValue>");
+                if (tmEnter.Success) taskNo = tmEnter.Groups[1].Value;
+
+                for (var attempt = 0; attempt < 15; attempt++)
+                {
+                    var waitEx = await PostFormAsync(session.Client, $"{session.BaseUrl}/wcd/waitmsg",
+                        $"TaskNo={taskNo}&_=", $"{session.BaseUrl}/wcd/box_list.xml");
+                    var cgi = Regex.Match(waitEx.Body, @"<CgiAction>([^<]+)</CgiAction>");
+                    if (!cgi.Success || cgi.Groups[1].Value != "waitmsg") break;
+                    var tm2 = Regex.Match(waitEx.Body, @"<ParamValue>([^<]+)</ParamValue>");
+                    if (tm2.Success) taskNo = tm2.Groups[1].Value;
+                    var iv = Regex.Match(waitEx.Body, @"<Interval>(\d+)</Interval>");
+                    var interval = iv.Success ? int.Parse(iv.Groups[1].Value) : 500;
+                    await Task.Delay(Math.Min(interval, 1000));
+                }
+
+                var detailEx = await PostFormAsync(session.Client, $"{session.BaseUrl}/wcd/box_detail.xml",
+                    $"waitend=true&TaskNo={taskNo}&_=", $"{session.BaseUrl}/wcd/box_list.xml", result.Logs);
+                if (!detailEx.IsSuccessStatusCode)
+                {
+                    result.Logs.Add("[신도D420다운][FAIL] box_detail.xml 실패");
+                    result.Logs.Add(detailEx.Dump());
+                    return DriverResult<byte[]>.Fail("박스 상세 조회 실패", result.Logs);
+                }
+
+                // box_detail.xml에서 최신 토큰 갱신 (가능한 경우)
+                var detailToken = ExtractToken(detailEx.Body);
+                if (detailToken != null) session.Token = detailToken;
+
+                // ── Step B: NXT (파일 다운로드 설정 창 진입)
+                var nxtPayload =
+                    $"func=PSL_F_UOU_NXT" +
+                    $"&h_token={Uri.EscapeDataString(session.Token)}" +
+                    $"&H_JLS={Uri.EscapeDataString("@1@")}" +
+                    $"&H_CLS=" +
+                    $"&H_PID=-1" +
+                    $"&H_DTY=FileDownload" +
+                    $"&H_XTP=Thumbnail" +
+                    $"&H_TAB=" +
+                    $"&H_BOX={boxId}" +
+                    $"&H_BPA=" +
+                    $"&H_BTY=User" +
+                    $"&H_OPE=FileDownload" +
+                    $"&H_MAX=1";
+                var nxtEx = await PostFormAsync(session.Client, $"{session.BaseUrl}/wcd/user.cgi",
+                    nxtPayload, $"{session.BaseUrl}/wcd/box_detail.xml", result.Logs);
+                if (!nxtEx.IsSuccessStatusCode)
+                {
+                    result.Logs.Add("[신도D420다운][FAIL] NXT(설정) 실패");
+                    result.Logs.Add(nxtEx.Dump());
+                    return DriverResult<byte[]>.Fail("다운로드 설정 실패", result.Logs);
+                }
+                // NXT 응답에서 토큰 갱신
+                var nxtToken = ExtractToken(nxtEx.Body);
+                if (nxtToken != null) session.Token = nxtToken;
+
+                // ── Step C: DWN (다운로드 대기 창 진입)
+                var dwnPayload =
+                    $"H_TAB=" +
+                    $"&func=PSL_F_UOU_DWN" +
+                    $"&h_token={Uri.EscapeDataString(session.Token)}" +
+                    $"&H_BOX={boxId}" +
+                    $"&H_BPA=" +
+                    $"&H_BTY=User" +
+                    $"&H_PID=-1" +
+                    $"&H_DTY=FileDownload" +
+                    $"&H_XTP=Thumbnail" +
+                    $"&H_FMT=CompactPdf" +
+                    $"&H_JLS={Uri.EscapeDataString("@1@")}" +
+                    $"&H_JNL={Uri.EscapeDataString(pdfTab)}" +
+                    $"&H_JOR={Uri.EscapeDataString("@1@")}" +
+                    $"&H_DCN=1" +
+                    $"&C_GFA=On" +
+                    $"&C_SET=C_SET" +
+                    $"&F_UOU_S_FOR=CompactPdf" +
+                    $"&S_OUT=Off" +
+                    $"&F_UOU_R_PAG=MultiPage" +
+                    $"&R_SPG=Off";
+                var dwnEx = await PostFormAsync(session.Client, $"{session.BaseUrl}/wcd/user.cgi",
+                    dwnPayload, $"{session.BaseUrl}/wcd/user.cgi", result.Logs);
+                if (!dwnEx.IsSuccessStatusCode)
+                {
+                    result.Logs.Add("[신도D420다운][FAIL] DWN(대기) 실패");
+                    result.Logs.Add(dwnEx.Dump());
+                    return DriverResult<byte[]>.Fail("다운로드 준비 실패", result.Logs);
+                }
+
+                // ── Step D: progress 폴링 — 응답 HTML에서 다운로드 form 추출
+                string? actionUrl = null;
+                string dlToken = session.Token;
+                string? cginame1 = null, cginame2 = null;
+                string hBak = "0", hDlv = "";
+                HttpExchange? lastProg = null;
+
+                for (var attempt = 0; attempt < 30; attempt++)
+                {
+                    var progEx = await GetAsync(session.Client, $"{session.BaseUrl}/wcd/progress");
+                    lastProg = progEx;
+                    if (progEx.IsSuccessStatusCode)
+                    {
+                        var body = progEx.Body;
+                        var m = Regex.Match(body, @"<FORM[^>]*id=[""']A_DL[""'][^>]*action=[""']([^""']+)[""']", RegexOptions.IgnoreCase);
+                        if (m.Success)
+                        {
+                            actionUrl = m.Groups[1].Value;
+                            var t = ExtractToken(body);
+                            if (t != null) dlToken = t;
+                            cginame1 = ExtractInputValue(body, "cginame1");
+                            cginame2 = ExtractInputValue(body, "cginame2");
+                            hBak = ExtractInputValue(body, "H_BAK") ?? "0";
+                            hDlv = ExtractInputValue(body, "H_DLV") ?? "";
+                            result.Logs.Add($"[신도D420다운] progress action={actionUrl}");
+                            break;
+                        }
+                    }
+                    await Task.Delay(800);
+                }
+
+                if (actionUrl == null)
+                {
+                    result.Logs.Add("[신도D420다운][FAIL] progress 페이지에서 다운로드 form 미발견 — 최종 응답 덤프:");
+                    if (lastProg != null) result.Logs.Add(lastProg.Dump());
+                    return DriverResult<byte[]>.Fail("다운로드 준비 타임아웃", result.Logs);
+                }
+
+                // ── Step E: 실제 PDF 수신 — action="doc/{name}.pdf" 는 /wcd/ 기준 상대경로
+                var absUrl = actionUrl.StartsWith("http", StringComparison.OrdinalIgnoreCase)
+                    ? actionUrl
+                    : $"{session.BaseUrl}/wcd/{actionUrl.TrimStart('/')}";
+                var defaultName = $"doc/{file.Name}.pdf";
+                var dlPayload =
+                    $"func=PSL_F_UOU_DLD" +
+                    $"&h_token={Uri.EscapeDataString(dlToken)}" +
+                    $"&cginame1={Uri.EscapeDataString(cginame1 ?? defaultName)}" +
+                    $"&cginame2={Uri.EscapeDataString(cginame2 ?? defaultName)}" +
+                    $"&H_BAK={Uri.EscapeDataString(hBak)}" +
+                    $"&H_TAB=" +
+                    $"&H_DLV={Uri.EscapeDataString(hDlv)}";
+
+                var pdfReq = new HttpRequestMessage(HttpMethod.Post, absUrl)
+                {
+                    Content = new StringContent(dlPayload, Encoding.UTF8, "application/x-www-form-urlencoded")
+                };
+                pdfReq.Headers.Add("Referer", $"{session.BaseUrl}/wcd/progress");
+                pdfReq.Headers.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+
+                result.Logs.Add($"[HTTP→] POST ({absUrl})");
+                var (pdfEx, bytes) = await HttpDiagnostics.SendBytesAsync(session.Client, pdfReq, dlPayload);
+                result.Logs.Add($"[HTTP←] {pdfEx.StatusCode} {pdfEx.ReasonPhrase} ({bytes.Length}바이트, {(int)pdfEx.Elapsed.TotalMilliseconds}ms)");
+
+                if (!pdfEx.IsSuccessStatusCode)
+                {
+                    result.Logs.Add($"[신도D420다운][FAIL] PDF HTTP {pdfEx.StatusCode} — 덤프:");
+                    result.Logs.Add(pdfEx.Dump());
+                    return DriverResult<byte[]>.Fail($"PDF HTTP {pdfEx.StatusCode}", result.Logs);
+                }
+
+                // %PDF 매직 넘버 검증
+                var isPdf = bytes.Length >= 4 && bytes[0] == 0x25 && bytes[1] == 0x50 && bytes[2] == 0x44 && bytes[3] == 0x46;
+                if (!isPdf)
+                {
+                    result.Logs.Add("[신도D420다운][FAIL] PDF 매직넘버 불일치 — 서버가 HTML/에러 반환한 듯:");
+                    result.Logs.Add(pdfEx.Dump());
+                    return DriverResult<byte[]>.Fail("PDF 응답 아님", result.Logs);
+                }
+
+                result.Logs.Add($"[신도D420다운] 완료 {bytes.Length} bytes");
+                result.Success = true;
+                result.Data = bytes;
+                result.Message = $"{bytes.Length} bytes";
+                return result;
+            }
+            finally
+            {
+                // 박스 CRUD 가 정상 동작하도록 usr 쿠키 원복
+                ReplaceUsrCookie(session.Cookies, uri, wcdUri, "F_ULU");
+            }
+        }
+        catch (Exception ex)
+        {
+            result.Logs.Add($"[신도D420다운][ERROR] {ex.Message}");
+            result.Logs.Add($"[STACK] {ex.StackTrace}");
+            return DriverResult<byte[]>.Fail($"다운로드 오류: {ex.Message}", result.Logs);
+        }
+    }
+
+    /// <summary>HTML 의 &lt;input name="X" value="Y"&gt; 에서 value 추출. 속성 순서 무관.</summary>
+    private static string? ExtractInputValue(string html, string name)
+    {
+        var esc = Regex.Escape(name);
+        var a = Regex.Match(html, $@"name\s*=\s*[""']{esc}[""'][^>]*\svalue\s*=\s*[""']([^""']*)[""']", RegexOptions.IgnoreCase);
+        if (a.Success) return a.Groups[1].Value;
+        var b = Regex.Match(html, $@"value\s*=\s*[""']([^""']*)[""'][^>]*\sname\s*=\s*[""']{esc}[""']", RegexOptions.IgnoreCase);
+        return b.Success ? b.Groups[1].Value : null;
     }
 }
