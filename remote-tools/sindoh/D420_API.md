@@ -2049,4 +2049,83 @@ Request URL
 http://192.168.11.241/wcd/thumbnail.jpg?func=PSL_F_PREVIEW&h_token=&H_BOX=&H_BTY=&H_JOB=&H_PAG=
 페이로드: func=PSL_F_PREVIEW&h_token=&H_BOX=&H_BTY=&H_JOB=&H_PAG=
 응답: 
-* 프리뷰 팝업창에서 새로고침 시, 세션 503 발생. 일정 시간 대기 후 해제됨
+* 프리뷰 팝업창에서 새로고침 시, 세션 503 발생. 일정 시간 대기 후 해제됨0
+
+## 파일 다운로드 클릭 (파일 다운로드 설정 창 진입)
+Request URL
+http://192.168.11.241/wcd/user.cgi
+Request Method
+POST
+Status Code
+200 OK
+페이로드: func=PSL_F_UOU_NXT&h_token=&H_JLS=%401%40&H_CLS=&H_PID=-1&H_DTY=FileDownload&H_XTP=Thumbnail&H_TAB=&H_BOX=3&H_BPA=&H_BTY=User&H_OPE=FileDownload&H_MAX=1
+
+## 설정 후 다운로드 클릭 (다운로드 대기 창 진입)
+Request URL
+http://192.168.11.241/wcd/user.cgi
+Request Method
+POST
+Status Code
+200 OK
+페이로드: H_TAB=&func=PSL_F_UOU_DWN&h_token=IAvhw4waexfu3QFm82Vcqedcp1yJYPs7&H_BOX=3&H_BPA=&H_BTY=User&H_PID=-1&H_DTY=FileDownload&H_XTP=Thumbnail&H_FMT=CompactPdf&H_JLS=%401%40&H_JNL=%09S25C-926042414080%09&H_JOR=%401%40&H_DCN=1&C_GFA=On&C_SET=C_SET&F_UOU_S_FOR=CompactPdf&S_OUT=Off&F_UOU_R_PAG=MultiPage&R_SPG=Off
+
+## 다운로드중
+Request URL
+http://192.168.11.241/wcd/progress
+Request Method
+GET
+Status Code
+200 OK
+
+응답: <HTML xmlns:xlink="http://www.w3.org/1999/xlink" lang="en">
+    <HEAD>
+        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta content="text/javascript" http-equiv="Content-Script-Type">
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
+        <link rel="stylesheet" type="text/css" href="default_blackwhite_skin.css">
+        <link rel="stylesheet" type="text/css" href="default_user_skin.css">
+        <TITLE>Result</TITLE>
+    </HEAD>
+    <BODY LINK="#000000" ALINK="#ff0000" VLINK="#000000">
+        <input type="hidden" id="DN74B7" value="Off">
+        <input type="hidden" id="BoxType" value="">
+        <FORM id="A_DL" name="A_DLD" method="POST" action="doc/S25C-926042414080.pdf">
+            <input type="hidden" name="func" value="PSL_F_UOU_DLD">
+            <input type="hidden" name="h_token" value="IAvhw4waexfu3QFm82Vcqedcp1yJYPs7">
+            <input type="hidden" name="cginame1" id="H_CGI_N" value="doc/S25C-926042414080.pdf">
+            <input type="hidden" name="cginame2" id="H_CGI_R" value="doc/S25C-926042414080.pdf">
+            <input type="hidden" name="H_BAK" id="H_BA" value="0">
+            <input type="hidden" name="H_TAB" id="H_F_A_DL" value="">
+            <input type="hidden" name="H_DLV" id="H_DL" value="">
+            <table valign="top" width="510px" align="center">
+                <tr>
+                    <th height="50px" align="left"></th>
+                </tr>
+                <tr>
+                    <td width="510px" colspan="3">
+                        다운로드 데이터를 작성할 수 있습니다. "다운로드"버튼을 눌러, 저장을 시작하십시오. 저장이 종료되면, "이전"버튼을 눌러 주십시오.<br>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="510px" colspan="3">
+                        <HR class="Line">
+                    </td>
+                </tr>
+                <tr>
+                    <td width="350px" colspan="1"></td>
+                    <td colspan="1">
+                        <INPUT type="button" id="btnEXE" value="다운로드" onclick="document.getElementById('download_f').contentWindow.BInvisible('btnEXE');document.getElementById('download_f').contentWindow.executeExport();" style="display:none">
+                    </td>
+                    <td colspan="1">
+                        <INPUT type="button" id="downloadbtnOK" value="이전" onclick="document.getElementById('download_f').contentWindow.BDisabled('btnEXE');document.getElementById('download_f').contentWindow.BDisabled('downloadbtnOK');document.getElementById('download_f').contentWindow.MoveUrl('box_login.xml')" style="display:none">
+                    </td>
+                </tr>
+            </table>
+        </FORM>
+        <iframe name="livecheck" id="livecheck" src="livecheck.html" frameborder="0" height="0" width="0"></iframe>
+        <iframe name="download_f" id="download_f" src="download_f.html" frameborder="0" height="0" width="0"></iframe>
+        <input type="button" id="download_href" style="display:none" onclick="parent.location.href = 'box_login.xml'">
+    </BODY>
+</HTML>
+
