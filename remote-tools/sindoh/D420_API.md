@@ -2043,3 +2043,10 @@ Status Code
 <iframe src="box_jobdetail_f.html" name="html_f" width="0" height="0" frameborder="0"></iframe>
 <iframe name="livecheck" id="livecheck" src="livecheck.html" frameborder="0" height="0" width="0"></iframe>
 </body></html>
+
+## 파일 보기
+Request URL
+http://192.168.11.241/wcd/thumbnail.jpg?func=PSL_F_PREVIEW&h_token=&H_BOX=&H_BTY=&H_JOB=&H_PAG=
+페이로드: func=PSL_F_PREVIEW&h_token=&H_BOX=&H_BTY=&H_JOB=&H_PAG=
+응답: 
+* 프리뷰 팝업창에서 새로고침 시, 세션 503 발생. 일정 시간 대기 후 해제됨
