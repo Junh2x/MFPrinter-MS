@@ -40,8 +40,10 @@ public static class DriverFactory
         // 신도 D430은 Ricoh WIM 펌웨어 기반 — 동일 Ricoh 인스턴스 재사용 (세션/캐시 공유)
         DriverRegistry.RegisterModel(MfpBrand.Sindoh, @"D430", ricoh);
 
+        // 신도 D420은 레거시 /wcd/user.cgi + HTML 인터페이스 — 전용 드라이버
+        DriverRegistry.RegisterModel(MfpBrand.Sindoh, @"D420", new SindohD420Driver());
+
         // 향후 예시:
-        // DriverRegistry.RegisterModel(MfpBrand.Sindoh, @"D420", new SindohD420Driver());
         // DriverRegistry.RegisterModel(MfpBrand.Canon,  @"iR-ADV\sC3[0-9]+", new CanonGen3Driver());
     }
 

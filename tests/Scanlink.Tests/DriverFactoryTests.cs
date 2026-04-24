@@ -78,6 +78,28 @@ public class DriverFactoryTests : IDisposable
     }
 
     [Fact]
+    public void GetDriver_Sindoh_D420_Routes_To_SindohD420Driver()
+    {
+        // 신도 D420은 레거시 /wcd/user.cgi + HTML 인터페이스 → 전용 드라이버
+        var device = new MfpDevice { Brand = MfpBrand.Sindoh, Model = "D420" };
+        var driver = DriverFactory.GetDriver(device);
+
+        Assert.NotNull(driver);
+        Assert.IsType<SindohD420Driver>(driver);
+        Assert.Equal(MfpBrand.Sindoh, driver!.Brand);
+    }
+
+    [Fact]
+    public void GetDriver_Sindoh_D420_NotSame_As_SindohDefault()
+    {
+        // D420은 기본 드라이버와 다른 전용 인스턴스여야 함
+        var d420 = DriverFactory.GetDriver(new MfpDevice { Brand = MfpBrand.Sindoh, Model = "D420" });
+        var d450 = DriverFactory.GetDriver(new MfpDevice { Brand = MfpBrand.Sindoh, Model = "D450" });
+
+        Assert.NotSame(d420, d450);
+    }
+
+    [Fact]
     public void GetDriver_Returns_Null_For_Unknown_Brand()
     {
         var device = new MfpDevice { Brand = MfpBrand.Unknown, Model = "anything" };
