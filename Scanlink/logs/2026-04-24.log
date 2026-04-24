@@ -1,20 +1,27 @@
-[15:35:12.865] [FileWatch] [Sindoh D420/TEST_SCAN] 다운로드 실패: S25C-926042414080 — 다운로드 준비 타임아웃
-[15:35:12.865] [FileWatch]   └ [신도D420다운] S25C-926042414080 (박스=TEST_SCAN)
-[15:35:12.866] [FileWatch]   └ [HTTP→] GET (http://192.168.11.241/wcd/box_list.xml)
-[15:35:12.866] [FileWatch]   └ [HTTP←] 200 OK (11592자, 1363ms)
-[15:35:12.866] [FileWatch]   └ [HTTP→] POST (http://192.168.11.241/wcd/user.cgi)
-[15:35:12.867] [FileWatch]   └ [HTTP←] 200 OK (408자, 119ms)
-[15:35:12.867] [FileWatch]   └ [HTTP→] POST (http://192.168.11.241/wcd/user.cgi)
-[15:35:12.867] [FileWatch]   └ [HTTP←] 200 OK (412자, 124ms)
-[15:35:12.867] [FileWatch]   └ [신도D420다운][DBG] NXT 응답:
-[15:35:12.868] [FileWatch]   └ ╔══ HTTP 디버그 ════════════════════════════════════════════
-║ POST http://192.168.11.241/wcd/user.cgi  (124ms)
+[15:54:41.216] [APP] Scanlink 시작
+[15:54:43.396] [DeviceService] 기기 4대 로드
+[15:54:43.400] [ScanBoxService] 스캔함 12개 로드
+[15:54:43.407] [FileWatch] 파일 감시 시작 (주기: 10초)
+[15:54:45.381] [FileWatch] [Sindoh D450/test_name1] 파일 2개: S800101113826041008490, S800101113826041315460
+[15:54:49.437] [FileWatch] [Sindoh D420/TEST_SCAN] 파일 1개: S25C-926042414080
+[15:54:49.438] [FileWatch]   + 신규: S25C-926042414080(1)
+[15:56:57.691] [FileWatch] [Sindoh D420/TEST_SCAN] 다운로드 실패: S25C-926042414080 — 다운로드 준비 타임아웃
+[15:56:57.691] [FileWatch]   └ [신도D420다운] S25C-926042414080 (박스=TEST_SCAN)
+[15:56:57.692] [FileWatch]   └ [HTTP→] GET (http://192.168.11.241/wcd/box_list.xml)
+[15:56:57.692] [FileWatch]   └ [HTTP←] 200 OK (11537자, 1369ms)
+[15:56:57.692] [FileWatch]   └ [HTTP→] POST (http://192.168.11.241/wcd/user.cgi)
+[15:56:57.693] [FileWatch]   └ [HTTP←] 200 OK (408자, 120ms)
+[15:56:57.693] [FileWatch]   └ [HTTP→] POST (http://192.168.11.241/wcd/user.cgi)
+[15:56:57.693] [FileWatch]   └ [HTTP←] 200 OK (412자, 94ms)
+[15:56:57.694] [FileWatch]   └ [신도D420다운][DBG] NXT 응답:
+[15:56:57.694] [FileWatch]   └ ╔══ HTTP 디버그 ════════════════════════════════════════════
+║ POST http://192.168.11.241/wcd/user.cgi  (94ms)
 ║ ── 요청 헤더 ──────────────────────────────────────────────
 ║   Referer: http://192.168.11.241/wcd/box_list.xml
 ║   Accept: application/json, text/javascript, */*; q=0.01
 ║   Content-Type: application/x-www-form-urlencoded; charset=utf-8
 ║ ── 요청 본문 ──────────────────────────────────────────────
-║   func=PSL_F_UOU_NXT&h_token=W4duYHoikmDJebZhbG9N9kFBp39BtsRd&H_JLS=%401%40&H_CLS=&H_PID=-1&H_DTY=FileDownload&H_XTP=Thumbnail&H_TAB=&H_BOX=3&H_BPA=&H_BTY=User&H_OPE=FileDownload&H_MAX=1
+║   func=PSL_F_UOU_NXT&h_token=UUYiSr8kXJ91fRIUg2byPS5vsgvWEC1I&H_JLS=%401%40&H_CLS=&H_PID=-1&H_DTY=FileDownload&H_XTP=Thumbnail&H_TAB=&H_BOX=3&H_BPA=&H_BTY=User&H_OPE=FileDownload&H_MAX=1
 ║ ── 응답 200 OK ────────────────────────────────
 ║ ── 응답 헤더 ──────────────────────────────────────────────
 ║   X-Frame-Options: SAMEORIGIN
@@ -24,11 +31,11 @@
 ║ ── 응답 본문 ──────────────────────────────────────────────
 ║   <?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet href="./waitmove.xsl" type="text/xsl"?><MFP><TemplateName>waitmove.xsl</TemplateName><Function>err</Function><LangNo>En</LangNo><RedirectUrl>box_joboperate.xml</RedirectUrl><Interval>100</Interval><MyTab>false</MyTab><NoMessage>true</NoMessage><Message></Message><CgiAction>void</CgiAction><CgiIdentity>void</CgiIdentity><CancelDisp>false</CancelDisp></MFP>
 ╚═══════════════════════════════════════════════════════════
-[15:35:12.868] [FileWatch]   └ [HTTP→] GET (http://192.168.11.241/wcd/box_joboperate.xml)
-[15:35:12.868] [FileWatch]   └ [HTTP←] 200 OK (76713자, 1135ms)
-[15:35:12.869] [FileWatch]   └ [신도D420다운][DBG] box_joboperate 응답:
-[15:35:12.869] [FileWatch]   └ ╔══ HTTP 디버그 ════════════════════════════════════════════
-║ GET http://192.168.11.241/wcd/box_joboperate.xml  (1135ms)
+[15:56:57.694] [FileWatch]   └ [HTTP→] GET (http://192.168.11.241/wcd/box_joboperate.xml)
+[15:56:57.694] [FileWatch]   └ [HTTP←] 200 OK (76713자, 1160ms)
+[15:56:57.695] [FileWatch]   └ [신도D420다운][DBG] box_joboperate 응답:
+[15:56:57.695] [FileWatch]   └ ╔══ HTTP 디버그 ════════════════════════════════════════════
+║ GET http://192.168.11.241/wcd/box_joboperate.xml  (1160ms)
 ║ ── 요청 헤더 ──────────────────────────────────────────────
 ║   (없음)
 ║ ── 요청 본문 ──────────────────────────────────────────────
@@ -43,7 +50,7 @@
 ║   <?xml version="1.0" encoding="UTF-8"?>
 ║   <?xml-stylesheet href="box_joboperate.xsl" type="text/xsl"?>
 ║   <MFP>
-║   <Token>W4duYHoikmDJebZhbG9N9kFBp39BtsRd</Token><Service><Setting><Fax><ReceiveDataProtectSetting><DataProtectType>NotProtect</DataProtectType><DeletePasswordExist>false</DeletePasswordExist></ReceiveDataProtectSetting></Fax><CornerStapleAngleSetting>Off</CornerStapleAngleSetting><SendReceiveMode><DuplexPrint>Off</DuplexPrint></SendReceiveMode></Setting></Service><Job>
+║   <Token>UUYiSr8kXJ91fRIUg2byPS5vsgvWEC1I</Token><Service><Setting><Fax><ReceiveDataProtectSetting><DataProtectType>NotProtect</DataProtectType><DeletePasswordExist>false</DeletePasswordExist></ReceiveDataProtectSetting></Fax><CornerStapleAngleSetting>Off</CornerStapleAngleSetting><SendReceiveMode><DuplexPrint>Off</DuplexPrint></SendReceiveMode></Setting></Service><Job>
 ║   <BoxInfoList>
 ║   <BoxInfo>
 ║   <BoxID>3</BoxID><BoxAttribute><Category>Functional</Category><Type>User</Type><Attribute>Public</Attribute></BoxAttribute><Name>TEST_SCAN</Name><SearchKey>Abc</SearchKey><Confidential>false</Confidential><CreatorName>Public</CreatorName><CreateTime><Year>2026</Year><Month>4</Month><Day>24</Day><Hour>14</Hour><Minute>6</Minute><Second>26</Second></CreateTime><NumberOfFile>1</NumberOfFile><LifeTime>0</LifeTime><LifeTimeMinute>0</LifeTimeMinute><ValidPassword>true</ValidPassword><GenFormatAutoCnv>
@@ -51,17 +58,17 @@
 ║   eOHP>Off</PaperTypeOHP><PaperInsertion>Off</PaperInsertion><PerPageSetOn>Off</PerPageSetOn><OriginalInsertion>Off</OriginalInsertion><Repeat>Off</Repeat><NPReverse>Off</NPReverse><BaseColor>Off</BaseColor><PhotoImage>Off</PhotoImage><LusterCopy>Off</LusterCopy><Mirror>Off</Mirror><ImageRotate>Off</ImageRotate><ImageTrimming>Off</ImageTrimming><Aps>Off</Aps><Overlay>Off</Overlay><OverlayLoad>Off</OverlayLoad><OriginalWatermark>Off</OriginalWatermark><CardCopyMode>Off</CardCopyMode><ContainPasswordCopy>Off</ContainPasswordCopy><CopySecurity>Off</CopySecurity><CombCopyProtect>Off</CombCopyProtect><CombCopyGuard>Off</CombCopyGuard><CombPasswordCopy>Off</CombPasswordCopy><CombRepetStamp>Off</CombRepetStamp><MultiPageMode>Off</MultiPageMode><CombCoverSheet>Off</CombCoverSheet><CombInterSeat>Off</CombInterSeat><CombChapterDivision>Off</CombChapterDivision><Resolution1200dpi>Off</Resolution1200dpi><CarbonCopy>Off</CarbonCopy><PaperTypeColor>Off</PaperTypeColor></MultiBoxJobSpecModeInfo></MFP>
 ║   
 ╚═══════════════════════════════════════════════════════════
-[15:35:12.869] [FileWatch]   └ [HTTP→] POST (http://192.168.11.241/wcd/user.cgi)
-[15:35:12.870] [FileWatch]   └ [HTTP←] 200 OK (486자, 439ms)
-[15:35:12.870] [FileWatch]   └ [신도D420다운][DBG] DWN 응답:
-[15:35:12.870] [FileWatch]   └ ╔══ HTTP 디버그 ════════════════════════════════════════════
-║ POST http://192.168.11.241/wcd/user.cgi  (439ms)
+[15:56:57.695] [FileWatch]   └ [HTTP→] POST (http://192.168.11.241/wcd/user.cgi)
+[15:56:57.696] [FileWatch]   └ [HTTP←] 200 OK (486자, 395ms)
+[15:56:57.696] [FileWatch]   └ [신도D420다운][DBG] DWN 응답:
+[15:56:57.696] [FileWatch]   └ ╔══ HTTP 디버그 ════════════════════════════════════════════
+║ POST http://192.168.11.241/wcd/user.cgi  (395ms)
 ║ ── 요청 헤더 ──────────────────────────────────────────────
 ║   Referer: http://192.168.11.241/wcd/box_joboperate.xml
 ║   Accept: application/json, text/javascript, */*; q=0.01
 ║   Content-Type: application/x-www-form-urlencoded; charset=utf-8
 ║ ── 요청 본문 ──────────────────────────────────────────────
-║   H_TAB=&func=PSL_F_UOU_DWN&h_token=W4duYHoikmDJebZhbG9N9kFBp39BtsRd&H_BOX=3&H_BPA=&H_BTY=User&H_PID=-1&H_DTY=FileDownload&H_XTP=Thumbnail&H_FMT=CompactPdf&H_JLS=%401%40&H_JNL=%09S25C-926042414080%09&H_JOR=%401%40&H_DCN=1&C_GFA=On&C_SET=C_SET&F_UOU_S_FOR=CompactPdf&S_OUT=Off&F_UOU_R_PAG=MultiPage&R_SPG=Off
+║   H_TAB=&func=PSL_F_UOU_DWN&h_token=UUYiSr8kXJ91fRIUg2byPS5vsgvWEC1I&H_BOX=3&H_BPA=&H_BTY=User&H_PID=-1&H_DTY=FileDownload&H_XTP=Thumbnail&H_FMT=CompactPdf&H_JLS=%401%40&H_JNL=%09S25C-926042414080%09&H_JOR=%401%40&H_DCN=1&C_GFA=On&C_SET=C_SET&F_UOU_S_FOR=CompactPdf&S_OUT=Off&F_UOU_R_PAG=MultiPage&R_SPG=Off
 ║ ── 응답 200 OK ────────────────────────────────
 ║ ── 응답 헤더 ──────────────────────────────────────────────
 ║   X-Frame-Options: SAMEORIGIN
@@ -69,11 +76,11 @@
 ║   Expires: Thu, 01 Jan 1970 00:00:00 GMT
 ║   Content-Length: 486
 ║ ── 응답 본문 ──────────────────────────────────────────────
-║   <?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet href="./wait.xsl" type="text/xsl"?><MFP><TemplateName>wait.xsl</TemplateName><Function>err</Function><LangNo>En</LangNo><RedirectUrl>progress</RedirectUrl><Interval>2500</Interval><MyTab>false</MyTab><NoMessage>false</NoMessage><Message><Item Code="DeviceExportExec"/></Message><CgiAction>user.cgi</CgiAction><CgiIdentity>PSL_F_UOU_DCA</CgiIdentity><Token>W4duYHoikmDJebZhbG9N9kFBp39BtsRd</Token><CancelDisp>true</CancelDisp></MFP>
+║   <?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet href="./wait.xsl" type="text/xsl"?><MFP><TemplateName>wait.xsl</TemplateName><Function>err</Function><LangNo>En</LangNo><RedirectUrl>progress</RedirectUrl><Interval>2500</Interval><MyTab>false</MyTab><NoMessage>false</NoMessage><Message><Item Code="DeviceExportExec"/></Message><CgiAction>user.cgi</CgiAction><CgiIdentity>PSL_F_UOU_DCA</CgiIdentity><Token>UUYiSr8kXJ91fRIUg2byPS5vsgvWEC1I</Token><CancelDisp>true</CancelDisp></MFP>
 ╚═══════════════════════════════════════════════════════════
-[15:35:12.871] [FileWatch]   └ [신도D420다운][FAIL] progress 페이지에서 다운로드 form 미발견 — 최종 응답 덤프:
-[15:35:12.871] [FileWatch]   └ ╔══ HTTP 디버그 ════════════════════════════════════════════
-║ GET http://192.168.11.241/wcd/progress  (13ms)
+[15:56:57.697] [FileWatch]   └ [신도D420다운][FAIL] progress 페이지에서 다운로드 form 미발견 — 최종 응답 덤프:
+[15:56:57.697] [FileWatch]   └ ╔══ HTTP 디버그 ════════════════════════════════════════════
+║ GET http://192.168.11.241/wcd/progress  (14ms)
 ║ ── 요청 헤더 ──────────────────────────────────────────────
 ║   (없음)
 ║ ── 요청 본문 ──────────────────────────────────────────────
@@ -87,11 +94,27 @@
 ║ ── 응답 본문 ──────────────────────────────────────────────
 ║   
 ╚═══════════════════════════════════════════════════════════
-[15:35:12.872] [FileWatch] 조회 완료: 기기 4대, 박스 12개, 실패 0건, 소요 131095ms
-[15:35:23.211] [FileWatch] [Sindoh D450/test_name1] 파일 2개: S800101113826041008490, S800101113826041315460
-[15:35:23.518] [FileWatch] [Sindoh D420/TEST_SCAN] 파일 0개: (없음)
-[15:35:23.518] [FileWatch]   - 삭제: S25C-926042414080(1)
-[15:35:23.519] [FileWatch] 조회 완료: 기기 4대, 박스 12개, 실패 0건, 소요 1730ms
-[15:35:33.234] [FileWatch] [Sindoh D450/test_name1] 파일 2개: S800101113826041008490, S800101113826041315460
-[15:35:33.369] [FileWatch] [Sindoh D420/TEST_SCAN] 파일 1개: S25C-926042414080
-[15:35:33.369] [FileWatch]   + 신규: S25C-926042414080(1)
+[15:56:57.699] [FileWatch] 조회 완료: 기기 4대, 박스 12개, 실패 0건, 소요 134289ms
+[15:57:04.844] [FileWatch] [Sindoh D450/test_name1] 파일 2개: S800101113826041008490, S800101113826041315460
+[15:57:07.852] [FileWatch] [Sindoh D420/TEST_SCAN] 파일 1개: S25C-926042414080
+[15:57:07.853] [FileWatch] 조회 완료: 기기 4대, 박스 12개, 실패 0건, 소요 4443ms
+[15:57:14.783] [FileWatch] [Sindoh D450/test_name1] 파일 2개: S800101113826041008490, S800101113826041315460
+[15:57:17.338] [FileWatch] [Sindoh D420/TEST_SCAN] 파일 1개: S25C-926042414080
+[15:57:17.339] [FileWatch] 조회 완료: 기기 4대, 박스 12개, 실패 0건, 소요 3922ms
+[15:57:24.407] [FileWatch] [Sindoh D420/TEST_SCAN] 조회 실패: 박스 목록 조회 실패
+[15:57:24.408] [FileWatch]   └ [신도D420파일] 박스 'TEST_SCAN' 파일 목록 조회
+[15:57:24.408] [FileWatch]   └ [HTTP→] GET (http://192.168.11.241/wcd/box_list.xml)
+[15:57:24.408] [FileWatch]   └ [HTTP←] 0 (예외) TaskCanceledException: The operation was canceled. (0자, 998ms)
+[15:57:24.409] [FileWatch]   └ [신도D420파일][FAIL] 박스 목록 HTTP 실패
+[15:57:24.409] [FileWatch]   └ ╔══ HTTP 디버그 ════════════════════════════════════════════
+║ GET http://192.168.11.241/wcd/box_list.xml  (998ms)
+║ ── 요청 헤더 ──────────────────────────────────────────────
+║   (없음)
+║ ── 요청 본문 ──────────────────────────────────────────────
+║   (없음)
+║ ── 응답 0 (예외) TaskCanceledException: The operation was canceled. ────────────────────────────────
+║ ── 응답 헤더 ──────────────────────────────────────────────
+║   (없음)
+║ ── 응답 본문 ──────────────────────────────────────────────
+║   
+╚═══════════════════════════════════════════════════════════
